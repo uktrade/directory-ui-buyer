@@ -20,6 +20,6 @@ class IndexView(TemplateView):
         )
 
         if not response.status_code == 201:
-            raise Exception(response.content)
+            return redirect("problem")
 
         return redirect("thanks")
