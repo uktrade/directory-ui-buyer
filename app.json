@@ -1,0 +1,21 @@
+{
+  "name": "big-quick-form-ui",
+  "scripts": {},
+  "env": {
+    "UI_SECRET": "change-me-when-you-can",
+    "DATA_SERVER": {
+      "description": "",
+      "required": "true"
+    },
+  },
+  "buildpacks": [
+    {
+      "url": "https://github.com/heroku/heroku-buildpack-python"
+    }
+  ],
+  "formation": {
+    "web": {
+      "quantity": 1
+    }
+  }
+}

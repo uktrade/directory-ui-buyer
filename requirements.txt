@@ -1,0 +1,6 @@
+Django==1.9.6
+django_extensions==1.6.7
+gunicorn==19.5.0
+raven==5.19.0
+requests==2.10.0
+whitenoise==3.1
