@@ -66,18 +66,13 @@ WSGI_APPLICATION = 'ui.wsgi.application'
 
 
 # # Database
-# # https://docs.djangoproject.com/en/1.9/ref/settings/#databases
-# # We're still using a database on the UI because outright removing it causes
-# # problems since so many packages require contenttypes which requires a db. The
-# # important part though is that the database is effectively static data,
-# # created at deploy time.  There's no session or user info in there, so there's
-# # nothing to worry about on that front.
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-#     }
-# }
+# hard to get rid of this
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    }
+}
 
 
 # Internationalization
@@ -103,6 +98,7 @@ STATIC_URL = '/static/'
 UI_SECRET = os.getenv("UI_SECRET")
 DATA_SERVER = os.getenv("DATA_SERVER")
 ANALYTICS_ID = os.getenv("ANALYTICS_ID")
+SECRET_KEY = os.getenv("SECRET_KEY")  # needed for collectstatic not sure why
 
 
 # Sentry
