@@ -1,6 +1,163 @@
-<form method="post">
-    {{ form }}
-    <input type="submit" value="Submit"/>
-</form>
+{% extends './govuk_layout.html' %}
+
+{% load staticfiles %}
+
+{% block bodyScripts %}
+
+	<script src="{% static 'vendor/jquery.min.js' %}"></script>
+	<script src="{% static 'govuk-toolkit/js/selection-buttons.js' %}"></script>
+
+	<script>
+		new GOVUK.SelectionButtons( "label input[type='radio'], label input[type='checkbox']" );
+	</script>
+
+{% endblock bodyScripts %}
+
+{% block content %}
+
+<div id="content">
+
+	<h1 class="heading-xlarge">Company Questions</h1>
+	<p class="lede">
+		Please tell us about your company and how to contact you.
+	</p>
+
+	<h2 class="heading-large">Contact information</h2>
+
+	{% if form.errors %}
+	<div class="error-summary" role="group" aria-labelledby="error-summary-heading" tabindex="-1">
+
+		<h1 class="heading-medium error-summary-heading" id="error-summary-heading">
+			Message to alert the user to a problem goes here
+		</h1>
+
+		<p>
+			Optional description of the errors and how to correct them
+		</p>
+
+		<ul class="error-summary-list">
+			<li><a href="#email-address-group">There was an issue with your email address</a></li>
+			<li><a href="#confirm-email-group">There was an issue with your confirmation email address</a></li>
+		</ul>
+
+	</div>
+	{% endif %}
+
+	<form action="/" method="POST" class="data-form" id="data-form">
+
+		<fieldset>
+			<legend class="visually-hidden">Contact information</legend>
+
+			<div class="form-group">
+				<label class="form-label" for="contact-name">Contact name</label>
+				<input class="form-control" id="contact-name" type="text" name="contact_name">
+			</div>
+
+			<div class="form-group{% if form.email_address1.errors %} error{% endif %}" id="email-address-group">
+				<label class="form-label" for="email-address">
+					Email address
+					{% if form.email_address1.errors %}
+					{% for err in form.email_address1.errors %}
+						<span class="error-message">{{ err }}</span>
+					{% endfor %}
+					{% endif %}
+				</label>
+				<input class="form-control" id="email-address" type="text" name="email_address1">
+			</div>
+
+			<div class="form-group{% if confirmError %} error {% endif %}" id="confirm-email-group">
+				<label class="form-label" for="confirm-email">
+					Confirm email address
+					{% if confirmError %}
+					<span class="error-message">The confirmation email does not match</span>
+					{% endif %}
+				</label>
+				<input class="form-control" id="confirm-email" type="text" name="email_address2">
+			</div>
+
+			<div class="form-group contact-number">
+				<label class="form-label" for="mobile">Mobile phone number</label>
+				<input class="form-control" id="mobile" type="text" name="mobile_number">
+			</div>
+
+			<div class="form-group contact-number">
+				<label class="form-label" for="office">Office phone number</label>
+				<input class="form-control" id="office" type="text" name="office_number">
+			</div>
+		</fieldset>
+		
 
 
+		<h2 class="heading-large">Company information</h2>
+
+		<fieldset>
+			<legend class="visually-hidden">Company Information</legend>
+
+			<div class="form-group">
+				<label class="form-label" for="company-name">Company name</label>
+				<input class="form-control" id="company-name" type="text" name="company">
+			</div>
+
+			<div class="form-group">
+				<label class="form-label" for="website">Website</label>
+				<input class="form-control" id="website" type="text" name="website">
+			</div>
+		</fieldset>
+
+		<h3 class="heading-medium">Address</h3>
+
+		<fieldset>
+			<legend class="visually-hidden">Address</legend>
+
+			<div class="form-group">
+				<label class="form-label" for="company-address-1">Building and street</label>
+				<input class="form-control" id="company-address-1" type="text" name="address1">
+			</div>
+
+			<div class="form-group">
+				<label class="form-label" for="company-address-2">Second line (optional)</label>
+				<input class="form-control" id="company-address-2" type="text" name="address2">
+			</div>
+
+			<div class="form-group">
+				<label class="form-label" for="town">Town or city</label>
+				<input class="form-control" id="town" type="text" name="town_or_city">
+			</div>
+
+			<div class="form-group">
+				<label class="form-label" for="county">County</label>
+				<input class="form-control" id="county" type="text" name="county">
+			</div>
+
+			<div class="form-group postcode">
+				<label class="form-label" for="postcode">Postcode</label>
+				<input class="form-control" id="postcode" type="text" name="postcode">
+			</div>
+
+		</fieldset>
+
+		<h3 class="heading-medium">Currently exporting</h3>
+
+		<div class="form-group">
+
+			<fieldset class="inline">
+
+				<legend class="visually-hidden">Currently Exporting</legend>
+
+				<label class="block-label" for="currently-exporting-yes">
+					<input id="currently-exporting-yes" type="radio" name="exporting" value="Yes">
+					Yes
+				</label>
+				<label class="block-label" for="currently-exporting-no">
+					<input id="currently-exporting-no" type="radio" name="exporting" value="No">
+					No
+				</label>
+
+			</fieldset>
+		</div>
+
+		<input class="button" type="submit" value="Save">
+	</form>
+</div>
+
+{% endblock content %}
