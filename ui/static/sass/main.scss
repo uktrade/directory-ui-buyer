@@ -1,0 +1,48 @@
+/*@import "govuk-elements";*/
+@import "elements";
+@import "grid_layout";
+
+#content {
+  @extend %site-width-container;
+
+  .exporting-logo {
+  	margin-top: 30px;
+  }
+}
+
+.data-form {
+	.form-control {
+		width: 100%;
+		max-width: 500px;
+	}
+}
+
+.form-group {
+	.subfield {
+		input {
+			width: 20%;
+		}
+
+		.suffix {
+			font-weight: bold;
+		}
+	}
+
+	&.postcode {
+
+		input {
+
+			width: 8em;
+			max-width: 100%;
+		}
+	}
+
+	&.contact-number {
+
+		input {
+
+			width: 11em;
+			max-width: 100%;
+		}
+	}
+}

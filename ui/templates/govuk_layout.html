@@ -61,9 +61,13 @@
     
 
     <div id="global-header-bar"></div>
+  
+    <div id="content">
+      <img class="exporting-logo" src="{% static 'img/exporting-is-great-logo.png' %}" alt="Exporting is Great" height="100">
 
-    {% block content %}
-    {% endblock content %}
+      {% block content %}
+      {% endblock content %}
+    </div>
 
     <footer class="group js-footer" id="footer" role="contentinfo">
 

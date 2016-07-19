@@ -68,3 +68,7 @@ db.sqlite3
 .idea
 
 .direnv/
+
+node_modules
+.sass-cache
+ui/static/**/*.map

@@ -15,8 +15,6 @@
 
 {% block content %}
 
-<div id="content">
-
 	<h1 class="heading-xlarge">Company Questions</h1>
 	<p class="lede">
 		Please tell us about your company and how to contact you.
@@ -44,9 +42,6 @@
 			{% if form.mobile_number.errors %}
 				<li><a href="#mobile-group">There was an issue with your mobile phone number.</a></li>
 			{% endif %}
-			{% if form.office_number.errors %}
-				<li><a href="#office-group">There was an issue with your office phone number.</a></li>
-			{% endif %}
 		</ul>
 
 	</div>
@@ -60,11 +55,7 @@
 			<div class="form-group{% if form.contact_name.errors %} error{% endif %}" id="contact-name-group">
 				<label class="form-label" for="contact-name">
 					Contact name
-					{% if form.contact_name.errors %}
-					{% for err in form.contact_name.errors %}
-						<span class="error-message">{{ err }}</span>
-					{% endfor %}
-					{% endif %}
+					{% include 'label-error.html' with field=form.contact_name %}
 				</label>
 				<input class="form-control" id="contact-name" type="text" name="contact_name" value="{{ form.contact_name.value|default_if_none:"" }}">
 			</div>
@@ -72,11 +63,7 @@
 			<div class="form-group{% if form.email_address1.errors %} error{% endif %}" id="email-address-group">
 				<label class="form-label" for="email-address">
 					Email address
-					{% if form.email_address1.errors %}
-					{% for err in form.email_address1.errors %}
-						<span class="error-message">{{ err }}</span>
-					{% endfor %}
-					{% endif %}
+					{% include 'label-error.html' with field=form.email_address1 %}
 				</label>
 				<input class="form-control" id="email-address" type="text" name="email_address1" value="{{ form.email_address1.value|default_if_none:"" }}">
 			</div>
@@ -84,38 +71,19 @@
 			<div class="form-group{% if form.email_address2.errors %} error{% endif %}" id="confirm-email-group">
 				<label class="form-label" for="confirm-email">
 					Confirm email address
-					{% if form.email_address2.errors %}
-					{% for err in form.email_address2.errors %}
-						<span class="error-message">{{ err }}</span>
-					{% endfor %}
-					{% endif %}
+					{% include 'label-error.html' with field=form.email_address2 %}
 				</label>
 				<input class="form-control" id="confirm-email" type="text" name="email_address2" value="{{ form.email_address2.value|default_if_none:"" }}">
 			</div>
 
 			<div class="form-group contact-number" id="mobile-group">
 				<label class="form-label" for="mobile">
-					Mobile phone number
-					{% if form.mobile_number.errors %}
-					{% for err in form.mobile_number.errors %}
-						<span class="error-message">{{ err }}</span>
-					{% endfor %}
-					{% endif %}
+					Phone number
+					{% include 'label-error.html' with field=form.mobile_number %}
 				</label>
 				<input class="form-control" id="mobile" type="text" name="mobile_number" value="{{ form.mobile_number.value|default_if_none:"" }}">
 			</div>
 
-			<div class="form-group contact-number" id="office-group">
-				<label class="form-label" for="office">
-					Office phone number
-					{% if form.office_number.errors %}
-					{% for err in form.office_number.errors %}
-						<span class="error-message">{{ err }}</span>
-					{% endfor %}
-					{% endif %}
-				</label>
-				<input class="form-control" id="office" type="text" name="office_number" value="{{ form.office_number.value|default_if_none:"" }}">
-			</div>
 		</fieldset>
 		
 
@@ -134,38 +102,6 @@
 				<label class="form-label" for="website">Website</label>
 				<input class="form-control" id="website" type="text" name="website">
 			</div>
-		</fieldset>
-
-		<h3 class="heading-medium">Address</h3>
-
-		<fieldset>
-			<legend class="visually-hidden">Address</legend>
-
-			<div class="form-group">
-				<label class="form-label" for="company-address-1">Building and street</label>
-				<input class="form-control" id="company-address-1" type="text" name="address1">
-			</div>
-
-			<div class="form-group">
-				<label class="form-label" for="company-address-2">Second line (optional)</label>
-				<input class="form-control" id="company-address-2" type="text" name="address2">
-			</div>
-
-			<div class="form-group">
-				<label class="form-label" for="town">Town or city</label>
-				<input class="form-control" id="town" type="text" name="town_or_city">
-			</div>
-
-			<div class="form-group">
-				<label class="form-label" for="county">County</label>
-				<input class="form-control" id="county" type="text" name="county">
-			</div>
-
-			<div class="form-group postcode">
-				<label class="form-label" for="postcode">Postcode</label>
-				<input class="form-control" id="postcode" type="text" name="postcode">
-			</div>
-
 		</fieldset>
 
 		<h3 class="heading-medium">Currently exporting</h3>
@@ -190,6 +126,5 @@
 
 		<input class="button" type="submit" value="Save">
 	</form>
-</div>
 
 {% endblock content %}
