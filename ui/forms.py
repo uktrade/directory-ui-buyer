@@ -8,7 +8,7 @@ class ContactForm(forms.Form):
     email_address1 = forms.EmailField(required=True, max_length=255)
     email_address2 = forms.EmailField(required=True, max_length=255)
     phone_number = forms.CharField(required=False, max_length=255)
-    website = forms.CharField(required=False, max_length=255)
+    website = forms.CharField(required=True, max_length=255)
     exporting = forms.ChoiceField(
         required=True,
         choices=[('True', 'True'), ('False', 'False')],

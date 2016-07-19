@@ -19,7 +19,7 @@
 	<p class="lede">
 		Please tell us about your company and how to contact you.
 	</p>
-	
+
 	{% if form.errors %}
 	<div class="error-summary" role="group" aria-labelledby="error-summary-heading" tabindex="-1">
 
@@ -39,6 +39,15 @@
 			{% endif %}
 			{% if form.mobile_number.errors %}
 				<li><a href="#mobile-group">There was an issue with your mobile phone number.</a></li>
+			{% endif %}
+			{% if form.company_name.errors %}
+				<li><a href="#company-name">There was an issue with your company name.</a></li>
+			{% endif %}
+			{% if form.exporting.errors %}
+				<li><a href="#exporting-header">Please answer if you are currently exporting.</a></li>
+			{% endif %}
+			{% if form.agree_terms.errors %}
+				<li><a href="#understand-label">Please agree to the terms to submit.</a></li>
 			{% endif %}
 		</ul>
 
@@ -79,10 +88,10 @@
 
 			<div class="form-group contact-number" id="mobile-group">
 				<label class="form-label" for="mobile">
-					Phone number
-					{% include 'label-error.html' with field=form.mobile_number %}
+					Phone number (optional)
+					{% include 'label-error.html' with field=form.phone_number %}
 				</label>
-				<input class="form-control" id="mobile" type="text" name="mobile_number" value="{{ form.mobile_number.value|default_if_none:"" }}">
+				<input class="form-control" id="mobile" type="text" name="phone_number" value="{{ form.phone_number.value|default_if_none:"" }}">
 			</div>
 
 		</fieldset>
@@ -96,29 +105,31 @@
 
 			<div class="form-group">
 				<label class="form-label" for="company-name">Company name</label>
-				<input class="form-control" id="company-name" type="text" name="company">
+				<input class="form-control" id="company-name" type="text" name="company_name" value="{{ form.company_name.value|default_if_none:"" }}">
 			</div>
 
 			<div class="form-group">
 				<label class="form-label" for="website">Website</label>
-				<input class="form-control" id="website" type="text" name="website">
+				<input class="form-control" id="website" type="text" name="website" value="{{ form.website.value|default_if_none:"" }}">
 			</div>
 		</fieldset>
 
-		<h3 class="heading-medium">Currently exporting</h3>
+		<h3 class="heading-medium" id="exporting-header">Currently exporting</h3>
 
-		<div class="form-group">
+		<div class="form-group{% if form.exporting.errors %} error{% endif %}">
 
 			<fieldset class="inline">
 
 				<legend class="visually-hidden">Currently Exporting</legend>
 
+				{% include 'label-error.html' with field=form.exporting %}
+
 				<label class="block-label" for="currently-exporting-yes">
-					<input id="currently-exporting-yes" type="radio" name="exporting" value="Yes">
+					<input id="currently-exporting-yes" type="radio" name="exporting" value="True"{% if form.exporting.value == 'True' %} checked{% endif %}>
 					Yes
 				</label>
 				<label class="block-label" for="currently-exporting-no">
-					<input id="currently-exporting-no" type="radio" name="exporting" value="No">
+					<input id="currently-exporting-no" type="radio" name="exporting" value="False"{% if form.exporting.value == 'False' %} checked{% endif %}>
 					No
 				</label>
 
@@ -127,27 +138,36 @@
 
 		<h2 class="heading-large">Agreement</h2>
 
-		<fieldset>
 
-			<legend class="visually-hidden">Agreement</legend>
-			
-			<p>Your application for pre-registration will be dealt with in accordance with our <a href="/terms_and_conditions">Terms of Use and Privacy Statement.</a></p>
+			<fieldset>
 
-			<p>Once we have considered your application, we will contact you with details about the next steps and with news about the planned launch of the [Export Directory].</p>
+				<legend class="visually-hidden">
+					Agreement
+				</legend>
+				 
+				
+				<p>Your application for pre-registration will be dealt with in accordance with our <a href="/terms_and_conditions">Terms of Use and Privacy Statement.</a></p>
 
-			<p>In addition, if you would like to hear about other similar campaigns which we run, or services which we offer to support UK exporters, please tick the appropriate box below</p>
+				<p>Once we have considered your application, we will contact you with details about the next steps and with news about the planned launch of the [Export Directory].</p>
 
-			<label class="block-label" for="understand">
-			  <input id="understand" name="understand_terms" type="checkbox" value="agree">
-			  I understand the above and I’m happy to proceed with pre-registration.
-			</label>
+				<p>In addition, if you would like to hear about other similar campaigns which we run, or services which we offer to support UK exporters, please tick the appropriate box below</p>
 
-			<label class="block-label" for="keep-informed">
-			  <input id="keep-informed" name="keep_informed" type="checkbox" value="agree">
-			  please keep me informed about UKTI&#39;s other campaigns and services.
-			</label>
-			
-		</fieldset>
+				<div class="form-group{% if form.agree_terms.errors %} error{% endif %}">	
+					{% include 'label-error.html' with field=form.agree_terms %}
+					<label class="block-label" for="understand" id="understand-label">
+					  <input id="understand" name="agree_terms" type="checkbox" value="True"{% if form.agree_terms.value == True %} checked{% endif %}>
+					  I understand the above and I’m happy to proceed with pre-registration.
+					  {{ form.agree_terms.value }}
+					</label>
+				</div>
+
+				<label class="block-label" for="keep-informed">
+				  <input id="keep-informed" name="opt_in" type="checkbox" value="agree"{% if form.opt_in.value == True %} checked{% endif %}>
+				  please keep me informed about UKTI&#39;s other campaigns and services.
+				</label>
+				
+			</fieldset>
+
 
 		<input class="button save-button" type="submit" value="Save">
 	</form>
