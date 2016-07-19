@@ -28,16 +28,25 @@
 	<div class="error-summary" role="group" aria-labelledby="error-summary-heading" tabindex="-1">
 
 		<h1 class="heading-medium error-summary-heading" id="error-summary-heading">
-			Message to alert the user to a problem goes here
+			There was an error saving your answers, please check below.
 		</h1>
 
-		<p>
-			Optional description of the errors and how to correct them
-		</p>
-
 		<ul class="error-summary-list">
-			<li><a href="#email-address-group">There was an issue with your email address</a></li>
-			<li><a href="#confirm-email-group">There was an issue with your confirmation email address</a></li>
+			{% if form.contact_name.errors %}
+				<li><a href="#contact-name-group">There was an issue with your contact name.</a></li>
+			{% endif %}
+			{% if form.email_address1.errors %}
+				<li><a href="#email-address-group">There was an issue with your email address.</a></li>
+			{% endif %}
+			{% if form.email_address2.errors %}
+				<li><a href="#confirm-email-group">There was an issue with your confirmation email address.</a></li>
+			{% endif %}
+			{% if form.mobile_number.errors %}
+				<li><a href="#mobile-group">There was an issue with your mobile phone number.</a></li>
+			{% endif %}
+			{% if form.office_number.errors %}
+				<li><a href="#office-group">There was an issue with your office phone number.</a></li>
+			{% endif %}
 		</ul>
 
 	</div>
@@ -48,9 +57,16 @@
 		<fieldset>
 			<legend class="visually-hidden">Contact information</legend>
 
-			<div class="form-group">
-				<label class="form-label" for="contact-name">Contact name</label>
-				<input class="form-control" id="contact-name" type="text" name="contact_name">
+			<div class="form-group{% if form.contact_name.errors %} error{% endif %}" id="contact-name-group">
+				<label class="form-label" for="contact-name">
+					Contact name
+					{% if form.contact_name.errors %}
+					{% for err in form.contact_name.errors %}
+						<span class="error-message">{{ err }}</span>
+					{% endfor %}
+					{% endif %}
+				</label>
+				<input class="form-control" id="contact-name" type="text" name="contact_name" value="{{ form.contact_name.value|default_if_none:"" }}">
 			</div>
 
 			<div class="form-group{% if form.email_address1.errors %} error{% endif %}" id="email-address-group">
@@ -62,27 +78,43 @@
 					{% endfor %}
 					{% endif %}
 				</label>
-				<input class="form-control" id="email-address" type="text" name="email_address1">
+				<input class="form-control" id="email-address" type="text" name="email_address1" value="{{ form.email_address1.value|default_if_none:"" }}">
 			</div>
 
-			<div class="form-group{% if confirmError %} error {% endif %}" id="confirm-email-group">
+			<div class="form-group{% if form.email_address2.errors %} error{% endif %}" id="confirm-email-group">
 				<label class="form-label" for="confirm-email">
 					Confirm email address
-					{% if confirmError %}
-					<span class="error-message">The confirmation email does not match</span>
+					{% if form.email_address2.errors %}
+					{% for err in form.email_address2.errors %}
+						<span class="error-message">{{ err }}</span>
+					{% endfor %}
 					{% endif %}
 				</label>
-				<input class="form-control" id="confirm-email" type="text" name="email_address2">
+				<input class="form-control" id="confirm-email" type="text" name="email_address2" value="{{ form.email_address2.value|default_if_none:"" }}">
 			</div>
 
-			<div class="form-group contact-number">
-				<label class="form-label" for="mobile">Mobile phone number</label>
-				<input class="form-control" id="mobile" type="text" name="mobile_number">
+			<div class="form-group contact-number" id="mobile-group">
+				<label class="form-label" for="mobile">
+					Mobile phone number
+					{% if form.mobile_number.errors %}
+					{% for err in form.mobile_number.errors %}
+						<span class="error-message">{{ err }}</span>
+					{% endfor %}
+					{% endif %}
+				</label>
+				<input class="form-control" id="mobile" type="text" name="mobile_number" value="{{ form.mobile_number.value|default_if_none:"" }}">
 			</div>
 
-			<div class="form-group contact-number">
-				<label class="form-label" for="office">Office phone number</label>
-				<input class="form-control" id="office" type="text" name="office_number">
+			<div class="form-group contact-number" id="office-group">
+				<label class="form-label" for="office">
+					Office phone number
+					{% if form.office_number.errors %}
+					{% for err in form.office_number.errors %}
+						<span class="error-message">{{ err }}</span>
+					{% endfor %}
+					{% endif %}
+				</label>
+				<input class="form-control" id="office" type="text" name="office_number" value="{{ form.office_number.value|default_if_none:"" }}">
 			</div>
 		</fieldset>
 		
