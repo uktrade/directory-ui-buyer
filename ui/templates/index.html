@@ -147,15 +147,15 @@
 				<legend class="visually-hidden">
 					Agreement
 				</legend>
-				 
-				
+
+
 				<p>Your application for pre-registration will be dealt with in accordance with our <a href="/terms_and_conditions">Terms of Use and Privacy Statement.</a></p>
 
 				<p>Once we have considered your application, we will contact you with details about the next steps and with news about the planned launch of the [Export Directory].</p>
 
 				<p>In addition, if you would like to hear about other similar campaigns which we run, or services which we offer to support UK exporters, please tick the appropriate box below</p>
 
-				<div class="form-group{% if form.agree_terms.errors %} error{% endif %}">	
+				<div class="form-group{% if form.agree_terms.errors %} error{% endif %}">
 					{% include 'label-error.html' with field=form.agree_terms %}
 					<label class="block-label" for="understand" id="understand-label">
 					  <input id="understand" name="agree_terms" type="checkbox" value="True"{% if form.agree_terms.value == True %} checked{% endif %}>
@@ -167,7 +167,7 @@
 				  <input id="keep-informed" name="opt_in" type="checkbox" value="agree"{% if form.opt_in.value == True %} checked{% endif %}>
 				  please keep me informed about UKTI&#39;s other campaigns and services.
 				</label>
-				
+
 			</fieldset>
 
 

@@ -4,12 +4,31 @@ from django.conf import settings
 from django.shortcuts import redirect
 from django.core.urlresolvers import reverse_lazy
 from django.views.generic import TemplateView, FormView
+from django.utils.cache import patch_response_headers
 
 from alice.helpers import rabbit
 from ui.forms import ContactForm
 
 
-class IndexView(FormView):
+class CacheMixin(object):
+    def render_to_response(self, context, **response_kwargs):
+        # Get response from parent TemplateView class
+        response = super().render_to_response(
+            context, **response_kwargs
+        )
+
+        # Add Cache-Control and Expires headers
+        patch_response_headers(response, cache_timeout=60 * 5)
+
+        # Return response
+        return response
+
+
+class CachableTemplateView(CacheMixin, TemplateView):
+    pass
+
+
+class IndexView(CacheMixin, FormView):
     template_name = "index.html"
     form_class = ContactForm
     success_url = reverse_lazy("thanks")
@@ -30,3 +49,4 @@ class IndexView(FormView):
             return redirect("problem")
 
         return super().form_valid(form)
+
