@@ -15,11 +15,6 @@
 
 {% block content %}
 
-	<h1 class="heading-xlarge">Company Questions</h1>
-	<p class="lede">
-		Please tell us about your company and how to contact you.
-	</p>
-
 	{% if form.errors %}
 	<div class="error-summary" role="group" aria-labelledby="error-summary-heading" tabindex="-1">
 
@@ -47,12 +42,18 @@
 				<li><a href="#exporting-header">Please answer if you are currently exporting.</a></li>
 			{% endif %}
 			{% if form.agree_terms.errors %}
-				<li><a href="#understand-label">Please agree to the terms to submit.</a></li>
+				<li><a href="#understand-label">Please agree to the terms.</a></li>
 			{% endif %}
 		</ul>
 
 	</div>
 	{% endif %}
+
+	<h1 class="heading-xlarge">Company Questions</h1>
+	<p class="lede">
+		Please tell us about your company and how to contact you.
+	</p>
+
 
 	<h2 class="heading-large">Contact information</h2>
 
