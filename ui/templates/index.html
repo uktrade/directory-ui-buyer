@@ -116,6 +116,7 @@
 
 		<h3 class="heading-medium" id="exporting-header">Currently exporting</h3>
 
+		<div class="radio-group">
 		<div class="form-group{% if form.exporting.errors %} error{% endif %}">
 
 			<fieldset class="inline">
@@ -134,6 +135,7 @@
 				</label>
 
 			</fieldset>
+		</div>
 		</div>
 
 		<h2 class="heading-large">Agreement</h2>
@@ -157,7 +159,6 @@
 					<label class="block-label" for="understand" id="understand-label">
 					  <input id="understand" name="agree_terms" type="checkbox" value="True"{% if form.agree_terms.value == True %} checked{% endif %}>
 					  I understand the above and I’m happy to proceed with pre-registration.
-					  {{ form.agree_terms.value }}
 					</label>
 				</div>
 
