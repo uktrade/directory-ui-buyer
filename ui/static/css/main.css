@@ -1555,21 +1555,25 @@ textarea {
   width: 100%;
   max-width: 500px;
 }
+/* line 19, ../sass/main.scss */
+.data-form .save-button {
+  margin-top: 30px;
+}
 
-/* line 22, ../sass/main.scss */
+/* line 26, ../sass/main.scss */
 .form-group .subfield input {
   width: 20%;
 }
-/* line 26, ../sass/main.scss */
+/* line 30, ../sass/main.scss */
 .form-group .subfield .suffix {
   font-weight: bold;
 }
-/* line 33, ../sass/main.scss */
+/* line 37, ../sass/main.scss */
 .form-group.postcode input {
   width: 8em;
   max-width: 100%;
 }
-/* line 42, ../sass/main.scss */
+/* line 46, ../sass/main.scss */
 .form-group.contact-number input {
   width: 11em;
   max-width: 100%;

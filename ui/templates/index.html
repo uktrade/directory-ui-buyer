@@ -19,9 +19,7 @@
 	<p class="lede">
 		Please tell us about your company and how to contact you.
 	</p>
-
-	<h2 class="heading-large">Contact information</h2>
-
+	
 	{% if form.errors %}
 	<div class="error-summary" role="group" aria-labelledby="error-summary-heading" tabindex="-1">
 
@@ -46,6 +44,9 @@
 
 	</div>
 	{% endif %}
+
+	<h2 class="heading-large">Contact information</h2>
+
 
 	<form action="/" method="POST" class="data-form" id="data-form">
 
@@ -124,7 +125,31 @@
 			</fieldset>
 		</div>
 
-		<input class="button" type="submit" value="Save">
+		<h2 class="heading-large">Agreement</h2>
+
+		<fieldset>
+
+			<legend class="visually-hidden">Agreement</legend>
+			
+			<p>Your application for pre-registration will be dealt with in accordance with our <a href="/terms_and_conditions">Terms of Use and Privacy Statement.</a></p>
+
+			<p>Once we have considered your application, we will contact you with details about the next steps and with news about the planned launch of the [Export Directory].</p>
+
+			<p>In addition, if you would like to hear about other similar campaigns which we run, or services which we offer to support UK exporters, please tick the appropriate box below</p>
+
+			<label class="block-label" for="understand">
+			  <input id="understand" name="understand_terms" type="checkbox" value="agree">
+			  I understand the above and I’m happy to proceed with pre-registration.
+			</label>
+
+			<label class="block-label" for="keep-informed">
+			  <input id="keep-informed" name="keep_informed" type="checkbox" value="agree">
+			  please keep me informed about UKTI&#39;s other campaigns and services.
+			</label>
+			
+		</fieldset>
+
+		<input class="button save-button" type="submit" value="Save">
 	</form>
 
 {% endblock content %}
