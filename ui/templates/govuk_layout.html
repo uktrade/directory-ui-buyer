@@ -45,7 +45,7 @@
 		</div>
 
 
-		<header role="banner" id="global-header" class="">
+		<header role="banner" id="global-header" class="with-proposition">
 			<div class="header-wrapper">
 				<div class="header-global">
 					<div class="header-logo">
@@ -53,9 +53,15 @@
 							<img src="{% static 'govuk-0.18.0/assets/images/gov.uk_logotype_crown_invert_trans.png' %}" width="35" height="31" alt=""> GOV.UK
 						</a>
 					</div>
-
 				</div>
 
+				<div class="header-proposition">
+					<div class="content">
+						<nav id="proposition-menu">
+							<a href="/" id="proposition-name">UK Exporter Directory</a>
+						</nav>
+					</div>
+				</div>
 			</div>
 		</header>
 
@@ -63,12 +69,18 @@
 		<div id="global-header-bar"></div>
 	
 		<div id="content">
-			<a href="https://www.exportingisgreat.gov.uk/">
-				<img class="exporting-logo" src="{% static 'img/exporting-is-great-logo.png' %}" alt="Exporting is Great" height="100">
-			</a>
 
-			{% block content %}
-			{% endblock content %}
+			<div class="grid-row">
+				<div class="column-two-thirds">
+					
+					<a href="https://www.exportingisgreat.gov.uk/">
+						<img class="exporting-logo" src="{% static 'img/exporting-is-great-logo.png' %}" alt="Exporting is Great" height="100">
+					</a>
+
+					{% block content %}
+					{% endblock content %}
+				</div>
+			</div>
 		</div>
 
 		<footer class="group js-footer" id="footer" role="contentinfo">
@@ -78,6 +90,10 @@
 
 				<div class="footer-meta">
 					<div class="footer-meta-inner">
+
+						<ul>
+							<li><a href="/terms_and_conditions">Terms and conditions</a></li>
+						</ul>
 
 
 						<div class="open-government-licence">

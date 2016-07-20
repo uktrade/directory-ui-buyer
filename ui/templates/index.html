@@ -36,7 +36,10 @@
 				<li><a href="#mobile-group">There was an issue with your mobile phone number.</a></li>
 			{% endif %}
 			{% if form.company_name.errors %}
-				<li><a href="#company-name">There was an issue with your company name.</a></li>
+				<li><a href="#company-name-group">There was an issue with your company name.</a></li>
+			{% endif %}
+			{% if form.website.errors %}
+				<li><a href="#website-group">There was an issue with your website.</a></li>
 			{% endif %}
 			{% if form.exporting.errors %}
 				<li><a href="#exporting-header">Please answer if you are currently exporting.</a></li>
@@ -104,13 +107,19 @@
 		<fieldset>
 			<legend class="visually-hidden">Company Information</legend>
 
-			<div class="form-group">
-				<label class="form-label" for="company-name">Company name</label>
+			<div class="form-group{% if form.company_name.errors %} error{% endif %}" id="company-name-group">
+				<label class="form-label" for="company-name">
+					Company name
+					{% include 'label-error.html' with field=form.company_name %}
+				</label>
 				<input class="form-control" id="company-name" type="text" name="company_name" value="{{ form.company_name.value|default_if_none:"" }}">
 			</div>
 
-			<div class="form-group">
-				<label class="form-label" for="website">Website</label>
+			<div class="form-group{% if form.website.errors %} error{% endif %}" id="website-group">
+				<label class="form-label" for="website">
+					Website
+					{% include 'label-error.html' with field=form.website %}
+				</label>
 				<input class="form-control" id="website" type="text" name="website" value="{{ form.website.value|default_if_none:"" }}">
 			</div>
 		</fieldset>
