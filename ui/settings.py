@@ -108,6 +108,7 @@ DATA_SERVER = os.getenv("DATA_SERVER")
 ANALYTICS_ID = os.getenv("ANALYTICS_ID")
 SECRET_KEY = os.getenv("SECRET_KEY")  # needed for collectstatic not sure why
 
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # Sentry
 RAVEN_CONFIG = {
