@@ -24,7 +24,7 @@ BASE_DIR = os.path.dirname(PROJECT_ROOT)
 SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False  #bool(os.getenv("DEBUG", False))
+DEBUG = bool(os.getenv("DEBUG", False))
 
 # As the app is running behind a host-based router supplied by Heroku or other
 # PaaS, we can open ALLOWED_HOSTS
