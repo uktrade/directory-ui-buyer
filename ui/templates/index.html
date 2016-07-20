@@ -19,56 +19,53 @@
 	<div class="error-summary" role="group" aria-labelledby="error-summary-heading" tabindex="-1">
 
 		<h1 class="heading-medium error-summary-heading" id="error-summary-heading">
-			There was an error saving your answers, please check below.
+			There was an error submitting your request, please check below.
 		</h1>
 
 		<ul class="error-summary-list">
 			{% if form.contact_name.errors %}
-				<li><a href="#contact-name-group">There was an issue with your contact name.</a></li>
+				<li><a href="#contact-name-group">Please check your name</a></li>
 			{% endif %}
 			{% if form.email_address1.errors %}
-				<li><a href="#email-address-group">There was an issue with your email address.</a></li>
+				<li><a href="#email-address-group">Please check your email address</a></li>
 			{% endif %}
 			{% if form.email_address2.errors %}
-				<li><a href="#confirm-email-group">There was an issue with your confirmation email address.</a></li>
-			{% endif %}
-			{% if form.mobile_number.errors %}
-				<li><a href="#mobile-group">There was an issue with your mobile phone number.</a></li>
+				<li><a href="#confirm-email-group">Please check your confirmation email address</a></li>
 			{% endif %}
 			{% if form.company_name.errors %}
-				<li><a href="#company-name-group">There was an issue with your company name.</a></li>
+				<li><a href="#company-name-group">Please check your company name</a></li>
 			{% endif %}
 			{% if form.website.errors %}
-				<li><a href="#website-group">There was an issue with your website.</a></li>
+				<li><a href="#website-group">Please check your company website</a></li>
 			{% endif %}
 			{% if form.exporting.errors %}
-				<li><a href="#exporting-header">Please answer if you are currently exporting.</a></li>
+				<li><a href="#exporting-header">Please say whether you are currently exporting</a></li>
 			{% endif %}
 			{% if form.agree_terms.errors %}
-				<li><a href="#understand-label">Please agree to the terms.</a></li>
+				<li><a href="#understand-label">Please agree to the terms</a></li>
 			{% endif %}
 		</ul>
 
 	</div>
 	{% endif %}
 
-	<h1 class="heading-xlarge">Company Questions</h1>
+	<h1 class="heading-xlarge">Request an entry in the directory of UK exporters</h1>
 	<p class="lede">
-		Please tell us about your company and how to contact you.
+		Use this form to register your company to be considered for the UK Exporter Directory. If you are successful, your information may be made publicly available.
 	</p>
 
 
-	<h2 class="heading-large">Contact information</h2>
+	<h2 class="heading-large">About you</h2>
 
 
 	<form action="/" method="POST" class="data-form" id="data-form">
 
 		<fieldset>
-			<legend class="visually-hidden">Contact information</legend>
+			<legend class="visually-hidden">About you</legend>
 
 			<div class="form-group{% if form.contact_name.errors %} error{% endif %}" id="contact-name-group">
 				<label class="form-label" for="contact-name">
-					Contact name
+					Your name
 					{% include 'label-error.html' with field=form.contact_name %}
 				</label>
 				<input class="form-control" id="contact-name" type="text" name="contact_name" value="{{ form.contact_name.value|default_if_none:"" }}">
@@ -102,10 +99,10 @@
 
 
 
-		<h2 class="heading-large">Company information</h2>
+		<h2 class="heading-large">About your company</h2>
 
 		<fieldset>
-			<legend class="visually-hidden">Company Information</legend>
+			<legend class="visually-hidden">About your company</legend>
 
 			<div class="form-group{% if form.company_name.errors %} error{% endif %}" id="company-name-group">
 				<label class="form-label" for="company-name">
@@ -117,14 +114,14 @@
 
 			<div class="form-group{% if form.website.errors %} error{% endif %}" id="website-group">
 				<label class="form-label" for="website">
-					Website
+					Company website
 					{% include 'label-error.html' with field=form.website %}
 				</label>
 				<input class="form-control" id="website" type="text" name="website" value="{{ form.website.value|default_if_none:"" }}">
 			</div>
 		</fieldset>
 
-		<h3 class="heading-medium" id="exporting-header">Currently exporting</h3>
+		<h3 class="heading-medium" id="exporting-header">Is your company currently exporting?</h3>
 
 		<div class="radio-group">
 		<div class="form-group{% if form.exporting.errors %} error{% endif %}">
@@ -148,39 +145,34 @@
 		</div>
 		</div>
 
-		<h2 class="heading-large">Agreement</h2>
-
-
 			<fieldset>
 
 				<legend class="visually-hidden">
-					Agreement
+					Our terms
 				</legend>
 
 
-				<p>Your application for pre-registration will be dealt with in accordance with our <a href="/terms_and_conditions">Terms of Use and Privacy Statement.</a></p>
+				<p>Your application for registration will be dealt with in line with the Department for International Trade’s <a href="/terms_and_conditions">terms of use and privacy statement.</a></p>
 
-				<p>Once we have considered your application, we will contact you with details about the next steps and with news about the planned launch of the [Export Directory].</p>
-
-				<p>In addition, if you would like to hear about other similar campaigns which we run, or services which we offer to support UK exporters, please tick the appropriate box below</p>
+				<p>The Department for International Trade will contact you with details about the next steps once it has considered your application. This may include news about the planned launch of the directory.</p>
 
 				<div class="form-group{% if form.agree_terms.errors %} error{% endif %}">
 					{% include 'label-error.html' with field=form.agree_terms %}
 					<label class="block-label" for="understand" id="understand-label">
 					  <input id="understand" name="agree_terms" type="checkbox" value="True"{% if form.agree_terms.value == True %} checked{% endif %}>
-					  I understand the above and I’m happy to proceed with pre-registration.
+					  I understand and I’m happy to submit my information and to be contacted
 					</label>
 				</div>
 
 				<label class="block-label" for="keep-informed">
 				  <input id="keep-informed" name="opt_in" type="checkbox" value="agree"{% if form.opt_in.value == True %} checked{% endif %}>
-				  please keep me informed about UKTI&#39;s other campaigns and services.
+				  Tick this box to receive messages about Department for International Trade’s other campaigns and services to support UK exporters (optional)
 				</label>
 
 			</fieldset>
 
 
-		<input class="button save-button" type="submit" value="Save">
+		<input class="button save-button" type="submit" value="Submit">
 	</form>
 
 {% endblock content %}
