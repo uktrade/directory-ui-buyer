@@ -79,7 +79,7 @@
 					Email address
 					{% include 'label-error.html' with field=form.email_address1 %}
 				</label>
-				<input class="form-control" id="email-address" type="text" name="email_address1" value="{{ form.email_address1.value|default_if_none:"" }}">
+				<input class="form-control" id="email-address" type="text" name="email_address1" autocorrect="off" autocapitalize="none" value="{{ form.email_address1.value|default_if_none:"" }}">
 			</div>
 
 			<div class="form-group{% if form.email_address2.errors %} error{% endif %}" id="confirm-email-group">
@@ -87,7 +87,7 @@
 					Confirm email address
 					{% include 'label-error.html' with field=form.email_address2 %}
 				</label>
-				<input class="form-control" id="confirm-email" type="text" name="email_address2" value="{{ form.email_address2.value|default_if_none:"" }}">
+				<input class="form-control" id="confirm-email" type="text" name="email_address2" autocorrect="off" autocapitalize="none" value="{{ form.email_address2.value|default_if_none:"" }}">
 			</div>
 
 			<div class="form-group contact-number" id="mobile-group">
@@ -120,7 +120,7 @@
 					Company website
 					{% include 'label-error.html' with field=form.website %}
 				</label>
-				<input class="form-control" id="website" type="text" name="website" value="{{ form.website.value|default_if_none:"" }}">
+				<input class="form-control" id="website" type="text" name="website" autocorrect="off" autocapitalize="none" value="{{ form.website.value|default_if_none:"" }}">
 			</div>
 		</fieldset>
 
