@@ -22,7 +22,7 @@ class ContactForm(forms.Form):
         email1 = cleaned_data.get("email_address1")
         email2 = cleaned_data.get("email_address2")
 
-        if email1 and email2 and email1 != email2:
+        if email1 and email2 and email1.lower() != email2.lower():
             for field in ['email_address1', 'email_address2']:
                 if field not in self._errors:
                     self._errors[field] = ErrorList()
