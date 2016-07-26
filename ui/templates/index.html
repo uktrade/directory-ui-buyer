@@ -157,13 +157,13 @@
 
 				<p>Your application for registration will be dealt with in line with the Department for International Trade’s <a href="/terms_and_conditions">terms of use and privacy statement</a>.</p>
 
-				<p>The Department for International Trade will contact you with details about the next steps once it has considered your application. This may include news about the planned launch of the Directory, which is currently under construction.</p>
+				<p>The Department for International Trade will contact you with details about the next steps once it has considered your application. This may include news about the planned launch of the directory, which is currently under construction.</p>
 
 				<div class="form-group{% if form.agree_terms.errors %} error{% endif %}">
 					{% include 'label-error.html' with field=form.agree_terms %}
 					<label class="block-label" for="understand" id="understand-label">
 					  <input id="understand" name="agree_terms" type="checkbox" value="True"{% if form.agree_terms.value == True %} checked{% endif %}>
-					  I understand and I’m happy to submit my information and to be contacted
+					  I understand the terms of use, I’m happy to submit my information and to be contacted about my application and the development of the directory
 					</label>
 				</div>
 
