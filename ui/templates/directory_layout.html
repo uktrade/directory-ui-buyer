@@ -1,0 +1,54 @@
+{% extends './ukti_layout.html' %}
+{% block header_class %}with-proposition{% endblock %}
+{% load staticfiles %}
+
+{% block bodyScripts %}
+
+	<script src="{% static 'vendor/jquery.min.js' %}"></script>
+	<script src="{% static 'govuk-toolkit/js/selection-buttons.js' %}"></script>
+	<script src="{% static 'govuk-toolkit/js/analytics.js' %}"></script>
+	<script src="{% static 'govuk-toolkit/js/google-analytics-universal-tracker.js' %}"></script>
+	<script>
+		(function() {
+			"use strict";
+
+			// Load Google Analytics libraries
+			GOVUK.Analytics.load();
+
+			// Use document.domain in dev, preview and staging so that tracking works
+			// Otherwise explicitly set the domain as www.gov.uk (and not gov.uk).
+			var cookieDomain = (document.domain === 'www.gov.uk') ? '.www.gov.uk' : document.domain;
+
+			// Configure profiles and make interface public
+			// for custom dimensions, virtual pageviews and events
+			GOVUK.analytics = new GOVUK.Analytics({
+				universalId: 'UA-57533520-4',
+				cookieDomain: cookieDomain
+			});
+
+			// Set custom dimensions before tracking pageviews
+			// GOVUK.analytics.setDimension(…)
+
+			// Activate any event plugins eg. print intent, error tracking
+			// GOVUK.analyticsPlugins.error();
+			// GOVUK.analyticsPlugins.printIntent();
+
+			// Track initial pageview
+			GOVUK.analytics.trackPageview();
+		})();
+	</script>
+	<script>
+		new GOVUK.SelectionButtons( "label input[type='radio'], label input[type='checkbox']" );
+	</script>
+
+{% endblock bodyScripts %}
+
+{% block proposition_header %}
+    <div class="header-proposition">
+       <div class="content">
+		<nav id="proposition-menu">
+			<a href="/" id="proposition-name">UK Exporter Directory</a>
+		</nav>
+	</div>
+</div>
+{% endblock %}
