@@ -18,7 +18,7 @@ class CacheMixin(object):
         )
 
         # Add Cache-Control and Expires headers
-        patch_response_headers(response, cache_timeout=60 * 5)
+        patch_response_headers(response, cache_timeout=60 * 30)
 
         # Return response
         return response
