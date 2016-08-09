@@ -30,3 +30,12 @@ npm run sass-watch
 ```
 
 This will cause sass to rebuld the css files when the scss file changes.
+
+
+# Terms info
+
+(Please do not delete this section)
+
+We changed the wording of the terms, which means some people could have agreed to different terms.
+
+The original terms were tagged up to 1.4 and the new terms were introduced with tag 1.5 on 28/07/2016

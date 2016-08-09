@@ -5,14 +5,15 @@
   "main": "index.js",
   "private": true,
   "scripts": {
-    "sass-watch": "sass --style expanded --line-numbers --load-path node_modules/govuk_frontend_toolkit/stylesheets --load-path node_modules/govuk-elements-sass/public/sass --watch ui/static/sass/main.scss:ui/static/css/main.css",
-    "sass-dev": "sass --style expanded --line-numbers --load-path node_modules/govuk_frontend_toolkit/stylesheets --load-path node_modules/govuk-elements-sass/public/sass ui/static/sass/main.scss ui/static/css/main.css",
-    "sass-prod": "sass --style compressed --load-path node_modules/govuk_frontend_toolkit/stylesheets --load-path node_modules/govuk-elements-sass/public/sass ui/static/sass/main.scss ui/static/css/main.css"
+    "sass-watch": "sass --style expanded --line-numbers --load-path node_modules/govuk_frontend_toolkit/stylesheets --load-path node_modules/trade_elements/sass --load-path node_modules/govuk-elements-sass/public/sass --watch ui/static/sass/main.scss:ui/static/css/main.css",
+    "sass-dev": "sass --style expanded --line-numbers --load-path node_modules/trade_elements/sass --load-path node_modules/govuk-elements-sass/public/sass --load-path node_modules/govuk_frontend_toolkit/stylesheets ui/static/css/main.css",
+    "sass-prod": "sass --style compressed --load-path node_modules/trade_elements/sass --load-path node_modules/govuk-elements-sass/public/sass --load-path node_modules/govuk_frontend_toolkit/stylesheets ui/static/css/main.css"
   },
   "author": "Graham Veal",
   "license": "ISC",
   "devDependencies": {
     "govuk-elements-sass": "^1.2.1",
-    "govuk_frontend_toolkit": "^4.13.0"
+    "govuk_frontend_toolkit": "^4.13.0",
+    "trade_elements": "0.0.3"
   }
 }

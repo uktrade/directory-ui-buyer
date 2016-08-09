@@ -1,62 +1,64 @@
-/*@import "govuk-elements";*/
-@import "elements";
-@import "grid_layout";
+$asset-path: '../';
 
-#content {
-  @extend %site-width-container;
+@import 'trade';
 
-  .exporting-logo {
-  	margin-top: 30px;
-  }
+ul, li {
+    list-style: none;
 }
 
 .data-form {
-	.form-control {
-		width: 100%;
-		max-width: 500px;
-	}
+  .form-control {
+    width: 100%;
+    max-width: 500px;
+  }
 
-	.radio-group {
-		overflow: hidden;
-	}
+  .radio-group {
+    overflow: hidden;
+  }
 
 
-	.save-button {
-		margin-top: 30px;
-	}
+  .save-button {
+    margin: 30px 0;
+  }
 }
 
 .form-group {
-	.subfield {
-		input {
-			width: 20%;
-		}
+  .subfield {
+    input {
+      width: 20%;
+    }
 
-		.suffix {
-			font-weight: bold;
-		}
-	}
+    .suffix {
+      font-weight: bold;
+    }
+  }
 
-	&.postcode {
+  &.postcode {
 
-		input {
+    input {
+      width: 8em;
+      max-width: 100%;
+    }
+  }
 
-			width: 8em;
-			max-width: 100%;
-		}
-	}
-
-	&.contact-number {
-
-		input {
-
-			width: 11em;
-			max-width: 100%;
-		}
-	}
+  &.contact-number {
+    input {
+      width: 11em;
+      max-width: 100%;
+    }
+  }
 }
 
-.list-roman {
-	list-style-type: lower-roman;
-	padding-left: 20px;
+.list-inset {
+  list-style-type: circle;
+  margin-left: 2.5em;
+}
+
+.grid-row.grid-row--great {
+    background: #F2EEE8;
+    margin-top: 30px;
+}
+
+.exporting-logo {
+    margin-bottom: 30px;
 }
