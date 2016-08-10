@@ -2,174 +2,180 @@
 {% load staticfiles %}
 
 {% block content %}
+	<div class="grid-row grid-row--great">
+		<div class="column-two-thirds">
+			{% if form.errors %}
+				<div class="error-summary" role="group" aria-labelledby="error-summary-heading" tabindex="-1">
 
-    <div class="grid-row grid-row--great">
-        <div class="column-two-thirds">
-        	{% if form.errors %}
-        	<div class="error-summary" role="group" aria-labelledby="error-summary-heading" tabindex="-1">
+					<h1 class="heading-medium error-summary-heading" id="error-summary-heading">
+						There was an error submitting your request, please check below.
+					</h1>
 
-        		<h1 class="heading-medium error-summary-heading" id="error-summary-heading">
-        			There was an error submitting your request, please check below.
-        		</h1>
+					<ul class="error-summary-list">
+						{% if form.contact_name.errors %}
+							<li><a href="#contact-name-group">Please check your name</a></li>
+						{% endif %}
+						{% if form.email_address1.errors %}
+							<li><a href="#email-address-group">Please check your email address</a></li>
+						{% endif %}
+						{% if form.email_address2.errors %}
+							<li><a href="#confirm-email-group">Please check your confirmation email address</a></li>
+						{% endif %}
+						{% if form.company_name.errors %}
+							<li><a href="#company-name-group">Please check your company name</a></li>
+						{% endif %}
+						{% if form.website.errors %}
+							<li><a href="#website-group">Please check your company website</a></li>
+						{% endif %}
+						{% if form.exporting.errors %}
+							<li><a href="#exporting-header">Please say whether you are currently exporting</a></li>
+						{% endif %}
+						{% if form.agree_terms.errors %}
+							<li><a href="#understand-label">Please agree to the terms</a></li>
+						{% endif %}
+					</ul>
 
-        		<ul class="error-summary-list">
-        			{% if form.contact_name.errors %}
-        				<li><a href="#contact-name-group">Please check your name</a></li>
-        			{% endif %}
-        			{% if form.email_address1.errors %}
-        				<li><a href="#email-address-group">Please check your email address</a></li>
-        			{% endif %}
-        			{% if form.email_address2.errors %}
-        				<li><a href="#confirm-email-group">Please check your confirmation email address</a></li>
-        			{% endif %}
-        			{% if form.company_name.errors %}
-        				<li><a href="#company-name-group">Please check your company name</a></li>
-        			{% endif %}
-        			{% if form.website.errors %}
-        				<li><a href="#website-group">Please check your company website</a></li>
-        			{% endif %}
-        			{% if form.exporting.errors %}
-        				<li><a href="#exporting-header">Please say whether you are currently exporting</a></li>
-        			{% endif %}
-        			{% if form.agree_terms.errors %}
-        				<li><a href="#understand-label">Please agree to the terms</a></li>
-        			{% endif %}
-        		</ul>
+				</div>
+			{% endif %}
 
-        	</div>
-        	{% endif %}
+			<h1 class="heading-xlarge">Request to join the UK Exporter Directory</h1>
 
-        	<h1 class="heading-xlarge">Request to join the UK Exporter Directory</h1>
-
-            <a href="https://www.exportingisgreat.gov.uk/">
+			<a href="https://www.exportingisgreat.gov.uk/">
 				<img class="exporting-logo" src="{% static "images/exporting-is-great-logo.png" %}" alt="Exporting is Great" height="100">
 			</a>
 
-            <p class="lede">
-        		The UK Exporter Directory will allow buyers worldwide to search for UK Businesses who export goods or services.
-        	</p>
-        	<p>
-        		Use this form to register your company's interest in joining the UK Exporter Directory, which is currently under development.
-        	</p>
+			<p class="lede">
+				The UK Exporter Directory will allow buyers worldwide to search for UK businesses who export goods or services.
+			</p>
+			<p>
+				Use this form to register your company's interest in joining the UK Exporter Directory, which is currently under development.
+			</p>
 
-        	<h2 class="heading-large">About you</h2>
-        	<form action="/" method="POST" class="data-form" id="data-form">
+			<form action="/" method="POST" class="data-form" id="data-form">
+				<h2 class="heading-large">About you</h2>
+				<fieldset>
+					<legend class="visually-hidden">About you</legend>
 
-        		<fieldset>
-        			<legend class="visually-hidden">About you</legend>
+					<div class="form-group{% if form.contact_name.errors %} error{% endif %}" id="contact-name-group">
+						<label class="form-label" for="contact-name">
+							Your name
+							{% include 'label-error.html' with field=form.contact_name %}
+						</label>
+						<input class="form-control" id="contact-name" type="text" name="contact_name" value="{{ form.contact_name.value|default_if_none:"" }}">
+					</div>
 
-        			<div class="form-group{% if form.contact_name.errors %} error{% endif %}" id="contact-name-group">
-        				<label class="form-label" for="contact-name">
-        					Your name
-        					{% include 'label-error.html' with field=form.contact_name %}
-        				</label>
-        				<input class="form-control" id="contact-name" type="text" name="contact_name" value="{{ form.contact_name.value|default_if_none:"" }}">
-        			</div>
+					<div class="form-group{% if form.email_address1.errors %} error{% endif %}" id="email-address-group">
+						<label class="form-label" for="email-address">
+							Email address
+							{% include 'label-error.html' with field=form.email_address1 %}
+						</label>
+						<input class="form-control" id="email-address" type="text" name="email_address1" autocorrect="off" autocapitalize="none" value="{{ form.email_address1.value|default_if_none:"" }}">
+					</div>
 
-        			<div class="form-group{% if form.email_address1.errors %} error{% endif %}" id="email-address-group">
-        				<label class="form-label" for="email-address">
-        					Email address
-        					{% include 'label-error.html' with field=form.email_address1 %}
-        				</label>
-        				<input class="form-control" id="email-address" type="text" name="email_address1" autocorrect="off" autocapitalize="none" value="{{ form.email_address1.value|default_if_none:"" }}">
-        			</div>
+					<div class="form-group{% if form.email_address2.errors %} error{% endif %}" id="confirm-email-group">
+						<label class="form-label" for="confirm-email">
+							Confirm email address
+							{% include 'label-error.html' with field=form.email_address2 %}
+						</label>
+						<input class="form-control" id="confirm-email" type="text" name="email_address2" autocorrect="off" autocapitalize="none" value="{{ form.email_address2.value|default_if_none:"" }}">
+					</div>
 
-        			<div class="form-group{% if form.email_address2.errors %} error{% endif %}" id="confirm-email-group">
-        				<label class="form-label" for="confirm-email">
-        					Confirm email address
-        					{% include 'label-error.html' with field=form.email_address2 %}
-        				</label>
-        				<input class="form-control" id="confirm-email" type="text" name="email_address2" autocorrect="off" autocapitalize="none" value="{{ form.email_address2.value|default_if_none:"" }}">
-        			</div>
+					<div class="form-group contact-number" id="mobile-group">
+						<label class="form-label" for="mobile">
+							Phone number (optional)
+							{% include 'label-error.html' with field=form.phone_number %}
+						</label>
+						<input class="form-control" id="mobile" type="text" name="phone_number" value="{{ form.phone_number.value|default_if_none:"" }}">
+					</div>
 
-        			<div class="form-group contact-number" id="mobile-group">
-        				<label class="form-label" for="mobile">
-        					Phone number (optional)
-        					{% include 'label-error.html' with field=form.phone_number %}
-        				</label>
-        				<input class="form-control" id="mobile" type="text" name="phone_number" value="{{ form.phone_number.value|default_if_none:"" }}">
-        			</div>
+				</fieldset>
 
-        		</fieldset>
+				<h2 class="heading-large">About your company</h2>
+				<fieldset>
+					<legend class="visually-hidden">About your company</legend>
 
+					<div class="form-group{% if form.company_name.errors %} error{% endif %}" id="company-name-group">
+						<label class="form-label" for="company-name">
+							Company name
+							{% include 'label-error.html' with field=form.company_name %}
+						</label>
+						<input class="form-control" id="company-name" type="text" name="company_name" value="{{ form.company_name.value|default_if_none:"" }}">
+					</div>
 
+					<div class="form-group{% if form.website.errors %} error{% endif %}" id="website-group">
+						<label class="form-label" for="website">
+							Company website
+							{% include 'label-error.html' with field=form.website %}
+						</label>
+						<input class="form-control" id="website" type="text" name="website" autocorrect="off" autocapitalize="none" value="{{ form.website.value|default_if_none:"" }}">
+					</div>
+				</fieldset>
 
-        		<h2 class="heading-large">About your company</h2>
+				<h3 class="heading-medium" id="exporting-header">Is your company currently exporting?</h3>
+				<div class="radio-group">
+					<div class="form-group{% if form.exporting.errors %} error{% endif %}">
 
-        		<fieldset>
-        			<legend class="visually-hidden">About your company</legend>
+						<fieldset class="inline">
+							<legend class="visually-hidden">Currently Exporting</legend>
+							{% include 'label-error.html' with field=form.exporting %}
 
-        			<div class="form-group{% if form.company_name.errors %} error{% endif %}" id="company-name-group">
-        				<label class="form-label" for="company-name">
-        					Company name
-        					{% include 'label-error.html' with field=form.company_name %}
-        				</label>
-        				<input class="form-control" id="company-name" type="text" name="company_name" value="{{ form.company_name.value|default_if_none:"" }}">
-        			</div>
+							<label class="block-label" for="currently-exporting-yes">
+								<input id="currently-exporting-yes" type="radio" name="exporting" value="True"{% if form.exporting.value == 'True' %} checked{% endif %}>
+								Yes
+							</label>
+							<label class="block-label" for="currently-exporting-no">
+								<input id="currently-exporting-no" type="radio" name="exporting" value="False"{% if form.exporting.value == 'False' %} checked{% endif %}>
+								No
+							</label>
+						</fieldset>
+					</div>
+				</div>
 
-        			<div class="form-group{% if form.website.errors %} error{% endif %}" id="website-group">
-        				<label class="form-label" for="website">
-        					Company website
-        					{% include 'label-error.html' with field=form.website %}
-        				</label>
-        				<input class="form-control" id="website" type="text" name="website" autocorrect="off" autocapitalize="none" value="{{ form.website.value|default_if_none:"" }}">
-        			</div>
-        		</fieldset>
+				<fieldset>
+					<h3 class="heading-medium">Where did you hear about the directory? (optional)</h3>
+					<legend class="visually-hidden">Where did you hear about the directory? (optional)</legend>
+					<div class="form-group">
+						<label class="heading-medium visually-hidden">Select how you heard about us.</label>
+						{{ form.marketing_source }}
+					</div>
+					<div id="marketing_source_bank" class="form-group">
+						<label class="form-label" for="id_marketing_source_bank">
+							Bank name
+							{% include 'label-error.html' with field=form.marketing_source_bank %}
+						</label>
+						{{ form.marketing_source_bank }}
+					</div>
+					<div id="marketing_source_other" class="form-group">
+						<label class="form-label" for="id_marketing_source_other">
+							Other
+							{% include 'label-error.html' with field=marketing_source_other %}
+						</label>
+						{{ form.marketing_source_other }}
+					</div>
+				</fieldset>
 
-        		<h3 class="heading-medium" id="exporting-header">Is your company currently exporting?</h3>
+				<fieldset>
+					<legend class="visually-hidden">Agreement</legend>
+					<h2 class="heading-large">Agreement</h2>
+					<p>Your application for registration will be dealt with in line with the Department for International Trade’s <a href="/terms_and_conditions">terms of use and privacy statement</a>.</p>
+					<p>The Department for International Trade will contact you with details about the next steps once it has considered your application. This will include news about the planned launch of the directory, which is currently under construction.</p>
 
-        		<div class="radio-group">
-        		<div class="form-group{% if form.exporting.errors %} error{% endif %}">
+					<div class="form-group{% if form.agree_terms.errors %} error{% endif %}">
+						{% include 'label-error.html' with field=form.agree_terms %}
+						<label class="block-label" for="understand" id="understand-label">
+							<input id="understand" name="agree_terms" type="checkbox" value="True"{% if form.agree_terms.value == True %} checked{% endif %}>
+							I understand the terms of use, I’m happy to submit my information and to be contacted about my application and the development of the directory
+						</label>
+					</div>
+					<label class="block-label" for="keep-informed">
+						<input id="keep-informed" name="opt_in" type="checkbox" value="agree"{% if form.opt_in.value == True %} checked{% endif %}>
+						Tick this box to receive messages about Department for International Trade’s other campaigns and services to support UK exporters (optional)
+					</label>
+				</fieldset>
 
-        			<fieldset class="inline">
-
-        				<legend class="visually-hidden">Currently Exporting</legend>
-
-        				{% include 'label-error.html' with field=form.exporting %}
-
-        				<label class="block-label" for="currently-exporting-yes">
-        					<input id="currently-exporting-yes" type="radio" name="exporting" value="True"{% if form.exporting.value == 'True' %} checked{% endif %}>
-        					Yes
-        				</label>
-        				<label class="block-label" for="currently-exporting-no">
-        					<input id="currently-exporting-no" type="radio" name="exporting" value="False"{% if form.exporting.value == 'False' %} checked{% endif %}>
-        					No
-        				</label>
-
-        			</fieldset>
-        		</div>
-        		</div>
-
-        			<fieldset>
-
-        				<legend class="visually-hidden">
-        					Our terms
-        				</legend>
-
-
-        				<p>Your application for registration will be dealt with in line with the Department for International Trade’s <a href="/terms_and_conditions">terms of use and privacy statement</a>.</p>
-
-        				<p>The Department for International Trade will contact you with details about the next steps once it has considered your application. This may include news about the planned launch of the directory, which is currently under construction.</p>
-
-        				<div class="form-group{% if form.agree_terms.errors %} error{% endif %}">
-        					{% include 'label-error.html' with field=form.agree_terms %}
-        					<label class="block-label" for="understand" id="understand-label">
-        					  <input id="understand" name="agree_terms" type="checkbox" value="True"{% if form.agree_terms.value == True %} checked{% endif %}>
-        					  I understand the terms of use, I’m happy to submit my information and to be contacted about my application and the development of the directory
-        					</label>
-        				</div>
-
-        				<label class="block-label" for="keep-informed">
-        				  <input id="keep-informed" name="opt_in" type="checkbox" value="agree"{% if form.opt_in.value == True %} checked{% endif %}>
-        				  Tick this box to receive messages about Department for International Trade’s other campaigns and services to support UK exporters (optional)
-        				</label>
-
-        			</fieldset>
-
-
-        		<input class="button save-button" type="submit" value="Submit">
-        	</form>
-        </div>
-    </div>
-
+				<input class="button save-button" type="submit" value="Submit">
+			</form>
+		</div>
+	</div>
+	<script src="{% static 'javascripts/index.js' %}"></script>
 {% endblock content %}

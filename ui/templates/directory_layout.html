@@ -4,8 +4,13 @@
 
 {% block bodyScripts %}
 
-	<script src="{% static 'vendor/jquery.min.js' %}"></script>
-	<script src="{% static 'govuk-toolkit/js/selection-buttons.js' %}"></script>
+	<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	<!--[if gt IE 9]>
+		<script src="{% static 'govuk-toolkit/js/selection-buttons.js' %}"></script>
+		<script>
+			new GOVUK.SelectionButtons( "label input[type='radio'], label input[type='checkbox']" );
+		</script>
+	<![endif]-->
 	<script src="{% static 'govuk-toolkit/js/analytics.js' %}"></script>
 	<script src="{% static 'govuk-toolkit/js/google-analytics-universal-tracker.js' %}"></script>
 	<script>
@@ -36,9 +41,6 @@
 			// Track initial pageview
 			GOVUK.analytics.trackPageview();
 		})();
-	</script>
-	<script>
-		new GOVUK.SelectionButtons( "label input[type='radio'], label input[type='checkbox']" );
 	</script>
 
 {% endblock bodyScripts %}
