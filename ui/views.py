@@ -36,9 +36,7 @@ class IndexView(CacheMixin, FormView):
     def form_valid(self, form):
         # This method is called when valid form data has been POSTed.
         # It should return an HttpResponse.
-
-        r = self.request.POST
-        json_data = {'data': json.dumps(r)}
+        json_data = {'data': json.dumps(form.cleaned_data)}
         response = rabbit.post(
             settings.DATA_SERVER + '/form/',
             data=json_data,

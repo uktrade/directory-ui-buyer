@@ -15,6 +15,19 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta property="og:image" content="{% static "images/opengraph-image.png" %}">
+		<!--[if lt IE 9]>
+		    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js"></script>
+		    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.min.js"></script>
+		    <script>
+		        document.createElement('header');
+		        document.createElement('nav');
+		        document.createElement('section');
+		        document.createElement('article');
+		        document.createElement('aside');
+		        document.createElement('footer');
+		    </script>
+		    <![endif]-->
+
 
     {% block head %}{% endblock %}
   </head>

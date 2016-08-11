@@ -17,6 +17,24 @@ class ContactForm(forms.Form):
     agree_terms = forms.BooleanField(required=True)
     opt_in = forms.BooleanField(required=False)
 
+    marketing_source = forms.ChoiceField(
+        required=False,
+        choices=[
+            ('', 'Please select an option'),
+            ('Social media', 'Social media'),
+            ('Print or online news', 'Print or online news'),
+            ('Bank', 'Bank (please specify which bank, below)'),
+            ('Department for International Trade', 'Department for International Trade'),
+            ('HMRC email', 'HMRC email'),
+            ('Exporting is GREAT website', 'Exporting is GREAT website'),
+            ('Trade association', 'Trade association'),
+            ('other', 'Other (please specify below)')
+        ],
+        widget=forms.Select(attrs={'class': 'form-control'}),
+    )
+    marketing_source_bank = forms.CharField(required=False, widget=forms.TextInput(attrs={'class': 'form-control'}))
+    marketing_source_other = forms.CharField(required=False, widget=forms.TextInput(attrs={'class': 'form-control'}))
+
     def clean(self):
         cleaned_data = super().clean()
         email1 = cleaned_data.get("email_address1")
