@@ -43,8 +43,7 @@ class IndexView(CacheMixin, FormView):
             request=self.request,
         )
 
-        if not response.status_code == 201:
+        if not response.ok:
             return redirect("problem")
 
         return super().form_valid(form)
-
