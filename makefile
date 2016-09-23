@@ -11,6 +11,6 @@ flake8:
 	flake8 . --exclude=migrations --ignore=E501
 
 pytest: flake8
-	pytest . --cov=. $(pytest_args)
+	export SECRET_KEY=test; pytest . --cov=. $(pytest_args)
 
 .PHONY: build clean test_requirements flake8 pytest
