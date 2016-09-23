@@ -1,0 +1,10 @@
+machine:
+  python:
+    version: 3.5.2
+
+dependencies:
+  override:
+    - make test_requirements
+test:
+  override:
+    - make pytest
