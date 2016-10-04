@@ -1,9 +1,5 @@
-import http
 from unittest import mock
 
-import pytest
-
-from django.contrib.sessions.base_session import AbstractBaseSession
 from django.core.urlresolvers import reverse
 from django.test import override_settings
 
