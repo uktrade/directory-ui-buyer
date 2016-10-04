@@ -30,3 +30,4 @@ urlpatterns = [
         name='register'),
 
 ]
+

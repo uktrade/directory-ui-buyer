@@ -62,3 +62,13 @@ class RegisterView(SessionWizardView):
 
     def done(self, form_list, form_dict):
         return render(self.request, 'registered.html')
+
+
+class EmailConfirmationView(View):
+
+    def get(self, request):
+        if 'identifier' in request.GET:
+            identifier = request.GET['identifier']
+            with api_client.acknowledge_email_confirmed(identifier=identifier):
+                return redirect('email-confirm-success')
+        return redirect('email-confirm-failure')
