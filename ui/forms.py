@@ -48,3 +48,29 @@ class ContactForm(forms.Form):
                     'Email addresses do not match',
                 )
         return cleaned_data
+
+
+class CompanyForm(forms.Form):
+    company_number = forms.CharField(label='Company number')
+    company_email = forms.EmailField()
+    company_email_confirmed = forms.EmailField()
+    terms_agreed = forms.BooleanField()
+
+    def clean_company_email_confirmed(self):
+        email = self.cleaned_data.get('company_email')
+        email_confirmed = self.cleaned_data.get('company_email_confirmed')
+        if email and email != email_confirmed:
+            raise forms.ValidationError('Your emails must match')
+        return email_confirmed
+
+
+class PasswordForm(forms.Form):
+    password = forms.CharField(widget=forms.PasswordInput())
+    password_confirmed = forms.CharField(widget=forms.PasswordInput())
+
+    def clean_password_confirmed(self):
+        password = self.cleaned_data.get('password')
+        password_confirmed = self.cleaned_data.get('password_confirmed')
+        if password and password != password_confirmed:
+            raise forms.ValidationError('Your passwords must match')
+        return password_confirmed

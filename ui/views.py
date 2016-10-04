@@ -1,13 +1,17 @@
 import json
+import os
+
+from formtools.wizard.views import SessionWizardView
 
 from django.conf import settings
-from django.shortcuts import redirect
-from django.core.urlresolvers import reverse_lazy
-from django.views.generic import TemplateView, FormView
+from django.core.urlresolvers import reverse, reverse_lazy
+from django.shortcuts import render, redirect
+from django.template.response import TemplateResponse
 from django.utils.cache import patch_response_headers
+from django.views.generic import TemplateView, FormView
 
 from alice.helpers import rabbit
-from ui.forms import ContactForm
+from ui import forms
 
 
 class CacheMixin(object):
@@ -30,7 +34,7 @@ class CachableTemplateView(CacheMixin, TemplateView):
 
 class IndexView(CacheMixin, FormView):
     template_name = "index.html"
-    form_class = ContactForm
+    form_class = forms.ContactForm
     success_url = reverse_lazy("thanks")
 
     def form_valid(self, form):
@@ -47,3 +51,16 @@ class IndexView(CacheMixin, FormView):
             return redirect("problem")
 
         return super().form_valid(form)
+
+
+class RegisterView(SessionWizardView):
+    form_list = (
+        forms.CompanyForm,
+        forms.PasswordForm,
+    )
+
+    def get_template_names(self):
+        return ['step1.html', 'step2.html']
+
+    def done(self, form_list, form_dict):
+        return render(self.request, 'registered.html')
