@@ -51,7 +51,11 @@ class ContactForm(forms.Form):
 
 
 class CompanyForm(forms.Form):
-    company_number = forms.CharField(label='Company number')
+    company_number = forms.CharField(
+        label='Company number',
+        help_text=('This is the 8-digit number on the company certificate of '
+                   'incorporation.'),
+    )
     company_email = forms.EmailField()
     company_email_confirmed = forms.EmailField()
     terms_agreed = forms.BooleanField()
