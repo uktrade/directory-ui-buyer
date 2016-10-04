@@ -55,8 +55,8 @@ class IndexView(CacheMixin, FormView):
 
 class RegisterView(SessionWizardView):
     form_list = (
-        forms.RegisterStepOne,
-        forms.RegisterStepTwo,
+        forms.CompanyForm,
+        forms.PasswordForm,
     )
 
     def get_template_names(self):

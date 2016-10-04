@@ -50,7 +50,7 @@ class ContactForm(forms.Form):
         return cleaned_data
 
 
-class RegisterStepOne(forms.Form):
+class CompanyForm(forms.Form):
     company_number = forms.CharField(label='Company number')
     company_email = forms.EmailField()
     company_email_confirmed = forms.EmailField()
@@ -64,7 +64,7 @@ class RegisterStepOne(forms.Form):
         return email_confirmed
 
 
-class RegisterStepTwo(forms.Form):
+class PasswordForm(forms.Form):
     password = forms.CharField(widget=forms.PasswordInput())
     password_confirmed = forms.CharField(widget=forms.PasswordInput())
 
