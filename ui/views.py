@@ -1,12 +1,10 @@
 import json
-import os
 
 from formtools.wizard.views import SessionWizardView
 
 from django.conf import settings
-from django.core.urlresolvers import reverse, reverse_lazy
+from django.core.urlresolvers import reverse_lazy
 from django.shortcuts import render, redirect
-from django.template.response import TemplateResponse
 from django.utils.cache import patch_response_headers
 from django.views.generic import TemplateView, FormView
 

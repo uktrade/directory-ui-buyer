@@ -28,7 +28,6 @@ def test_step_one_accepts_valid_data():
     assert form.is_valid() is True
 
 
-
 def test_step_one_rejects_non_agreed_terms():
     form = forms.CompanyForm(data={
         'terms_agreed': ''
@@ -63,4 +62,3 @@ def test_step_two_rejects_different_passwords():
     })
     assert form.is_valid() is False
     assert 'password_confirmed' in form.errors
-
