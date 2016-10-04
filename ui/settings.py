@@ -37,6 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     "django_extensions",
     "raven.contrib.django.raven_compat",
+    "django.contrib.sessions",
+    "formtools",
     "ui",
 ]
 
@@ -45,6 +47,7 @@ MIDDLEWARE_CLASSES = [
     'whitenoise.middleware.WhiteNoiseMiddleware',
     # 'ui.middleware.SSLRedirectMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
 ]
 
 ROOT_URLCONF = 'ui.urls'

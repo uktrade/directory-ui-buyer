@@ -1,10 +1,13 @@
+import http
 from unittest import mock
 
+import pytest
+
+from django.contrib.sessions.base_session import AbstractBaseSession
 from django.core.urlresolvers import reverse
-from django.test import RequestFactory, override_settings
+from django.test import override_settings
 
 from ui.views import IndexView
-
 
 VALID_REQUEST_DATA = {
     "contact_name": "Test",
@@ -23,10 +26,9 @@ VALID_REQUEST_DATA = {
 
 
 @override_settings(DATA_SERVER='test')
-def test_index_view_create():
-    request_factory = RequestFactory()
+def test_index_view_create(rf):
     view = IndexView.as_view()
-    request = request_factory.post('/', VALID_REQUEST_DATA)
+    request = rf.post('/', VALID_REQUEST_DATA)
 
     response_mock = mock.Mock(status_code=202, ok=True)
     with mock.patch('alice.helpers.rabbit.post', return_value=response_mock):
