@@ -7,9 +7,11 @@ from django.core.urlresolvers import reverse_lazy
 from django.shortcuts import render, redirect
 from django.utils.cache import patch_response_headers
 from django.views.generic import TemplateView, FormView
+from django.views.generic.base import View
 
 from alice.helpers import rabbit
 from ui import forms
+from ui.clients.directory_api import client as directory_client
 
 
 class CacheMixin(object):
@@ -69,6 +71,9 @@ class EmailConfirmationView(View):
     def get(self, request):
         if 'identifier' in request.GET:
             identifier = request.GET['identifier']
-            with api_client.acknowledge_email_confirmed(identifier=identifier):
-                return redirect('email-confirm-success')
-        return redirect('email-confirm-failure')
+            try:
+                directory_client.acknowledge_email_confirmed(identifier)
+            except directory_client.RemoteError:
+                return redirect('confirm-email-error')
+            return redirect('confirm-email-success')
+        return redirect('confirm-email-error')

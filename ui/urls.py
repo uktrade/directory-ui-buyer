@@ -3,8 +3,9 @@ from django.views.decorators.cache import cache_page
 
 from ui.views import (
     CachableTemplateView,
-    RegisterView,
+    EmailConfirmationView,
     IndexView,
+    RegisterView,
 )
 
 
@@ -29,5 +30,20 @@ urlpatterns = [
         RegisterView.as_view(),
         name='register'),
 
-]
+    url(r'^confirm-email$',
+        EmailConfirmationView.as_view(),
+        name='confirm-email'),
 
+    url(r'^confirm-email/error$',
+        cache_me(CachableTemplateView.as_view(
+            template_name='email-confirm-error.html'
+        )),
+        name='confirm-email-error'),
+
+    url(r'^confirm-email/success$',
+        cache_me(CachableTemplateView.as_view(
+            template_name='email-confirm-success.html'
+        )),
+        name='confirm-email-success'),
+
+]
