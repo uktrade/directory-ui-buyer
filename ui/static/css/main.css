@@ -4163,7 +4163,7 @@ body h2 {
 }
 /* line 145, ../sass/main.scss */
 .container form.connections-platform-form .input-field-container input {
-  border: 0;
+  border: 3px solid #ffffff;
   border-radius: 0;
   font-size: 16px;
   height: 30px;
@@ -4171,12 +4171,20 @@ body h2 {
   padding: 5px 10px;
   width: calc(100% - 20px);
 }
-/* line 156, ../sass/main.scss */
+/* line 153, ../sass/main.scss */
+.container form.connections-platform-form .input-field-container input:focus {
+  border: 3px solid #ffbf47;
+}
+/* line 159, ../sass/main.scss */
+.container form.connections-platform-form .input-field-container ul li {
+  color: #ffbf47;
+}
+/* line 165, ../sass/main.scss */
 .container form.connections-platform-form .register-btn-container {
   margin: 20px 0;
   text-align: center;
 }
-/* line 159, ../sass/main.scss */
+/* line 168, ../sass/main.scss */
 .container form.connections-platform-form .register-btn-container input.register-btn {
   background: #888888;
   border: 0;
@@ -4184,13 +4192,13 @@ body h2 {
   height: 60px;
   width: 150px;
 }
-/* line 168, ../sass/main.scss */
+/* line 177, ../sass/main.scss */
 .container form.connections-platform-form .steps {
   margin: 20px auto;
   text-align: center;
   width: 100%;
 }
-/* line 172, ../sass/main.scss */
+/* line 181, ../sass/main.scss */
 .container form.connections-platform-form .steps .step {
   background: #ffffff;
   border: 1px solid #ffffff;
@@ -4200,22 +4208,22 @@ body h2 {
   margin: 0 5px;
   width: 15px;
 }
-/* line 184, ../sass/main.scss */
+/* line 193, ../sass/main.scss */
 .container form.connections-platform-form .steps .step.not-active {
   background: transparent;
 }
 
 @media (max-width: 992px) {
-  /* line 194, ../sass/main.scss */
+  /* line 203, ../sass/main.scss */
   .container {
     padding: 0 20px;
     width: 100%;
   }
-  /* line 197, ../sass/main.scss */
+  /* line 206, ../sass/main.scss */
   .container .registration-intro {
     width: calc(100% - 40px);
   }
-  /* line 201, ../sass/main.scss */
+  /* line 210, ../sass/main.scss */
   .container form.connections-platform-form {
     height: 100%;
     margin: 40px 0 0;

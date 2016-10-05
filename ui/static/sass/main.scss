@@ -143,13 +143,22 @@ body {
         }
       
         input {
-          border: 0;
+          border: 3px solid #ffffff;
           border-radius: 0;
           font-size: 16px;
           height: 30px;
           margin: 0 0 40px;
           padding: 5px 10px;
           width: calc(100% - 20px);
+          &:focus {
+            border: 3px solid #ffbf47;
+          }
+        }
+
+        ul {
+          li {
+            color: #ffbf47;
+          }
         }
       }
 
