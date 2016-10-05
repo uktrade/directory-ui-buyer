@@ -4,6 +4,7 @@ from formtools.wizard.views import SessionWizardView
 
 from django.conf import settings
 from django.core.urlresolvers import reverse_lazy
+from django.template.response import TemplateResponse
 from django.shortcuts import render, redirect
 from django.utils.cache import patch_response_headers
 from django.views.generic import TemplateView, FormView
@@ -67,13 +68,15 @@ class RegisterView(SessionWizardView):
 
 
 class EmailConfirmationView(View):
+    success_template = 'confirm-email-success.html'
+    failure_template = 'confirm-email-error.html'
 
     def get(self, request):
-        if 'identifier' in request.GET:
-            identifier = request.GET['identifier']
-            try:
-                directory_client.acknowledge_email_confirmed(identifier)
-            except directory_client.RemoteError:
-                return redirect('confirm-email-error')
-            return redirect('confirm-email-success')
-        return redirect('confirm-email-error')
+        if 'identifier' not in request.GET:
+            return TemplateResponse(request, self.failure_template)
+        identifier = request.GET['identifier']
+        try:
+            directory_client.acknowledge_email_confirmed(identifier=identifier)
+        except directory_client.RemoteError:
+            return TemplateResponse(request, self.failure_template)
+        return TemplateResponse(request, self.success_template)

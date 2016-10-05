@@ -34,16 +34,4 @@ urlpatterns = [
         EmailConfirmationView.as_view(),
         name='confirm-email'),
 
-    url(r'^confirm-email/error$',
-        cache_me(CachableTemplateView.as_view(
-            template_name='email-confirm-error.html'
-        )),
-        name='confirm-email-error'),
-
-    url(r'^confirm-email/success$',
-        cache_me(CachableTemplateView.as_view(
-            template_name='email-confirm-success.html'
-        )),
-        name='confirm-email-success'),
-
 ]

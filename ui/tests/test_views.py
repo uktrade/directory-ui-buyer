@@ -39,8 +39,8 @@ def test_email_confirm_missing_identifier(rf):
     view = EmailConfirmationView.as_view()
     request = rf.get(reverse('confirm-email'))
     response = view(request)
-    assert response.status_code == http.client.FOUND
-    assert response.get('Location') == reverse('confirm-email-error')
+    assert response.status_code == http.client.OK
+    assert response.template_name == EmailConfirmationView.failure_template
 
 
 @mock.patch.object(client, 'acknowledge_email_confirmed',
@@ -50,8 +50,8 @@ def test_email_confirm_invalid_identifier(mock_acknowledge_email_confirmed, rf):
     request = rf.get(reverse('confirm-email'), {'identifier': 123})
     response = view(request)
     assert mock_acknowledge_email_confirmed.called_with(123)
-    assert response.status_code == http.client.FOUND
-    assert response.get('Location') == reverse('confirm-email-error')
+    assert response.status_code == http.client.OK
+    assert response.template_name == EmailConfirmationView.failure_template
 
 
 @mock.patch.object(client, 'acknowledge_email_confirmed')
@@ -60,5 +60,5 @@ def test_email_confirm_valid_identifier(mock_acknowledge_email_confirmed, rf):
     request = rf.get(reverse('confirm-email'), {'identifier': 123})
     response = view(request)
     assert mock_acknowledge_email_confirmed.called_with(123)
-    assert response.status_code == http.client.FOUND
-    assert response.get('Location') == reverse('confirm-email-success')
+    assert response.status_code == http.client.OK
+    assert response.template_name == EmailConfirmationView.success_template
