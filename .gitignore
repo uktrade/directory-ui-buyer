@@ -93,3 +93,6 @@ db.sqlite3
 Network Trash Folder
 Temporary Items
 .apdisk
+.sass-cache/
+.venv/
+ui/staticfiles/
