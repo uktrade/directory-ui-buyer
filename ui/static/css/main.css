@@ -4230,6 +4230,10 @@ body h2 {
     padding: 0 20px;
     width: calc(100% - 80px);
   }
+  /* line 216, ../sass/main.scss */
+  .container form.connections-platform-form .register-btn-container input.register-btn {
+    width: 50%;
+  }
 }
 
 /*# sourceMappingURL=main.css.map */

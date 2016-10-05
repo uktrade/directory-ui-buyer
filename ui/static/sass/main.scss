@@ -212,6 +212,11 @@ body {
         margin: 40px 0 0;
         padding: 0 20px;
         width: calc(100% - 80px);
+        .register-btn-container {
+          input.register-btn {
+            width: 50%;
+          }
+        }
       }
     }
   }
