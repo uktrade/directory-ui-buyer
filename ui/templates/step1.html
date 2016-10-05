@@ -1,1 +1,49 @@
-{{form.as_p}}
+
+{% extends "registration-base.html" %}
+
+{% load i18n %}
+
+{% block head %}
+{{ wizard.form.media }}
+{% endblock %}
+
+{% block formarea %}
+	<form class="connections-platform-form" action="" method="post">
+		<h2>Register</h2>
+		{% csrf_token %}
+		<div class="input-field-container">
+			
+			{{ wizard.management_form }}
+			{% if wizard.form.forms %}
+				{{ wizard.form.management_form }}
+				{% for form in wizard.form.forms %}
+					{{ form }}
+				{% endfor %}
+			{% else %}
+				{{ wizard.form }}
+			{% endif %}
+
+		</div>
+		{% if wizard.steps.prev %}
+			<button name="wizard_goto_step" type="submit" value="{{ wizard.steps.first }}">{% trans "first step" %}</button>
+			<button name="wizard_goto_step" type="submit" value="{{ wizard.steps.prev }}">{% trans "prev step" %}</button>
+		{% endif %}
+		
+		<div class="register-btn-container">
+			<input class="register-btn" type="submit" value="{% trans "Register" %}"/>
+		</div>
+
+		<div class="already-registered">Already registered? <a href="#">Sign in</a></div>
+
+		<div class="steps">
+			<div class="step {{ wizard.steps.step1|yesno:"active,not-active" }}"></div>
+			<div class="step not-active"></div>
+		</div>
+
+		<!--
+		<div>
+			<p>Step {{ wizard.steps.step1 }} of {{wizard.steps.count }}</p>
+		</div>
+		-->
+	</form>
+{% endblock %}
