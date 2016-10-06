@@ -4,12 +4,15 @@ from formtools.wizard.views import SessionWizardView
 
 from django.conf import settings
 from django.core.urlresolvers import reverse_lazy
+from django.template.response import TemplateResponse
 from django.shortcuts import render, redirect
 from django.utils.cache import patch_response_headers
 from django.views.generic import TemplateView, FormView
+from django.views.generic.base import View
 
 from alice.helpers import rabbit
 from ui import forms
+from ui.clients.directory_api import api_client
 
 
 class CacheMixin(object):
@@ -51,7 +54,7 @@ class IndexView(CacheMixin, FormView):
         return super().form_valid(form)
 
 
-class RegisterView(SessionWizardView):
+class RegistrationView(SessionWizardView):
     form_list = (
         forms.CompanyForm,
         forms.PasswordForm,
@@ -62,3 +65,16 @@ class RegisterView(SessionWizardView):
 
     def done(self, form_list, form_dict):
         return render(self.request, 'registered.html')
+
+
+class EmailConfirmationView(View):
+    success_template = 'confirm-email-success.html'
+    failure_template = 'confirm-email-error.html'
+
+    def get(self, request):
+        confirmation_code = request.GET.get('confirmation_code')
+        if confirmation_code and api_client.confirm_email(confirmation_code):
+            template = self.success_template
+        else:
+            template = self.failure_template
+        return TemplateResponse(request, template)
