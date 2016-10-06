@@ -2,7 +2,6 @@ import http
 from unittest import mock
 
 from django.core.urlresolvers import reverse
-from django.test import override_settings
 
 from ui.clients.directory_api import api_client
 from ui.views import EmailConfirmationView
