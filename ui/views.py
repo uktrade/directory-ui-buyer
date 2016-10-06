@@ -58,14 +58,14 @@ class RegistrationView(SessionWizardView):
     form_list = (
         forms.CompanyForm,
         forms.AimsForm,
-        forms.PersonalForm,
+        forms.UserForm,
     )
 
     def get_template_names(self):
         return [
             'company-form.html',
             'aims-form.html',
-            'personal-form',
+            'user-form.html',
         ]
 
     def done(self, form_list, form_dict):

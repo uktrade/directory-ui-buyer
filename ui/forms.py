@@ -1,6 +1,8 @@
 from django import forms
 from django.forms.utils import ErrorList
 
+from ui import constants
+
 
 class ContactForm(forms.Form):
     company_name = forms.CharField(required=True, max_length=255)
@@ -61,17 +63,11 @@ class CompanyForm(forms.Form):
 
 
 class AimsForm(forms.Form):
-    AIMS = (
-        ('', ''),
-        ('ANSWER1', 'Answer 1'),
-        ('ANSWER2', 'Answer 2'),
-        ('OTHER', 'Other')
-    )
-    aim_one = forms.ChoiceField(choices=AIMS)
-    aim_two = forms.ChoiceField(choices=AIMS)
+    aim_one = forms.ChoiceField(choices=constants.AIMS)
+    aim_two = forms.ChoiceField(choices=constants.AIMS)
 
 
-class PersonalForm(forms.Form):
+class UserForm(forms.Form):
     name = forms.CharField(label='Full name')
     email = forms.EmailField(label='Email address')
     password = forms.CharField(widget=forms.PasswordInput())

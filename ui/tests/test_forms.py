@@ -1,4 +1,4 @@
-from ui import forms
+from ui import constants, forms
 
 
 def test_step_one_rejects_missing_data():
@@ -32,8 +32,8 @@ def test_step_one_accepts_valid_data():
 
 def test_step_two_accepts_valid_data():
     form = forms.AimsForm(data={
-        'aim_one': forms.AimsForm.AIMS[1][0],
-        'aim_two': forms.AimsForm.AIMS[2][0],
+        'aim_one': constants.AIMS[1][0],
+        'aim_two': constants.AIMS[2][0],
     })
     assert form.is_valid()
 
@@ -47,7 +47,7 @@ def test_step_two_rejects_no_aims():
 
 
 def test_step_three_rejects_missing_data():
-    form = forms.PersonalForm(data={})
+    form = forms.UserForm(data={})
     assert 'name' in form.errors
     assert 'password' in form.errors
     assert 'terms_agreed' in form.errors
@@ -55,7 +55,7 @@ def test_step_three_rejects_missing_data():
 
 
 def test_step_three_rejects_invalid_email_addresses():
-    form = forms.PersonalForm(data={
+    form = forms.UserForm(data={
         'email': 'johnATjones.com',
     })
     assert form.is_valid() is False
@@ -63,7 +63,7 @@ def test_step_three_rejects_invalid_email_addresses():
 
 
 def test_step_three_accepts_valid_data():
-    form = forms.PersonalForm(data={
+    form = forms.UserForm(data={
         'name': 'John Johnson',
         'password': 'hunter2',
         'terms_agreed': 1,
