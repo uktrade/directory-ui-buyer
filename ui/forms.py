@@ -55,6 +55,8 @@ class CompanyForm(forms.Form):
         label='Company number',
         help_text=('This is the 8-digit number on the company certificate of '
                    'incorporation.'),
+        max_length=8,
+        min_length=8,
     )
 
 
@@ -70,7 +72,7 @@ class AimsForm(forms.Form):
 
 
 class PersonalForm(forms.Form):
-    name = forms.CharField()
+    name = forms.CharField(label='Full name')
+    email = forms.EmailField(label='Email address')
     password = forms.CharField(widget=forms.PasswordInput())
-    email = forms.EmailField()
     terms_agreed = forms.BooleanField()

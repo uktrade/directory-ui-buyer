@@ -7,9 +7,25 @@ def test_step_one_rejects_missing_data():
     assert 'company_number' in form.errors
 
 
+def test_step_one_rejects_too_long_company_number():
+    form = forms.CompanyForm(data={
+        'company_number': '012456789',
+    })
+    assert form.is_valid() is False
+    assert 'company_number' in form.errors
+
+
+def test_step_one_rejects_too_short_company_number():
+    form = forms.CompanyForm(data={
+        'company_number': '0124567',
+    })
+    assert form.is_valid() is False
+    assert 'company_number' in form.errors
+
+
 def test_step_one_accepts_valid_data():
     form = forms.CompanyForm(data={
-        'company_number': 12456,
+        'company_number': '01245678',
     })
     assert form.is_valid() is True
 
