@@ -1,6 +1,7 @@
 $asset-path: '../';
-/*
-  @import 'trade';
+
+  @import 'ukti-template';
+  @import 'trade-elements';
 
   ul, li {
       list-style: none;
@@ -71,7 +72,7 @@ $asset-path: '../';
   .exporting-logo {
       margin-bottom: 30px;
   }
-*/
+
 
 @import url(https://fonts.googleapis.com/css?family=Roboto:400,700,300);.grid-row:after,#content:after,.notice:after,.panel:after,fieldset:after,.form-section:after,.form-group:after,.form-block:after,.breadcrumbs ol:after,#global-header.global-header--govuk .header-wrapper:after,#global-header.global-header--govuk .header-wrapper .header-global:after,#global-header.global-header--govuk .header-wrapper .header-global .header-logo:after,#global-header.global-header--govuk .header-proposition #proposition-link:after,#global-header.global-header--govuk .header-proposition #proposition-links:after,#footer.footer--govuk .footer-meta:after,.tabs.tabs--inline .tabs-nav:after,.fieldvalue:after,.js-radiohide-content:after{content:"";display:block;clear:both}
 #global-header-bar,#global-cookie-message p,#footer.footer--govuk .footer-wrapper{width:960px;margin:0 15px}
