@@ -57,11 +57,16 @@ class IndexView(CacheMixin, FormView):
 class RegistrationView(SessionWizardView):
     form_list = (
         forms.CompanyForm,
-        forms.PasswordForm,
+        forms.AimsForm,
+        forms.UserForm,
     )
 
     def get_template_names(self):
-        return ['step1.html', 'step2.html']
+        return [
+            'company-form.html',
+            'aims-form.html',
+            'user-form.html',
+        ]
 
     def done(self, form_list, form_dict):
         return render(self.request, 'registered.html')

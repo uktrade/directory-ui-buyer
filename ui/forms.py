@@ -1,6 +1,8 @@
 from django import forms
 from django.forms.utils import ErrorList
 
+from ui import constants
+
 
 class ContactForm(forms.Form):
     company_name = forms.CharField(required=True, max_length=255)
@@ -55,26 +57,18 @@ class CompanyForm(forms.Form):
         label='Company number',
         help_text=('This is the 8-digit number on the company certificate of '
                    'incorporation.'),
+        max_length=8,
+        min_length=8,
     )
-    company_email = forms.EmailField()
-    company_email_confirmed = forms.EmailField()
-    terms_agreed = forms.BooleanField()
-
-    def clean_company_email_confirmed(self):
-        email = self.cleaned_data.get('company_email')
-        email_confirmed = self.cleaned_data.get('company_email_confirmed')
-        if email and email != email_confirmed:
-            raise forms.ValidationError('Your emails must match')
-        return email_confirmed
 
 
-class PasswordForm(forms.Form):
+class AimsForm(forms.Form):
+    aim_one = forms.ChoiceField(choices=constants.AIMS)
+    aim_two = forms.ChoiceField(choices=constants.AIMS)
+
+
+class UserForm(forms.Form):
+    name = forms.CharField(label='Full name')
+    email = forms.EmailField(label='Email address')
     password = forms.CharField(widget=forms.PasswordInput())
-    password_confirmed = forms.CharField(widget=forms.PasswordInput())
-
-    def clean_password_confirmed(self):
-        password = self.cleaned_data.get('password')
-        password_confirmed = self.cleaned_data.get('password_confirmed')
-        if password and password != password_confirmed:
-            raise forms.ValidationError('Your passwords must match')
-        return password_confirmed
+    terms_agreed = forms.BooleanField()
