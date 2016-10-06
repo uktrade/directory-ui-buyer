@@ -5,34 +5,7 @@ from django.core.urlresolvers import reverse
 from django.test import override_settings
 
 from ui.clients.directory_api import api_client
-from ui.views import EmailConfirmationView, IndexView
-
-VALID_REQUEST_DATA = {
-    "contact_name": "Test",
-    "marketing_source_bank": "",
-    "website": "example.com",
-    "exporting": "False",
-    "phone_number": "",
-    "marketing_source": "Social media",
-    "opt_in": True,
-    "marketing_s ource_other": "",
-    "email_address1": "test@example.com",
-    "agree_terms": True,
-    "company_name": "Example Limited",
-    "email_address2": "test@example.com"
-}
-
-
-@override_settings(DATA_SERVER='test')
-def test_index_view_create(rf):
-    view = IndexView.as_view()
-    request = rf.post('/', VALID_REQUEST_DATA)
-
-    response_mock = mock.Mock(status_code=202, ok=True)
-    with mock.patch('alice.helpers.rabbit.post', return_value=response_mock):
-        response = view(request)
-
-    assert response.url == reverse('thanks')
+from ui.views import EmailConfirmationView
 
 
 def test_email_confirm_missing_confirmation_code(rf):
