@@ -99,20 +99,25 @@ body {
   }
 
   #content {
+    &.registration-content { max-width: 1200px; }
     padding-bottom: 0;
     .container {
       color: #ffffff;
-      >div {
-        a {
-          color: #007ea3 !important; 
-        }
-        a:hover {
-          color: #33cfff !important;
-        }
+      a.teal {
+        color: #007ea3; 
+      }
+      a.teal:hover {
+        color: #33cfff;
+      }
+      .row-fluid {
         .registration-intro-container {
           margin-top: 140px;
           .registration-intro {
-            padding: 0 20px 40px;
+            background: rgba(0,0,0,0.6);
+            -ms-filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000,endColorstr=#99000000);
+            filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000,endColorstr=#99000000);
+            zoom: 1;
+            padding: 20px;
             .great-britain-logo {
               margin: 0 0 20px;
               max-width: 100px;
@@ -197,17 +202,17 @@ body {
             }
           }
         }
-        &.registered, &.sorry {
-          background: rgba(0,0,0,0.6);
-          -ms-filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000,endColorstr=#99000000);
-          filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000,endColorstr=#99000000);
-          zoom: 1;
-          margin-bottom: 150px;
-          margin-top: 150px;
-          padding: 20px;
-          h1, h2 {
-            margin-bottom: 20px; 
-          }
+      }
+      .registered, .sorry {
+        background: rgba(0,0,0,0.6);
+        -ms-filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000,endColorstr=#99000000);
+        filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000,endColorstr=#99000000);
+        zoom: 1;
+        margin-bottom: 150px;
+        margin-top: 150px;
+        padding: 20px;
+        h1, h2 {
+          margin-bottom: 20px; 
         }
       }
     }
@@ -217,22 +222,49 @@ body {
 @media (max-width: 992px) {
   body {
     #content {
+      margin: 0 20px;
       .container {
         width: 100%;
-        .registration-intro {}
-        form {
-          .connections-platform-form {
-            height: 100%;
-            margin: 40px 0 0;
-            padding: 0 20px;
-            margin: 0 20px;
-            .input-field-container {}
-            .register-btn-container {
-              input.register-btn {
-                width: 50%;
+        .row-fluid {
+          form {
+            .connections-platform-form-container {
+              width: 100%;
+              .connections-platform-form {
+                height: 100%;
+                margin: 40px 0 0;
+                padding: 0 20px;
+                .input-field-container {}
+                .register-btn-container {
+                  input.register-btn {
+                    width: 50%;
+                  }
+                }
               }
             }
           }
+        }
+      }
+    }
+  }
+}
+@media (max-width: 767px) {
+  body {
+    #content {
+      .container {
+        .row-fluid {
+          .registration-intro-container {
+            margin-top: 30px;
+            margin-bottom: 30px;
+          }
+          form {
+            .connections-platform-form {
+              padding-bottom: 50px;
+            }
+          }
+        }
+       .registered, .sorry {
+          margin-top: 30px;
+          margin-bottom: 30px;
         }
       }
     }
