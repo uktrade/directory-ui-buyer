@@ -2,6 +2,11 @@
 __pycache__/
 *.py[cod]
 *$py.class
+.sass-cache/
+.venv/
+ui/staticfiles/
+ui/static/css
+BrowserStackLocal
 
 # C extensions
 *.so
@@ -93,7 +98,3 @@ db.sqlite3
 Network Trash Folder
 Temporary Items
 .apdisk
-.sass-cache/
-.venv/
-ui/staticfiles/
-BrowserStackLocal
