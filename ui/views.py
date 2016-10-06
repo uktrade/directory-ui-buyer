@@ -74,5 +74,7 @@ class EmailConfirmationView(View):
     def get(self, request):
         confirmation_code = request.GET.get('confirmation_code')
         if confirmation_code and api_client.confirm_email(confirmation_code):
-            return TemplateResponse(request, self.success_template)
-        return TemplateResponse(request, self.failure_template)
+            template = self.success_template
+        else:
+            template = self.failure_template
+        return TemplateResponse(request, template)
