@@ -12,7 +12,7 @@ from django.views.generic.base import View
 
 from alice.helpers import rabbit
 from ui import forms
-from ui.clients.directory_api import client as directory_client
+from ui.clients.directory_api import api_client
 
 
 class CacheMixin(object):
@@ -54,7 +54,7 @@ class IndexView(CacheMixin, FormView):
         return super().form_valid(form)
 
 
-class RegisterView(SessionWizardView):
+class RegistrationView(SessionWizardView):
     form_list = (
         forms.CompanyForm,
         forms.PasswordForm,
@@ -72,11 +72,7 @@ class EmailConfirmationView(View):
     failure_template = 'confirm-email-error.html'
 
     def get(self, request):
-        if 'identifier' not in request.GET:
-            return TemplateResponse(request, self.failure_template)
-        identifier = request.GET['identifier']
-        try:
-            directory_client.acknowledge_email_confirmed(identifier=identifier)
-        except directory_client.RemoteError:
-            return TemplateResponse(request, self.failure_template)
-        return TemplateResponse(request, self.success_template)
+        confirmation_code = request.GET.get('confirmation_code')
+        if confirmation_code and api_client.confirm_email(confirmation_code):
+            return TemplateResponse(request, self.success_template)
+        return TemplateResponse(request, self.failure_template)

@@ -1,14 +1,8 @@
-class RemoteError(Exception):
-    pass
-
-
 class DirectoryAPIClient(object):
 
-    RemoteError = RemoteError
-
-    def acknowledge_email_confirmed(self, identifier):
-        # todo: raise a RemoteError if acknowledgement fails
-        pass
+    def confirm_email(self, identifier):
+        # todo: return False if acknowledgement fails
+        return True
 
 
-client = DirectoryAPIClient()
+api_client = DirectoryAPIClient()

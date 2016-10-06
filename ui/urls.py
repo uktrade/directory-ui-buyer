@@ -5,7 +5,7 @@ from ui.views import (
     CachableTemplateView,
     EmailConfirmationView,
     IndexView,
-    RegisterView,
+    RegistrationView,
 )
 
 
@@ -27,7 +27,7 @@ urlpatterns = [
         name="terms"),
 
     url(r'^register$',
-        RegisterView.as_view(),
+        RegistrationView.as_view(),
         name='register'),
 
     url(r'^confirm-email$',
