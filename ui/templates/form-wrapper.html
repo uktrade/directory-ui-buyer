@@ -12,39 +12,35 @@
 {% endblock %}
 
 {% block formarea %}
-	<form class="connections-platform-form" action="" method="post">
-		<h2>Register</h2>
-		{% csrf_token %}
-		<div class="input-field-container">
-			
-			{{ wizard.management_form }}
-			{% if wizard.form.forms %}
-				{{ wizard.form.management_form }}
-				{% for form in wizard.form.forms %}
-					{{ form }}
-				{% endfor %}
-			{% else %}
-				{{ wizard.form }}
-			{% endif %}
-
-		</div>
-		
-		<div class="register-btn-container">
-			<input class="register-btn" type="submit" value="{% trans "Register" %}"/>
-		</div>
-
-		<div class="already-registered">Already registered? <a href="#">Sign in</a></div>
-
-		<div class="steps">
-			{% for step in wizard.steps.all %}
-				{% if wizard.steps.current == step %}
-					<span>&#9679;</span>
+	<form class="span5" action="" method="post">
+		<div class="connections-platform-form">
+			<h2>Register</h2>
+			{% csrf_token %}
+			<div class="input-field-container">
+				{{ wizard.management_form }}
+				{% if wizard.form.forms %}
+					{{ wizard.form.management_form }}
+					{% for form in wizard.form.forms %}
+						{{ form }}
+					{% endfor %}
 				{% else %}
-					<span>&#9675;</span>
+					{{ wizard.form }}
 				{% endif %}
-			{% endfor %}
-
+			</div>
+			<div class="register-btn-container">
+				<input class="register-btn" type="submit" value="{% trans "Register" %}"/>
+			</div>
+			<div class="already-registered">Already registered? <a href="#">Sign in</a></div>
+			<div class="steps">
+				{% for step in wizard.steps.all %}
+					{% if wizard.steps.current == step %}
+						<span>&#9679;</span>
+					{% else %}
+						<span>&#9675;</span>
+					{% endif %}
+				{% endfor %}
+			</div>
 		</div>
-
+		<div class="clearfix"></div>
 	</form>
 {% endblock %}

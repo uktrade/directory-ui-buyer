@@ -1,77 +1,87 @@
 $asset-path: '../';
 
-  @import 'ukti-template';
-  @import 'trade-elements';
+@import 'ukti-template';
+@import 'trade-elements';
 
-  ul, li {
-      list-style: none;
+ul, li {
+    list-style: none;
+}
+
+.data-form {
+  .form-control {
+    width: 100%;
+    max-width: 500px;
   }
 
-  .data-form {
-    .form-control {
-      width: 100%;
-      max-width: 500px;
-    }
-
-    .radio-group {
-      overflow: hidden;
-    }
-
-
-    .save-button {
-      background: #00549F;
-      margin: 30px 0;
-    }
+  .radio-group {
+    overflow: hidden;
   }
 
-  .form-group {
-    .subfield {
-      input {
-        width: 20%;
-      }
 
-      .suffix {
-        font-weight: bold;
-      }
+  .save-button {
+    background: #00549F;
+    margin: 30px 0;
+  }
+}
+
+.form-group {
+  .subfield {
+    input {
+      width: 20%;
     }
 
-    &.postcode {
-
-      input {
-        width: 8em;
-        max-width: 100%;
-      }
-    }
-
-    &.contact-number {
-      input {
-        width: 11em;
-        max-width: 100%;
-      }
+    .suffix {
+      font-weight: bold;
     }
   }
 
-  .list-inset {
-    list-style-type: circle;
-    margin-left: 2.5em;
+  &.postcode {
+
+    input {
+      width: 8em;
+      max-width: 100%;
+    }
   }
 
-  .grid-row.grid-row--great {
-      background: #F2EEE8;
-      margin-top: 30px;
+  &.contact-number {
+    input {
+      width: 11em;
+      max-width: 100%;
+    }
   }
+}
 
-  .panel--great {
+.list-inset {
+  list-style-type: circle;
+  margin-left: 2.5em;
+}
+
+.grid-row.grid-row--great {
     background: #F2EEE8;
     margin-top: 30px;
-    padding: 1px 15px;
-  }
+}
 
+.panel--great {
+  background: #F2EEE8;
+  margin-top: 30px;
+  padding: 1px 15px;
+}
 
+.exporting-logo {
+    margin-bottom: 30px;
+}
 
-  .exporting-logo {
-      margin-bottom: 30px;
-  }
+.clearfix:after {
+  visibility: hidden;
+  display: block;
+  font-size: 0;
+  content: " ";
+  clear: both;
+  height: 0;
+}
+* html .clearfix             { zoom: 1; } /* IE6 */
+*:first-child+html .clearfix { zoom: 1; } /* IE7 */
+
 
 body { 
   background: url(../images/banner-img1.jpg) no-repeat center center fixed; 
@@ -80,93 +90,103 @@ body {
   -o-background-size: cover;
   background-size: cover;
 
+  #global-header-bar {
+    display: none;
+  }
+
   h1 { font-size: 38px; }
   h2 {
     font-size: 26px;
   }
-}
 
-.container {
-  color: #ffffff;
-  .registration-intro {
-    float: left;
-    margin-top: 140px;
-    margin-right: 20px;
-    width: calc(60% - 20px);
-    .great-britain-logo {
-      margin: 0 0 20px;
-      max-width: 100px;
-      img {
-        width: 100%;
-        height: auto;
+  .container {
+    color: #ffffff;
+    .registration-intro-container {
+      margin-top: 140px;
+      .registration-intro {
+        // float: left;
+        // margin-right: 20px;
+        // width: calc(60% - 20px);
+        .great-britain-logo {
+          margin: 0 0 20px;
+          max-width: 100px;
+          img {
+            width: 100%;
+            height: auto;
+          }
+        }
+        .intro-registration-text {}
       }
     }
-    .intro-registration-text {}
-  }
-  form {
-    &.connections-platform-form {
-      background: rgba(0,0,0,0.6);
-      float: left;
-      height: 100vh;
-      margin-left: 20px;
-      padding: 20px 40px;
-      width: calc(40% - 100px);
+    form {
+      .connections-platform-form {
+        background: rgba(0,0,0,0.6);
+        //filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr='#99000000', endColorstr='#99000000'); /* IE */
+        -ms-filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000,endColorstr=#99000000);
+        filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000,endColorstr=#99000000);
+        zoom: 1;
 
-      h2 {
-        margin: 40px 0 60px 0;
-      }
+        // float: left;
+        // height: 100vh;
+        // margin-left: 20px;
+        padding: 20px 40px 150px;
+        // width: calc(40% - 100px);
 
-      .already-registered {
-        margin: 0 auto;
-        text-align: center;
-        a {
-          color: #007ea3;
+        h2 {
+          margin: 40px 0 60px 0;
         }
 
-        a:hover {
-          color: #33cfff;
-          text-decoration: none;
-        }
-      }
+        .already-registered {
+          margin: 0 auto;
+          text-align: center;
+          a {
+            color: #007ea3;
+          }
 
-      .input-field-container {
-
-        label {
-          margin-bottom: 10px;
-        }
-      
-        input {
-          border: 3px solid #ffffff;
-          border-radius: 0;
-          font-size: 16px;
-          height: 30px;
-          margin: 0 0 40px;
-          padding: 5px 10px;
-          width: calc(100% - 20px);
-          &:focus {
-            border: 3px solid #ffbf47;
+          a:hover {
+            color: #33cfff;
+            text-decoration: none;
           }
         }
 
-        ul {
-          li {
-            color: #ffbf47;
+        .input-field-container {
+
+          label {
+            margin-bottom: 10px;
+          }
+        
+          input {
+            border: 3px solid #ffffff;
+            border-radius: 0;
+            font-size: 16px;
+            height: 30px;
+            margin: 0 0 40px;
+            padding: 5px 10px;
+            width: calc(100% - 26px);
+            &:focus {
+              border: 3px solid #ffbf47;
+            }
+          }
+
+          ul {
+            li {
+              color: #ffbf47;
+            }
+          }
+        }
+
+        .register-btn-container {
+          margin: 20px 0;
+          text-align: center;
+          input.register-btn {
+            background: #888888;
+            border: 0;
+            color: #ffffff;
+            height: 60px;
+            width: 150px;
           }
         }
       }
-
-      .register-btn-container {
-        margin: 20px 0;
-        text-align: center;
-        input.register-btn {
-          background: #888888;
-          border: 0;
-          color: #ffffff;
-          height: 60px;
-          width: 150px;
-        }
-      }
-
       .steps {
         margin: 20px auto;
         text-align: center;
@@ -182,17 +202,23 @@ body {
 
 @media (max-width: 992px) {
   .container {
-    padding: 0 20px;
+    // padding: 0 20px;
     width: 100%;
     .registration-intro {
-      width: calc(100% - 40px);
+      // width: calc(100% - 40px);
     }
     form {
-      &.connections-platform-form {
+      .connections-platform-form {
         height: 100%;
         margin: 40px 0 0;
         padding: 0 20px;
-        width: calc(100% - 80px);
+        margin: 0 20px;
+        // width: calc(100% - 80px);
+        .input-field-container {
+          // input.register-btn {
+          //   width: calc(100% - 26px);
+          // }
+        }
         .register-btn-container {
           input.register-btn {
             width: 50%;
