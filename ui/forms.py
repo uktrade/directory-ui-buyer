@@ -23,3 +23,4 @@ class UserForm(forms.Form):
     email = forms.EmailField(label='Email address')
     password = forms.CharField(widget=forms.PasswordInput())
     terms_agreed = forms.BooleanField()
+    referrer = forms.CharField(required=False, widget=forms.HiddenInput())

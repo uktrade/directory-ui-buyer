@@ -1,10 +1,14 @@
 import http
 from unittest import mock
 
+import pytest
+
 from django.core.urlresolvers import reverse
 
+from ui import forms
 from ui.clients.directory_api import api_client
-from ui.views import EmailConfirmationView
+from ui.constants import SESSION_KEY_REFERRER
+from ui.views import EmailConfirmationView, RegistrationView
 
 
 def test_email_confirm_missing_confirmation_code(rf):
@@ -33,3 +37,16 @@ def test_email_confirm_valid_confirmation_code(mock_confirm_email, rf):
     assert mock_confirm_email.called_with(123)
     assert response.status_code == http.client.OK
     assert response.template_name == EmailConfirmationView.success_template
+
+
+@pytest.mark.django_db
+def test_registration_view_includes_referrer(client, rf):
+    request = rf.get(reverse('register'))
+    request.session = client.session
+    request.session[SESSION_KEY_REFERRER] = 'google'
+
+    view = RegistrationView.as_view(form_list=(('user', forms.UserForm),))
+    response = view(request)
+
+    initial = response.context_data['form'].initial
+    assert initial['referrer'] == 'google'

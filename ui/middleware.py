@@ -1,10 +1,10 @@
 import sys
 
-from django.conf import settings
 from urllib.parse import urlsplit, urlunsplit
 from django.http import HttpResponseRedirect
 
 from ui import helpers
+from ui.constants import SESSION_KEY_REFERRER
 
 
 class SSLRedirectMiddleware:
@@ -20,4 +20,4 @@ class ReferrerMiddleware(object):
     def process_request(self, request):
         referrer = helpers.get_referrer_from_request(request)
         if referrer:
-            request.session[settings.SESSION_KEY_REFERRER] = referrer
+            request.session[SESSION_KEY_REFERRER] = referrer

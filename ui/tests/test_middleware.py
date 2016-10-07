@@ -1,6 +1,6 @@
 from unittest import mock
 
-from django.conf import settings
+from ui.constants import SESSION_KEY_REFERRER
 
 from ui import helpers, middleware
 
@@ -15,7 +15,7 @@ def test_referrer_stored_in_session_if_known(
 
     instance.process_request(request)
 
-    assert request.session[settings.SESSION_KEY_REFERRER] == 'google'
+    assert request.session[SESSION_KEY_REFERRER] == 'google'
 
 
 @mock.patch.object(helpers, 'get_referrer_from_request', return_value=None)
@@ -28,7 +28,7 @@ def test_bail_out_on_unknown_referrrer(
 
     instance.process_request(request)
 
-    assert settings.SESSION_KEY_REFERRER not in request.session
+    assert SESSION_KEY_REFERRER not in request.session
 
 
 @mock.patch.object(helpers, 'get_referrer_from_request', return_value=None)
@@ -36,12 +36,12 @@ def test_internal_browsing_once_not_overwrite_referrer(
     mock_get_referrer_from_request, rf
 ):
     request = rf.get('/')
-    request.session = {settings.SESSION_KEY_REFERRER: 'google'}
+    request.session = {SESSION_KEY_REFERRER: 'google'}
     instance = middleware.ReferrerMiddleware()
 
     instance.process_request(request)
 
-    assert request.session[settings.SESSION_KEY_REFERRER] == 'google'
+    assert request.session[SESSION_KEY_REFERRER] == 'google'
 
 
 @mock.patch.object(helpers, 'get_referrer_from_request', return_value=None)
@@ -49,10 +49,10 @@ def test_internal_browsing_multiple_not_overwrite_referrer(
     mock_get_referrer_from_request, rf
 ):
     request = rf.get('/')
-    request.session = {settings.SESSION_KEY_REFERRER: 'google'}
+    request.session = {SESSION_KEY_REFERRER: 'google'}
     instance = middleware.ReferrerMiddleware()
 
     instance.process_request(request)
     instance.process_request(request)
 
-    assert request.session[settings.SESSION_KEY_REFERRER] == 'google'
+    assert request.session[SESSION_KEY_REFERRER] == 'google'
