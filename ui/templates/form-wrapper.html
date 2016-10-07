@@ -35,13 +35,12 @@
 
 		<div class="already-registered">Already registered? <a href="#">Sign in</a></div>
 
-		
 		<div class="steps">
-			{% for index in '01' %}
-				{% if wizard.steps.current == index %}
-					<div class="step active"></div>
+			{% for step in wizard.steps.all %}
+				{% if wizard.steps.current == step %}
+					<span>&#9679;</span>
 				{% else %}
-					<div class="step not-active"></div>
+					<span>&#9675;</span>
 				{% endif %}
 			{% endfor %}
 

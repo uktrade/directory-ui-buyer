@@ -171,21 +171,9 @@ body {
         margin: 20px auto;
         text-align: center;
         width: 100%;
-        .step {
-          background: #ffffff;
-          border: 1px solid #ffffff;
-          border-radius: 15px;
-          display: inline-block;
-          height: 15px;
-          margin: 0 5px;
-          width: 15px;
-
-          &.active {
-            
-          }
-          &.not-active {
-            background: rgba(0,0,0,0);
-          }
+        color: white;
+        span {
+          font-size: 3em;
         }
       }
     }
