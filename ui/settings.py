@@ -48,6 +48,7 @@ MIDDLEWARE_CLASSES = [
     # 'ui.middleware.SSLRedirectMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'ui.middleware.ReferrerMiddleware',
 ]
 
 ROOT_URLCONF = 'ui.urls'
@@ -120,3 +121,5 @@ RAVEN_CONFIG = {
     # release based on the git info.
     # 'release': raven.fetch_git_sha(os.path.dirname(__file__)),
 }
+
+SESSION_KEY_REFERRER = 'REFERRER'
