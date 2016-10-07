@@ -2,12 +2,21 @@
 {% load staticfiles %}
 {% block content %}
 	<div class="container">
-		<div class="registration-intro">
-			<h1>{% block hero_title %}{% endblock %}</h1>
-			<p class="intro-registration-text">{% block hero_text %}{% endblock %}</p>
-			<h2>Learn | Grow | Connect</h2>
+		<div class="clearfix"></div>
+
+		<div class="row-fluid">
+			<div class="span7 registration-intro-container">
+				<div class="registration-intro">
+					<div class="great-britain-logo">
+						<img src="{% static 'images/great-britain-logo.png' %}" alt="">
+					</div>
+					<h1>{% block hero_title %}{% endblock %}</h1>
+					<p class="intro-registration-text">{% block hero_text %}{% endblock %}</p>
+					<h2>Learn | Grow | Connect</h2>
+				</div>
+			</div>
+			{% block formarea %}
+			{% endblock formarea %}
 		</div>
-		{% block formarea %}
-		{% endblock formarea %}
 	</div>
 {%endblock content %}
