@@ -36,8 +36,8 @@
 		<div class="already-registered">Already registered? <a href="#">Sign in</a></div>
 
 		<div class="steps">
-			{% for step_index in wizard.steps.all %}
-				{% if wizard.steps.current == step_index %}
+			{% for step in wizard.steps.all %}
+				{% if wizard.steps.current == step %}
 					<span>&#9679;</span>
 				{% else %}
 					<span>&#9675;</span>
