@@ -7,6 +7,7 @@ __pycache__/
 ui/staticfiles/
 ui/static/css
 BrowserStackLocal
+node_modules/
 
 # C extensions
 *.so
@@ -98,5 +99,3 @@ db.sqlite3
 Network Trash Folder
 Temporary Items
 .apdisk
-node_modules/
-
