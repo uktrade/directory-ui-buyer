@@ -5,7 +5,6 @@ __pycache__/
 .sass-cache/
 .venv/
 ui/staticfiles/
-ui/static/main.css
 BrowserStackLocal
 node_modules/
 
