@@ -98,5 +98,9 @@ db.sqlite3
 Network Trash Folder
 Temporary Items
 .apdisk
+
+# JS
 node_modules/
 
+# Docker
+.env
