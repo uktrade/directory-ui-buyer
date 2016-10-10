@@ -9,9 +9,6 @@ body {
   -o-background-size: cover;
   background-size: cover;
 
-  #content {
-    &.registration-content { max-width: 1200px; }
-  }
 }
 
 @media (max-width: 992px) {
