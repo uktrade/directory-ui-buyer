@@ -32,6 +32,7 @@
 			</div>
 			<div class="already-registered">Already registered? <a class="teal" href="#">Sign in</a></div>
 			<div class="steps">
+<<<<<<< HEAD
 				{% for step in wizard.steps.all %}
 					{% if wizard.steps.current == step %}
 						<span>&#9679;</span>
@@ -40,6 +41,9 @@
 
 					{% endif %}
 				{% endfor %}
+=======
+				{% include 'form_wizard_step_indicator.html' %}
+>>>>>>> Make form progress indicator reusable
 			</div>
 		</div>
 		<div class="clearfix"></div>

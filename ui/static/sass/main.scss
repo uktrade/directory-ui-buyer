@@ -240,20 +240,7 @@ body {
   }
 }
 
-.company-profile-container {
-  margin: 64px;
-  .form-head {
-    background-color: #D8D8DA;
-    padding: 10px 20px 10px 20px;
-  }
-  .form-body {
-    background-color: white;
-    padding: 10px 20px 10px 20px;
-    .form-body-title {
-      margin-bottom: 10px;
-    }
-  }
-}@media (max-width: 767px) {
+@media (max-width: 767px) {
   body {
     #content {
       .container {
@@ -274,5 +261,29 @@ body {
         }
       }
     }
+  }
+}
+
+.company-profile-container {
+  font-family: "nta", Arial, sans-serif;
+  border: 1px solid #dedede;
+  margin: 64px;
+  .form-head {
+    background-color: #D8D8DA;
+    padding: 10px 20px 10px 20px;
+  }
+  .form-body {
+    background-color: white;
+    padding: 10px 20px 10px 20px;
+    .form-body-title {
+      margin-left: 20px;
+      display: inline-block;
+      margin-bottom: 10px;
+    }
+  }
+  .progress-indicator {
+    font-size: 2em;
+    line-height: 1;
+    margin-top: 0.25em;
   }
 }

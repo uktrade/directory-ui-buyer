@@ -2,25 +2,26 @@
 {% load staticfiles %}
 
 {% block content %}
-<div class="company-profile-container">
+<form class="company-profile-container" method='post' action=''>
 	<div class="form-head">
 		<h1>Create your basic company profile</h1>
 		<h2>Add your company details to help others find you.</h2>
 	</div>
 	<div class="form-body">
 		<div class="row">
-			<h2 class="span7" class='form-body-title'>Company website and description</h2>
-			<div class="span3">o o o</div>
+			<h2 class='form-body-title'>Company website and description</h2>
+			<span class="progress-indicator pull-right">{% include 'form_wizard_step_indicator.html' %}</span>
+			<div class="clearfix"></div>
 		</div>
-		{{ form }}
+		{{ form.as_p }}
 		<hr>
 		<div>
-			<div>Back</div>
+			<span>Back</span>
 			<div class="pull-right">
 				<input class="btn btn-primary" type="submit" value="Finish" />
 			</div>
 			<div class="clearfix"></div>
 		</div>
 	</div>
-</div>
+</form>
 {% endblock %}
