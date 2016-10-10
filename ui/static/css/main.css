@@ -1,0 +1,4330 @@
+@import url(https://fonts.googleapis.com/css?family=Roboto:400,700,300);
+@import url(https://fonts.googleapis.com/css?family=Roboto:400,700,300);
+/* line 46, /home/rikatee/workspace/directory-ui/node_modules/govuk_frontend_toolkit/stylesheets/_shims.scss */
+.grid-row:after, #global-header.global-header--govuk .header-wrapper:after, #global-header.global-header--govuk .header-wrapper .header-global:after, #global-header.global-header--govuk .header-wrapper .header-global .header-logo:after, #global-header.global-header--govuk .header-proposition #proposition-link:after,
+#global-header.global-header--govuk .header-proposition #proposition-links:after, #footer.footer--govuk .footer-meta:after, #content:after, .notice:after, .panel:after, fieldset:after, .form-section:after, .form-group:after, .form-block:after, .breadcrumbs ol:after, .tabs.tabs--inline .tabs-nav:after, .fieldvalue:after, .js-radiohide-content:after {
+  content: "";
+  display: block;
+  clear: both;
+}
+
+/* line 18, /home/rikatee/workspace/directory-ui/node_modules/govuk_frontend_toolkit/stylesheets/_grid_layout.scss */
+#global-header-bar, #global-cookie-message p, #footer.footer--govuk .footer-wrapper, #content {
+  max-width: 960px;
+  margin: 0 15px;
+}
+@media (min-width: 641px) {
+  /* line 18, /home/rikatee/workspace/directory-ui/node_modules/govuk_frontend_toolkit/stylesheets/_grid_layout.scss */
+  #global-header-bar, #global-cookie-message p, #footer.footer--govuk .footer-wrapper, #content {
+    margin: 0 30px;
+  }
+}
+@media (min-width: 1020px) {
+  /* line 18, /home/rikatee/workspace/directory-ui/node_modules/govuk_frontend_toolkit/stylesheets/_grid_layout.scss */
+  #global-header-bar, #global-cookie-message p, #footer.footer--govuk .footer-wrapper, #content {
+    margin: 0 auto;
+  }
+}
+
+/* line 64, /home/rikatee/workspace/directory-ui/node_modules/govuk_frontend_toolkit/stylesheets/_grid_layout.scss */
+.grid-row {
+  margin: 0 -15px;
+}
+
+/* line 46, /home/rikatee/workspace/directory-ui/node_modules/govuk_frontend_toolkit/stylesheets/design-patterns/../_shims.scss */
+.grid-row:after, #global-header.global-header--govuk .header-wrapper:after, #global-header.global-header--govuk .header-wrapper .header-global:after, #global-header.global-header--govuk .header-wrapper .header-global .header-logo:after, #global-header.global-header--govuk .header-proposition #proposition-link:after,
+#global-header.global-header--govuk .header-proposition #proposition-links:after, #footer.footer--govuk .footer-meta:after, #content:after, .notice:after, .panel:after, fieldset:after, .form-section:after, .form-group:after, .form-block:after, .breadcrumbs ol:after, .tabs.tabs--inline .tabs-nav:after, .fieldvalue:after, .js-radiohide-content:after {
+  content: "";
+  display: block;
+  clear: both;
+}
+
+@-ms-viewport {
+  width: device-width;
+}
+
+/* line 8, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_base.scss */
+html, body, button, input, table, td, th {
+  font-family: "Roboto", sans-serif;
+}
+
+/* line 11, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_base.scss */
+html, body, div, h1, h2, h3, h4, h5, h6, article, aside, footer, header, hgroup, nav, section {
+  margin: 0;
+  padding: 0;
+  vertical-align: baseline;
+}
+
+/* line 18, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_base.scss */
+main {
+  display: block;
+}
+
+/* line 24, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_base.scss */
+.group:before,
+.group:after {
+  content: "\0020";
+  display: block;
+  height: 0;
+  overflow: hidden;
+}
+
+/* line 31, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_base.scss */
+.group:after {
+  clear: both;
+}
+
+/* line 34, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_base.scss */
+.group {
+  zoom: 1;
+}
+
+/* line 39, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_base.scss */
+.content-fixed {
+  top: 0;
+  position: fixed;
+}
+
+/* line 43, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_base.scss */
+.shim {
+  display: block;
+}
+
+/*
+ * 1. Prevents iOS text size adjust after orientation change, without disabling
+ *    user zoom.
+ */
+/* line 51, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_base.scss */
+html {
+  -webkit-text-size-adjust: 100%;
+  /* 1 */
+  -ms-text-size-adjust: 100%;
+  /* 1 */
+  background-color: #dee0e2;
+}
+
+/*
+  Force the scrollbar to always display in IE10/11
+ */
+/* line 61, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_base.scss */
+html {
+  -ms-overflow-style: scrollbar;
+}
+
+/* line 65, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_base.scss */
+body {
+  background: white;
+  color: #0b0c0c;
+  line-height: 1.5;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* line 74, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_base.scss */
+ol, ul, nav ol, nav ul {
+  list-style: inherit;
+}
+
+/* line 78, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_base.scss */
+fieldset {
+  border: none;
+  padding: 0;
+}
+
+/* line 83, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_base.scss */
+a:link {
+  color: #005ea5;
+}
+
+/* line 87, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_base.scss */
+a:visited {
+  color: #4c2c92;
+}
+
+/* line 91, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_base.scss */
+a:hover {
+  color: #2b8cc4;
+}
+
+/* line 95, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_base.scss */
+a:active {
+  color: #2b8cc4;
+}
+
+/* line 315, /home/rikatee/workspace/directory-ui/node_modules/govuk_frontend_toolkit/stylesheets/_typography.scss */
+a[rel="external"]:after {
+  background-image: image-url("external-links/external-link.png");
+  background-repeat: no-repeat;
+}
+@media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min--moz-device-pixel-ratio: 2), only screen and (-o-min-device-pixel-ratio: 20 / 10), only screen and (min-device-pixel-ratio: 2), only screen and (min-resolution: 192dpi), only screen and (min-resolution: 2dppx) {
+  /* line 315, /home/rikatee/workspace/directory-ui/node_modules/govuk_frontend_toolkit/stylesheets/_typography.scss */
+  a[rel="external"]:after {
+    background-image: image-url("external-links/external-link-24x24.png");
+    background-size: 12px 400px;
+  }
+}
+/* line 256, /home/rikatee/workspace/directory-ui/node_modules/govuk_frontend_toolkit/stylesheets/_typography.scss */
+a[rel="external"]:after {
+  content: "\A0\A0\A0\A0\A0";
+  background-position: right 3px;
+}
+/* line 265, /home/rikatee/workspace/directory-ui/node_modules/govuk_frontend_toolkit/stylesheets/_typography.scss */
+a[rel="external"]:hover:after {
+  background-position: right -385px;
+}
+@media (min-width: 641px) {
+  /* line 256, /home/rikatee/workspace/directory-ui/node_modules/govuk_frontend_toolkit/stylesheets/_typography.scss */
+  a[rel="external"]:after {
+    content: "\A0\A0\A0\A0";
+    background-position: right 6px;
+  }
+  /* line 265, /home/rikatee/workspace/directory-ui/node_modules/govuk_frontend_toolkit/stylesheets/_typography.scss */
+  a[rel="external"]:hover:after {
+    background-position: right -382px;
+  }
+}
+
+/* line 256, /home/rikatee/workspace/directory-ui/node_modules/govuk_frontend_toolkit/stylesheets/_typography.scss */
+.external-link:after {
+  content: "\A0\A0\A0\A0\A0\A0\A0\A0";
+  background-position: right 0;
+}
+/* line 265, /home/rikatee/workspace/directory-ui/node_modules/govuk_frontend_toolkit/stylesheets/_typography.scss */
+.external-link:hover:after {
+  background-position: right 0;
+}
+/* line 327, /home/rikatee/workspace/directory-ui/node_modules/govuk_frontend_toolkit/stylesheets/_typography.scss */
+.external-link:after {
+  background-image: image-url("external-links/external-link-black-12x12.png");
+  background-repeat: no-repeat;
+}
+@media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min--moz-device-pixel-ratio: 2), only screen and (-o-min-device-pixel-ratio: 20 / 10), only screen and (min-device-pixel-ratio: 2), only screen and (min-resolution: 192dpi), only screen and (min-resolution: 2dppx) {
+  /* line 327, /home/rikatee/workspace/directory-ui/node_modules/govuk_frontend_toolkit/stylesheets/_typography.scss */
+  .external-link:after {
+    background-image: image-url("external-links/external-link-black-24x24.png");
+    background-size: 12px 400px;
+  }
+}
+
+/*
+ * 1. Corrects text resizing oddly in IE6/7 when body font-size is set using em units
+ *    http://clagnut.com/blog/348/#c790
+ *    note - font-size reduced to 62.5% to allow simple rem/px font-sizing and fallback
+ *    http://snook.ca/archives/html_and_css/font-size-with-rem
+ * 2. Keeps page centred in all browsers regardless of content height
+ * 3. Removes Android and iOS tap highlight color to prevent entire container being highlighted
+ *    www.yuiblog.com/blog/2010/10/01/quick-tip-customizing-the-mobile-safari-tap-highlight-color/
+ */
+/* line 124, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_base.scss */
+html {
+  font-size: 62.5%;
+  /* 1 */
+  overflow-y: scroll;
+  /* 2 */
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  /* 3 */
+}
+
+/*
+ * 1. Font-size increased to compensate for change to html element font-size in
+ *    order to support beta typography which was set in ems
+ *    (62.5% * 160% = 100%)
+ * 2. Addresses margins handled incorrectly in IE6/7
+ */
+/* line 137, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_base.scss */
+body {
+  font-size: 160%;
+  /* 1 */
+  margin: 0;
+  /* 2 */
+}
+
+/* line 143, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_base.scss */
+b,
+strong {
+  font-weight: 600;
+}
+
+/* line 147, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_base.scss */
+img {
+  border: 0;
+}
+
+/* line 157, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_base.scss */
+abbr[title] {
+  cursor: help;
+}
+
+/*
+ * 1. Addresses `appearance` set to `searchfield` in Safari 5 and Chrome.
+ * 2. Addresses `box-sizing` set to `border-box` in Safari 5 and Chrome
+ *    (include `-moz` to future-proof).
+ */
+/* line 167, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_base.scss */
+input[type="search"] {
+  -webkit-appearance: textfield;
+  /* 1 */
+  -moz-box-sizing: content-box;
+  -webkit-box-sizing: content-box;
+  /* 2 */
+  box-sizing: content-box;
+}
+
+/* line 173, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_base.scss */
+input[type="search"]::-webkit-search-cancel-button {
+  -webkit-appearance: searchfield-cancel-button;
+  margin-right: 2px;
+}
+
+/* line 178, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_base.scss */
+input[type="search"]::-webkit-search-decoration {
+  -webkit-appearance: none;
+}
+
+/* For image replacement */
+/* line 2, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_accessibility.scss */
+.ir {
+  display: block;
+  text-indent: -999em;
+  overflow: hidden;
+  background-repeat: no-repeat;
+  text-align: left;
+  direction: ltr;
+}
+/* line 10, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_accessibility.scss */
+.ir br {
+  display: none;
+}
+
+/* Hide for both screenreaders and browsers */
+/* line 18, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_accessibility.scss */
+.hidden,
+.js-enabled .js-hidden {
+  display: none;
+  visibility: hidden;
+}
+
+/* Hide only visually, but have it available for screenreaders */
+/* line 25, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_accessibility.scss */
+.visually-hidden,
+.visuallyhidden {
+  position: absolute;
+  left: -9999em;
+  /*
+   * Extends the .visuallyhidden class to allow the element to be
+   * focusable when navigated to via the keyboard
+   */
+}
+/* line 34, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_accessibility.scss */
+.visually-hidden.focusable:active, .visually-hidden.focusable:focus,
+.visuallyhidden.focusable:active,
+.visuallyhidden.focusable:focus {
+  clip: auto;
+  height: auto;
+  margin: 0;
+  overflow: visible;
+  position: static;
+  width: auto;
+}
+
+/* Hide visually and from screenreaders, but maintain layout */
+/* line 45, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_accessibility.scss */
+.invisible {
+  visibility: hidden;
+}
+
+/* Give a strong clear visual idea as to what is currently in focus */
+/* line 50, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_accessibility.scss */
+a {
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.3);
+}
+
+/* line 54, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_accessibility.scss */
+a:focus {
+  background-color: #ffbf47;
+  outline: 3px solid #ffbf47;
+}
+
+/* Make skiplinks visible when they are tabbed to */
+/* line 61, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_accessibility.scss */
+.skiplink {
+  position: absolute;
+  left: -9999em;
+}
+
+/* line 66, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_accessibility.scss */
+.skiplink:focus {
+  left: 0;
+  z-index: 1;
+}
+
+/* line 71, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_accessibility.scss */
+#skiplink-container {
+  text-align: center;
+  background: #0b0c0c;
+}
+/* line 75, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_accessibility.scss */
+#skiplink-container div {
+  text-align: left;
+  margin: 0 auto;
+  max-width: 1020px;
+}
+/* line 81, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_accessibility.scss */
+#skiplink-container .skiplink {
+  display: -moz-inline-stack;
+  display: inline-block;
+  margin: 0.75em 0 0 30px;
+}
+
+/* line 91, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_accessibility.scss */
+input:focus,
+textarea:focus,
+select:focus,
+button:focus,
+#global-header input:focus {
+  outline: 3px solid #ffbf47;
+}
+
+/* line 96, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_accessibility.scss */
+#global-header h1 a:focus {
+  background-color: transparent;
+  outline: none;
+}
+/* line 101, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_accessibility.scss */
+#global-header a:focus {
+  color: #0b0c0c;
+}
+
+/* line 46, /home/rikatee/workspace/directory-ui/node_modules/govuk_frontend_toolkit/stylesheets/_shims.scss */
+.grid-row:after, #global-header.global-header--govuk .header-wrapper:after, #global-header.global-header--govuk .header-wrapper .header-global:after, #global-header.global-header--govuk .header-wrapper .header-global .header-logo:after, #global-header.global-header--govuk .header-proposition #proposition-link:after,
+#global-header.global-header--govuk .header-proposition #proposition-links:after, #footer.footer--govuk .footer-meta:after, #content:after, .notice:after, .panel:after, fieldset:after, .form-section:after, .form-group:after, .form-block:after, .breadcrumbs ol:after, .tabs.tabs--inline .tabs-nav:after, .fieldvalue:after, .js-radiohide-content:after {
+  content: "";
+  display: block;
+  clear: both;
+}
+
+/* line 6, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_govuk_header.scss */
+#global-header.global-header--govuk {
+  background-color: #0b0c0c;
+  width: 100%;
+}
+/* line 10, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_govuk_header.scss */
+#global-header.global-header--govuk .header-wrapper {
+  background-color: #0b0c0c;
+  max-width: 990px;
+  margin: 0 auto;
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+@media (min-width: 641px) {
+  /* line 10, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_govuk_header.scss */
+  #global-header.global-header--govuk .header-wrapper {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+}
+/* line 27, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_govuk_header.scss */
+#global-header.global-header--govuk .header-wrapper .header-global .header-logo {
+  float: left;
+}
+@media (min-width: 769px) {
+  /* line 27, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_govuk_header.scss */
+  #global-header.global-header--govuk .header-wrapper .header-global .header-logo {
+    width: 33.33%;
+  }
+}
+@media screen and (max-width: 379px) {
+  /* line 27, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_govuk_header.scss */
+  #global-header.global-header--govuk .header-wrapper .header-global .header-logo {
+    width: auto;
+    float: none;
+  }
+}
+/* line 39, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_govuk_header.scss */
+#global-header.global-header--govuk .header-wrapper .header-global .header-logo .content {
+  margin: 0 15px;
+}
+/* line 43, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_govuk_header.scss */
+#global-header.global-header--govuk .header-wrapper .header-global .header-logo {
+  margin: 5px 0 2px;
+}
+@media (min-width: 769px) {
+  /* line 50, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_govuk_header.scss */
+  #global-header.global-header--govuk.with-proposition .header-wrapper .header-global {
+    float: left;
+    width: 33.33%;
+  }
+  /* line 56, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_govuk_header.scss */
+  #global-header.global-header--govuk.with-proposition .header-wrapper .header-global .header-logo,
+  #global-header.global-header--govuk.with-proposition .header-wrapper .header-global .site-search {
+    width: 100%;
+  }
+}
+@media (min-width: 769px) {
+  /* line 61, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_govuk_header.scss */
+  #global-header.global-header--govuk.with-proposition .header-wrapper .header-proposition {
+    width: 66.66%;
+    float: left;
+  }
+}
+/* line 66, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_govuk_header.scss */
+#global-header.global-header--govuk.with-proposition .header-wrapper .header-proposition .content {
+  margin: 0 15px;
+}
+/* line 73, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_govuk_header.scss */
+#global-header.global-header--govuk #logo {
+  float: left;
+  position: relative;
+  top: -1px;
+  height: 30px;
+  overflow: visible;
+  vertical-align: baseline;
+  color: white;
+  font-weight: bold;
+  font-size: 30px;
+  line-height: 1em;
+  text-decoration: none;
+  text-rendering: optimizeLegibility;
+  margin-bottom: -3px;
+  padding-top: 2px;
+  border-bottom: 1px solid transparent;
+  background: url("../images/gov.uk_logotype_crown.png") no-repeat;
+  background-size: 35px 31px;
+  background-position: 0 0;
+}
+/* line 99, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_govuk_header.scss */
+#global-header.global-header--govuk #logo img {
+  position: relative;
+  top: -2px;
+  width: 35px;
+  height: 31px;
+  padding-right: 6px;
+  float: left;
+  display: inline;
+  line-height: inherit;
+  border: none;
+  visibility: hidden;
+}
+/* line 117, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_govuk_header.scss */
+#global-header.global-header--govuk #logo:hover, #global-header.global-header--govuk #logo:focus {
+  text-decoration: none;
+  border-bottom-color: white;
+}
+/* line 122, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_govuk_header.scss */
+#global-header.global-header--govuk .header-proposition {
+  padding-top: 10px;
+}
+@media (min-width: 769px) {
+  /* line 122, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_govuk_header.scss */
+  #global-header.global-header--govuk .header-proposition {
+    padding-top: 0;
+  }
+}
+/* line 127, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_govuk_header.scss */
+#global-header.global-header--govuk .header-proposition #proposition-name {
+  font-family: "Roboto", sans-serif;
+  font-weight: 400;
+  text-transform: none;
+  font-size: 18px;
+  line-height: 1.2;
+  font-weight: bold;
+  color: white;
+  text-decoration: none;
+}
+@media (min-width: 641px) {
+  /* line 127, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_govuk_header.scss */
+  #global-header.global-header--govuk .header-proposition #proposition-name {
+    font-size: 24px;
+    line-height: 1.25;
+  }
+}
+/* line 133, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_govuk_header.scss */
+#global-header.global-header--govuk .header-proposition a#proposition-name:hover {
+  text-decoration: underline;
+}
+/* line 136, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_govuk_header.scss */
+#global-header.global-header--govuk .header-proposition a.menu {
+  font-family: "Roboto", sans-serif;
+  font-weight: 400;
+  text-transform: none;
+  font-size: 14px;
+  line-height: 1.14286;
+  color: white;
+  display: block;
+  float: right;
+  text-decoration: none;
+  padding-top: 6px;
+}
+@media (min-width: 641px) {
+  /* line 136, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_govuk_header.scss */
+  #global-header.global-header--govuk .header-proposition a.menu {
+    font-size: 16px;
+    line-height: 1.25;
+  }
+}
+@media (min-width: 769px) {
+  /* line 136, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_govuk_header.scss */
+  #global-header.global-header--govuk .header-proposition a.menu {
+    display: none;
+  }
+}
+/* line 146, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_govuk_header.scss */
+#global-header.global-header--govuk .header-proposition a.menu:hover {
+  text-decoration: underline;
+}
+/* line 149, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_govuk_header.scss */
+#global-header.global-header--govuk .header-proposition a.menu:after {
+  display: inline-block;
+  font-size: 8px;
+  height: 8px;
+  padding-left: 5px;
+  vertical-align: middle;
+  content: " \25BC";
+}
+/* line 157, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_govuk_header.scss */
+#global-header.global-header--govuk .header-proposition a.menu.js-hidden:after {
+  content: " \25B2";
+}
+/* line 161, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_govuk_header.scss */
+#global-header.global-header--govuk .header-proposition #proposition-menu {
+  margin-top: 5px;
+}
+@media (min-width: 769px) {
+  /* line 165, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_govuk_header.scss */
+  #global-header.global-header--govuk .header-proposition #proposition-menu.no-proposition-name {
+    margin-top: 37px;
+  }
+}
+/* line 173, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_govuk_header.scss */
+#global-header.global-header--govuk .header-proposition #proposition-link,
+#global-header.global-header--govuk .header-proposition #proposition-links {
+  clear: both;
+  margin: 2px 0 0 0;
+  padding: 0;
+}
+/* line 179, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_govuk_header.scss */
+.js-enabled #global-header.global-header--govuk .header-proposition #proposition-link, .js-enabled
+#global-header.global-header--govuk .header-proposition #proposition-links {
+  display: none;
+}
+@media (min-width: 769px) {
+  /* line 179, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_govuk_header.scss */
+  .js-enabled #global-header.global-header--govuk .header-proposition #proposition-link, .js-enabled
+  #global-header.global-header--govuk .header-proposition #proposition-links {
+    display: block;
+  }
+}
+/* line 184, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_govuk_header.scss */
+.js-enabled #global-header.global-header--govuk .header-proposition #proposition-link.js-visible, .js-enabled
+#global-header.global-header--govuk .header-proposition #proposition-links.js-visible {
+  display: block;
+}
+/* line 189, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_govuk_header.scss */
+#global-header.global-header--govuk .header-proposition #proposition-link li,
+#global-header.global-header--govuk .header-proposition #proposition-links li {
+  float: left;
+  width: 50%;
+  padding: 3px 0;
+  border-bottom: 1px solid #2e3133;
+}
+@media (min-width: 769px) {
+  /* line 189, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_govuk_header.scss */
+  #global-header.global-header--govuk .header-proposition #proposition-link li,
+  #global-header.global-header--govuk .header-proposition #proposition-links li {
+    display: block;
+    width: auto;
+    padding: 0 15px 0 0;
+    border-bottom: 0;
+  }
+  /* line 201, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_govuk_header.scss */
+  #global-header.global-header--govuk .header-proposition #proposition-link li.clear-child,
+  #global-header.global-header--govuk .header-proposition #proposition-links li.clear-child {
+    clear: left;
+  }
+}
+/* line 207, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_govuk_header.scss */
+#global-header.global-header--govuk .header-proposition #proposition-link a,
+#global-header.global-header--govuk .header-proposition #proposition-links a {
+  color: white;
+  text-decoration: none;
+  font-family: "Roboto", sans-serif;
+  font-weight: 700;
+  text-transform: none;
+  font-size: 12px;
+  line-height: 1.25;
+}
+@media (min-width: 641px) {
+  /* line 207, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_govuk_header.scss */
+  #global-header.global-header--govuk .header-proposition #proposition-link a,
+  #global-header.global-header--govuk .header-proposition #proposition-links a {
+    font-size: 14px;
+    line-height: 1.42857;
+  }
+}
+@media (min-width: 769px) {
+  /* line 207, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_govuk_header.scss */
+  #global-header.global-header--govuk .header-proposition #proposition-link a,
+  #global-header.global-header--govuk .header-proposition #proposition-links a {
+    font-family: "Roboto", sans-serif;
+    font-weight: 700;
+    text-transform: none;
+    font-size: 14px;
+    line-height: 1.14286;
+    line-height: 23px;
+  }
+}
+@media (min-width: 769px) and (min-width: 641px) {
+  /* line 207, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_govuk_header.scss */
+  #global-header.global-header--govuk .header-proposition #proposition-link a,
+  #global-header.global-header--govuk .header-proposition #proposition-links a {
+    font-size: 16px;
+    line-height: 1.25;
+  }
+}
+/* line 217, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_govuk_header.scss */
+#global-header.global-header--govuk .header-proposition #proposition-link a:hover,
+#global-header.global-header--govuk .header-proposition #proposition-links a:hover {
+  text-decoration: underline;
+}
+/* line 220, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_govuk_header.scss */
+#global-header.global-header--govuk .header-proposition #proposition-link a.active,
+#global-header.global-header--govuk .header-proposition #proposition-links a.active {
+  color: #1d8feb;
+}
+/* line 223, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_govuk_header.scss */
+#global-header.global-header--govuk .header-proposition #proposition-link a:focus,
+#global-header.global-header--govuk .header-proposition #proposition-links a:focus {
+  color: #0b0c0c;
+}
+/* line 229, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_govuk_header.scss */
+#global-header.global-header--govuk .header-proposition #proposition-link {
+  float: right;
+  line-height: 22px;
+}
+/* line 232, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_govuk_header.scss */
+.js-enabled #global-header.global-header--govuk .header-proposition #proposition-link {
+  display: block;
+}
+@media (min-width: 769px) {
+  /* line 229, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_govuk_header.scss */
+  #global-header.global-header--govuk .header-proposition #proposition-link {
+    float: none;
+  }
+}
+
+/* Global header bar */
+/* line 244, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_govuk_header.scss */
+#global-header-bar {
+  height: 10px;
+  background-color: #005ea5;
+}
+
+/* Global cookie message */
+/* line 255, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_govuk_header.scss */
+.js-enabled #global-cookie-message {
+  display: none;
+  /* shown with JS, always on for non-JS */
+}
+
+/* line 259, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_govuk_header.scss */
+#global-cookie-message {
+  width: 100%;
+  background-color: #d5e8f3;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+/* line 264, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_govuk_header.scss */
+#global-cookie-message p {
+  font-family: "Roboto", sans-serif;
+  font-weight: 400;
+  text-transform: none;
+  font-size: 14px;
+  line-height: 1.14286;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+@media (min-width: 641px) {
+  /* line 264, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_govuk_header.scss */
+  #global-cookie-message p {
+    font-size: 16px;
+    line-height: 1.25;
+  }
+}
+
+/* Global footer */
+/* line 3, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_govuk_footer.scss */
+#footer.footer--govuk {
+  background-color: #dee0e2;
+  border-top: 1px solid #a1acb2;
+}
+/* line 7, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_govuk_footer.scss */
+#footer.footer--govuk .footer-wrapper {
+  background-color: #dee0e2;
+  padding-top: 20px;
+}
+@media (min-width: 641px) {
+  /* line 7, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_govuk_footer.scss */
+  #footer.footer--govuk .footer-wrapper {
+    padding-top: 60px;
+  }
+}
+/* line 17, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_govuk_footer.scss */
+#footer.footer--govuk a {
+  color: #454a4c;
+}
+/* line 20, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_govuk_footer.scss */
+#footer.footer--govuk a:hover {
+  color: #171819;
+}
+/* line 25, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_govuk_footer.scss */
+#footer.footer--govuk h2 {
+  font-family: "Roboto", sans-serif;
+  font-weight: 400;
+  text-transform: none;
+  font-size: 18px;
+  line-height: 1.2;
+  font-weight: bold;
+  color: #0b0c0c;
+  margin: 0;
+}
+@media (min-width: 641px) {
+  /* line 25, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_govuk_footer.scss */
+  #footer.footer--govuk h2 {
+    font-size: 24px;
+    line-height: 1.25;
+  }
+}
+/* line 31, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_govuk_footer.scss */
+#footer.footer--govuk h2 a {
+  color: inherit;
+}
+/* line 36, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_govuk_footer.scss */
+#footer.footer--govuk .footer-meta {
+  padding-bottom: 60px;
+  clear: both;
+  font-size: 0;
+  color: #454a4c;
+}
+/* line 43, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_govuk_footer.scss */
+#footer.footer--govuk .footer-meta .footer-meta-inner {
+  display: inline-block;
+  vertical-align: bottom;
+  width: 100%;
+}
+@media (min-width: 641px) {
+  /* line 43, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_govuk_footer.scss */
+  #footer.footer--govuk .footer-meta .footer-meta-inner {
+    width: 75%;
+  }
+}
+/* line 57, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_govuk_footer.scss */
+#footer.footer--govuk .footer-meta .footer-meta-inner ul {
+  font-family: "Roboto", sans-serif;
+  font-weight: 400;
+  text-transform: none;
+  font-size: 14px;
+  line-height: 1.5;
+  display: inline-block;
+  list-style: none;
+  margin: 0 0 1.5em 0;
+  padding: 0;
+}
+@media (min-width: 641px) {
+  /* line 57, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_govuk_footer.scss */
+  #footer.footer--govuk .footer-meta .footer-meta-inner ul {
+    font-size: 16px;
+    line-height: 1.5;
+  }
+}
+@media (min-width: 641px) {
+  /* line 57, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_govuk_footer.scss */
+  #footer.footer--govuk .footer-meta .footer-meta-inner ul {
+    margin: 0 0 1em 0;
+  }
+}
+/* line 68, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_govuk_footer.scss */
+#footer.footer--govuk .footer-meta .footer-meta-inner ul li {
+  display: inline-block;
+  margin: 0 15px 0 0;
+}
+/* line 80, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_govuk_footer.scss */
+#footer.footer--govuk .footer-meta .footer-meta-inner .open-government-licence {
+  clear: left;
+  position: relative;
+}
+@media (min-width: 641px) {
+  /* line 80, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_govuk_footer.scss */
+  #footer.footer--govuk .footer-meta .footer-meta-inner .open-government-licence {
+    padding-left: 53px;
+  }
+}
+/* line 92, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_govuk_footer.scss */
+#footer.footer--govuk .footer-meta .footer-meta-inner .open-government-licence .logo {
+  margin-bottom: 1em;
+  padding-top: 0;
+}
+@media (min-width: 641px) {
+  /* line 92, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_govuk_footer.scss */
+  #footer.footer--govuk .footer-meta .footer-meta-inner .open-government-licence .logo {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 41px;
+    height: 100%;
+  }
+}
+/* line 103, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_govuk_footer.scss */
+#footer.footer--govuk .footer-meta .footer-meta-inner .open-government-licence .logo a {
+  display: block;
+  width: 41px;
+  height: 17px;
+  overflow: hidden;
+  text-indent: -999em;
+  background: url("../images/open-government-licence.png") 0 0 no-repeat;
+}
+@media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min--moz-device-pixel-ratio: 2), only screen and (-o-min-device-pixel-ratio: 20 / 10), only screen and (min-device-pixel-ratio: 2), only screen and (min-resolution: 192dpi), only screen and (min-resolution: 2dppx) {
+  /* line 103, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_govuk_footer.scss */
+  #footer.footer--govuk .footer-meta .footer-meta-inner .open-government-licence .logo a {
+    background-image: url("../images/open-government-licence_2x.png");
+    background-size: 41px 17px;
+  }
+}
+/* line 117, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_govuk_footer.scss */
+#footer.footer--govuk .footer-meta .footer-meta-inner .open-government-licence p {
+  font-family: "Roboto", sans-serif;
+  font-weight: 400;
+  text-transform: none;
+  font-size: 14px;
+  line-height: 1.14286;
+  margin: 0;
+  padding-top: 0.1em;
+}
+@media (min-width: 641px) {
+  /* line 117, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_govuk_footer.scss */
+  #footer.footer--govuk .footer-meta .footer-meta-inner .open-government-licence p {
+    font-size: 16px;
+    line-height: 1.25;
+  }
+}
+/* line 125, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_govuk_footer.scss */
+#footer.footer--govuk .footer-meta .copyright {
+  font-family: "Roboto", sans-serif;
+  font-weight: 400;
+  text-transform: none;
+  font-size: 14px;
+  line-height: 1.14286;
+  margin: 30px 0 0 0;
+  width: 100%;
+  display: block;
+}
+@media (min-width: 641px) {
+  /* line 125, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_govuk_footer.scss */
+  #footer.footer--govuk .footer-meta .copyright {
+    font-size: 16px;
+    line-height: 1.25;
+  }
+}
+@media (min-width: 641px) {
+  /* line 125, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_govuk_footer.scss */
+  #footer.footer--govuk .footer-meta .copyright {
+    display: inline-block;
+    text-align: inherit;
+    width: 25%;
+    padding-top: 15px;
+    margin-top: 0;
+  }
+}
+/* line 146, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_govuk_footer.scss */
+#footer.footer--govuk .footer-meta .copyright a {
+  display: block;
+  background-image: url("../images/govuk-crest.png");
+  background-repeat: no-repeat;
+  background-position: 50% 0%;
+  text-align: center;
+  text-decoration: none;
+  padding: 115px 0 0 0;
+}
+@media (min-width: 641px) {
+  /* line 146, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_govuk_footer.scss */
+  #footer.footer--govuk .footer-meta .copyright a {
+    background-position: 100% 0%;
+  }
+}
+@media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min--moz-device-pixel-ratio: 2), only screen and (-o-min-device-pixel-ratio: 20 / 10), only screen and (min-device-pixel-ratio: 2), only screen and (min-resolution: 192dpi), only screen and (min-resolution: 2dppx) {
+  /* line 146, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_govuk_footer.scss */
+  #footer.footer--govuk .footer-meta .copyright a {
+    background-image: url("../images/govuk-crest-2x.png");
+    background-size: 125px 102px;
+  }
+}
+@media (min-width: 641px) {
+  /* line 146, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_govuk_footer.scss */
+  #footer.footer--govuk .footer-meta .copyright a {
+    text-align: right;
+  }
+}
+
+/* line 46, /home/rikatee/workspace/directory-ui/node_modules/govuk_frontend_toolkit/stylesheets/_shims.scss */
+.grid-row:after, #global-header.global-header--govuk .header-wrapper:after, #global-header.global-header--govuk .header-wrapper .header-global:after, #global-header.global-header--govuk .header-wrapper .header-global .header-logo:after, #global-header.global-header--govuk .header-proposition #proposition-link:after,
+#global-header.global-header--govuk .header-proposition #proposition-links:after, #footer.footer--govuk .footer-meta:after, #content:after, .notice:after, .panel:after, fieldset:after, .form-section:after, .form-group:after, .form-block:after, .breadcrumbs ol:after, .tabs.tabs--inline .tabs-nav:after, .fieldvalue:after, .js-radiohide-content:after {
+  content: "";
+  display: block;
+  clear: both;
+}
+
+/* line 18, /home/rikatee/workspace/directory-ui/node_modules/govuk_frontend_toolkit/stylesheets/_grid_layout.scss */
+#global-header-bar, #global-cookie-message p, #footer.footer--govuk .footer-wrapper, #content {
+  max-width: 960px;
+  margin: 0 15px;
+}
+@media (min-width: 641px) {
+  /* line 18, /home/rikatee/workspace/directory-ui/node_modules/govuk_frontend_toolkit/stylesheets/_grid_layout.scss */
+  #global-header-bar, #global-cookie-message p, #footer.footer--govuk .footer-wrapper, #content {
+    margin: 0 30px;
+  }
+}
+@media (min-width: 1020px) {
+  /* line 18, /home/rikatee/workspace/directory-ui/node_modules/govuk_frontend_toolkit/stylesheets/_grid_layout.scss */
+  #global-header-bar, #global-cookie-message p, #footer.footer--govuk .footer-wrapper, #content {
+    margin: 0 auto;
+  }
+}
+
+/* line 64, /home/rikatee/workspace/directory-ui/node_modules/govuk_frontend_toolkit/stylesheets/_grid_layout.scss */
+.grid-row {
+  margin: 0 -15px;
+}
+
+/* line 46, /home/rikatee/workspace/directory-ui/node_modules/govuk_frontend_toolkit/stylesheets/_shims.scss */
+.grid-row:after, #global-header.global-header--govuk .header-wrapper:after, #global-header.global-header--govuk .header-wrapper .header-global:after, #global-header.global-header--govuk .header-wrapper .header-global .header-logo:after, #global-header.global-header--govuk .header-proposition #proposition-link:after,
+#global-header.global-header--govuk .header-proposition #proposition-links:after, #footer.footer--govuk .footer-meta:after, #content:after, .notice:after, .panel:after, fieldset:after, .form-section:after, .form-group:after, .form-block:after, .breadcrumbs ol:after, .tabs.tabs--inline .tabs-nav:after, .fieldvalue:after, .js-radiohide-content:after {
+  content: "";
+  display: block;
+  clear: both;
+}
+
+/* line 46, /home/rikatee/workspace/directory-ui/node_modules/govuk_frontend_toolkit/stylesheets/design-patterns/../_shims.scss */
+.grid-row:after, #global-header.global-header--govuk .header-wrapper:after, #global-header.global-header--govuk .header-wrapper .header-global:after, #global-header.global-header--govuk .header-wrapper .header-global .header-logo:after, #global-header.global-header--govuk .header-proposition #proposition-link:after,
+#global-header.global-header--govuk .header-proposition #proposition-links:after, #footer.footer--govuk .footer-meta:after, #content:after, .notice:after, .panel:after, fieldset:after, .form-section:after, .form-group:after, .form-block:after, .breadcrumbs ol:after, .tabs.tabs--inline .tabs-nav:after, .fieldvalue:after, .js-radiohide-content:after {
+  content: "";
+  display: block;
+  clear: both;
+}
+
+/* line 46, /home/rikatee/workspace/directory-ui/node_modules/govuk_frontend_toolkit/stylesheets/design-patterns/../_shims.scss */
+.grid-row:after, #global-header.global-header--govuk .header-wrapper:after, #global-header.global-header--govuk .header-wrapper .header-global:after, #global-header.global-header--govuk .header-wrapper .header-global .header-logo:after, #global-header.global-header--govuk .header-proposition #proposition-link:after,
+#global-header.global-header--govuk .header-proposition #proposition-links:after, #footer.footer--govuk .footer-meta:after, #content:after, .notice:after, .panel:after, fieldset:after, .form-section:after, .form-group:after, .form-block:after, .breadcrumbs ol:after, .tabs.tabs--inline .tabs-nav:after, .fieldvalue:after, .js-radiohide-content:after {
+  content: "";
+  display: block;
+  clear: both;
+}
+
+/* line 18, /home/rikatee/workspace/directory-ui/node_modules/govuk_frontend_toolkit/stylesheets/design-patterns/../_grid_layout.scss */
+#global-header-bar, #global-cookie-message p, #footer.footer--govuk .footer-wrapper, #content {
+  max-width: 960px;
+  margin: 0 15px;
+}
+@media (min-width: 641px) {
+  /* line 18, /home/rikatee/workspace/directory-ui/node_modules/govuk_frontend_toolkit/stylesheets/design-patterns/../_grid_layout.scss */
+  #global-header-bar, #global-cookie-message p, #footer.footer--govuk .footer-wrapper, #content {
+    margin: 0 30px;
+  }
+}
+@media (min-width: 1020px) {
+  /* line 18, /home/rikatee/workspace/directory-ui/node_modules/govuk_frontend_toolkit/stylesheets/design-patterns/../_grid_layout.scss */
+  #global-header-bar, #global-cookie-message p, #footer.footer--govuk .footer-wrapper, #content {
+    margin: 0 auto;
+  }
+}
+
+/* line 64, /home/rikatee/workspace/directory-ui/node_modules/govuk_frontend_toolkit/stylesheets/design-patterns/../_grid_layout.scss */
+.grid-row {
+  margin: 0 -15px;
+}
+
+/* line 46, /home/rikatee/workspace/directory-ui/node_modules/govuk_frontend_toolkit/stylesheets/design-patterns/../_shims.scss */
+.grid-row:after, #global-header.global-header--govuk .header-wrapper:after, #global-header.global-header--govuk .header-wrapper .header-global:after, #global-header.global-header--govuk .header-wrapper .header-global .header-logo:after, #global-header.global-header--govuk .header-proposition #proposition-link:after,
+#global-header.global-header--govuk .header-proposition #proposition-links:after, #footer.footer--govuk .footer-meta:after, #content:after, .notice:after, .panel:after, fieldset:after, .form-section:after, .form-group:after, .form-block:after, .breadcrumbs ol:after, .tabs.tabs--inline .tabs-nav:after, .fieldvalue:after, .js-radiohide-content:after {
+  content: "";
+  display: block;
+  clear: both;
+}
+
+/* line 46, /home/rikatee/workspace/directory-ui/node_modules/govuk_frontend_toolkit/stylesheets/design-patterns/../_shims.scss */
+.grid-row:after, #global-header.global-header--govuk .header-wrapper:after, #global-header.global-header--govuk .header-wrapper .header-global:after, #global-header.global-header--govuk .header-wrapper .header-global .header-logo:after, #global-header.global-header--govuk .header-proposition #proposition-link:after,
+#global-header.global-header--govuk .header-proposition #proposition-links:after, #footer.footer--govuk .footer-meta:after, #content:after, .notice:after, .panel:after, fieldset:after, .form-section:after, .form-group:after, .form-block:after, .breadcrumbs ol:after, .tabs.tabs--inline .tabs-nav:after, .fieldvalue:after, .js-radiohide-content:after {
+  content: "";
+  display: block;
+  clear: both;
+}
+
+/* line 19, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_helpers.scss */
+.example-highlight-grid .grid-row {
+  background: #bfc1c3;
+}
+/* line 23, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_helpers.scss */
+.example-highlight-grid .column-highlight {
+  background: #dee0e2;
+  width: 100%;
+}
+
+/* line 32, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_helpers.scss */
+.visually-hidden,
+.visuallyhidden {
+  position: absolute;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  width: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+}
+
+/* line 79, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_reset.scss */
+div,
+span,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+big,
+cite,
+code,
+del,
+dfn,
+em,
+img,
+ins,
+kbd,
+q,
+s,
+samp,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+var,
+b,
+u,
+i,
+center,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+article,
+aside,
+canvas,
+details,
+embed,
+figure,
+figcaption,
+footer,
+header,
+hgroup,
+menu,
+nav,
+output,
+ruby,
+section,
+summary,
+time,
+mark {
+  border: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* line 114, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_reset.scss */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+var,
+b,
+u,
+i,
+center,
+input,
+textarea,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td {
+  font-size: inherit;
+  font-family: inherit;
+  line-height: inherit;
+  font-weight: normal;
+}
+
+/* line 122, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_reset.scss */
+abbr[title],
+acronym[title] {
+  text-decoration: none;
+}
+
+/* line 132, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_reset.scss */
+legend {
+  box-sizing: border-box;
+  max-width: 100%;
+  display: table;
+}
+
+/* line 9, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_layout.scss */
+#content {
+  padding-bottom: 30px;
+  outline: none;
+}
+@media (min-width: 769px) {
+  /* line 9, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_layout.scss */
+  #content {
+    padding-bottom: 90px;
+  }
+}
+
+/* line 46, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_layout.scss */
+.column-quarter,
+.column-one-quarter {
+  padding: 0 15px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+@media (min-width: 641px) {
+  /* line 46, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_layout.scss */
+  .column-quarter,
+  .column-one-quarter {
+    float: left;
+    width: 25%;
+  }
+}
+
+/* line 51, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_layout.scss */
+.column-half,
+.column-one-half {
+  padding: 0 15px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+@media (min-width: 641px) {
+  /* line 51, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_layout.scss */
+  .column-half,
+  .column-one-half {
+    float: left;
+    width: 50%;
+  }
+}
+
+/* line 56, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_layout.scss */
+.column-third,
+.column-one-third {
+  padding: 0 15px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+@media (min-width: 641px) {
+  /* line 56, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_layout.scss */
+  .column-third,
+  .column-one-third {
+    float: left;
+    width: 33.33333%;
+  }
+}
+
+/* line 60, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_layout.scss */
+.column-two-thirds {
+  padding: 0 15px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+@media (min-width: 641px) {
+  /* line 60, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_layout.scss */
+  .column-two-thirds {
+    float: left;
+    width: 66.66667%;
+  }
+}
+
+/* line 64, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_layout.scss */
+.column-full {
+  padding: 0 15px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+@media (min-width: 641px) {
+  /* line 64, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_layout.scss */
+  .column-full {
+    float: left;
+    width: 100%;
+  }
+}
+
+/* line 7, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_elements-typography.scss */
+main {
+  font-family: "Roboto", sans-serif;
+  font-weight: 400;
+  text-transform: none;
+  font-size: 16px;
+  line-height: 1.25;
+  -webkit-font-smoothing: antialiased;
+}
+@media (min-width: 641px) {
+  /* line 7, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_elements-typography.scss */
+  main {
+    font-size: 19px;
+    line-height: 1.31579;
+  }
+}
+
+/* line 13, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_elements-typography.scss */
+.font-xxlarge {
+  font-family: "Roboto", sans-serif;
+  font-weight: 400;
+  text-transform: none;
+  font-size: 53px;
+  line-height: 1.03774;
+}
+@media (min-width: 641px) {
+  /* line 13, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_elements-typography.scss */
+  .font-xxlarge {
+    font-size: 80px;
+    line-height: 1;
+  }
+}
+
+/* line 17, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_elements-typography.scss */
+.font-xlarge {
+  font-family: "Roboto", sans-serif;
+  font-weight: 400;
+  text-transform: none;
+  font-size: 32px;
+  line-height: 1.09375;
+}
+@media (min-width: 641px) {
+  /* line 17, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_elements-typography.scss */
+  .font-xlarge {
+    font-size: 48px;
+    line-height: 1.04167;
+  }
+}
+
+/* line 21, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_elements-typography.scss */
+.font-large {
+  font-family: "Roboto", sans-serif;
+  font-weight: 400;
+  text-transform: none;
+  font-size: 24px;
+  line-height: 1.04167;
+}
+@media (min-width: 641px) {
+  /* line 21, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_elements-typography.scss */
+  .font-large {
+    font-size: 36px;
+    line-height: 1.11111;
+  }
+}
+
+/* line 25, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_elements-typography.scss */
+.font-medium {
+  font-family: "Roboto", sans-serif;
+  font-weight: 400;
+  text-transform: none;
+  font-size: 18px;
+  line-height: 1.2;
+}
+@media (min-width: 641px) {
+  /* line 25, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_elements-typography.scss */
+  .font-medium {
+    font-size: 24px;
+    line-height: 1.25;
+  }
+}
+
+/* line 29, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_elements-typography.scss */
+.font-small {
+  font-family: "Roboto", sans-serif;
+  font-weight: 400;
+  text-transform: none;
+  font-size: 16px;
+  line-height: 1.25;
+}
+@media (min-width: 641px) {
+  /* line 29, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_elements-typography.scss */
+  .font-small {
+    font-size: 19px;
+    line-height: 1.31579;
+  }
+}
+
+/* line 33, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_elements-typography.scss */
+.font-xsmall {
+  font-family: "Roboto", sans-serif;
+  font-weight: 400;
+  text-transform: none;
+  font-size: 14px;
+  line-height: 1.14286;
+}
+@media (min-width: 641px) {
+  /* line 33, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_elements-typography.scss */
+  .font-xsmall {
+    font-size: 16px;
+    line-height: 1.25;
+  }
+}
+
+/* line 38, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_elements-typography.scss */
+.bold-xxlarge {
+  font-family: "Roboto", sans-serif;
+  font-weight: 700;
+  text-transform: none;
+  font-size: 53px;
+  line-height: 1.03774;
+}
+@media (min-width: 641px) {
+  /* line 38, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_elements-typography.scss */
+  .bold-xxlarge {
+    font-size: 80px;
+    line-height: 1;
+  }
+}
+
+/* line 42, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_elements-typography.scss */
+.bold-xlarge {
+  font-family: "Roboto", sans-serif;
+  font-weight: 700;
+  text-transform: none;
+  font-size: 32px;
+  line-height: 1.09375;
+}
+@media (min-width: 641px) {
+  /* line 42, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_elements-typography.scss */
+  .bold-xlarge {
+    font-size: 48px;
+    line-height: 1.04167;
+  }
+}
+
+/* line 46, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_elements-typography.scss */
+.bold-large {
+  font-family: "Roboto", sans-serif;
+  font-weight: 700;
+  text-transform: none;
+  font-size: 24px;
+  line-height: 1.04167;
+}
+@media (min-width: 641px) {
+  /* line 46, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_elements-typography.scss */
+  .bold-large {
+    font-size: 36px;
+    line-height: 1.11111;
+  }
+}
+
+/* line 50, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_elements-typography.scss */
+.bold-medium {
+  font-family: "Roboto", sans-serif;
+  font-weight: 700;
+  text-transform: none;
+  font-size: 18px;
+  line-height: 1.2;
+}
+@media (min-width: 641px) {
+  /* line 50, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_elements-typography.scss */
+  .bold-medium {
+    font-size: 24px;
+    line-height: 1.25;
+  }
+}
+
+/* line 54, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_elements-typography.scss */
+.bold-small {
+  font-family: "Roboto", sans-serif;
+  font-weight: 700;
+  text-transform: none;
+  font-size: 16px;
+  line-height: 1.25;
+}
+@media (min-width: 641px) {
+  /* line 54, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_elements-typography.scss */
+  .bold-small {
+    font-size: 19px;
+    line-height: 1.31579;
+  }
+}
+
+/* line 58, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_elements-typography.scss */
+.bold-xsmall {
+  font-family: "Roboto", sans-serif;
+  font-weight: 700;
+  text-transform: none;
+  font-size: 14px;
+  line-height: 1.14286;
+}
+@media (min-width: 641px) {
+  /* line 58, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_elements-typography.scss */
+  .bold-xsmall {
+    font-size: 16px;
+    line-height: 1.25;
+  }
+}
+
+/* line 67, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_elements-typography.scss */
+.heading-xlarge {
+  font-family: "Roboto", sans-serif;
+  font-weight: 700;
+  text-transform: none;
+  font-size: 32px;
+  line-height: 1.09375;
+  margin-top: 0.46875em;
+  margin-bottom: 0.9375em;
+}
+@media (min-width: 641px) {
+  /* line 67, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_elements-typography.scss */
+  .heading-xlarge {
+    font-size: 48px;
+    line-height: 1.04167;
+  }
+}
+@media (min-width: 641px) {
+  /* line 67, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_elements-typography.scss */
+  .heading-xlarge {
+    margin-top: 0.625em;
+    margin-bottom: 1.25em;
+  }
+}
+/* line 78, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_elements-typography.scss */
+.heading-xlarge .heading-secondary {
+  font-family: "Roboto", sans-serif;
+  font-weight: 400;
+  text-transform: none;
+  font-size: 20px;
+  line-height: 1.11111;
+  display: block;
+  padding-top: 8px;
+  padding-bottom: 7px;
+  display: block;
+  color: #6f777b;
+}
+@media (min-width: 641px) {
+  /* line 78, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_elements-typography.scss */
+  .heading-xlarge .heading-secondary {
+    font-size: 27px;
+    line-height: 1.11111;
+  }
+}
+@media (min-width: 641px) {
+  /* line 78, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_elements-typography.scss */
+  .heading-xlarge .heading-secondary {
+    padding-top: 4px;
+    padding-bottom: 6px;
+  }
+}
+
+/* line 87, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_elements-typography.scss */
+.heading-large {
+  font-family: "Roboto", sans-serif;
+  font-weight: 700;
+  text-transform: none;
+  font-size: 24px;
+  line-height: 1.04167;
+  margin-top: 1.04167em;
+  margin-bottom: 0.41667em;
+}
+@media (min-width: 641px) {
+  /* line 87, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_elements-typography.scss */
+  .heading-large {
+    font-size: 36px;
+    line-height: 1.11111;
+  }
+}
+@media (min-width: 641px) {
+  /* line 87, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_elements-typography.scss */
+  .heading-large {
+    margin-top: 1.25em;
+    margin-bottom: 0.55556em;
+  }
+}
+/* line 98, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_elements-typography.scss */
+.heading-large .heading-secondary {
+  font-family: "Roboto", sans-serif;
+  font-weight: 400;
+  text-transform: none;
+  font-size: 18px;
+  line-height: 1.2;
+  display: block;
+  padding-top: 9px;
+  padding-bottom: 6px;
+  display: block;
+  color: #6f777b;
+}
+@media (min-width: 641px) {
+  /* line 98, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_elements-typography.scss */
+  .heading-large .heading-secondary {
+    font-size: 24px;
+    line-height: 1.25;
+  }
+}
+@media (min-width: 641px) {
+  /* line 98, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_elements-typography.scss */
+  .heading-large .heading-secondary {
+    padding-top: 6px;
+    padding-bottom: 4px;
+  }
+}
+
+/* line 107, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_elements-typography.scss */
+.heading-medium {
+  font-family: "Roboto", sans-serif;
+  font-weight: 700;
+  text-transform: none;
+  font-size: 18px;
+  line-height: 1.2;
+  margin-top: 1.25em;
+  margin-bottom: 0.5em;
+}
+@media (min-width: 641px) {
+  /* line 107, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_elements-typography.scss */
+  .heading-medium {
+    font-size: 24px;
+    line-height: 1.25;
+  }
+}
+@media (min-width: 641px) {
+  /* line 107, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_elements-typography.scss */
+  .heading-medium {
+    margin-top: 1.875em;
+    margin-bottom: 0.83333em;
+  }
+}
+
+/* line 120, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_elements-typography.scss */
+.heading-small {
+  font-family: "Roboto", sans-serif;
+  font-weight: 700;
+  text-transform: none;
+  font-size: 16px;
+  line-height: 1.25;
+  margin-top: 0.625em;
+  margin-bottom: 0.3125em;
+}
+@media (min-width: 641px) {
+  /* line 120, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_elements-typography.scss */
+  .heading-small {
+    font-size: 19px;
+    line-height: 1.31579;
+  }
+}
+@media (min-width: 641px) {
+  /* line 120, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_elements-typography.scss */
+  .heading-small {
+    margin-top: 1.05263em;
+  }
+}
+
+/* line 133, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_elements-typography.scss */
+p {
+  margin-top: 0.3125em;
+  margin-bottom: 1.25em;
+}
+@media (min-width: 641px) {
+  /* line 133, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_elements-typography.scss */
+  p {
+    margin-top: 0.26316em;
+    margin-bottom: 1.05263em;
+  }
+}
+
+/* line 145, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_elements-typography.scss */
+.lede {
+  font-family: "Roboto", sans-serif;
+  font-weight: 400;
+  text-transform: none;
+  font-size: 18px;
+  line-height: 1.2;
+}
+@media (min-width: 641px) {
+  /* line 145, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_elements-typography.scss */
+  .lede {
+    font-size: 24px;
+    line-height: 1.25;
+  }
+}
+
+/* line 151, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_elements-typography.scss */
+.text {
+  max-width: 30em;
+}
+
+/* line 155, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_elements-typography.scss */
+.text-secondary {
+  color: #6f777b;
+}
+
+/* line 160, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_elements-typography.scss */
+.link {
+  color: #005ea5;
+  text-decoration: underline;
+}
+
+/* line 165, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_elements-typography.scss */
+.link:visited {
+  color: #4c2c92;
+}
+
+/* line 169, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_elements-typography.scss */
+.link:hover {
+  color: #2b8cc4;
+}
+
+/* line 173, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_elements-typography.scss */
+.link:active {
+  color: #005ea5;
+}
+
+/* line 179, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_elements-typography.scss */
+.link-back {
+  display: -moz-inline-stack;
+  display: inline-block;
+  position: relative;
+  font-family: "Roboto", sans-serif;
+  font-weight: 400;
+  text-transform: none;
+  font-size: 14px;
+  line-height: 1.14286;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  padding-left: 14px;
+  color: #0b0c0c;
+  text-decoration: none;
+  border-bottom: 1px solid #0b0c0c;
+}
+@media (min-width: 641px) {
+  /* line 179, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_elements-typography.scss */
+  .link-back {
+    font-size: 16px;
+    line-height: 1.25;
+  }
+}
+/* line 194, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_elements-typography.scss */
+.link-back:link, .link-back:visited, .link-back:hover, .link-back:active {
+  color: #0b0c0c;
+}
+/* line 202, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_elements-typography.scss */
+.link-back::before {
+  content: '';
+  display: block;
+  width: 0;
+  height: 0;
+  border-top: 5px solid transparent;
+  border-right: 6px solid #0b0c0c;
+  border-bottom: 5px solid transparent;
+  position: absolute;
+  left: 0;
+  top: 50%;
+  margin-top: -6px;
+}
+
+/* line 229, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_elements-typography.scss */
+.code {
+  color: #0b0c0c;
+  background-color: #f8f8f8;
+  text-shadow: 0 1px white;
+  font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+  font-size: 14px;
+  direction: ltr;
+  text-align: left;
+  white-space: pre;
+  word-spacing: normal;
+  word-break: normal;
+  line-height: 1.5;
+  -moz-tab-size: 4;
+  -o-tab-size: 4;
+  tab-size: 4;
+  -webkit-hyphens: none;
+  -moz-hyphens: none;
+  -ms-hyphens: none;
+  hyphens: none;
+  border: 1px solid #bfc1c3;
+  padding: 4px 4px 2px;
+}
+
+/* line 257, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_elements-typography.scss */
+hr {
+  display: block;
+  background: #bfc1c3;
+  border: 0;
+  height: 1px;
+  margin-top: 30px;
+  margin-bottom: 30px;
+  padding: 0;
+}
+
+/* line 272, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_elements-typography.scss */
+.notice {
+  position: relative;
+}
+/* line 276, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_elements-typography.scss */
+.notice .icon {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  margin-top: -17px;
+}
+/* line 283, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_elements-typography.scss */
+.notice strong {
+  display: block;
+  padding-left: 65px;
+  margin-left: -15px;
+}
+
+/* line 4, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_buttons.scss */
+.button {
+  background-color: #00823b;
+  position: relative;
+  display: -moz-inline-stack;
+  display: inline-block;
+  padding: .526315em .789473em .263157em;
+  border: none;
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  border-radius: 0;
+  -webkit-appearance: none;
+  -webkit-box-shadow: 0 2px 0 #003518;
+  -moz-box-shadow: 0 2px 0 #003518;
+  box-shadow: 0 2px 0 #003518;
+  font-size: 1em;
+  line-height: 1.25;
+  text-decoration: none;
+  -webkit-font-smoothing: antialiased;
+  cursor: pointer;
+  color: white;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  vertical-align: top;
+}
+/* line 50, /home/rikatee/workspace/directory-ui/node_modules/govuk_frontend_toolkit/stylesheets/design-patterns/_buttons.scss */
+.button:visited {
+  background-color: #00823b;
+}
+/* line 55, /home/rikatee/workspace/directory-ui/node_modules/govuk_frontend_toolkit/stylesheets/design-patterns/_buttons.scss */
+.button:hover, .button:focus {
+  background-color: #00692f;
+}
+/* line 59, /home/rikatee/workspace/directory-ui/node_modules/govuk_frontend_toolkit/stylesheets/design-patterns/_buttons.scss */
+.button:active {
+  top: 2px;
+  -webkit-box-shadow: 0 0 0 #00823b;
+  -moz-box-shadow: 0 0 0 #00823b;
+  box-shadow: 0 0 0 #00823b;
+}
+/* line 67, /home/rikatee/workspace/directory-ui/node_modules/govuk_frontend_toolkit/stylesheets/design-patterns/_buttons.scss */
+.button.disabled, .button[disabled="disabled"], .button[disabled] {
+  zoom: 1;
+  filter: alpha(opacity=50);
+  opacity: 0.5;
+}
+/* line 69, /home/rikatee/workspace/directory-ui/node_modules/govuk_frontend_toolkit/stylesheets/design-patterns/_buttons.scss */
+.button.disabled:hover, .button[disabled="disabled"]:hover, .button[disabled]:hover {
+  cursor: default;
+  background-color: #00823b;
+}
+/* line 74, /home/rikatee/workspace/directory-ui/node_modules/govuk_frontend_toolkit/stylesheets/design-patterns/_buttons.scss */
+.button.disabled:active, .button[disabled="disabled"]:active, .button[disabled]:active {
+  top: 0;
+  -webkit-box-shadow: 0 2px 0 #003518;
+  -moz-box-shadow: 0 2px 0 #003518;
+  box-shadow: 0 2px 0 #003518;
+}
+/* line 90, /home/rikatee/workspace/directory-ui/node_modules/govuk_frontend_toolkit/stylesheets/design-patterns/_buttons.scss */
+.button:link, .button:hover, .button:focus, .button:visited {
+  color: white;
+}
+/* line 106, /home/rikatee/workspace/directory-ui/node_modules/govuk_frontend_toolkit/stylesheets/design-patterns/_buttons.scss */
+.button:before {
+  content: "";
+  height: 110%;
+  width: 100%;
+  display: block;
+  background: transparent;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+/* line 117, /home/rikatee/workspace/directory-ui/node_modules/govuk_frontend_toolkit/stylesheets/design-patterns/_buttons.scss */
+.button:active:before {
+  top: -10%;
+  height: 120%;
+}
+/* line 130, /home/rikatee/workspace/directory-ui/node_modules/govuk_frontend_toolkit/stylesheets/design-patterns/_buttons.scss */
+.button[rel="external"]:after {
+  display: none;
+  content: none;
+  margin-left: 0;
+  margin-right: 0;
+}
+@media (max-width: 640px) {
+  /* line 4, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_buttons.scss */
+  .button {
+    width: 100%;
+  }
+}
+
+/* line 15, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_buttons.scss */
+.button::-moz-focus-inner {
+  border: 0;
+  padding: 0;
+}
+
+/* line 20, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_buttons.scss */
+.button:focus {
+  outline: 3px solid #ffbf47;
+}
+
+/* line 25, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_buttons.scss */
+.button[disabled="disabled"] {
+  background: #00823b;
+}
+
+/* line 29, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_buttons.scss */
+.button[disabled="disabled"]:focus {
+  outline: none;
+}
+
+/* line 35, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_buttons.scss */
+.button-start,
+.button-get-started {
+  font-family: "Roboto", sans-serif;
+  font-weight: 700;
+  text-transform: none;
+  font-size: 18px;
+  line-height: 1.2;
+  background-image: image-url("icon-pointer.png");
+  background-repeat: no-repeat;
+  background-position: 100% 50%;
+  padding: 0.36842em 2.15789em 0.21053em 0.84211em;
+}
+@media (min-width: 641px) {
+  /* line 35, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_buttons.scss */
+  .button-start,
+  .button-get-started {
+    font-size: 24px;
+    line-height: 1.25;
+  }
+}
+@media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min--moz-device-pixel-ratio: 2), only screen and (-o-min-device-pixel-ratio: 20 / 10), only screen and (min-device-pixel-ratio: 2), only screen and (min-resolution: 192dpi), only screen and (min-resolution: 2dppx) {
+  /* line 35, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_buttons.scss */
+  .button-start,
+  .button-get-started {
+    background-image: image-url("icon-pointer-2x.png");
+    background-size: 30px 19px;
+  }
+}
+
+/* line 28, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_icons.scss */
+.icon {
+  display: inline-block;
+  background-position: 0 0;
+  background-repeat: no-repeat;
+}
+
+/* line 36, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_icons.scss */
+.icon-calendar {
+  width: 27px;
+  height: 27px;
+  background-image: image-url("icon-calendar.png");
+}
+@media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min--moz-device-pixel-ratio: 2), only screen and (-o-min-device-pixel-ratio: 20 / 10), only screen and (min-device-pixel-ratio: 2), only screen and (min-resolution: 192dpi), only screen and (min-resolution: 2dppx) {
+  /* line 36, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_icons.scss */
+  .icon-calendar {
+    background-image: image-url("icon-calendar-2x.png");
+    background-size: 100%;
+  }
+}
+
+/* line 40, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_icons.scss */
+.icon-file-download {
+  width: 30px;
+  height: 39px;
+  background-image: image-url("icon-file-download.png");
+}
+@media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min--moz-device-pixel-ratio: 2), only screen and (-o-min-device-pixel-ratio: 20 / 10), only screen and (min-device-pixel-ratio: 2), only screen and (min-resolution: 192dpi), only screen and (min-resolution: 2dppx) {
+  /* line 40, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_icons.scss */
+  .icon-file-download {
+    background-image: image-url("icon-file-download-2x.png");
+    background-size: 100%;
+  }
+}
+
+/* line 44, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_icons.scss */
+.icon-important {
+  width: 35px;
+  height: 35px;
+  background-image: image-url("icon-important.png");
+}
+@media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min--moz-device-pixel-ratio: 2), only screen and (-o-min-device-pixel-ratio: 20 / 10), only screen and (min-device-pixel-ratio: 2), only screen and (min-resolution: 192dpi), only screen and (min-resolution: 2dppx) {
+  /* line 44, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_icons.scss */
+  .icon-important {
+    background-image: image-url("icon-important-2x.png");
+    background-size: 100%;
+  }
+}
+
+/* line 48, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_icons.scss */
+.icon-information {
+  width: 27px;
+  height: 27px;
+  background-image: image-url("icon-information.png");
+}
+@media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min--moz-device-pixel-ratio: 2), only screen and (-o-min-device-pixel-ratio: 20 / 10), only screen and (min-device-pixel-ratio: 2), only screen and (min-resolution: 192dpi), only screen and (min-resolution: 2dppx) {
+  /* line 48, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_icons.scss */
+  .icon-information {
+    background-image: image-url("icon-information-2x.png");
+    background-size: 100%;
+  }
+}
+
+/* line 52, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_icons.scss */
+.icon-locator {
+  width: 26px;
+  height: 36px;
+  background-image: image-url("icon-locator.png");
+}
+@media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min--moz-device-pixel-ratio: 2), only screen and (-o-min-device-pixel-ratio: 20 / 10), only screen and (min-device-pixel-ratio: 2), only screen and (min-resolution: 192dpi), only screen and (min-resolution: 2dppx) {
+  /* line 52, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_icons.scss */
+  .icon-locator {
+    background-image: image-url("icon-locator-2x.png");
+    background-size: 100%;
+  }
+}
+
+/* line 56, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_icons.scss */
+.icon-pointer {
+  width: 30px;
+  height: 19px;
+  background-image: image-url("icon-pointer.png");
+}
+@media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min--moz-device-pixel-ratio: 2), only screen and (-o-min-device-pixel-ratio: 20 / 10), only screen and (min-device-pixel-ratio: 2), only screen and (min-resolution: 192dpi), only screen and (min-resolution: 2dppx) {
+  /* line 56, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_icons.scss */
+  .icon-pointer {
+    background-image: image-url("icon-pointer-2x.png");
+    background-size: 100%;
+  }
+}
+
+/* line 60, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_icons.scss */
+.icon-pointer-black {
+  width: 23px;
+  height: 23px;
+  background-image: image-url("icon-pointer-black.png");
+}
+@media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min--moz-device-pixel-ratio: 2), only screen and (-o-min-device-pixel-ratio: 20 / 10), only screen and (min-device-pixel-ratio: 2), only screen and (min-resolution: 192dpi), only screen and (min-resolution: 2dppx) {
+  /* line 60, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_icons.scss */
+  .icon-pointer-black {
+    background-image: image-url("icon-pointer-black-2x.png");
+    background-size: 100%;
+  }
+}
+
+/* line 64, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_icons.scss */
+.icon-search {
+  width: 30px;
+  height: 22px;
+  background-image: image-url("icon-search.png");
+}
+@media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min--moz-device-pixel-ratio: 2), only screen and (-o-min-device-pixel-ratio: 20 / 10), only screen and (min-device-pixel-ratio: 2), only screen and (min-resolution: 192dpi), only screen and (min-resolution: 2dppx) {
+  /* line 64, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_icons.scss */
+  .icon-search {
+    background-image: image-url("icon-search-2x.png");
+    background-size: 100%;
+  }
+}
+
+/* line 71, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_icons.scss */
+.icon-step-1 {
+  width: 23px;
+  height: 23px;
+  background-image: image-url("icon-steps/icon-step-1.png");
+}
+@media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min--moz-device-pixel-ratio: 2), only screen and (-o-min-device-pixel-ratio: 20 / 10), only screen and (min-device-pixel-ratio: 2), only screen and (min-resolution: 192dpi), only screen and (min-resolution: 2dppx) {
+  /* line 71, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_icons.scss */
+  .icon-step-1 {
+    background-image: image-url("icon-steps/icon-step-1-2x.png");
+    background-size: 100%;
+  }
+}
+
+/* line 71, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_icons.scss */
+.icon-step-2 {
+  width: 23px;
+  height: 23px;
+  background-image: image-url("icon-steps/icon-step-2.png");
+}
+@media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min--moz-device-pixel-ratio: 2), only screen and (-o-min-device-pixel-ratio: 20 / 10), only screen and (min-device-pixel-ratio: 2), only screen and (min-resolution: 192dpi), only screen and (min-resolution: 2dppx) {
+  /* line 71, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_icons.scss */
+  .icon-step-2 {
+    background-image: image-url("icon-steps/icon-step-2-2x.png");
+    background-size: 100%;
+  }
+}
+
+/* line 71, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_icons.scss */
+.icon-step-3 {
+  width: 23px;
+  height: 23px;
+  background-image: image-url("icon-steps/icon-step-3.png");
+}
+@media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min--moz-device-pixel-ratio: 2), only screen and (-o-min-device-pixel-ratio: 20 / 10), only screen and (min-device-pixel-ratio: 2), only screen and (min-resolution: 192dpi), only screen and (min-resolution: 2dppx) {
+  /* line 71, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_icons.scss */
+  .icon-step-3 {
+    background-image: image-url("icon-steps/icon-step-3-2x.png");
+    background-size: 100%;
+  }
+}
+
+/* line 71, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_icons.scss */
+.icon-step-4 {
+  width: 23px;
+  height: 23px;
+  background-image: image-url("icon-steps/icon-step-4.png");
+}
+@media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min--moz-device-pixel-ratio: 2), only screen and (-o-min-device-pixel-ratio: 20 / 10), only screen and (min-device-pixel-ratio: 2), only screen and (min-resolution: 192dpi), only screen and (min-resolution: 2dppx) {
+  /* line 71, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_icons.scss */
+  .icon-step-4 {
+    background-image: image-url("icon-steps/icon-step-4-2x.png");
+    background-size: 100%;
+  }
+}
+
+/* line 71, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_icons.scss */
+.icon-step-5 {
+  width: 23px;
+  height: 23px;
+  background-image: image-url("icon-steps/icon-step-5.png");
+}
+@media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min--moz-device-pixel-ratio: 2), only screen and (-o-min-device-pixel-ratio: 20 / 10), only screen and (min-device-pixel-ratio: 2), only screen and (min-resolution: 192dpi), only screen and (min-resolution: 2dppx) {
+  /* line 71, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_icons.scss */
+  .icon-step-5 {
+    background-image: image-url("icon-steps/icon-step-5-2x.png");
+    background-size: 100%;
+  }
+}
+
+/* line 71, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_icons.scss */
+.icon-step-6 {
+  width: 23px;
+  height: 23px;
+  background-image: image-url("icon-steps/icon-step-6.png");
+}
+@media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min--moz-device-pixel-ratio: 2), only screen and (-o-min-device-pixel-ratio: 20 / 10), only screen and (min-device-pixel-ratio: 2), only screen and (min-resolution: 192dpi), only screen and (min-resolution: 2dppx) {
+  /* line 71, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_icons.scss */
+  .icon-step-6 {
+    background-image: image-url("icon-steps/icon-step-6-2x.png");
+    background-size: 100%;
+  }
+}
+
+/* line 71, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_icons.scss */
+.icon-step-7 {
+  width: 23px;
+  height: 23px;
+  background-image: image-url("icon-steps/icon-step-7.png");
+}
+@media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min--moz-device-pixel-ratio: 2), only screen and (-o-min-device-pixel-ratio: 20 / 10), only screen and (min-device-pixel-ratio: 2), only screen and (min-resolution: 192dpi), only screen and (min-resolution: 2dppx) {
+  /* line 71, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_icons.scss */
+  .icon-step-7 {
+    background-image: image-url("icon-steps/icon-step-7-2x.png");
+    background-size: 100%;
+  }
+}
+
+/* line 71, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_icons.scss */
+.icon-step-8 {
+  width: 23px;
+  height: 23px;
+  background-image: image-url("icon-steps/icon-step-8.png");
+}
+@media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min--moz-device-pixel-ratio: 2), only screen and (-o-min-device-pixel-ratio: 20 / 10), only screen and (min-device-pixel-ratio: 2), only screen and (min-resolution: 192dpi), only screen and (min-resolution: 2dppx) {
+  /* line 71, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_icons.scss */
+  .icon-step-8 {
+    background-image: image-url("icon-steps/icon-step-8-2x.png");
+    background-size: 100%;
+  }
+}
+
+/* line 71, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_icons.scss */
+.icon-step-9 {
+  width: 23px;
+  height: 23px;
+  background-image: image-url("icon-steps/icon-step-9.png");
+}
+@media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min--moz-device-pixel-ratio: 2), only screen and (-o-min-device-pixel-ratio: 20 / 10), only screen and (min-device-pixel-ratio: 2), only screen and (min-resolution: 192dpi), only screen and (min-resolution: 2dppx) {
+  /* line 71, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_icons.scss */
+  .icon-step-9 {
+    background-image: image-url("icon-steps/icon-step-9-2x.png");
+    background-size: 100%;
+  }
+}
+
+/* line 71, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_icons.scss */
+.icon-step-10 {
+  width: 23px;
+  height: 23px;
+  background-image: image-url("icon-steps/icon-step-10.png");
+}
+@media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min--moz-device-pixel-ratio: 2), only screen and (-o-min-device-pixel-ratio: 20 / 10), only screen and (min-device-pixel-ratio: 2), only screen and (min-resolution: 192dpi), only screen and (min-resolution: 2dppx) {
+  /* line 71, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_icons.scss */
+  .icon-step-10 {
+    background-image: image-url("icon-steps/icon-step-10-2x.png");
+    background-size: 100%;
+  }
+}
+
+/* line 71, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_icons.scss */
+.icon-step-11 {
+  width: 23px;
+  height: 23px;
+  background-image: image-url("icon-steps/icon-step-11.png");
+}
+@media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min--moz-device-pixel-ratio: 2), only screen and (-o-min-device-pixel-ratio: 20 / 10), only screen and (min-device-pixel-ratio: 2), only screen and (min-resolution: 192dpi), only screen and (min-resolution: 2dppx) {
+  /* line 71, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_icons.scss */
+  .icon-step-11 {
+    background-image: image-url("icon-steps/icon-step-11-2x.png");
+    background-size: 100%;
+  }
+}
+
+/* line 71, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_icons.scss */
+.icon-step-12 {
+  width: 23px;
+  height: 23px;
+  background-image: image-url("icon-steps/icon-step-12.png");
+}
+@media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min--moz-device-pixel-ratio: 2), only screen and (-o-min-device-pixel-ratio: 20 / 10), only screen and (min-device-pixel-ratio: 2), only screen and (min-resolution: 192dpi), only screen and (min-resolution: 2dppx) {
+  /* line 71, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_icons.scss */
+  .icon-step-12 {
+    background-image: image-url("icon-steps/icon-step-12-2x.png");
+    background-size: 100%;
+  }
+}
+
+/* line 71, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_icons.scss */
+.icon-step-13 {
+  width: 23px;
+  height: 23px;
+  background-image: image-url("icon-steps/icon-step-13.png");
+}
+@media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min--moz-device-pixel-ratio: 2), only screen and (-o-min-device-pixel-ratio: 20 / 10), only screen and (min-device-pixel-ratio: 2), only screen and (min-resolution: 192dpi), only screen and (min-resolution: 2dppx) {
+  /* line 71, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_icons.scss */
+  .icon-step-13 {
+    background-image: image-url("icon-steps/icon-step-13-2x.png");
+    background-size: 100%;
+  }
+}
+
+/* line 71, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_icons.scss */
+.icon-step-14 {
+  width: 23px;
+  height: 23px;
+  background-image: image-url("icon-steps/icon-step-14.png");
+}
+@media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min--moz-device-pixel-ratio: 2), only screen and (-o-min-device-pixel-ratio: 20 / 10), only screen and (min-device-pixel-ratio: 2), only screen and (min-resolution: 192dpi), only screen and (min-resolution: 2dppx) {
+  /* line 71, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_icons.scss */
+  .icon-step-14 {
+    background-image: image-url("icon-steps/icon-step-14-2x.png");
+    background-size: 100%;
+  }
+}
+
+/* line 77, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_icons.scss */
+.circle {
+  display: inline-block;
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  border-radius: 50%;
+  background: #0b0c0c;
+  color: white;
+  font-family: "ntatabularnumbers", "nta", Arial, sans-serif;
+  font-size: 12px;
+  font-weight: bold;
+  text-align: center;
+}
+
+/* line 93, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_icons.scss */
+.circle-step {
+  min-width: 24px;
+  min-height: 24px;
+  line-height: 24px;
+}
+
+/* line 99, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_icons.scss */
+.circle-step-large {
+  font-size: 19px;
+  min-width: 38px;
+  min-height: 38px;
+  line-height: 38px;
+}
+
+/* line 5, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_lists.scss */
+ul,
+ol {
+  list-style-type: none;
+}
+
+/* line 9, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_lists.scss */
+.list {
+  padding: 0;
+  margin-top: 5px;
+  margin-bottom: 20px;
+}
+
+/* line 15, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_lists.scss */
+.list li {
+  margin-bottom: 5px;
+}
+
+/* line 20, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_lists.scss */
+.list-bullet {
+  list-style-type: disc;
+  padding-left: 20px;
+}
+
+/* line 26, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_lists.scss */
+.list-number {
+  list-style-type: decimal;
+  padding-left: 20px;
+}
+
+/* line 4, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_tables.scss */
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+  width: 100%;
+}
+/* line 10, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_tables.scss */
+table th,
+table td {
+  font-family: "Roboto", sans-serif;
+  font-weight: 400;
+  text-transform: none;
+  font-size: 16px;
+  line-height: 1.25;
+  padding: 0.63158em 1.05263em 0.47368em 0;
+  text-align: left;
+  color: #0b0c0c;
+  border-bottom: 1px solid #bfc1c3;
+}
+@media (min-width: 641px) {
+  /* line 10, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_tables.scss */
+  table th,
+  table td {
+    font-size: 19px;
+    line-height: 1.31579;
+  }
+}
+/* line 19, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_tables.scss */
+table th {
+  font-weight: 700;
+}
+/* line 22, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_tables.scss */
+table th.numeric {
+  text-align: right;
+}
+/* line 29, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_tables.scss */
+table td.numeric {
+  font-family: "Roboto", sans-serif;
+  font-weight: 400;
+  text-transform: none;
+  font-size: 14px;
+  line-height: 1.14286;
+  text-align: right;
+}
+@media (min-width: 641px) {
+  /* line 29, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_tables.scss */
+  table td.numeric {
+    font-size: 16px;
+    line-height: 1.25;
+  }
+}
+
+/* line 37, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_tables.scss */
+.table-font-xsmall th {
+  font-family: "Roboto", sans-serif;
+  font-weight: 700;
+  text-transform: none;
+  font-size: 14px;
+  line-height: 1.14286;
+}
+@media (min-width: 641px) {
+  /* line 37, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_tables.scss */
+  .table-font-xsmall th {
+    font-size: 16px;
+    line-height: 1.25;
+  }
+}
+/* line 41, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_tables.scss */
+.table-font-xsmall td {
+  font-family: "Roboto", sans-serif;
+  font-weight: 400;
+  text-transform: none;
+  font-size: 14px;
+  line-height: 1.14286;
+}
+@media (min-width: 641px) {
+  /* line 41, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_tables.scss */
+  .table-font-xsmall td {
+    font-size: 16px;
+    line-height: 1.25;
+  }
+}
+/* line 46, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_tables.scss */
+.table-font-xsmall th,
+.table-font-xsmall td {
+  padding: 0.75em 1.25em 0.5625em 0;
+}
+
+/* line 4, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_details.scss */
+details {
+  display: block;
+}
+/* line 7, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_details.scss */
+details summary {
+  display: inline-block;
+  color: #005ea5;
+  cursor: pointer;
+  position: relative;
+  margin-bottom: 0.26316em;
+}
+/* line 14, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_details.scss */
+details summary:hover {
+  color: #2b8cc4;
+}
+/* line 18, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_details.scss */
+details summary:focus {
+  outline: 3px solid #ffbf47;
+}
+/* line 24, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_details.scss */
+details .summary {
+  text-decoration: underline;
+}
+/* line 29, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_details.scss */
+details .arrow {
+  margin-right: .35em;
+  font-style: normal;
+}
+
+/* line 4, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_panels.scss */
+.panel {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  clear: both;
+  border-left-style: solid;
+  border-color: #bfc1c3;
+  padding: 0.78947em;
+  margin-bottom: 0.78947em;
+}
+/* line 14, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_panels.scss */
+.panel :first-child {
+  margin-top: 0;
+}
+/* line 19, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_panels.scss */
+.panel :only-child,
+.panel :last-child {
+  margin-bottom: 0;
+}
+
+/* line 24, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_panels.scss */
+.panel-border-wide {
+  border-left-width: 10px;
+}
+
+/* line 29, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_panels.scss */
+.panel-border-narrow {
+  border-left-width: 5px;
+}
+
+/* line 35, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_panels.scss */
+.form-group .panel-border-narrow {
+  float: left;
+  width: 100%;
+  padding-bottom: 0;
+}
+
+/* line 46, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_panels.scss */
+.form-group .panel-border-narrow:first-child {
+  margin-top: 10px;
+}
+
+/* line 51, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_panels.scss */
+.form-group .panel-border-narrow:last-child {
+  margin-top: 10px;
+  margin-bottom: 0;
+}
+
+/* line 57, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_panels.scss */
+.inline .form-group .panel-border-narrow {
+  margin-top: 10px;
+  margin-bottom: 0;
+}
+
+/* line 17, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_forms.scss */
+fieldset {
+  width: 100%;
+}
+
+/* line 30, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_forms.scss */
+textarea {
+  display: block;
+}
+
+/* line 39, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_forms.scss */
+.form-section {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  float: left;
+  width: 100%;
+  margin-bottom: 30px;
+}
+@media (min-width: 641px) {
+  /* line 39, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_forms.scss */
+  .form-section {
+    margin-bottom: 60px;
+  }
+}
+
+/* line 54, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_forms.scss */
+.form-group {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  float: left;
+  width: 100%;
+  margin-bottom: 15px;
+}
+@media (min-width: 641px) {
+  /* line 54, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_forms.scss */
+  .form-group {
+    margin-bottom: 30px;
+  }
+}
+
+/* line 69, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_forms.scss */
+.form-group-related {
+  margin-bottom: 10px;
+}
+@media (min-width: 641px) {
+  /* line 69, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_forms.scss */
+  .form-group-related {
+    margin-bottom: 20px;
+  }
+}
+
+/* line 78, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_forms.scss */
+.form-group-compound {
+  margin-bottom: 10px;
+}
+
+/* line 89, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_forms.scss */
+.form-label,
+.form-label-bold {
+  display: block;
+  color: #0b0c0c;
+  padding-bottom: 2px;
+}
+
+/* line 95, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_forms.scss */
+.form-label {
+  font-family: "Roboto", sans-serif;
+  font-weight: 400;
+  text-transform: none;
+  font-size: 16px;
+  line-height: 1.25;
+}
+@media (min-width: 641px) {
+  /* line 95, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_forms.scss */
+  .form-label {
+    font-size: 19px;
+    line-height: 1.31579;
+  }
+}
+
+/* line 99, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_forms.scss */
+.form-label-bold {
+  font-family: "Roboto", sans-serif;
+  font-weight: 700;
+  text-transform: none;
+  font-size: 16px;
+  line-height: 1.25;
+}
+@media (min-width: 641px) {
+  /* line 99, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_forms.scss */
+  .form-label-bold {
+    font-size: 19px;
+    line-height: 1.31579;
+  }
+}
+
+/* line 104, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_forms.scss */
+.form-block {
+  float: left;
+  width: 100%;
+  margin-top: -5px;
+  margin-bottom: 5px;
+}
+@media (min-width: 641px) {
+  /* line 104, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_forms.scss */
+  .form-block {
+    margin-top: 0;
+    margin-bottom: 10px;
+  }
+}
+
+/* line 122, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_forms.scss */
+.form-hint {
+  font-family: "Roboto", sans-serif;
+  font-weight: 400;
+  text-transform: none;
+  font-size: 16px;
+  line-height: 1.25;
+  display: block;
+  color: #6f777b;
+  font-weight: normal;
+  margin-top: -2px;
+  padding-bottom: 2px;
+}
+@media (min-width: 641px) {
+  /* line 122, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_forms.scss */
+  .form-hint {
+    font-size: 19px;
+    line-height: 1.31579;
+  }
+}
+
+/* line 133, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_forms.scss */
+.form-label .form-hint,
+.form-label-bold .form-hint {
+  margin-top: 0;
+  padding-bottom: 0;
+}
+
+/* line 143, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_forms.scss */
+.form-control {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  font-family: "Roboto", sans-serif;
+  font-weight: 400;
+  text-transform: none;
+  font-size: 16px;
+  line-height: 1.25;
+  width: 100%;
+  padding: 4px;
+  background-color: white;
+  border: 2px solid #6f777b;
+}
+@media (min-width: 641px) {
+  /* line 143, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_forms.scss */
+  .form-control {
+    font-size: 19px;
+    line-height: 1.31579;
+  }
+}
+@media (min-width: 641px) {
+  /* line 143, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_forms.scss */
+  .form-control {
+    width: 50%;
+  }
+}
+
+/* line 161, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_forms.scss */
+.form-radio {
+  display: block;
+  margin: 10px 0;
+}
+/* line 165, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_forms.scss */
+.form-radio input {
+  vertical-align: middle;
+  margin: -4px 5px 0 0;
+}
+
+/* line 172, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_forms.scss */
+.form-checkbox {
+  display: block;
+  margin: 15px 0;
+}
+/* line 176, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_forms.scss */
+.form-checkbox input {
+  vertical-align: middle;
+  margin: -2px 5px 0 0;
+}
+
+/* line 189, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_forms.scss */
+.form-control-3-4 {
+  width: 100%;
+}
+@media (min-width: 641px) {
+  /* line 189, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_forms.scss */
+  .form-control-3-4 {
+    width: 75%;
+  }
+}
+
+/* line 197, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_forms.scss */
+.form-control-2-3 {
+  width: 100%;
+}
+@media (min-width: 641px) {
+  /* line 197, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_forms.scss */
+  .form-control-2-3 {
+    width: 66.66%;
+  }
+}
+
+/* line 205, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_forms.scss */
+.form-control-1-2 {
+  width: 100%;
+}
+@media (min-width: 641px) {
+  /* line 205, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_forms.scss */
+  .form-control-1-2 {
+    width: 50%;
+  }
+}
+
+/* line 213, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_forms.scss */
+.form-control-1-3 {
+  width: 100%;
+}
+@media (min-width: 641px) {
+  /* line 213, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_forms.scss */
+  .form-control-1-3 {
+    width: 33.33%;
+  }
+}
+
+/* line 221, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_forms.scss */
+.form-control-1-4 {
+  width: 100%;
+}
+@media (min-width: 641px) {
+  /* line 221, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_forms.scss */
+  .form-control-1-4 {
+    width: 25%;
+  }
+}
+
+/* line 229, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_forms.scss */
+.form-control-1-8 {
+  width: 100%;
+}
+@media (min-width: 641px) {
+  /* line 229, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_forms.scss */
+  .form-control-1-8 {
+    width: 12.5%;
+  }
+}
+
+/* line 5, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/forms/_form-block-labels.scss */
+.block-label {
+  display: block;
+  float: none;
+  clear: left;
+  position: relative;
+  background: #dee0e2;
+  border: 1px solid #dee0e2;
+  padding: 18px 30px 15px 54px;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+@media (min-width: 641px) {
+  /* line 5, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/forms/_form-block-labels.scss */
+  .block-label {
+    float: left;
+  }
+}
+/* line 25, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/forms/_form-block-labels.scss */
+.block-label input {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  cursor: pointer;
+  margin: 0;
+  width: 29px;
+  height: 29px;
+}
+/* line 40, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/forms/_form-block-labels.scss */
+.block-label:hover {
+  border-color: #0b0c0c;
+}
+/* line 45, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/forms/_form-block-labels.scss */
+.block-label:last-child, .block-label:last-of-type {
+  margin-bottom: 0;
+}
+
+/* line 51, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/forms/_form-block-labels.scss */
+.inline .block-label {
+  clear: none;
+}
+@media (min-width: 641px) {
+  /* line 51, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/forms/_form-block-labels.scss */
+  .inline .block-label {
+    margin-bottom: 0;
+    margin-right: 10px;
+  }
+}
+
+/* line 66, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/forms/_form-block-labels.scss */
+.js-enabled label.selected {
+  background: white;
+  border-color: #0b0c0c;
+}
+
+/* line 72, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/forms/_form-block-labels.scss */
+.js-enabled label.focused {
+  outline: 3px solid #ffbf47;
+}
+
+/* line 79, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/forms/_form-block-labels.scss */
+.js-enabled .focused input:focus {
+  outline: none;
+}
+
+/* line 6, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/forms/_form-date.scss */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* line 11, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/forms/_form-date.scss */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+/* line 17, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/forms/_form-date.scss */
+.form-date .form-group {
+  float: left;
+  width: 50px;
+  margin-right: 20px;
+  margin-bottom: 0;
+  clear: none;
+}
+/* line 25, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/forms/_form-date.scss */
+.form-date .form-group label {
+  display: block;
+  padding-bottom: 2px;
+}
+/* line 30, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/forms/_form-date.scss */
+.form-date .form-group input {
+  width: 100%;
+}
+/* line 35, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/forms/_form-date.scss */
+.form-date .form-group-year {
+  width: 70px;
+}
+
+/* line 5, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/forms/_form-validation.scss */
+.error {
+  margin-right: 15px;
+}
+/* line 12, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/forms/_form-validation.scss */
+.error .error-message {
+  color: #b10e1e;
+  font-weight: bold;
+}
+/* line 18, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/forms/_form-validation.scss */
+.error .form-control {
+  border: 4px solid #b10e1e;
+}
+
+/* line 25, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/forms/_form-validation.scss */
+.error,
+.error-summary {
+  border-left: 4px solid #b10e1e;
+  padding-left: 10px;
+}
+@media (min-width: 641px) {
+  /* line 25, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/forms/_form-validation.scss */
+  .error,
+  .error-summary {
+    border-left: 5px solid #b10e1e;
+    padding-left: 15px;
+  }
+}
+
+/* line 37, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/forms/_form-validation.scss */
+.error-message {
+  font-family: "Roboto", sans-serif;
+  font-weight: 400;
+  text-transform: none;
+  font-size: 16px;
+  line-height: 1.25;
+  display: block;
+  clear: both;
+  margin: 0;
+  padding: 2px 0;
+}
+@media (min-width: 641px) {
+  /* line 37, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/forms/_form-validation.scss */
+  .error-message {
+    font-size: 19px;
+    line-height: 1.31579;
+  }
+}
+
+/* line 48, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/forms/_form-validation.scss */
+.form-label .error-message,
+.form-label-bold .error-message {
+  padding-top: 4px;
+  padding-bottom: 0;
+}
+
+/* line 54, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/forms/_form-validation.scss */
+.error-summary {
+  border: 4px solid #b10e1e;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  padding: 15px 10px;
+}
+@media (min-width: 641px) {
+  /* line 54, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/forms/_form-validation.scss */
+  .error-summary {
+    border: 5px solid #b10e1e;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    padding: 20px 15px 15px;
+  }
+}
+/* line 78, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/forms/_form-validation.scss */
+.error-summary:focus {
+  outline: 3px solid #ffbf47;
+}
+/* line 82, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/forms/_form-validation.scss */
+.error-summary .error-summary-heading {
+  margin-top: 0;
+}
+/* line 86, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/forms/_form-validation.scss */
+.error-summary p {
+  margin-bottom: 10px;
+}
+/* line 90, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/forms/_form-validation.scss */
+.error-summary .error-summary-list {
+  padding-left: 0;
+}
+@media (min-width: 641px) {
+  /* line 93, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/forms/_form-validation.scss */
+  .error-summary .error-summary-list li {
+    margin-bottom: 5px;
+  }
+}
+/* line 100, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/forms/_form-validation.scss */
+.error-summary .error-summary-list a {
+  color: #b10e1e;
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+/* line 4, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_breadcrumbs.scss */
+.breadcrumbs {
+  padding-top: 0.75em;
+  padding-bottom: 0.75em;
+}
+/* line 21, /home/rikatee/workspace/directory-ui/node_modules/govuk_frontend_toolkit/stylesheets/design-patterns/_breadcrumbs.scss */
+.breadcrumbs li {
+  font-family: "Roboto", sans-serif;
+  font-weight: 400;
+  text-transform: none;
+  font-size: 14px;
+  line-height: 1.14286;
+  float: left;
+  background-image: image-url("separator.png");
+  background-position: 0% 50%;
+  background-repeat: no-repeat;
+  list-style: none;
+  margin-left: 0.6em;
+  margin-bottom: 0.4em;
+  padding-left: 0.9em;
+}
+@media (min-width: 641px) {
+  /* line 21, /home/rikatee/workspace/directory-ui/node_modules/govuk_frontend_toolkit/stylesheets/design-patterns/_breadcrumbs.scss */
+  .breadcrumbs li {
+    font-size: 16px;
+    line-height: 1.25;
+  }
+}
+@media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min--moz-device-pixel-ratio: 2), only screen and (-o-min-device-pixel-ratio: 20 / 10), only screen and (min-device-pixel-ratio: 2), only screen and (min-resolution: 192dpi), only screen and (min-resolution: 2dppx) {
+  /* line 21, /home/rikatee/workspace/directory-ui/node_modules/govuk_frontend_toolkit/stylesheets/design-patterns/_breadcrumbs.scss */
+  .breadcrumbs li {
+    background-image: image-url("separator-2x.png");
+    background-size: 6px 11px;
+  }
+}
+/* line 41, /home/rikatee/workspace/directory-ui/node_modules/govuk_frontend_toolkit/stylesheets/design-patterns/_breadcrumbs.scss */
+.breadcrumbs li:first-child {
+  background-image: none;
+  margin-left: 0;
+  padding-left: 0;
+}
+/* line 49, /home/rikatee/workspace/directory-ui/node_modules/govuk_frontend_toolkit/stylesheets/design-patterns/_breadcrumbs.scss */
+.breadcrumbs a {
+  color: #0b0c0c;
+}
+
+/* line 4, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_phase-banner.scss */
+.phase-banner-alpha {
+  padding: 10px 0 8px;
+  border-bottom: 1px solid #bfc1c3;
+}
+@media (min-width: 641px) {
+  /* line 4, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_phase-banner.scss */
+  .phase-banner-alpha {
+    padding-bottom: 10px;
+  }
+}
+/* line 21, /home/rikatee/workspace/directory-ui/node_modules/govuk_frontend_toolkit/stylesheets/design-patterns/_alpha-beta.scss */
+.phase-banner-alpha p {
+  display: table;
+  margin: 0;
+  color: black;
+  font-family: "Roboto", sans-serif;
+  font-weight: 400;
+  text-transform: none;
+  font-size: 14px;
+  line-height: 1.14286;
+}
+@media (min-width: 641px) {
+  /* line 21, /home/rikatee/workspace/directory-ui/node_modules/govuk_frontend_toolkit/stylesheets/design-patterns/_alpha-beta.scss */
+  .phase-banner-alpha p {
+    font-size: 16px;
+    line-height: 1.25;
+  }
+}
+/* line 28, /home/rikatee/workspace/directory-ui/node_modules/govuk_frontend_toolkit/stylesheets/design-patterns/_alpha-beta.scss */
+.phase-banner-alpha .phase-tag {
+  display: -moz-inline-stack;
+  display: inline-block;
+  margin: 0 8px 0 0;
+  padding: 2px 5px 0;
+  font-family: "Roboto", sans-serif;
+  font-weight: 700;
+  text-transform: none;
+  font-size: 14px;
+  line-height: 1.14286;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-decoration: none;
+  color: white;
+  background-color: #d53880;
+}
+@media (min-width: 641px) {
+  /* line 28, /home/rikatee/workspace/directory-ui/node_modules/govuk_frontend_toolkit/stylesheets/design-patterns/_alpha-beta.scss */
+  .phase-banner-alpha .phase-tag {
+    font-size: 16px;
+    line-height: 1.25;
+  }
+}
+/* line 32, /home/rikatee/workspace/directory-ui/node_modules/govuk_frontend_toolkit/stylesheets/design-patterns/_alpha-beta.scss */
+.phase-banner-alpha span {
+  display: table-cell;
+  vertical-align: baseline;
+}
+
+/* line 8, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_phase-banner.scss */
+.phase-banner-beta {
+  padding: 10px 0 8px;
+  border-bottom: 1px solid #bfc1c3;
+}
+@media (min-width: 641px) {
+  /* line 8, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_phase-banner.scss */
+  .phase-banner-beta {
+    padding-bottom: 10px;
+  }
+}
+/* line 21, /home/rikatee/workspace/directory-ui/node_modules/govuk_frontend_toolkit/stylesheets/design-patterns/_alpha-beta.scss */
+.phase-banner-beta p {
+  display: table;
+  margin: 0;
+  color: black;
+  font-family: "Roboto", sans-serif;
+  font-weight: 400;
+  text-transform: none;
+  font-size: 14px;
+  line-height: 1.14286;
+}
+@media (min-width: 641px) {
+  /* line 21, /home/rikatee/workspace/directory-ui/node_modules/govuk_frontend_toolkit/stylesheets/design-patterns/_alpha-beta.scss */
+  .phase-banner-beta p {
+    font-size: 16px;
+    line-height: 1.25;
+  }
+}
+/* line 28, /home/rikatee/workspace/directory-ui/node_modules/govuk_frontend_toolkit/stylesheets/design-patterns/_alpha-beta.scss */
+.phase-banner-beta .phase-tag {
+  display: -moz-inline-stack;
+  display: inline-block;
+  margin: 0 8px 0 0;
+  padding: 2px 5px 0;
+  font-family: "Roboto", sans-serif;
+  font-weight: 700;
+  text-transform: none;
+  font-size: 14px;
+  line-height: 1.14286;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-decoration: none;
+  color: white;
+  background-color: #f47738;
+}
+@media (min-width: 641px) {
+  /* line 28, /home/rikatee/workspace/directory-ui/node_modules/govuk_frontend_toolkit/stylesheets/design-patterns/_alpha-beta.scss */
+  .phase-banner-beta .phase-tag {
+    font-size: 16px;
+    line-height: 1.25;
+  }
+}
+/* line 32, /home/rikatee/workspace/directory-ui/node_modules/govuk_frontend_toolkit/stylesheets/design-patterns/_alpha-beta.scss */
+.phase-banner-beta span {
+  display: table-cell;
+  vertical-align: baseline;
+}
+
+/* line 3, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_components.scss */
+.govuk-box-highlight {
+  margin: 1em 0;
+  padding: 2em 0 1em;
+  color: white;
+  background: #28a197;
+  text-align: center;
+}
+
+@-moz-document regexp('.*') {
+  /* line 10, /home/rikatee/workspace/directory-ui/node_modules/govuk-elements-sass/public/sass/elements/_shame.scss */
+  details summary:not([tabindex]) {
+    display: list-item;
+    display: revert;
+  }
+}
+
+/* line 3, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_address.scss */
+.fieldset--address .autosuggest__suggestions {
+  width: 100%;
+}
+@media (min-width: 641px) {
+  /* line 3, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_address.scss */
+  .fieldset--address .autosuggest__suggestions {
+    width: 66%;
+  }
+}
+/* line 13, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_address.scss */
+.fieldset--address .address__lookup-wrapper .form-group .form-control {
+  width: 100%;
+}
+@media (min-width: 641px) {
+  /* line 13, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_address.scss */
+  .fieldset--address .address__lookup-wrapper .form-group .form-control {
+    width: 25%;
+  }
+}
+/* line 20, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_address.scss */
+.fieldset--address .address__lookup-wrapper .form-group select.form-control {
+  width: 100%;
+}
+@media (min-width: 641px) {
+  /* line 20, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_address.scss */
+  .fieldset--address .address__lookup-wrapper .form-group select.form-control {
+    width: 66%;
+  }
+}
+/* line 28, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_address.scss */
+.fieldset--address .address__lookup-wrapper .button {
+  font-family: "Roboto", sans-serif;
+  font-weight: 400;
+  text-transform: none;
+  font-size: 14px;
+  line-height: 1.14286;
+  background-color: #bfc1c3;
+  color: #0b0c0c;
+  margin: 10px 0 0;
+  width: 100%;
+}
+@media (min-width: 641px) {
+  /* line 28, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_address.scss */
+  .fieldset--address .address__lookup-wrapper .button {
+    font-size: 16px;
+    line-height: 1.25;
+  }
+}
+@media (min-width: 641px) {
+  /* line 28, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_address.scss */
+  .fieldset--address .address__lookup-wrapper .button {
+    margin: 0 0 0 5px;
+    width: 25%;
+  }
+}
+/* line 42, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_address.scss */
+.fieldset--address .reveal-manual-entry {
+  display: block;
+  margin-bottom: 20px;
+}
+
+/* line 1, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_autocomplete.scss */
+.autosuggest__suggestions {
+  box-sizing: border-box;
+  border: 1px solid #bfc1c3;
+  position: absolute;
+  z-index: 99;
+}
+@media (min-width: 641px) {
+  /* line 1, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_autocomplete.scss */
+  .autosuggest__suggestions {
+    width: 66%;
+  }
+}
+
+/* line 13, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_autocomplete.scss */
+.autosuggest__suggestion {
+  font-family: "Roboto", sans-serif;
+  font-weight: 400;
+  text-transform: none;
+  font-size: 16px;
+  line-height: 1.25;
+  padding: 0 5px;
+  background: white;
+}
+@media (min-width: 641px) {
+  /* line 13, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_autocomplete.scss */
+  .autosuggest__suggestion {
+    font-size: 19px;
+    line-height: 1.31579;
+  }
+}
+/* line 18, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_autocomplete.scss */
+.autosuggest__suggestion a {
+  text-decoration: none;
+  color: #0b0c0c;
+}
+/* line 23, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_autocomplete.scss */
+.autosuggest__suggestion strong {
+  font-family: "Roboto", sans-serif;
+  font-weight: 700;
+  text-transform: none;
+  font-size: 16px;
+  line-height: 1.25;
+}
+@media (min-width: 641px) {
+  /* line 23, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_autocomplete.scss */
+  .autosuggest__suggestion strong {
+    font-size: 19px;
+    line-height: 1.31579;
+  }
+}
+/* line 27, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_autocomplete.scss */
+.autosuggest__suggestion.autosuggest__suggestion--active {
+  background: #d5e8f3;
+}
+
+/* line 1, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_button-bar.scss */
+.button-bar {
+  float: none;
+  clear: both;
+  margin: 30px 0;
+}
+/* line 6, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_button-bar.scss */
+.button-bar.confirm-bar {
+  background: #dee0e2;
+  max-width: 425px;
+  padding: 10px 13px 15px 10px;
+  margin: 0 10px 10px 0;
+}
+/* line 13, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_button-bar.scss */
+.button-bar.confirm-bar .button-warning {
+  margin-left: 0;
+}
+
+/* line 20, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_button-bar.scss */
+.button-link {
+  line-height: 2.5;
+  margin-left: 15px;
+  top: 1px;
+  position: relative;
+}
+
+/* line 29, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_button-bar.scss */
+.button-secondary:link, .button-secondary:visited {
+  background-color: #bfc1c3;
+  color: #0b0c0c;
+}
+
+/* line 1, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_error.scss */
+.incomplete {
+  padding-left: 10px;
+  border-left: 5px solid #b10e1e;
+}
+/* line 6, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_error.scss */
+.incomplete .error-message {
+  color: #b10e1e;
+  font-weight: bold;
+  padding: 10px 0 20px;
+}
+/* line 13, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_error.scss */
+.incomplete .form-group--incomplete .form-control {
+  border: 4px solid #b10e1e;
+}
+
+/* line 1, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_lined-list.scss */
+.lined-list {
+  list-style: none;
+  margin: 30px 0 0;
+  padding: 0;
+}
+/* line 6, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_lined-list.scss */
+.lined-list .lined-list__item {
+  border-bottom: 1px solid #bfc1c3;
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+}
+/* line 11, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_lined-list.scss */
+.lined-list .lined-list__item:last-child {
+  border-bottom: 0;
+}
+/* line 16, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_lined-list.scss */
+.lined-list .u-align-right {
+  margin-top: 5px;
+}
+@media (min-width: 641px) {
+  /* line 16, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_lined-list.scss */
+  .lined-list .u-align-right {
+    text-align: right;
+  }
+}
+/* line 24, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_lined-list.scss */
+.lined-list .u-align-right > div:first-child {
+  font-family: "Roboto", sans-serif;
+  font-weight: 700;
+  text-transform: none;
+  font-size: 18px;
+  line-height: 1.2;
+  margin: 0;
+}
+@media (min-width: 641px) {
+  /* line 24, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_lined-list.scss */
+  .lined-list .u-align-right > div:first-child {
+    font-size: 24px;
+    line-height: 1.25;
+  }
+}
+
+/* line 1, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_form.scss */
+.form-group.form-group--compact {
+  margin-bottom: 10px;
+}
+
+/* line 5, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_form.scss */
+.form-section.form-section--compact {
+  margin-bottom: 10px;
+}
+@media (min-width: 641px) {
+  /* line 5, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_form.scss */
+  .form-section.form-section--compact {
+    margin-bottom: 15px;
+  }
+}
+
+/* line 16, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_form.scss */
+.form-control + p {
+  margin-top: 0.26316em;
+}
+@media (min-width: 641px) {
+  /* line 14, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_form.scss */
+  .form-control {
+    width: 66%;
+  }
+}
+
+/* line 25, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_form.scss */
+.fieldset-group {
+  margin: 0 0 40px;
+  float: left;
+  width: 100%;
+}
+/* line 31, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_form.scss */
+.fieldset-group .form-group .form-label {
+  display: none;
+}
+/* line 36, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_form.scss */
+.fieldset-group .form-group:first-child .form-label {
+  display: block;
+}
+
+/* line 44, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_form.scss */
+.form-group__checkbox-group .form-label {
+  margin-bottom: 3px;
+}
+
+@media (min-width: 641px) {
+  /* line 49, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_form.scss */
+  .form-group__radiohide.inline .block-label {
+    margin-bottom: 10px;
+  }
+}
+
+/* line 6, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_horizontal-tabs.scss */
+.tabs.tabs--inline {
+  margin-bottom: 20px;
+}
+/* line 10, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_horizontal-tabs.scss */
+.tabs.tabs--inline .tabs-nav {
+  border-top: 1px solid #bfc1c3;
+  list-style: none;
+  margin: 0;
+}
+@media (min-width: 641px) {
+  /* line 10, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_horizontal-tabs.scss */
+  .tabs.tabs--inline .tabs-nav {
+    border-top: 0 none;
+    border-bottom: 1px solid #bfc1c3;
+    margin-bottom: 40px;
+  }
+}
+/* line 22, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_horizontal-tabs.scss */
+.tabs.tabs--inline .tabs-nav li {
+  border-bottom: 1px solid #bfc1c3;
+  font-size: 1em;
+  margin: 0;
+}
+@media (min-width: 641px) {
+  /* line 22, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_horizontal-tabs.scss */
+  .tabs.tabs--inline .tabs-nav li {
+    border-bottom: 0 none;
+    float: left;
+    margin: 0 0 -1px;
+    padding: 0;
+  }
+}
+/* line 34, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_horizontal-tabs.scss */
+.tabs.tabs--inline .tabs-nav li a {
+  background-color: white;
+  display: block;
+  padding: 0.47368em;
+  text-decoration: none;
+}
+/* line 40, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_horizontal-tabs.scss */
+.tabs.tabs--inline .tabs-nav li a:focus {
+  outline: 3px;
+}
+@media (min-width: 641px) {
+  /* line 34, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_horizontal-tabs.scss */
+  .tabs.tabs--inline .tabs-nav li a {
+    background-color: #dee0e2;
+    border: 0 none;
+    float: left;
+    margin: 0.26316em 0.26316em 0.26316em 0;
+    padding: 0.47368em 1em;
+    text-align: center;
+  }
+}
+/* line 56, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_horizontal-tabs.scss */
+.tabs.tabs--inline .tabs-nav li [aria-selected='true'],
+.tabs.tabs--inline .tabs-nav li .is-selected {
+  background-color: white;
+  color: #0b0c0c;
+  cursor: default;
+  text-decoration: none;
+}
+@media (min-width: 641px) {
+  /* line 56, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_horizontal-tabs.scss */
+  .tabs.tabs--inline .tabs-nav li [aria-selected='true'],
+  .tabs.tabs--inline .tabs-nav li .is-selected {
+    border: 1px solid #bfc1c3;
+    border-bottom: 1px solid transparent;
+    margin-bottom: 0;
+    margin-top: 0;
+    padding: 0.68421em 0.94737em 0.73684em;
+  }
+}
+/* line 76, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_horizontal-tabs.scss */
+.tabs.tabs--inline .tabs-content {
+  clear: both;
+}
+/* line 79, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_horizontal-tabs.scss */
+.tabs.tabs--inline .tabs-content .tabs-panel {
+  display: none;
+}
+/* line 84, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_horizontal-tabs.scss */
+.tabs.tabs--inline .tabs-content[aria-hidden='true'] {
+  display: none;
+}
+/* line 91, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_horizontal-tabs.scss */
+.tabs.tabs--inline .tabs-panel-inner:focus {
+  border: 0;
+  outline: 0;
+}
+/* line 97, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_horizontal-tabs.scss */
+.tabs.tabs--inline .tabs-errors {
+  display: none;
+}
+
+/* line 1, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_plain-list.scss */
+.plain-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* line 1, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_results-list.scss */
+.result-summary {
+  font-family: "Roboto", sans-serif;
+  font-weight: 400;
+  text-transform: none;
+  font-size: 16px;
+  line-height: 1.25;
+  margin: 0 0 20px;
+}
+@media (min-width: 641px) {
+  /* line 1, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_results-list.scss */
+  .result-summary {
+    font-size: 19px;
+    line-height: 1.31579;
+  }
+}
+/* line 5, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_results-list.scss */
+.result-summary .result-summary--result-count {
+  font-family: "Roboto", sans-serif;
+  font-weight: 700;
+  text-transform: none;
+  font-size: 20px;
+  line-height: 1.11111;
+}
+@media (min-width: 641px) {
+  /* line 5, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_results-list.scss */
+  .result-summary .result-summary--result-count {
+    font-size: 27px;
+    line-height: 1.11111;
+  }
+}
+/* line 9, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_results-list.scss */
+.result-summary .result-summary--result-query {
+  font-family: "Roboto", sans-serif;
+  font-weight: 700;
+  text-transform: none;
+  font-size: 16px;
+  line-height: 1.25;
+}
+@media (min-width: 641px) {
+  /* line 9, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_results-list.scss */
+  .result-summary .result-summary--result-query {
+    font-size: 19px;
+    line-height: 1.31579;
+  }
+}
+
+/* line 15, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_results-list.scss */
+.results-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+/* line 20, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_results-list.scss */
+.results-list strong {
+  font-family: "Roboto", sans-serif;
+  font-weight: 700;
+  text-transform: none;
+  font-size: 16px;
+  line-height: 1.25;
+}
+@media (min-width: 641px) {
+  /* line 20, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_results-list.scss */
+  .results-list strong {
+    font-size: 19px;
+    line-height: 1.31579;
+  }
+}
+/* line 24, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_results-list.scss */
+.results-list .results-list__result {
+  margin: 30px 0 0;
+}
+/* line 27, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_results-list.scss */
+.results-list .results-list__result:first-child {
+  margin-top: 0;
+}
+/* line 31, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_results-list.scss */
+.results-list .results-list__result .result-title {
+  font-family: "Roboto", sans-serif;
+  font-weight: 400;
+  text-transform: none;
+  font-size: 16px;
+  line-height: 1.25;
+  margin: 0 0 5px;
+  padding: 0;
+  text-transform: capitalize;
+}
+@media (min-width: 641px) {
+  /* line 31, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_results-list.scss */
+  .results-list .results-list__result .result-title {
+    font-size: 19px;
+    line-height: 1.5;
+  }
+}
+/* line 37, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_results-list.scss */
+.results-list .results-list__result .result-title strong {
+  font-family: "Roboto", sans-serif;
+  font-weight: 700;
+  text-transform: none;
+  font-size: 16px;
+  line-height: 1.25;
+}
+@media (min-width: 641px) {
+  /* line 37, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_results-list.scss */
+  .results-list .results-list__result .result-title strong {
+    font-size: 19px;
+    line-height: 1.31579;
+  }
+}
+/* line 43, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_results-list.scss */
+.results-list .results-list__result .meta {
+  margin: 0;
+}
+
+/* line 49, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_results-list.scss */
+.actions + .results-list {
+  padding-top: 0;
+}
+
+/* line 3, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_searchbar.scss */
+.searchbar .searchbar__wrapper {
+  margin: 20px 0 25px;
+  position: relative;
+  background: white;
+}
+@media (min-width: 641px) {
+  /* line 3, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_searchbar.scss */
+  .searchbar .searchbar__wrapper {
+    margin: 30px 0;
+  }
+}
+/* line 13, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_searchbar.scss */
+.searchbar .searchbar__label {
+  position: absolute;
+  left: 0;
+  top: 1px;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  margin-right: 0;
+  color: #6f777b;
+  line-height: 50px;
+  text-indent: 15px;
+  overflow: hidden;
+}
+/* line 27, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_searchbar.scss */
+.searchbar .searchbar__input {
+  box-sizing: border-box;
+  font-size: 1em;
+  width: 100%;
+  padding: 6px 15px;
+  margin: 0;
+  z-index: 3;
+  background: transparent;
+  position: relative;
+  border-right: 0;
+  line-height: 34px;
+  border-radius: 0;
+  -webkit-appearance: none;
+  text-overflow: ellipsis;
+}
+/* line 43, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_searchbar.scss */
+.searchbar .searchbar__submit {
+  position: absolute;
+  z-index: 4;
+  right: 0;
+  top: 0;
+  width: 50px;
+  height: 100%;
+  border: 0;
+  text-indent: -5000px;
+  color: white;
+  cursor: pointer;
+  background: #005ea5 url("../images/search-button.png") no-repeat 8px 50%;
+  border-radius: 0;
+}
+
+/* line 59, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_searchbar.scss */
+.searchbar.searchbar--header {
+  width: 90%;
+  margin: 0 auto;
+  padding-left: 0;
+  padding-right: 0;
+}
+@media (min-width: 641px) {
+  /* line 59, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_searchbar.scss */
+  .searchbar.searchbar--header {
+    float: right;
+    width: 50%;
+  }
+}
+/* line 70, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_searchbar.scss */
+.searchbar.searchbar--header .searchbar__wrapper {
+  margin: 0;
+}
+/* line 74, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_searchbar.scss */
+.searchbar.searchbar--header .searchbar__label {
+  line-height: 35px;
+  text-indent: 5px;
+  font-size: 0.84211em;
+}
+/* line 80, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_searchbar.scss */
+.searchbar.searchbar--header .searchbar__input {
+  border: 0;
+  font-size: 0.84211em;
+  line-height: 22px;
+}
+/* line 86, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_searchbar.scss */
+.searchbar.searchbar--header .searchbar__submit {
+  background-position: 0 50%;
+  border-left: 1px solid #0b0c0c;
+  width: 34px;
+}
+
+/* line 3, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_table.scss */
+table tr:nth-child(even) th,
+table tr:nth-child(even) td {
+  background: #f8f8f8;
+}
+
+/* line 1, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_table-detail.scss */
+.table-detail {
+  margin-bottom: 1.15789em;
+}
+/* line 6, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_table-detail.scss */
+.table-detail tbody th {
+  vertical-align: top;
+  width: 40%;
+}
+@media (min-width: 641px) {
+  /* line 6, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_table-detail.scss */
+  .table-detail tbody th {
+    width: 30%;
+    white-space: nowrap;
+  }
+}
+/* line 17, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_table-detail.scss */
+.table-detail tbody td:first-letter {
+  text-transform: capitalize;
+}
+/* line 22, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_table-detail.scss */
+.table-detail ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* line 29, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_table-detail.scss */
+.table-detail--readonly {
+  margin-top: 20px;
+  border-left: 10px solid #bfc1c3;
+}
+/* line 37, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_table-detail.scss */
+.table-detail--readonly tbody tr td,
+.table-detail--readonly tbody tr th {
+  border-bottom: 1px solid #bfc1c3;
+  color: #6f777b;
+}
+/* line 42, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_table-detail.scss */
+.table-detail--readonly tbody tr th {
+  padding-left: 15px;
+}
+/* line 48, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_table-detail.scss */
+.table-detail--readonly tbody tr:nth-child(even) td,
+.table-detail--readonly tbody tr:nth-child(even) th {
+  background: white;
+}
+/* line 55, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_table-detail.scss */
+.table-detail--readonly tbody tr:last-child td,
+.table-detail--readonly tbody tr:last-child th {
+  border-bottom: 0;
+}
+/* line 60, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_table-detail.scss */
+.table-detail--readonly tbody tr .spacer {
+  border-bottom: 0;
+  padding-right: 5px;
+}
+
+/* line 68, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_table-detail.scss */
+.record-title {
+  position: relative;
+}
+
+/* line 1, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_option-select.scss */
+.govuk-option-select {
+  background-color: #dee0e2;
+  padding: 5px;
+  margin-bottom: 30px;
+}
+@media (min-width: 769px) {
+  /* line 9, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_option-select.scss */
+  .govuk-option-select ::-webkit-scrollbar {
+    -webkit-appearance: none;
+    width: 7px;
+  }
+  /* line 14, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_option-select.scss */
+  .govuk-option-select ::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+    background-color: rgba(0, 0, 0, 0.5);
+    -webkit-box-shadow: 0 0 1px rgba(255, 255, 255, 0.5);
+  }
+}
+/* line 23, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_option-select.scss */
+.govuk-option-select:focus {
+  outline: 3px solid #ffbf47;
+}
+/* line 27, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_option-select.scss */
+.govuk-option-select .container-head {
+  padding: 0 5px;
+}
+/* line 31, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_option-select.scss */
+.govuk-option-select .option-select-label {
+  font-family: "Roboto", sans-serif;
+  font-weight: 400;
+  text-transform: none;
+  font-size: 16px;
+  line-height: 1.25;
+  margin-right: 40px;
+  font-weight: bold;
+  padding-top: 5px;
+  text-transform: capitalize;
+}
+@media (min-width: 641px) {
+  /* line 31, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_option-select.scss */
+  .govuk-option-select .option-select-label {
+    font-size: 19px;
+    line-height: 1.31579;
+  }
+}
+/* line 39, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_option-select.scss */
+.govuk-option-select .options-container {
+  position: relative;
+  background-color: white;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+@media (min-width: 769px) {
+  /* line 39, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_option-select.scss */
+  .govuk-option-select .options-container {
+    max-height: 200px;
+  }
+}
+/* line 49, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_option-select.scss */
+.govuk-option-select .options-container label {
+  display: -moz-inline-stack;
+  display: inline-block;
+  padding: 7px 0 7px 35px;
+  border-bottom: 1px solid #bfc1c3;
+  width: 100%;
+  cursor: pointer;
+}
+@media (min-width: 769px) {
+  /* line 49, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_option-select.scss */
+  .govuk-option-select .options-container label {
+    width: 90%;
+  }
+}
+/* line 61, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_option-select.scss */
+.govuk-option-select .options-container label:hover {
+  background-color: #f8f8f8;
+}
+/* line 66, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_option-select.scss */
+.govuk-option-select .options-container input {
+  float: left;
+  margin: 2px 0 0 -27px;
+  width: 20px;
+  height: 20px;
+}
+/* line 80, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_option-select.scss */
+.js-enabled .govuk-option-select {
+  padding: 0 0 1px;
+}
+/* line 83, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_option-select.scss */
+.js-enabled .govuk-option-select .js-selected-counter {
+  font-family: "Roboto", sans-serif;
+  font-weight: 400;
+  text-transform: none;
+  font-size: 12px;
+  line-height: 1.25;
+}
+@media (min-width: 641px) {
+  /* line 83, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_option-select.scss */
+  .js-enabled .govuk-option-select .js-selected-counter {
+    font-size: 14px;
+    line-height: 1.42857;
+  }
+}
+/* line 87, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_option-select.scss */
+.js-enabled .govuk-option-select .options-container {
+  border: 5px solid #dee0e2;
+}
+/* line 93, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_option-select.scss */
+.js-enabled .govuk-option-select.js-collapsible button {
+  z-index: 100;
+  position: relative;
+  border: none;
+  display: block;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  margin-bottom: -1px;
+  padding: 5px 8px;
+  background-color: #dee0e2;
+}
+@media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min--moz-device-pixel-ratio: 2), only screen and (-o-min-device-pixel-ratio: 20 / 10), only screen and (min-device-pixel-ratio: 2), only screen and (min-resolution: 192dpi), only screen and (min-resolution: 2dppx) {
+  /* line 93, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_option-select.scss */
+  .js-enabled .govuk-option-select.js-collapsible button {
+    background-size: 32px 50px;
+  }
+}
+/* line 109, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_option-select.scss */
+.js-enabled .govuk-option-select.js-collapsible button:hover {
+  background-color: #bfc1c3;
+}
+/* line 113, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_option-select.scss */
+.js-enabled .govuk-option-select.js-collapsible button:hover + .options-container {
+  border-color: #bfc1c3;
+}
+/* line 117, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_option-select.scss */
+.js-enabled .govuk-option-select.js-collapsible button[disabled] {
+  background-image: none;
+  color: inherit;
+}
+/* line 124, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_option-select.scss */
+.js-enabled .govuk-option-select.js-collapsible.js-closed button {
+  background-position: right -75px;
+}
+/* line 128, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_option-select.scss */
+.js-enabled .govuk-option-select.js-collapsible.js-closed .options-container {
+  display: none;
+}
+
+/* line 2, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_status-badge.scss */
+.status-badge {
+  font-family: "Roboto", sans-serif;
+  font-weight: 400;
+  text-transform: none;
+  font-size: 16px;
+  line-height: 1.25;
+  display: inline-block;
+  font-weight: normal;
+  border: 2px solid #0b0c0c;
+  padding: 2px 10px 0;
+  position: absolute;
+  margin-left: 10px;
+  white-space: nowrap;
+}
+@media (min-width: 641px) {
+  /* line 2, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_status-badge.scss */
+  .status-badge {
+    font-size: 19px;
+    line-height: 1.31579;
+  }
+}
+
+/* line 13, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_status-badge.scss */
+.status-badge--prospect {
+  color: #28a197;
+  border-color: #28a197;
+}
+
+/* line 18, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_status-badge.scss */
+.status-badge--primary-contact {
+  color: #912b88;
+  border-color: #912b88;
+}
+
+/* line 23, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_status-badge.scss */
+.status-badge--small {
+  font-family: "Roboto", sans-serif;
+  font-weight: 400;
+  text-transform: none;
+  font-size: 14px;
+  line-height: 1.14286;
+}
+@media (min-width: 641px) {
+  /* line 23, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_status-badge.scss */
+  .status-badge--small {
+    font-size: 16px;
+    line-height: 1.25;
+  }
+}
+
+/* line 27, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_status-badge.scss */
+.badged-heading {
+  font-family: "Roboto", sans-serif;
+  font-weight: 700;
+  text-transform: none;
+  font-size: 16px;
+  line-height: 1.25;
+  padding: 4px 0 2px;
+  position: relative;
+  margin: 0 0 10px;
+}
+@media (min-width: 641px) {
+  /* line 27, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_status-badge.scss */
+  .badged-heading {
+    font-size: 19px;
+    line-height: 1.31579;
+  }
+}
+/* line 33, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_status-badge.scss */
+.badged-heading .status-badge {
+  top: 0;
+}
+
+/* line 1, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_field-value.scss */
+.fieldvalue {
+  margin: 0;
+}
+/* line 5, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_field-value.scss */
+.fieldvalue .fieldvalue__title {
+  clear: left;
+  float: left;
+  font-weight: 700;
+  margin: 0 10px 0 0;
+}
+/* line 12, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_field-value.scss */
+.fieldvalue .fieldvalue__value {
+  float: left;
+}
+
+/* line 1, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_radio-hide.scss */
+.js-radiohide-content {
+  clear: both;
+  padding-top: 20px;
+  padding-left: 10px;
+  border-left: 5px solid #bfc1c3;
+  margin-top: 10px;
+}
+/* line 10, /home/rikatee/workspace/directory-ui/node_modules/trade_elements/sass/_radio-hide.scss */
+.js-radiohide-content.error, .js-radiohide-content.incomplete {
+  border-left: 5px solid #b10e1e;
+}
+
+/* line 6, ../sass/main.scss */
+ul, li {
+  list-style: none;
+}
+
+/* line 11, ../sass/main.scss */
+.data-form .form-control {
+  width: 100%;
+  max-width: 500px;
+}
+/* line 16, ../sass/main.scss */
+.data-form .radio-group {
+  overflow: hidden;
+}
+/* line 20, ../sass/main.scss */
+.data-form .save-button {
+  background: #00549F;
+  margin: 30px 0;
+}
+
+/* line 28, ../sass/main.scss */
+.form-group .subfield input {
+  width: 20%;
+}
+/* line 32, ../sass/main.scss */
+.form-group .subfield .suffix {
+  font-weight: bold;
+}
+/* line 39, ../sass/main.scss */
+.form-group.postcode input {
+  width: 8em;
+  max-width: 100%;
+}
+/* line 46, ../sass/main.scss */
+.form-group.contact-number input {
+  width: 11em;
+  max-width: 100%;
+}
+
+/* line 53, ../sass/main.scss */
+.list-inset {
+  list-style-type: circle;
+  margin-left: 2.5em;
+}
+
+/* line 58, ../sass/main.scss */
+.grid-row.grid-row--great {
+  background: #F2EEE8;
+  margin-top: 30px;
+}
+
+/* line 63, ../sass/main.scss */
+.panel--great {
+  background: #F2EEE8;
+  margin-top: 30px;
+  padding: 1px 15px;
+}
+
+/* line 69, ../sass/main.scss */
+.exporting-logo {
+  margin-bottom: 30px;
+}
+
+/* line 73, ../sass/main.scss */
+.clearfix:after {
+  visibility: hidden;
+  display: block;
+  font-size: 0;
+  content: " ";
+  clear: both;
+  height: 0;
+}
+
+/* line 81, ../sass/main.scss */
+* html .clearfix {
+  zoom: 1;
+}
+
+/* IE6 */
+/* line 82, ../sass/main.scss */
+*:first-child + html .clearfix {
+  zoom: 1;
+}
+
+/* IE7 */
+/* line 84, ../sass/main.scss */
+body {
+  background: url(../images/banner-img1.jpg) no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+/* line 91, ../sass/main.scss */
+body h1 {
+  font-size: 38px;
+}
+/* line 92, ../sass/main.scss */
+body h2 {
+  font-size: 26px;
+}
+/* line 96, ../sass/main.scss */
+body #content {
+  padding-bottom: 0;
+}
+/* line 98, ../sass/main.scss */
+body #content .container {
+  color: #ffffff;
+}
+/* line 101, ../sass/main.scss */
+body #content .container > div a {
+  color: #007ea3 !important;
+}
+/* line 104, ../sass/main.scss */
+body #content .container > div a:hover {
+  color: #33cfff !important;
+}
+/* line 107, ../sass/main.scss */
+body #content .container > div .registration-intro-container {
+  margin-top: 140px;
+}
+/* line 109, ../sass/main.scss */
+body #content .container > div .registration-intro-container .registration-intro {
+  padding: 0 20px 40px;
+}
+/* line 111, ../sass/main.scss */
+body #content .container > div .registration-intro-container .registration-intro .great-britain-logo {
+  margin: 0 0 20px;
+  max-width: 100px;
+}
+/* line 114, ../sass/main.scss */
+body #content .container > div .registration-intro-container .registration-intro .great-britain-logo img {
+  width: 100%;
+  height: auto;
+}
+/* line 123, ../sass/main.scss */
+body #content .container > div form .connections-platform-form {
+  background: rgba(0, 0, 0, 0.6);
+  -ms-filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000,endColorstr=#99000000);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000,endColorstr=#99000000);
+  zoom: 1;
+  padding: 20px 40px 150px;
+}
+/* line 130, ../sass/main.scss */
+body #content .container > div form .connections-platform-form h2 {
+  margin: 40px 0 60px 0;
+}
+/* line 134, ../sass/main.scss */
+body #content .container > div form .connections-platform-form .already-registered {
+  margin: 0 auto;
+  text-align: center;
+}
+/* line 140, ../sass/main.scss */
+body #content .container > div form .connections-platform-form .input-field-container label {
+  margin-bottom: 10px;
+}
+/* line 144, ../sass/main.scss */
+body #content .container > div form .connections-platform-form .input-field-container input, body #content .container > div form .connections-platform-form .input-field-container select {
+  border: 3px solid #ffffff;
+  border-radius: 0;
+  font-size: 16px;
+  height: 30px;
+  margin: 0 0 40px;
+  padding: 5px 10px;
+  width: calc(100% - 26px);
+}
+/* line 152, ../sass/main.scss */
+body #content .container > div form .connections-platform-form .input-field-container input:focus, body #content .container > div form .connections-platform-form .input-field-container select:focus {
+  border: 3px solid #ffbf47;
+}
+/* line 157, ../sass/main.scss */
+body #content .container > div form .connections-platform-form .input-field-container select {
+  height: 50px;
+  width: 100%;
+}
+/* line 163, ../sass/main.scss */
+body #content .container > div form .connections-platform-form .input-field-container ul li {
+  color: #ffbf47;
+}
+/* line 169, ../sass/main.scss */
+body #content .container > div form .connections-platform-form .register-btn-container {
+  margin: 20px 0;
+  text-align: center;
+}
+/* line 172, ../sass/main.scss */
+body #content .container > div form .connections-platform-form .register-btn-container input.register-btn {
+  background: #888888;
+  border: 0;
+  color: #ffffff;
+  height: 60px;
+  width: 150px;
+}
+/* line 178, ../sass/main.scss */
+body #content .container > div form .connections-platform-form .register-btn-container input.register-btn:hover {
+  background: #666666;
+}
+/* line 184, ../sass/main.scss */
+body #content .container > div form .connections-platform-form .steps {
+  margin: 20px auto;
+  text-align: center;
+  width: 100%;
+  color: white;
+}
+/* line 189, ../sass/main.scss */
+body #content .container > div form .connections-platform-form .steps span {
+  font-size: 3em;
+}
+/* line 195, ../sass/main.scss */
+body #content .container > div.registered, body #content .container > div.sorry {
+  background: rgba(0, 0, 0, 0.6);
+  -ms-filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000,endColorstr=#99000000);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000,endColorstr=#99000000);
+  zoom: 1;
+  margin-bottom: 150px;
+  margin-top: 150px;
+  padding: 20px;
+}
+/* line 203, ../sass/main.scss */
+body #content .container > div.registered h1, body #content .container > div.registered h2, body #content .container > div.sorry h1, body #content .container > div.sorry h2 {
+  margin-bottom: 20px;
+}
+
+@media (max-width: 992px) {
+  /* line 215, ../sass/main.scss */
+  body #content .container {
+    width: 100%;
+  }
+  /* line 219, ../sass/main.scss */
+  body #content .container form .connections-platform-form {
+    height: 100%;
+    margin: 40px 0 0;
+    padding: 0 20px;
+    margin: 0 20px;
+  }
+  /* line 226, ../sass/main.scss */
+  body #content .container form .connections-platform-form .register-btn-container input.register-btn {
+    width: 50%;
+  }
+}
+/* line 237, ../sass/main.scss */
+.company-profile-container {
+  font-family: "nta", Arial, sans-serif;
+  border: 1px solid #dedede;
+  margin: 64px;
+}
+/* line 241, ../sass/main.scss */
+.company-profile-container .form-head {
+  background-color: #D8D8DA;
+  padding: 10px 20px 10px 20px;
+}
+/* line 245, ../sass/main.scss */
+.company-profile-container .form-body {
+  background-color: white;
+  padding: 10px 20px 10px 20px;
+}
+/* line 248, ../sass/main.scss */
+.company-profile-container .form-body .form-body-title {
+  margin-left: 20px;
+  display: inline-block;
+  margin-bottom: 10px;
+}
+/* line 253, ../sass/main.scss */
+.company-profile-container .form-body .progress-indicator {
+  font-size: 2em;
+  line-height: 1;
+  margin-top: 0.25em;
+}
+/* line 260, ../sass/main.scss */
+.company-profile-container .form-foot .back-button {
+  background: white;
+  border: none;
+  color: #0000EE;
+  text-decoration: underline;
+}

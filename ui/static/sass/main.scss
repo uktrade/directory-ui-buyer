@@ -79,6 +79,9 @@ ul, li {
 *:first-child+html .clearfix { zoom: 1; } /* IE7 */
 
 body { 
+  @media (max-width: 979px) {
+    padding: 0;
+  }
   h1 { font-size: 38px; }
   h2 {
     font-size: 26px;
@@ -204,63 +207,16 @@ body {
   }
 }
 
-@media (max-width: 992px) {
-  body {
-    #content {
-      margin: 0 20px;
-      .container {
-        width: 100%;
-        .row-fluid {
-          form {
-            .connections-platform-form-container {
-              width: 100%;
-              .connections-platform-form {
-                height: 100%;
-                margin: 40px 0 0;
-                padding: 0 20px;
-                .input-field-container {}
-                .register-btn-container {
-                  input.register-btn {
-                    width: 50%;
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-}
-
-@media (max-width: 767px) {
-  body {
-    #content {
-      .container {
-        .row-fluid {
-          .registration-intro-container {
-            margin-top: 30px;
-            margin-bottom: 30px;
-          }
-          form {
-            .connections-platform-form {
-              padding-bottom: 50px;
-            }
-          }
-        }
-       .registered, .sorry {
-          margin-top: 30px;
-          margin-bottom: 30px;
-        }
-      }
-    }
-  }
-}
-
 .company-profile-container {
   font-family: "nta", Arial, sans-serif;
   border: 1px solid #dedede;
-  margin: 64px;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 700px;
+  @media (min-width: 767px) {
+    margin-top: 20px;
+  }
+
   .form-head {
     background-color: #D8D8DA;
     padding: 10px 20px 10px 20px;
@@ -269,7 +225,6 @@ body {
     background-color: white;
     padding: 10px 20px 10px 20px;
     .form-body-title {
-      margin-left: 20px;
       display: inline-block;
       margin-bottom: 10px;
     }
