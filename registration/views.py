@@ -5,9 +5,9 @@ from django.utils.cache import patch_response_headers
 from django.views.generic import TemplateView
 from django.views.generic.base import View
 
-from ui import forms
-from ui.constants import SESSION_KEY_REFERRER
-from ui.clients.directory_api import api_client
+from registration import forms
+from registration.constants import SESSION_KEY_REFERRER
+from registration.clients.directory_api import api_client
 
 
 class CacheMixin(object):

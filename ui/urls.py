@@ -1,7 +1,7 @@
 from django.conf.urls import url
 from django.views.decorators.cache import cache_page
 
-from ui.views import (
+from registration.views import (
     CachableTemplateView,
     EmailConfirmationView,
     RegistrationView,

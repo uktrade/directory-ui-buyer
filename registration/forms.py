@@ -1,6 +1,6 @@
 from django import forms
 
-from ui import constants
+from registration import constants
 
 
 class CompanyForm(forms.Form):
