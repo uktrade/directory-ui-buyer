@@ -1,27 +1,36 @@
-Simple form to collect some data on people/companies that are interested in being included in the directory.
+# directory-api
+[Export Directory registration form](https://www.directory.exportingisgreat.gov.uk/)
 
-# Front End
+## Build status
 
-## Dependencies
+[![CircleCI](https://circleci.com/gh/uktrade/directory-ui/tree/master.svg?style=svg)](https://circleci.com/gh/uktrade/directory-ui/tree/master)
 
-You will need to have [SASS](http://sass-lang.com/) installed and available in your PATH
-You will need [node](https://nodejs.org/en/download/) (and npm) installed
+## Requirements
 
-## Setup
+### Docker
+[Docker >= 1.10](https://docs.docker.com/engine/installation/) 
+[Docker Compose >= 1.8](https://docs.docker.com/compose/install/)
 
-Install the node deps:
+### SASS
+[node](https://nodejs.org/en/download/)
+[SASS](http://sass-lang.com/)
 
-```bash
-npm install
-```
+## Local installation
 
-Then build the sass:
+    $ git clone https://github.com/uktrade/directory-ui
+    $ cd directory-ui
+    $ make
 
-```bash
-npm run sass-dev
-```
+## Running
+Requires all host environment variables to be set.
 
-## Dev
+    $ make run
+
+## Running for local development
+
+    $ make run_debug
+
+### CSS development when running outside of docker
 
 To enable easy development, you can have sass watch the scss file for changes.
 
@@ -31,14 +40,18 @@ npm run sass-watch
 
 This will cause sass to rebuld the css files when the scss file changes.
 
+## Running tests
 
-# Terms info
+    $ make run_test
 
-(Please do not delete this section)
+## Host environment variables for docker-compose
+``.env`` files will be automatically created (with ``env_writer.py`` based on ``env.json``) by ``make run_test``, based on host environment variables with ``DIRECTORY_UI_`` prefix.
 
-We changed the wording of the terms, which means some people could have agreed to different terms.
-
-The original terms were tagged up to 1.4 and the new terms were introduced with tag 1.5 on 28/07/2016
+### Web server and queue worker
+| Host environment variable | Docker environment variable  |
+| ------------- | ------------- |
+| DIRECTORY_UI_SECRET_KEY | SECRET_KEY |
+| DIRECTORY_UI_PORT | PORT |
 
 
 # Session
