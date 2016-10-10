@@ -5,6 +5,7 @@ from registration.views import (
     CachableTemplateView,
     EmailConfirmationView,
     RegistrationView,
+    CompanyProfileEditView,
 )
 
 
@@ -30,5 +31,10 @@ urlpatterns = [
     url(r'^confirm-email$',
         EmailConfirmationView.as_view(),
         name='confirm-email'),
+
+    url(r'^edit-company-profile$',
+        CompanyProfileEditView.as_view(),
+        name='edit-company'),
+
 
 ]

@@ -13,7 +13,7 @@ class CompanyForm(forms.Form):
     )
 
 
-class CompanyProfileForm(forms.Form):
+class CompanyBasicInfoForm(forms.Form):
     company_name = forms.CharField()
     website = forms.URLField()
     description = forms.CharField()

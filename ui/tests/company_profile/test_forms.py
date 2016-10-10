@@ -2,7 +2,7 @@ from ui import forms
 
 
 def test_company_profile_form_requires_name():
-    form = forms.CompanyProfileForm(data={})
+    form = forms.CompanyBasicInfoForm(data={})
 
     valid = form.is_valid()
 
@@ -13,7 +13,7 @@ def test_company_profile_form_requires_name():
 
 
 def test_company_profile_form_requires_description():
-    form = forms.CompanyProfileForm(data={})
+    form = forms.CompanyBasicInfoForm(data={})
 
     valid = form.is_valid()
 
@@ -24,7 +24,7 @@ def test_company_profile_form_requires_description():
 
 
 def test_company_profile_form_requires_website():
-    form = forms.CompanyProfileForm(data={})
+    form = forms.CompanyBasicInfoForm(data={})
 
     valid = form.is_valid()
 
@@ -35,7 +35,7 @@ def test_company_profile_form_requires_website():
 
 
 def test_company_profile_form_rejects_invalid_website():
-    form = forms.CompanyProfileForm(data={'website': 'google'})
+    form = forms.CompanyBasicInfoForm(data={'website': 'google'})
 
     valid = form.is_valid()
 
@@ -49,7 +49,7 @@ def test_company_profile_form_accepts_valid_data():
     data = {'company_name': 'Amazon UK',
             'website': 'http://amazon.co.uk',
             'description': 'Ecommerce'}
-    form = forms.CompanyProfileForm(data=data)
+    form = forms.CompanyBasicInfoForm(data=data)
 
     valid = form.is_valid()
 
