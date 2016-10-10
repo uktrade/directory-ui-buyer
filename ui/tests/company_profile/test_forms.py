@@ -1,4 +1,4 @@
-from ui import constants, forms
+from ui import forms
 
 
 def test_company_profile_form_requires_name():
