@@ -4,7 +4,6 @@ from django.views.decorators.cache import cache_page
 from ui.views import (
     CachableTemplateView,
     EmailConfirmationView,
-    IndexView,
     RegistrationView,
 )
 
@@ -12,7 +11,9 @@ from ui.views import (
 cache_me = cache_page(60 * 1)
 
 urlpatterns = [
-    url(r"^$", cache_me(IndexView.as_view()), name="index"),
+    url(r"^$",
+        RegistrationView.as_view(),
+        name="register"),
 
     url(r"^thanks$",
         cache_me(CachableTemplateView.as_view(template_name="thanks.html")),
@@ -25,10 +26,6 @@ urlpatterns = [
     url(r"^terms_and_conditions$",
         cache_me(CachableTemplateView.as_view(template_name="terms.html")),
         name="terms"),
-
-    url(r'^register$',
-        RegistrationView.as_view(),
-        name='register'),
 
     url(r'^confirm-email$',
         EmailConfirmationView.as_view(),
