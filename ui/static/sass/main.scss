@@ -1,8 +1,5 @@
 $asset-path: '../';
 
-@import 'ukti-template';
-@import 'trade-elements';
-
 ul, li {
     list-style: none;
 }
@@ -83,7 +80,7 @@ ul, li {
 *:first-child+html .clearfix { zoom: 1; } /* IE7 */
 
 body { 
-  background: url(../images/banner-img1.jpg) no-repeat center center fixed; 
+  background: url(images/banner-img1.jpg) no-repeat center center fixed; 
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
