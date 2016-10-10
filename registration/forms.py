@@ -13,6 +13,12 @@ class CompanyForm(forms.Form):
     )
 
 
+class CompanyProfileForm(forms.Form):
+    company_name = forms.CharField()
+    website = forms.URLField()
+    description = forms.CharField()
+
+
 class AimsForm(forms.Form):
     aim_one = forms.ChoiceField(choices=constants.AIMS)
     aim_two = forms.ChoiceField(choices=constants.AIMS)
