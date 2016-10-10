@@ -280,10 +280,18 @@ body {
       display: inline-block;
       margin-bottom: 10px;
     }
+    .progress-indicator {
+      font-size: 2em;
+      line-height: 1;
+      margin-top: 0.25em;
+    }
   }
-  .progress-indicator {
-    font-size: 2em;
-    line-height: 1;
-    margin-top: 0.25em;
+  .form-foot {
+    .back-button {
+      background: white;
+      border: none;
+      color: #0000EE;
+      text-decoration: underline;
+    }
   }
 }
