@@ -6,6 +6,7 @@ from django.views.generic import TemplateView
 from django.views.generic.base import View
 
 from ui import forms
+from ui.constants import SESSION_KEY_REFERRER
 from ui.clients.directory_api import api_client
 
 
@@ -29,9 +30,9 @@ class CachableTemplateView(CacheMixin, TemplateView):
 
 class RegistrationView(SessionWizardView):
     form_list = (
-        forms.CompanyForm,
-        forms.AimsForm,
-        forms.UserForm,
+        ('company', forms.CompanyForm),
+        ('aims', forms.AimsForm),
+        ('user', forms.UserForm),
     )
 
     def get_template_names(self):
@@ -40,6 +41,12 @@ class RegistrationView(SessionWizardView):
             'aims-form.html',
             'user-form.html',
         ]
+
+    def get_form_initial(self, step):
+        if step == 'user':
+            return {
+                'referrer': self.request.session.get(SESSION_KEY_REFERRER)
+            }
 
     def done(self, form_list, form_dict):
         return TemplateResponse(self.request, 'registered.html')

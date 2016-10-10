@@ -48,6 +48,7 @@ MIDDLEWARE_CLASSES = [
     # 'ui.middleware.SSLRedirectMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'ui.middleware.ReferrerMiddleware',
 ]
 
 ROOT_URLCONF = 'ui.urls'
