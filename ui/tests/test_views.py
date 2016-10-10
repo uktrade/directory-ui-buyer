@@ -5,7 +5,6 @@ import pytest
 
 from django.core.urlresolvers import reverse
 
-from ui import forms
 from ui.clients.directory_api import api_client
 from ui.constants import SESSION_KEY_REFERRER
 from ui.views import EmailConfirmationView, RegistrationView
@@ -45,8 +44,10 @@ def test_registration_view_includes_referrer(client, rf):
     request.session = client.session
     request.session[SESSION_KEY_REFERRER] = 'google'
 
-    view = RegistrationView.as_view(form_list=(('user', forms.UserForm),))
+    form_pair = RegistrationView.form_list[2]
+    view = RegistrationView.as_view(form_list=(form_pair,))
     response = view(request)
 
     initial = response.context_data['form'].initial
+    assert form_pair[0] == 'user'
     assert initial['referrer'] == 'google'
