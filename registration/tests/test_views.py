@@ -5,9 +5,9 @@ import pytest
 
 from django.core.urlresolvers import reverse
 
-from ui.clients.directory_api import api_client
-from ui.constants import SESSION_KEY_REFERRER
-from ui.views import EmailConfirmationView, RegistrationView
+from registration.clients.directory_api import api_client
+from registration.constants import SESSION_KEY_REFERRER
+from registration.views import EmailConfirmationView, RegistrationView
 
 
 def test_email_confirm_missing_confirmation_code(rf):

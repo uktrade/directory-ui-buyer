@@ -1,4 +1,4 @@
-from ui import constants, forms
+from registration import constants, forms
 
 
 def test_step_one_rejects_missing_data():

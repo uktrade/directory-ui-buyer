@@ -3,8 +3,8 @@ import sys
 from urllib.parse import urlsplit, urlunsplit
 from django.http import HttpResponseRedirect
 
-from ui import helpers
-from ui.constants import SESSION_KEY_REFERRER
+from registration import helpers
+from registration.constants import SESSION_KEY_REFERRER
 
 
 class SSLRedirectMiddleware:

@@ -1,8 +1,8 @@
 from unittest import mock
 
-from ui.constants import SESSION_KEY_REFERRER
+from registration.constants import SESSION_KEY_REFERRER
 
-from ui import helpers, middleware
+from registration import helpers, middleware
 
 
 @mock.patch.object(helpers, 'get_referrer_from_request', return_value='google')
