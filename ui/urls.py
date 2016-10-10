@@ -35,6 +35,4 @@ urlpatterns = [
     url(r'^edit-company-profile$',
         CompanyProfileEditView.as_view(),
         name='edit-company'),
-
-
 ]
