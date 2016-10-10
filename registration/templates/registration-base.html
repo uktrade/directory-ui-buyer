@@ -1,5 +1,9 @@
 {% extends './govuk_layout.html' %}
 {% load staticfiles %}
+
+{% block css %}
+	<link href="{% static 'registration.css' %}" media="all" rel="stylesheet" />
+{% endblock %}
 {% block content %}
 	<div class="container">
 		<div class="clearfix"></div>

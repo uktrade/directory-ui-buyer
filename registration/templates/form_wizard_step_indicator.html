@@ -1,0 +1,7 @@
+{% for step in wizard.steps.all %}
+	{% if wizard.steps.current == step %}
+		<span>&#9679;</span>
+	{% else %}
+		<span>&#9675;</span>
+	{% endif %}
+{% endfor %}

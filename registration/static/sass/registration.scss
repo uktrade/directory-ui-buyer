@@ -1,0 +1,68 @@
+$asset-path: '../';
+
+@import 'main.scss';
+
+body { 
+  background: url(images/banner-img1.jpg) no-repeat center center fixed; 
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+
+  #content {
+    &.registration-content { max-width: 1200px; }
+  }
+}
+
+@media (max-width: 992px) {
+  body {
+    #content {
+      margin: 0 20px;
+      .container {
+        width: 100%;
+        .row-fluid {
+          form {
+            .connections-platform-form-container {
+              width: 100%;
+              .connections-platform-form {
+                height: 100%;
+                margin: 40px 0 0;
+                padding: 0 20px;
+                .input-field-container {}
+                .register-btn-container {
+                  input.register-btn {
+                    width: 50%;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 767px) {
+  body {
+    #content {
+      .container {
+        .row-fluid {
+          .registration-intro-container {
+            margin-top: 30px;
+            margin-bottom: 30px;
+          }
+          form {
+            .connections-platform-form {
+              padding-bottom: 50px;
+            }
+          }
+        }
+       .registered, .sorry {
+          margin-top: 30px;
+          margin-bottom: 30px;
+        }
+      }
+    }
+  }
+}

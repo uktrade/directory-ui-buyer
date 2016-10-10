@@ -1,0 +1,38 @@
+{% extends './govuk_layout.html' %}
+{% load staticfiles %}
+
+{% block content %}
+<form class="company-profile-container" method='post' action=''>
+	{% csrf_token %}
+	<div class="form-head">
+		<h1>Create your basic company profile</h1>
+		<h2>Add your company details to help others find you.</h2>
+	</div>
+	<div class="form-body">
+		<div>
+			<h2 class='form-body-title'>Company website and description</h2>
+			<span class="progress-indicator pull-right">{% include 'form_wizard_step_indicator.html' %}</span>
+			<div class="clearfix"></div>
+		</div>
+			{{ wizard.management_form }}
+			{% if wizard.form.forms %}
+				{{ wizard.form.management_form }}
+				{% for form in wizard.form.forms %}
+					{{ form }}
+				{% endfor %}
+			{% else %}
+				{{ wizard.form }}
+			{% endif %}
+		<hr>
+		<div class="form-foot">
+			{% if wizard.steps.prev %}
+				<button class="back-button" name="wizard_goto_step" type="submit" value="{{ wizard.steps.prev }}">Back</button>
+			{% endif %}
+			<div class="pull-right">
+				<input class="btn btn-primary" type="submit" value="Finish" />
+			</div>
+			<div class="clearfix"></div>
+		</div>
+	</div>
+</form>
+{% endblock %}
