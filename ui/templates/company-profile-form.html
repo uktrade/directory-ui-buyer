@@ -1,0 +1,26 @@
+{% extends './govuk_layout.html' %}
+{% load staticfiles %}
+
+{% block content %}
+<div class="company-profile-container">
+	<div class="form-head">
+		<h1>Create your basic company profile</h1>
+		<h2>Add your company details to help others find you.</h2>
+	</div>
+	<div class="form-body">
+		<div class="row">
+			<h2 class="span7" class='form-body-title'>Company website and description</h2>
+			<div class="span3">o o o</div>
+		</div>
+		{{ form }}
+		<hr>
+		<div>
+			<div>Back</div>
+			<div class="pull-right">
+				<input class="btn btn-primary" type="submit" value="Finish" />
+			</div>
+			<div class="clearfix"></div>
+		</div>
+	</div>
+</div>
+{% endblock %}

@@ -14,7 +14,6 @@ ul, li {
     overflow: hidden;
   }
 
-
   .save-button {
     background: #00549F;
     margin: 30px 0;
@@ -85,10 +84,6 @@ body {
   -moz-background-size: cover;
   -o-background-size: cover;
   background-size: cover;
-
-  #global-header-bar {
-    display: none;
-  }
 
   h1 { font-size: 38px; }
   h2 {
@@ -244,7 +239,21 @@ body {
     }
   }
 }
-@media (max-width: 767px) {
+
+.company-profile-container {
+  margin: 64px;
+  .form-head {
+    background-color: #D8D8DA;
+    padding: 10px 20px 10px 20px;
+  }
+  .form-body {
+    background-color: white;
+    padding: 10px 20px 10px 20px;
+    .form-body-title {
+      margin-bottom: 10px;
+    }
+  }
+}@media (max-width: 767px) {
   body {
     #content {
       .container {
