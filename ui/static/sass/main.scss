@@ -79,19 +79,12 @@ ul, li {
 *:first-child+html .clearfix { zoom: 1; } /* IE7 */
 
 body { 
-  background: url(images/banner-img1.jpg) no-repeat center center fixed; 
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  -o-background-size: cover;
-  background-size: cover;
-
   h1 { font-size: 38px; }
   h2 {
     font-size: 26px;
   }
 
   #content {
-    &.registration-content { max-width: 1200px; }
     padding-bottom: 0;
     .container {
       color: #ffffff;
