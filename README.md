@@ -11,9 +11,6 @@
 [Docker >= 1.10](https://docs.docker.com/engine/installation/) 
 [Docker Compose >= 1.8](https://docs.docker.com/compose/install/)
 
-### SASS
-[node](https://nodejs.org/en/download/)
-[SASS](http://sass-lang.com/)
 
 ## Local installation
 
@@ -26,11 +23,27 @@ Requires all host environment variables to be set.
 
     $ make run
 
-## Running for local development
+## Running local debug
 
     $ make run_debug
 
-### CSS development when running outside of docker
+## Local development
+
+### SASS
+[node](https://nodejs.org/en/download/)
+[SASS](http://sass-lang.com/)
+
+```bash
+npm install
+npm run sass-dev
+```
+
+For updating CSS under version control run:
+```bash
+npm run sass-prod
+```
+
+### CSS development
 
 To enable easy development, you can have sass watch the scss file for changes.
 
