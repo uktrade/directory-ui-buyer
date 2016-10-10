@@ -84,7 +84,9 @@ def test_registration_form_complete_api_client_success(mock_send_form):
 @mock.patch.object(forms, 'serialize_registration_forms', lambda x: {})
 @mock.patch.object(api_client.registration, 'send_form')
 def test_registration_form_complete_api_client_failure(mock_send_form):
-    mock_send_form.return_value = mock.Mock(status_code=http.client.BAD_REQUEST)
+    mock_send_form.return_value = mock.Mock(
+        status_code=http.client.BAD_REQUEST
+    )
     view = RegistrationView()
     view.request = None
     response = view.done()

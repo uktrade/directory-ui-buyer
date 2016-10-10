@@ -10,4 +10,4 @@ dependencies:
 
 test:
   override:
-    - make run_test
+    - make docker_test
