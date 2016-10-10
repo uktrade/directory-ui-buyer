@@ -122,3 +122,5 @@ RAVEN_CONFIG = {
     # release based on the git info.
     # 'release': raven.fetch_git_sha(os.path.dirname(__file__)),
 }
+
+SESSION_ENGINE = "django.contrib.sessions.backends.signed_cookies"
