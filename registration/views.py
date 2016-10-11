@@ -65,6 +65,16 @@ class EmailConfirmationView(View):
         return TemplateResponse(request, template)
 
 
+class CompanyProfileDetailView(TemplateView):
+    template_name = 'company-profile-details.html'
+
+    def get_context_data(self, **kwargs):
+        # TODO: Stubbed at the moment, needs to be pulled from API
+        return {'company_name': 'Amazon UK',
+                'website': 'http://amazon.co.uk',
+                'description': 'Ecommerce website'}
+
+
 class CompanyProfileEditView(SessionWizardView):
     form_list = (
         ('basic_info', forms.CompanyBasicInfoForm),
