@@ -14,9 +14,11 @@ class CompanyForm(forms.Form):
 
 
 class CompanyBasicInfoForm(forms.Form):
+    # TODO: ED-145
+    # Make sure all fields have char limits once the models are defined
     company_name = forms.CharField()
     website = forms.URLField()
-    description = forms.CharField()
+    description = forms.CharField(widget=forms.Textarea)
 
 
 class AimsForm(forms.Form):
