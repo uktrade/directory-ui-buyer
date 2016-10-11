@@ -1,0 +1,31 @@
+@import 'main.scss';
+
+.company-profile-details-body {
+  h3 {
+    margin: 0;
+  }
+  .company-profile-box {
+    border: 1px solid #dedede;
+    padding: 10px;
+    min-height: 124px;
+    margin-bottom: 30px;
+  }
+}
+
+.company-profile-details-hero-container {
+  margin-bottom: 30px;
+  background: #D8D8DA;
+}
+
+.company-profile-details-hero-title {
+  padding: 22px;
+}
+
+
+.company-profile-details-hero-edit-button {
+  text-align: center;
+  padding-bottom: 20px;
+  a {
+    color: white;
+  }
+}

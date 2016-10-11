@@ -1,6 +1,8 @@
 {% extends './govuk_layout.html' %}
 {% load staticfiles %}
-
+{% block css %}
+	<link href="{% static 'company-profile-form.css' %}" media="all" rel="stylesheet" />
+{% endblock %}
 {% block content %}
 <form class="company-profile-container" method='post' action=''>
 	{% csrf_token %}
