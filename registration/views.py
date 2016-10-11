@@ -76,7 +76,9 @@ class CompanyProfileDetailView(TemplateView):
             'company': {
                 'name': 'Amazon UK',
                 'website': 'http://amazon.co.uk',
-                'description': 'Ecommerce website'
+                'description': 'Ecommerce website',
+                'number': 123456,
+                'aims': ['Increase Revenue']
             }
         }
 
