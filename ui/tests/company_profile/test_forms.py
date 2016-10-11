@@ -1,4 +1,4 @@
-from ui import forms
+from registration import forms
 
 
 def test_company_profile_form_requires_name():
