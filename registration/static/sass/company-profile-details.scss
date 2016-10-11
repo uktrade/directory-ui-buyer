@@ -2,13 +2,18 @@
 
 .company-profile-details-body {
   h3 {
-    margin: 0;
+    line-height: 1em;
+    margin-top: 0;
+    margin-bottom: 10px;
   }
   .company-profile-box {
     border: 1px solid #dedede;
     padding: 10px;
-    min-height: 124px;
+    min-height: 90px;
     margin-bottom: 30px;
+    li {
+      list-style: initial;
+    }
   }
 }
 
