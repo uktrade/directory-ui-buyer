@@ -63,3 +63,17 @@ class EmailConfirmationView(View):
         else:
             template = self.failure_template
         return TemplateResponse(request, template)
+
+
+class CompanyProfileEditView(SessionWizardView):
+    form_list = (
+        ('basic_info', forms.CompanyBasicInfoForm),
+    )
+
+    def get_template_names(self):
+        return [
+            'company-profile-form.html',
+        ]
+
+    def done(self, form_list, form_dict):
+        return TemplateResponse(self.request, 'company-profile-updated.html')
