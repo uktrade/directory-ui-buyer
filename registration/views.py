@@ -72,9 +72,13 @@ class CompanyProfileDetailView(TemplateView):
     def get_context_data(self, **kwargs):
         # TODO: ED-151
         # Stubbed at the moment, needs to be pulled from API
-        return {'company_name': 'Amazon UK',
+        return {
+            'company': {
+                'name': 'Amazon UK',
                 'website': 'http://amazon.co.uk',
-                'description': 'Ecommerce website'}
+                'description': 'Ecommerce website'
+            }
+        }
 
 
 class CompanyProfileEditView(SessionWizardView):

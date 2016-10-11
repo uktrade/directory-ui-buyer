@@ -1,0 +1,262 @@
+/* line 3, sass/main.scss */
+ul, li {
+  list-style: none;
+}
+
+/* line 8, sass/main.scss */
+.data-form .form-control {
+  width: 100%;
+  max-width: 500px;
+}
+/* line 13, sass/main.scss */
+.data-form .radio-group {
+  overflow: hidden;
+}
+/* line 17, sass/main.scss */
+.data-form .save-button {
+  background: #00549F;
+  margin: 30px 0;
+}
+
+/* line 25, sass/main.scss */
+.form-group .subfield input {
+  width: 20%;
+}
+/* line 29, sass/main.scss */
+.form-group .subfield .suffix {
+  font-weight: bold;
+}
+/* line 36, sass/main.scss */
+.form-group.postcode input {
+  width: 8em;
+  max-width: 100%;
+}
+/* line 43, sass/main.scss */
+.form-group.contact-number input {
+  width: 11em;
+  max-width: 100%;
+}
+
+/* line 50, sass/main.scss */
+.list-inset {
+  list-style-type: circle;
+  margin-left: 2.5em;
+}
+
+/* line 55, sass/main.scss */
+.grid-row.grid-row--great {
+  background: #F2EEE8;
+  margin-top: 30px;
+}
+
+/* line 60, sass/main.scss */
+.panel--great {
+  background: #F2EEE8;
+  margin-top: 30px;
+  padding: 1px 15px;
+}
+
+/* line 66, sass/main.scss */
+.exporting-logo {
+  margin-bottom: 30px;
+}
+
+/* line 70, sass/main.scss */
+.clearfix:after {
+  visibility: hidden;
+  display: block;
+  font-size: 0;
+  content: " ";
+  clear: both;
+  height: 0;
+}
+
+/* line 78, sass/main.scss */
+* html .clearfix {
+  zoom: 1;
+}
+
+/* IE6 */
+/* line 79, sass/main.scss */
+*:first-child + html .clearfix {
+  zoom: 1;
+}
+
+/* IE7 */
+@media (max-width: 979px) {
+  /* line 81, sass/main.scss */
+  body {
+    padding: 0;
+  }
+}
+/* line 85, sass/main.scss */
+body h1 {
+  font-size: 38px;
+}
+/* line 86, sass/main.scss */
+body h2 {
+  font-size: 26px;
+}
+/* line 90, sass/main.scss */
+body #content {
+  padding-bottom: 0;
+}
+/* line 93, sass/main.scss */
+body #content .container a.teal {
+  color: #007ea3;
+}
+/* line 96, sass/main.scss */
+body #content .container a.teal:hover {
+  color: #33cfff;
+}
+/* line 100, sass/main.scss */
+body #content .container .row-fluid .registration-intro-container {
+  margin-top: 140px;
+}
+/* line 102, sass/main.scss */
+body #content .container .row-fluid .registration-intro-container .registration-intro {
+  background: rgba(0, 0, 0, 0.6);
+  -ms-filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000,endColorstr=#99000000);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000,endColorstr=#99000000);
+  zoom: 1;
+  padding: 20px;
+}
+/* line 108, sass/main.scss */
+body #content .container .row-fluid .registration-intro-container .registration-intro .great-britain-logo {
+  margin: 0 0 20px;
+  max-width: 100px;
+}
+/* line 111, sass/main.scss */
+body #content .container .row-fluid .registration-intro-container .registration-intro .great-britain-logo img {
+  width: 100%;
+  height: auto;
+}
+/* line 120, sass/main.scss */
+body #content .container .row-fluid form .connections-platform-form {
+  background: rgba(0, 0, 0, 0.6);
+  -ms-filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000,endColorstr=#99000000);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000,endColorstr=#99000000);
+  zoom: 1;
+  padding: 20px 40px 150px;
+}
+/* line 127, sass/main.scss */
+body #content .container .row-fluid form .connections-platform-form h2 {
+  margin: 40px 0 60px 0;
+}
+/* line 131, sass/main.scss */
+body #content .container .row-fluid form .connections-platform-form .already-registered {
+  margin: 0 auto;
+  text-align: center;
+}
+/* line 137, sass/main.scss */
+body #content .container .row-fluid form .connections-platform-form .input-field-container label {
+  margin-bottom: 10px;
+}
+/* line 141, sass/main.scss */
+body #content .container .row-fluid form .connections-platform-form .input-field-container input, body #content .container .row-fluid form .connections-platform-form .input-field-container select {
+  border: 3px solid #ffffff;
+  border-radius: 0;
+  font-size: 16px;
+  height: 30px;
+  margin: 0 0 40px;
+  padding: 5px 10px;
+  width: calc(100% - 26px);
+}
+/* line 149, sass/main.scss */
+body #content .container .row-fluid form .connections-platform-form .input-field-container input:focus, body #content .container .row-fluid form .connections-platform-form .input-field-container select:focus {
+  border: 3px solid #ffbf47;
+}
+/* line 154, sass/main.scss */
+body #content .container .row-fluid form .connections-platform-form .input-field-container select {
+  height: 50px;
+  width: 100%;
+}
+/* line 160, sass/main.scss */
+body #content .container .row-fluid form .connections-platform-form .input-field-container ul li {
+  color: #ffbf47;
+}
+/* line 166, sass/main.scss */
+body #content .container .row-fluid form .connections-platform-form .register-btn-container {
+  margin: 20px 0;
+  text-align: center;
+}
+/* line 169, sass/main.scss */
+body #content .container .row-fluid form .connections-platform-form .register-btn-container input.register-btn {
+  background: #888888;
+  border: 0;
+  color: #ffffff;
+  height: 60px;
+  width: 150px;
+}
+/* line 175, sass/main.scss */
+body #content .container .row-fluid form .connections-platform-form .register-btn-container input.register-btn:hover {
+  background: #666666;
+}
+/* line 181, sass/main.scss */
+body #content .container .row-fluid form .connections-platform-form .steps {
+  margin: 20px auto;
+  text-align: center;
+  width: 100%;
+  color: white;
+}
+/* line 186, sass/main.scss */
+body #content .container .row-fluid form .connections-platform-form .steps span {
+  font-size: 3em;
+}
+/* line 193, sass/main.scss */
+body #content .container .registered, body #content .container .sorry {
+  background: rgba(0, 0, 0, 0.6);
+  -ms-filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000,endColorstr=#99000000);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000,endColorstr=#99000000);
+  zoom: 1;
+  margin-bottom: 150px;
+  margin-top: 150px;
+  padding: 20px;
+}
+/* line 201, sass/main.scss */
+body #content .container .registered h1, body #content .container .registered h2, body #content .container .sorry h1, body #content .container .sorry h2 {
+  margin-bottom: 20px;
+}
+
+/* line 3, sass/company-profile-form.scss */
+.company-profile-container {
+  font-family: "nta", Arial, sans-serif;
+  border: 1px solid #dedede;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 700px;
+}
+@media (min-width: 767px) {
+  /* line 3, sass/company-profile-form.scss */
+  .company-profile-container {
+    margin-top: 20px;
+  }
+}
+/* line 13, sass/company-profile-form.scss */
+.company-profile-container .form-head {
+  background-color: #D8D8DA;
+  padding: 10px 20px 10px 20px;
+}
+/* line 17, sass/company-profile-form.scss */
+.company-profile-container .form-body {
+  background-color: white;
+  padding: 10px 20px 10px 20px;
+}
+/* line 20, sass/company-profile-form.scss */
+.company-profile-container .form-body .form-body-title {
+  display: inline-block;
+  margin-bottom: 10px;
+}
+/* line 24, sass/company-profile-form.scss */
+.company-profile-container .form-body .progress-indicator {
+  font-size: 2em;
+  line-height: 1;
+  margin-top: 0.25em;
+}
+/* line 31, sass/company-profile-form.scss */
+.company-profile-container .form-foot .back-button {
+  background: white;
+  border: none;
+  color: #0000EE;
+  text-decoration: underline;
+}

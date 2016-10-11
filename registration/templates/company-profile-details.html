@@ -1,5 +1,46 @@
-<h1>Company Profile</h1>
-<b>Name:</b> {{ company_name }}
-<br/><b>Website:</b>  {{ website }}
-<br/><b>Description:</b>  {{ description }}
-<br/><a href="{% url 'company-edit' %}">Edit</a>
+{% extends './govuk_layout.html' %}
+{% load staticfiles %}
+{% block css %}
+	<link href="{% static 'company-profile-details.css' %}" media="all" rel="stylesheet" />
+{% endblock %}
+{% block content %}
+<div class="container">
+	<div class="company-profile-details-body">
+		<div class="row-fluid company-profile-details-hero-container">
+			<div class="row-fluid">
+				<div class="span11 company-profile-details-hero-title">
+					<h1>Company profile - UK exporting co ltd.</h1>
+					<h2>This company profile is not visible to the public.</h2>
+				</div>
+				<div class="span1 company-profile-details-hero-edit-button">
+					<a class="btn btn-primary" href="{% url 'edit-company' %}">Edit</a>
+				</div>
+				<div class="clearfix"></div>
+			</div>
+		</div>
+		<div class="row-fluid">
+			<div class="span4 company-profile-box">
+				<h3>Company number</h3>
+				<p>123456</p>
+			</div>
+			<div class="span8 company-profile-box">
+				<h3>My export aims</h3>
+				<p>
+				</p>
+			</div>
+		</div>
+		<div class="row-fluid">
+			<div class="span4 company-profile-box">
+				<h3>website</h3>
+				<p>www.thing.com</p>
+			</div>
+			<div class="span8 company-profile-box">
+				<h3>Company description</h3>
+				<p><i>Please enter a company description</i></p>
+			</div>
+		</div>
+		<div class="row-fluid"></div>
+	</div>
+</div>
+{% endblock %}
+>>>>>>> Add company profile details template

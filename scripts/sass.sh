@@ -12,7 +12,9 @@ libraries="\
 # to be exported to e.g., input.scss:output.css
 input_output_map="\
 	registration/static/sass/main.scss:registration/static/main.css \
-	registration/static/sass/registration.scss:registration/static/registration.css\
+	registration/static/sass/registration.scss:registration/static/registration.css \
+	registration/static/sass/company-profile-details.scss:registration/static/company-profile-details.css \
+	registration/static/sass/company-profile-form.scss:registration/static/company-profile-form.css \
 "
 
 dev_command="\
