@@ -76,4 +76,6 @@ class CompanyProfileEditView(SessionWizardView):
         ]
 
     def done(self, form_list, form_dict):
+        # TODO: ED-144
+        # Change this to redirect to the company profile detail page
         return TemplateResponse(self.request, 'company-profile-updated.html')
