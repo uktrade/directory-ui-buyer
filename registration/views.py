@@ -1,5 +1,6 @@
 from formtools.wizard.views import SessionWizardView
 
+from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.utils.cache import patch_response_headers
 from django.views.generic import TemplateView
@@ -69,7 +70,8 @@ class CompanyProfileDetailView(TemplateView):
     template_name = 'company-profile-details.html'
 
     def get_context_data(self, **kwargs):
-        # TODO: Stubbed at the moment, needs to be pulled from API
+        # TODO: ED-151
+        # Stubbed at the moment, needs to be pulled from API
         return {'company_name': 'Amazon UK',
                 'website': 'http://amazon.co.uk',
                 'description': 'Ecommerce website'}
@@ -86,4 +88,4 @@ class CompanyProfileEditView(SessionWizardView):
         ]
 
     def done(self, form_list, form_dict):
-        return TemplateResponse(self.request, 'company-profile-updated.html')
+        return redirect('company-detail')
