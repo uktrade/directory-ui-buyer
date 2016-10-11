@@ -6,6 +6,7 @@ from registration.views import (
     EmailConfirmationView,
     RegistrationView,
     CompanyProfileEditView,
+    CompanyProfileDetailView,
 )
 
 
@@ -32,7 +33,12 @@ urlpatterns = [
         EmailConfirmationView.as_view(),
         name='confirm-email'),
 
-    url(r'^edit-company-profile$',
+    url(r'^company-profile$',
+        CompanyProfileDetailView.as_view(),
+        name='company-detail'),
+
+    url(r'^company-profile/edit$',
         CompanyProfileEditView.as_view(),
-        name='edit-company'),
+        name='company-edit'),
+
 ]

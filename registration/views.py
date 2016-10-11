@@ -1,5 +1,6 @@
 from formtools.wizard.views import SessionWizardView
 
+from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.utils.cache import patch_response_headers
 from django.views.generic import TemplateView
@@ -65,6 +66,17 @@ class EmailConfirmationView(View):
         return TemplateResponse(request, template)
 
 
+class CompanyProfileDetailView(TemplateView):
+    template_name = 'company-profile-details.html'
+
+    def get_context_data(self, **kwargs):
+        # TODO: ED-151
+        # Stubbed at the moment, needs to be pulled from API
+        return {'company_name': 'Amazon UK',
+                'website': 'http://amazon.co.uk',
+                'description': 'Ecommerce website'}
+
+
 class CompanyProfileEditView(SessionWizardView):
     form_list = (
         ('basic_info', forms.CompanyBasicInfoForm),
@@ -76,6 +88,4 @@ class CompanyProfileEditView(SessionWizardView):
         ]
 
     def done(self, form_list, form_dict):
-        # TODO: ED-144
-        # Change this to redirect to the company profile detail page
-        return TemplateResponse(self.request, 'company-profile-updated.html')
+        return redirect('company-detail')
