@@ -8,7 +8,10 @@
 	<div class="company-profile-details-body">
 		<div class="row-fluid company-profile-details-hero-container">
 			<div class="row-fluid">
-				<div class="span11 company-profile-details-hero-title">
+				<div class="span3 company-profile-details-hero-logo">
+					{% if company.logo %}<img src="{{company.logo}}" />{% endif %}
+				</div>
+				<div class="span8 company-profile-details-hero-title">
 					<h1>Company profile{% if company.name %} - {{company.name}}{% endif %}</h1>
 					<h2>This company profile is not visible to the public.</h2>
 				</div>

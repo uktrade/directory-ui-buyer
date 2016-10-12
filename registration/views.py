@@ -78,7 +78,10 @@ class CompanyProfileDetailView(TemplateView):
                 'website': 'http://amazon.co.uk',
                 'description': 'Ecommerce website',
                 'number': 123456,
-                'aims': ['Increase Revenue']
+                'aims': ['Increase Revenue'],
+                'logo': ('http://www.turnerduckworth.com/media/filer_public/'
+                         '86/18/86187bcc-752a-46f4-94d8-0ce54b98cd46/'
+                         'td-amazon-smile-logo-01-large.jpg'),
             }
         }
 
