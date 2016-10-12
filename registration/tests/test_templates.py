@@ -82,3 +82,33 @@ def test_user_profile_details_renders_email():
 def test_user_profile_details_handles_no_email_or_mobile():
     html = render_to_string('user-profile-details.html', {})
     assert html.count('Unknown') == 2
+
+
+def test_form_wrapper_next_button():
+    context = {
+        'wizard': {
+            'steps':
+                {
+                    'step1': 2,
+                    'count': 3,
+                }
+        }
+    }
+    html = render_to_string('form-wrapper.html', context)
+    assert 'value="Next"' in html
+    assert 'value="Register"' not in html
+
+
+def test_form_wrapper_finish_button():
+    context = {
+        'wizard': {
+            'steps':
+                {
+                    'step1': 3,
+                    'count': 3,
+                }
+        }
+    }
+    html = render_to_string('form-wrapper.html', context)
+    assert 'value="Next"' not in html
+    assert 'value="Register"' in html

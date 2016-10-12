@@ -28,7 +28,12 @@
 				{% endif %}
 			</div>
 			<div class="register-btn-container">
-				<input class="register-btn" type="submit" value="{% trans "Register" %}"/>
+				<br>
+				{% if wizard.steps.step1 != wizard.steps.count %}
+					<input class="register-btn" type="submit" value="{% trans "Next" %}"/>
+				{% else %}
+					<input class="register-btn" type="submit" value="{% trans "Register" %}"/>
+				{% endif %}
 			</div>
 			<div class="already-registered">Already registered?
 				<a class="teal" href="#">Sign in
