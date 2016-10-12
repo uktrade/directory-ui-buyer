@@ -1,0 +1,24 @@
+{% extends './govuk_layout.html' %}
+{% load staticfiles %}
+{% block css %}
+	<link href="{% static 'user-profile-details.css' %}" media="all" rel="stylesheet" />
+{% endblock %}
+{% block content %}
+<div class="container user-profile-details-container">
+	<h1>My account</h1>
+	<p class='row-fluid'>
+		<b class='span2'>Email address:</b>
+		<span class='span2'>{{user.email|default:'Unknown'}}</span>
+	</p>
+	<p class='row-fluid'>
+		<b class='span2'>Mobile number:</b>
+		<span class='span2'>{{user.mobile|default:'Unknown'}}</span>
+	</p>
+	<p class='row-fluid'>
+		<b class='span2'>Password</b>
+		<span class='span2'>
+			<a class="reset-password-button btn btn-primary" href="#">Reset password</a>
+		</span>
+	</p>
+</div>
+{% endblock %}
