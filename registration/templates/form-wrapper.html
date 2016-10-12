@@ -30,7 +30,11 @@
 			<div class="register-btn-container">
 				<input class="register-btn" type="submit" value="{% trans "Register" %}"/>
 			</div>
-			<div class="already-registered">Already registered? <a class="teal" href="#">Sign in</a></div>
+			<div class="already-registered">Already registered?
+				<a class="teal" href="#">Sign in
+					<span class="a11y"> to proceed to your company profile page.</span>
+				</a>
+			</div>
 			<div class="steps">
 				{% include 'form_wizard_step_indicator.html' %}
 			</div>
