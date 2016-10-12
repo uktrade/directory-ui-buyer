@@ -167,8 +167,12 @@ body {
               }
 
               ul {
-                li {
-                  color: #ffbf47;
+                &.errorlist {
+                  margin: 0;
+                  padding: 0;
+                  li {
+                    color: #ffbf47;
+                  }
                 }
               }
             }
