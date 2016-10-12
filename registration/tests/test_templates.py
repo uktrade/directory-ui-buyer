@@ -10,6 +10,7 @@ default_context = {
         'name': 'UK exporting co ltd.',
         'description': 'Exporters of UK wares.',
         'website': 'www.ukexportersnow.co.uk',
+        'logo': 'www.ukexportersnow.co.uk/logo.png',
     }
 }
 
@@ -38,6 +39,11 @@ def test_company_profile_details_renders_description():
 def test_company_profile_details_renders_website():
     html = render_to_string('company-profile-details.html', default_context)
     assert 'www.ukexportersnow.co.uk' in html
+
+
+def test_company_profile_details_renders_logo():
+    html = render_to_string('company-profile-details.html', default_context)
+    assert 'www.ukexportersnow.co.uk/logo.png' in html
 
 
 def test_company_profile_details_handles_no_description():
