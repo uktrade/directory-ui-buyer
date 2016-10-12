@@ -45,7 +45,10 @@ run_test:
 	$(CREATE_DOCKER_COMPOSE_ENVS) && \
 	$(DOCKER_COMPOSE_REMOVE_AND_PULL) && \
 	docker-compose build && \
-	docker-compose run webserver make test_requirements pytest
+	docker-compose run webserver make test_requirements collectstatic pytest
+
+collectstatic:
+	python /usr/src/app/manage.py collectstatic --noinput
 
 test_requirements:
 	pip install -r test.txt
