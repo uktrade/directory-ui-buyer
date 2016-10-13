@@ -1,3 +1,6 @@
+<a href="#">
+	<span class="a11y">You are now on step {{wizard.steps.step1}} of {{wizard.steps.count}}</span>
+</a>
 {% for step in wizard.steps.all %}
 	{% if wizard.steps.current == step %}
 		<span>&#9679;</span>

@@ -112,3 +112,17 @@ def test_form_wrapper_finish_button():
     html = render_to_string('form-wrapper.html', context)
     assert 'value="Next"' not in html
     assert 'value="Register"' in html
+
+
+def test_form_wizard_step_indicator_accessibility_helper():
+    context = {
+        'wizard': {
+            'steps':
+                {
+                    'step1': 1,
+                    'count': 3,
+                }
+        }
+    }
+    html = render_to_string('form_wizard_step_indicator.html', context)
+    assert 'You are now on step 1 of 3' in html
