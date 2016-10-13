@@ -87,19 +87,20 @@ body {
     font-size: 26px;
   }
 
+  .a11y {
+    border: 0;
+    clip: rect(0 0 0 0);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
+  }
+
   #content {
     padding-bottom: 0;
     .container {
-      .a11y {
-        border: 0;
-        clip: rect(0 0 0 0);
-        height: 1px;
-        margin: -1px;
-        overflow: hidden;
-        padding: 0;
-        position: absolute;
-        width: 1px;
-      }
       a.teal {
         color: #007ea3; 
       }
@@ -127,6 +128,7 @@ body {
           }
         }
         form {
+          margin-bottom: 0;
           .connections-platform-form {
             background: rgba(0,0,0,0.6);
             -ms-filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000,endColorstr=#99000000);
