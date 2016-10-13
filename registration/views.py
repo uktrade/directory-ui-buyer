@@ -1,7 +1,10 @@
 import http
+import os
 
 from formtools.wizard.views import SessionWizardView
 
+from django.conf import settings
+from django.core.files.storage import FileSystemStorage
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.utils.cache import patch_response_headers
@@ -99,6 +102,9 @@ class CompanyProfileDetailView(TemplateView):
 class CompanyProfileEditView(SessionWizardView):
     form_list = (
         ('basic_info', forms.CompanyBasicInfoForm),
+    )
+    file_storage = FileSystemStorage(
+        location=os.path.join(settings.MEDIA_ROOT, 'tmp-logos')
     )
 
     def get_template_names(self):

@@ -100,6 +100,7 @@ USE_L10N = True
 
 USE_TZ = True
 
+MEDIA_ROOT = os.path.join(PROJECT_ROOT, 'media')
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
@@ -124,3 +125,6 @@ RAVEN_CONFIG = {
 }
 
 SESSION_ENGINE = "django.contrib.sessions.backends.signed_cookies"
+
+MAX_LOGO_SIZE_MEGABYTES = 10
+MAX_LOGO_SIZE_BYTES = MAX_LOGO_SIZE_MEGABYTES * 1024 * 1024

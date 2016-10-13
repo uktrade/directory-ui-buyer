@@ -1,4 +1,20 @@
-from registration import constants, forms
+from io import BytesIO
+
+from django.core.files.uploadedfile import InMemoryUploadedFile
+from django.conf import settings
+
+from registration import constants, forms, validators
+
+
+def create_file_of_size(size):
+    return InMemoryUploadedFile(
+        file=BytesIO(b''),
+        field_name=None,
+        name='logo.png',
+        content_type='image/png',
+        size=size,
+        charset=None
+    )
 
 
 def test_step_one_rejects_missing_data():
@@ -117,14 +133,37 @@ def test_company_profile_form_rejects_invalid_website():
 
 
 def test_company_profile_form_accepts_valid_data():
+    logo = create_file_of_size(settings.MAX_LOGO_SIZE_BYTES)
     data = {'company_name': 'Amazon UK',
             'website': 'http://amazon.co.uk',
             'description': 'Ecommerce'}
-    form = forms.CompanyBasicInfoForm(data=data)
+    form = forms.CompanyBasicInfoForm(data=data, files={'logo': logo})
 
     valid = form.is_valid()
 
     assert valid is True
+    assert form.cleaned_data == {
+        'company_name': 'Amazon UK',
+        'website': 'http://amazon.co.uk',
+        'description': 'Ecommerce',
+        'logo': logo,
+    }
+
+
+def test_company_profile_rejects_too_large_logo():
+    logo = create_file_of_size(settings.MAX_LOGO_SIZE_BYTES + 1)
+    form = forms.CompanyBasicInfoForm(data={}, files={'logo': logo})
+
+    assert form.is_valid() is False
+    assert form.errors['logo'] == [validators.MESSAGE_FILE_TOO_BIG]
+
+
+def test_company_profile_accepty_good_sized_logo():
+    logo = create_file_of_size(settings.MAX_LOGO_SIZE_BYTES)
+    form = forms.CompanyBasicInfoForm(data={}, files={'logo': logo})
+
+    form.is_valid()
+    assert 'logo' not in form.errors
 
 
 def test_serialize_registration_forms():

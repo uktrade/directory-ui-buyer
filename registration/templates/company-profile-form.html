@@ -4,7 +4,7 @@
 	<link href="{% static 'company-profile-form.css' %}" media="all" rel="stylesheet" />
 {% endblock %}
 {% block content %}
-<form class="company-profile-container" method='post' action=''>
+<form class="company-profile-container" method='post' action='' enctype="multipart/form-data">
 	{% csrf_token %}
 	<div class="form-head">
 		<h1>Create your basic company profile</h1>
