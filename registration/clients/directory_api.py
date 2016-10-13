@@ -1,8 +1,4 @@
-class DirectoryAPIClient(object):
-
-    def confirm_email(self, identifier):
-        # todo: return False if acknowledgement fails
-        return True
+from unittest.mock import Mock
 
 
-api_client = DirectoryAPIClient()
+api_client = Mock()
