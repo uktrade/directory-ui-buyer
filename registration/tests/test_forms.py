@@ -125,3 +125,24 @@ def test_company_profile_form_accepts_valid_data():
     valid = form.is_valid()
 
     assert valid is True
+
+
+def test_serialize_registration_forms():
+    actual = forms.serialize_registration_forms({
+        'aim_one': constants.AIMS[0][0],
+        'aim_two': constants.AIMS[1][0],
+        'company_number': '01234567',
+        'email': 'contact@example.com',
+        'name': 'jim',
+        'password': 'hunter2',
+        'referrer': 'google'
+    })
+    expected = {
+        'aims': [constants.AIMS[0][0], constants.AIMS[1][0]],
+        'company_number': '01234567',
+        'email': 'contact@example.com',
+        'personal_name': 'jim',
+        'password': 'hunter2',
+        'referrer': 'google'
+    }
+    assert actual == expected

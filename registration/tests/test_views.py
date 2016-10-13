@@ -4,7 +4,7 @@ from unittest import mock
 from django.core.urlresolvers import reverse
 
 from registration.clients.directory_api import api_client
-from registration.constants import SESSION_KEY_REFERRER, AIMS
+from registration.constants import SESSION_KEY_REFERRER
 from registration.views import EmailConfirmationView, RegistrationView
 from registration import forms
 
