@@ -1,3 +1,5 @@
+import http
+
 from formtools.wizard.views import SessionWizardView
 
 from django.shortcuts import redirect
@@ -30,6 +32,8 @@ class CachableTemplateView(CacheMixin, TemplateView):
 
 
 class RegistrationView(SessionWizardView):
+    success_template = 'registered.html'
+    failure_template = 'registration-error.html'
     form_list = (
         ('company', forms.CompanyForm),
         ('aims', forms.AimsForm),
@@ -49,8 +53,14 @@ class RegistrationView(SessionWizardView):
                 'referrer': self.request.session.get(SESSION_KEY_REFERRER)
             }
 
-    def done(self, form_list, form_dict):
-        return TemplateResponse(self.request, 'registered.html')
+    def done(self, *args, **kwags):
+        data = forms.serialize_registration_forms(self.get_all_cleaned_data())
+        response = api_client.registration.send_form(data)
+        if response.status_code == http.client.OK:
+            template = self.success_template
+        else:
+            template = self.failure_template
+        return TemplateResponse(self.request, template)
 
 
 class EmailConfirmationView(View):

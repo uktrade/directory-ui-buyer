@@ -1,13 +1,12 @@
 import http
 from unittest import mock
 
-import pytest
-
 from django.core.urlresolvers import reverse
 
 from registration.clients.directory_api import api_client
-from registration.constants import SESSION_KEY_REFERRER
+from registration.constants import SESSION_KEY_REFERRER, AIMS
 from registration.views import EmailConfirmationView, RegistrationView
+from registration import forms
 
 
 def test_email_confirm_missing_confirmation_code(rf):
@@ -38,7 +37,6 @@ def test_email_confirm_valid_confirmation_code(mock_confirm_email, rf):
     assert response.template_name == EmailConfirmationView.success_template
 
 
-@pytest.mark.django_db
 def test_registration_view_includes_referrer(client, rf):
     request = rf.get(reverse('register'))
     request.session = client.session
@@ -51,3 +49,38 @@ def test_registration_view_includes_referrer(client, rf):
     initial = response.context_data['form'].initial
     assert form_pair[0] == 'user'
     assert initial['referrer'] == 'google'
+
+
+@mock.patch.object(RegistrationView, 'get_all_cleaned_data', return_value={})
+@mock.patch.object(forms, 'serialize_registration_forms')
+@mock.patch.object(api_client.registration, 'send_form')
+def test_registration_form_complete_api_client_call(
+    mock_send_form, mock_serialize_registration_forms, rf, client
+):
+    view = RegistrationView()
+    view.request = None
+    mock_serialize_registration_forms.return_value = data = {'field': 'value'}
+    view.done()
+    mock_send_form.assert_called_once_with(data)
+
+
+@mock.patch.object(RegistrationView, 'get_all_cleaned_data', lambda x: {})
+@mock.patch.object(forms, 'serialize_registration_forms', lambda x: {})
+@mock.patch.object(api_client.registration, 'send_form')
+def test_registration_form_complete_api_client_success(mock_send_form):
+    mock_send_form.return_value = mock.Mock(status_code=http.client.OK)
+    view = RegistrationView()
+    view.request = None
+    response = view.done()
+    assert response.template_name == RegistrationView.success_template
+
+
+@mock.patch.object(RegistrationView, 'get_all_cleaned_data', lambda x: {})
+@mock.patch.object(forms, 'serialize_registration_forms', lambda x: {})
+@mock.patch.object(api_client.registration, 'send_form')
+def test_registration_form_complete_api_client_failure(mock_send_form):
+    mock_send_form.return_value = mock.Mock(status_code=http.client.BAD_REQUEST)
+    view = RegistrationView()
+    view.request = None
+    response = view.done()
+    assert response.template_name == RegistrationView.failure_template

@@ -32,3 +32,23 @@ class UserForm(forms.Form):
     password = forms.CharField(widget=forms.PasswordInput())
     terms_agreed = forms.BooleanField()
     referrer = forms.CharField(required=False, widget=forms.HiddenInput())
+
+
+def serialize_registration_forms(cleaned_data):
+    """
+    Return the shape directory-api-client expects for registration.
+
+    @param {dict} cleaned_data - All the fields in `CompanyForm`,
+                                `AimsForm`, and `AimsForm`.
+    @returns dict
+
+    """
+
+    return {
+        'aims': [cleaned_data['aim_one'], cleaned_data['aim_two']],
+        'company_number': cleaned_data['company_number'],
+        'email': cleaned_data['email'],
+        'personal_name': cleaned_data['name'],
+        'password': cleaned_data['password'],
+        'referrer': cleaned_data['referrer'],
+    }
