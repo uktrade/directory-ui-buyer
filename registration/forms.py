@@ -1,6 +1,7 @@
 from django import forms
+from django.conf import settings
 
-from registration import constants
+from registration import constants, validators
 
 
 class CompanyForm(forms.Form):
@@ -19,6 +20,13 @@ class CompanyBasicInfoForm(forms.Form):
     company_name = forms.CharField()
     website = forms.URLField()
     description = forms.CharField(widget=forms.Textarea)
+    logo = forms.FileField(
+        help_text=(
+            'Maximum filesize: {0}MB'.format(settings.MAX_LOGO_SIZE_MEGABYTES)
+        ),
+        required=False,
+        validators=[validators.validate_logo_filesize]
+    )
 
 
 class AimsForm(forms.Form):
