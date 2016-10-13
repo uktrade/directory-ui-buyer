@@ -60,3 +60,20 @@ def serialize_registration_forms(cleaned_data):
         'password': cleaned_data['password'],
         'referrer': cleaned_data['referrer'],
     }
+
+
+def serialize_company_profile_forms(cleaned_data):
+    """
+    Return the shape directory-api-client expects for registration.
+
+    @param {dict} cleaned_data - All the fields in `CompanyBasicInfoForm`
+    @returns dict
+
+    """
+
+    return {
+        'name': cleaned_data['company_name'],
+        'website': cleaned_data['website'],
+        'description': cleaned_data['description'],
+        'logo': cleaned_data['logo']
+    }

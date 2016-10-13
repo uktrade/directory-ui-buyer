@@ -106,11 +106,19 @@ class CompanyProfileEditView(SessionWizardView):
     file_storage = FileSystemStorage(
         location=os.path.join(settings.MEDIA_ROOT, 'tmp-logos')
     )
+    failure_template = 'company-profile-update-error.html'
 
     def get_template_names(self):
         return [
             'company-profile-form.html',
         ]
 
-    def done(self, form_list, form_dict):
-        return redirect('company-detail')
+    def done(self, *args, **kwargs):
+
+        data = forms.serialize_company_profile_forms(self.get_all_cleaned_data())
+        response = api_client.company.update_profile(data)
+        if response.status_code == http.client.OK:
+            response = redirect('company-detail')
+        else:
+            response = TemplateResponse(self.request, self.failure_template)
+        return response

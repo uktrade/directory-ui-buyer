@@ -185,3 +185,20 @@ def test_serialize_registration_forms():
         'referrer': 'google'
     }
     assert actual == expected
+
+
+def test_serialize_company_profile_forms():
+    logo = create_file_of_size(1)
+    actual = forms.serialize_company_profile_forms({
+        'company_name': 'Example ltd.',
+        'website': 'http://example.com',
+        'description': 'Jolly good exporter.',
+        'logo': logo,
+    })
+    expected = {
+        'name': 'Example ltd.',
+        'website': 'http://example.com',
+        'description': 'Jolly good exporter.',
+        'logo': logo
+    }
+    assert actual == expected
