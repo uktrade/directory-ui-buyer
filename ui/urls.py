@@ -8,7 +8,7 @@ from registration.views import (
     CompanyProfileEditView,
     CompanyProfileDetailView,
 )
-
+from profile.views import UserProfileDetailView
 
 cache_me = cache_page(60 * 1)
 
@@ -36,6 +36,10 @@ urlpatterns = [
     url(r'^company-profile$',
         CompanyProfileDetailView.as_view(),
         name='company-detail'),
+
+    url(r'^user-profile$',
+        UserProfileDetailView.as_view(),
+        name='user-detail'),
 
     url(r'^company-profile/edit$',
         CompanyProfileEditView.as_view(),
