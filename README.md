@@ -18,18 +18,45 @@
     $ cd directory-ui
     $ make
 
-## Running
+## Running with Docker
 Requires all host environment variables to be set.
 
-    $ make run
+    $ make docker_run
 
-## Running local debug
+### Run debug webserver in Docker
 
-    $ make run_debug
+    $ make docker_debug
 
-## Local development
+### Run tests in Docker
 
-### SASS
+    $ make docker_test
+
+### Host environment variables for docker-compose
+``.env`` files will be automatically created (with ``env_writer.py`` based on ``env.json``) by ``make docker_test``, based on host environment variables with ``DIRECTORY_UI_`` prefix.
+
+#### Web server
+| Host environment variable | Docker environment variable  |
+| ------------- | ------------- |
+| DIRECTORY_UI_SECRET_KEY | SECRET_KEY |
+| DIRECTORY_UI_PORT | PORT |
+
+## Debugging
+
+### Setup debug environment
+    
+    $ make debug
+
+### Run debug webserver
+
+    $ make debug_webserver
+
+### Run debug tests
+
+    $ make debug_test
+
+### CSS development
+
+#### Requirements
 [node](https://nodejs.org/en/download/)
 [SASS](http://sass-lang.com/)
 
@@ -38,35 +65,18 @@ npm install
 npm run sass-dev
 ```
 
-For updating CSS under version control run:
+#### Update CSS under version control
+
 ```bash
 npm run sass-prod
 ```
 
-### CSS development
-
-To enable easy development, you can have sass watch the scss file for changes.
+#### Rebuild the CSS files when the scss file changes
 
 ```bash
 npm run sass-watch
 ```
 
-This will cause sass to rebuld the css files when the scss file changes.
-
-## Running tests
-
-    $ make run_test
-
-## Host environment variables for docker-compose
-``.env`` files will be automatically created (with ``env_writer.py`` based on ``env.json``) by ``make run_test``, based on host environment variables with ``DIRECTORY_UI_`` prefix.
-
-### Web server and queue worker
-| Host environment variable | Docker environment variable  |
-| ------------- | ------------- |
-| DIRECTORY_UI_SECRET_KEY | SECRET_KEY |
-| DIRECTORY_UI_PORT | PORT |
-
-
 # Session
 
-We use signed cookies as the session backend. The reason for this is to avoid using a database. We therefore must avoid storing non-trivial data in the session, because the browser will be exposed to the data.
+Signed cookies are used as the session backend to avoid using a database. We therefore must avoid storing non-trivial data in the session, because the browser will be exposed to the data.
