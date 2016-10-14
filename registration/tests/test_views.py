@@ -6,6 +6,7 @@ from django.core.urlresolvers import reverse
 from registration.clients.directory_api import api_client
 from registration.constants import SESSION_KEY_REFERRER
 from registration.views import (
+    CompanyProfileDetailView,
     CompanyProfileEditView,
     EmailConfirmationView,
     RegistrationView,
@@ -124,3 +125,29 @@ def test_company_profile_edit_api_client_failure(mock_update_profile):
     response = view.done()
     assert response.status_code == http.client.OK
     assert response.template_name == CompanyProfileEditView.failure_template
+
+
+@mock.patch.object(api_client.company, 'retrieve_profile')
+def test_company_profile_details_calls_api(mock_retrieve_profile, rf):
+    view = CompanyProfileDetailView.as_view()
+    request = rf.get(reverse('company-detail'))
+    view(request)
+    # TODO: update test once no longer hard-coding the company id
+    assert mock_retrieve_profile.called_once()
+
+
+@mock.patch.object(api_client.company, 'retrieve_profile')
+def test_company_profile_details_exposes_context(mock_retrieve_profile, rf):
+    mock_retrieve_profile.return_value = expected_context = {
+        'website': 'http://example.com',
+        'description': 'Ecommerce website',
+        'number': 123456,
+        'aims': ['Increase Revenue'],
+        'logo': ('nice.jpg'),
+    }
+    view = CompanyProfileDetailView.as_view()
+    request = rf.get(reverse('company-detail'))
+    response = view(request)
+    assert response.status_code == http.client.OK
+    assert response.template_name == [CompanyProfileDetailView.template_name]
+    assert response.context_data['company'] == expected_context

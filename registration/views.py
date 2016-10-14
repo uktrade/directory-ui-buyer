@@ -83,18 +83,17 @@ class CompanyProfileDetailView(TemplateView):
     template_name = 'company-profile-details.html'
 
     def get_context_data(self, **kwargs):
-        # TODO: ED-151
-        # Stubbed at the moment, needs to be pulled from API
+        # TODO:
+        # Determine the company_id of the logged in user.
+        company_id = 1
+        company_details = api_client.company.retrieve_profile(id=company_id)
         return {
             'company': {
-                'name': 'Amazon UK',
-                'website': 'http://amazon.co.uk',
-                'description': 'Ecommerce website',
-                'number': 123456,
-                'aims': ['Increase Revenue'],
-                'logo': ('http://www.turnerduckworth.com/media/filer_public/'
-                         '86/18/86187bcc-752a-46f4-94d8-0ce54b98cd46/'
-                         'td-amazon-smile-logo-01-large.jpg'),
+                'website': company_details['website'],
+                'description': company_details['description'],
+                'number': company_details['number'],
+                'aims': company_details['aims'],
+                'logo': company_details['logo'],
             }
         }
 
