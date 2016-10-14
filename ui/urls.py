@@ -8,7 +8,7 @@ from registration.views import (
     CompanyProfileEditView,
     CompanyProfileDetailView,
 )
-from profile.views import UserProfileDetailView
+from user.views import UserProfileDetailView
 
 cache_me = cache_page(60 * 1)
 

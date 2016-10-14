@@ -4,7 +4,7 @@ from unittest import mock
 from django.core.urlresolvers import reverse
 
 from registration.clients.directory_api import api_client
-from profile.views import UserProfileDetailView
+from user.views import UserProfileDetailView
 
 
 @mock.patch.object(api_client.user, 'retrieve_profile')
