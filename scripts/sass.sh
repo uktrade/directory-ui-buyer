@@ -5,6 +5,7 @@
 libraries="\
 	--load-path node_modules/govuk_frontend_toolkit/stylesheets \
 	--load-path node_modules/trade_elements/sass \
+	--load-path registration/static/sass \
 	--load-path node_modules/govuk-elements-sass/public/sass \
 "
 
@@ -15,7 +16,7 @@ input_output_map="\
 	registration/static/sass/registration.scss:registration/static/registration.css \
 	registration/static/sass/company-profile-details.scss:registration/static/company-profile-details.css \
 	registration/static/sass/company-profile-form.scss:registration/static/company-profile-form.css \
-	registration/static/sass/user-profile-details.scss:registration/static/user-profile-details.css \
+	profile/static/sass/user-profile-details.scss:profile/static/user-profile-details.css \
 "
 
 dev_command="\
@@ -33,7 +34,7 @@ watch_command="\
 
 prod_command="sass --style compressed"
 
-eval 'rm registration/static/*.css'
+eval 'rm registration/static/*.css profile/static/*.css'
 if [ "$1" == "dev" ]; then
 	eval $dev_command$libraries$input_output_map
 elif [ "$1" == "prod" ]; then

@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "formtools",
     "ui",
     "registration",
+    "user",
 ]
 
 MIDDLEWARE_CLASSES = [
