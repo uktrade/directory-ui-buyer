@@ -93,20 +93,25 @@ def test_registration_form_complete_api_client_failure(mock_send_form):
     assert response.template_name == RegistrationView.failure_template
 
 
-@mock.patch.object(CompanyProfileEditView, 'get_all_cleaned_data', return_value={})
+@mock.patch.object(
+    CompanyProfileEditView, 'get_all_cleaned_data', return_value={}
+)
 @mock.patch.object(forms, 'serialize_company_profile_forms')
 @mock.patch.object(api_client.company, 'update_profile')
 def test_company_profile_edit_api_client_call(
-    mock_update_profile, mock_serialize_company_profile_forms, rf, client
-):
+        mock_update_profile, mock_serialize_company_profile_forms, rf, client):
     view = CompanyProfileEditView()
     view.request = None
-    mock_serialize_company_profile_forms.return_value = data = {'field': 'value'}
+    mock_serialize_company_profile_forms.return_value = data = {
+        'field': 'value'
+    }
     view.done()
     mock_update_profile.assert_called_once_with(data)
 
 
-@mock.patch.object(CompanyProfileEditView, 'get_all_cleaned_data', lambda x: {})
+@mock.patch.object(
+    CompanyProfileEditView, 'get_all_cleaned_data', lambda x: {}
+)
 @mock.patch.object(forms, 'serialize_company_profile_forms', lambda x: {})
 @mock.patch.object(api_client.company, 'update_profile')
 def test_company_profile_edit_api_client_success(mock_update_profile):
@@ -117,11 +122,15 @@ def test_company_profile_edit_api_client_success(mock_update_profile):
     assert response.status_code == http.client.FOUND
 
 
-@mock.patch.object(CompanyProfileEditView, 'get_all_cleaned_data', lambda x: {})
+@mock.patch.object(
+    CompanyProfileEditView, 'get_all_cleaned_data', lambda x: {}
+)
 @mock.patch.object(forms, 'serialize_company_profile_forms', lambda x: {})
 @mock.patch.object(api_client.company, 'update_profile')
 def test_company_profile_edit_api_client_failure(mock_update_profile):
-    mock_update_profile.return_value = mock.Mock(status_code=http.client.BAD_REQUEST)
+    mock_update_profile.return_value = mock.Mock(
+        status_code=http.client.BAD_REQUEST
+    )
     view = CompanyProfileEditView()
     view.request = None
     response = view.done()

@@ -114,7 +114,9 @@ class CompanyProfileEditView(SessionWizardView):
 
     def done(self, *args, **kwargs):
 
-        data = forms.serialize_company_profile_forms(self.get_all_cleaned_data())
+        data = forms.serialize_company_profile_forms(
+            self.get_all_cleaned_data()
+        )
         response = api_client.company.update_profile(data)
         if response.status_code == http.client.OK:
             response = redirect('company-detail')
