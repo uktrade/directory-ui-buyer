@@ -83,7 +83,7 @@ class CompanyProfileDetailView(TemplateView):
     template_name = 'company-profile-details.html'
 
     def get_context_data(self, **kwargs):
-        # TODO:
+        # TODO: ED-184
         # Determine the company_id of the logged in user.
         company_id = 1
         company_details = api_client.company.retrieve_profile(id=company_id)

@@ -132,7 +132,8 @@ def test_company_profile_details_calls_api(mock_retrieve_profile, rf):
     view = CompanyProfileDetailView.as_view()
     request = rf.get(reverse('company-detail'))
     view(request)
-    # TODO: update test once no longer hard-coding the company id
+    # TODO: ED-184
+    # update test once no longer hard-coding the company id
     assert mock_retrieve_profile.called_once()
 
 
