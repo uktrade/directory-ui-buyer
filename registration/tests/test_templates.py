@@ -69,21 +69,6 @@ def test_company_profile_details_handles_no_website():
     assert 'Please set your website address.' in html
 
 
-def test_user_profile_details_renders_mobile():
-    html = render_to_string('user-profile-details.html', user_context)
-    assert '00000000011' in html
-
-
-def test_user_profile_details_renders_email():
-    html = render_to_string('user-profile-details.html', user_context)
-    assert 'email@example.com' in html
-
-
-def test_user_profile_details_handles_no_email_or_mobile():
-    html = render_to_string('user-profile-details.html', {})
-    assert html.count('Unknown') == 2
-
-
 def test_form_wrapper_next_button():
     context = {
         'wizard': {
