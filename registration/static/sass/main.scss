@@ -78,6 +78,103 @@ ul, li {
 * html .clearfix             { zoom: 1; } /* IE6 */
 *:first-child+html .clearfix { zoom: 1; } /* IE7 */
 
+// The 'a11y' class is a CSS technique for preventing text 
+// from visually rendering on-screen but still being available for screen readers.
+.a11y {
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
+}
+
+a.teal {
+  color: #007ea3; 
+}
+a.teal:hover {
+  color: #33cfff;
+}
+
+.input-field-container {
+  label {
+    margin-bottom: 10px;
+  }
+
+  input, select {
+    border: 3px solid #ffffff;
+    border-radius: 0;
+    font-size: 16px;
+    height: 30px;
+    margin: 0 0 40px;
+    padding: 5px 10px;
+    width: calc(100% - 26px);
+    &:focus {
+      border: 3px solid #ffbf47;
+    }
+  }
+
+  select {
+    height: 50px;
+    width: 100%;
+  }
+
+  ul {
+    &.errorlist {
+      margin: 0;
+      padding: 0;
+      li {
+        color: #ffbf47;
+      }
+    }
+  }
+}
+
+.register-btn-container {
+  margin: 20px 0;
+  text-align: center;
+  input.register-btn {
+    background: #888888;
+    border: 0;
+    color: #ffffff;
+    height: 60px;
+    width: 150px;
+    &:hover {
+      background: #666666;
+    }
+  }
+}
+
+.steps {
+  margin: 20px auto;
+  text-align: center;
+  width: 100%;
+  color: white;
+  span {
+    font-family: initial;
+    font-size: 3em;
+    line-height: 1;
+  }
+}
+
+.black-60-percent {
+  background: rgba(0,0,0,0.6);
+  -ms-filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000,endColorstr=#99000000);
+  filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000,endColorstr=#99000000);
+  zoom: 1;
+}
+
+.great-britain-logo {
+  margin: 0 0 20px;
+  max-width: 100px;
+  img {
+    width: 100%;
+    height: auto;
+  }
+}
+
 body { 
   @media (max-width: 979px) {
     padding: 0;
@@ -87,53 +184,20 @@ body {
     font-size: 26px;
   }
 
-  .a11y {
-    border: 0;
-    clip: rect(0 0 0 0);
-    height: 1px;
-    margin: -1px;
-    overflow: hidden;
-    padding: 0;
-    position: absolute;
-    width: 1px;
-  }
-
   #content {
     padding-bottom: 0;
     .container {
-      a.teal {
-        color: #007ea3; 
-      }
-      a.teal:hover {
-        color: #33cfff;
-      }
       .row-fluid {
         .registration-intro-container {
+          margin-bottom: 20px;
           margin-top: 140px;
           .registration-intro {
-            background: rgba(0,0,0,0.6);
-            -ms-filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000,endColorstr=#99000000);
-            filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000,endColorstr=#99000000);
-            zoom: 1;
-            padding: 20px;
-            .great-britain-logo {
-              margin: 0 0 20px;
-              max-width: 100px;
-              img {
-                width: 100%;
-                height: auto;
-              }
-            }
-            .intro-registration-text {}
+            padding: 40px;
           }
         }
         form {
           margin-bottom: 0;
           .connections-platform-form {
-            background: rgba(0,0,0,0.6);
-            -ms-filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000,endColorstr=#99000000);
-            filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000,endColorstr=#99000000);
-            zoom: 1;
             padding: 20px 40px 150px;
 
             h2 {
@@ -144,76 +208,13 @@ body {
               margin: 0 auto;
               text-align: center;
             }
-
-            .input-field-container {
-              label {
-                margin-bottom: 10px;
-              }
-            
-              input, select {
-                border: 3px solid #ffffff;
-                border-radius: 0;
-                font-size: 16px;
-                height: 30px;
-                margin: 0 0 40px;
-                padding: 5px 10px;
-                width: calc(100% - 26px);
-                &:focus {
-                  border: 3px solid #ffbf47;
-                }
-              }
-
-              select {
-                height: 50px;
-                width: 100%;
-              }
-
-              ul {
-                &.errorlist {
-                  margin: 0;
-                  padding: 0;
-                  li {
-                    color: #ffbf47;
-                  }
-                }
-              }
-            }
-
-            .register-btn-container {
-              margin: 20px 0;
-              text-align: center;
-              input.register-btn {
-                background: #888888;
-                border: 0;
-                color: #ffffff;
-                height: 60px;
-                width: 150px;
-                &:hover {
-                  background: #666666;
-                }
-              }
-            }
-
-            .steps {
-              margin: 20px auto;
-              text-align: center;
-              width: 100%;
-              color: white;
-              span {
-                font-size: 3em;
-              }
-            }
           }
         }
       }
       .registered, .sorry {
-        background: rgba(0,0,0,0.6);
-        -ms-filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000,endColorstr=#99000000);
-        filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000,endColorstr=#99000000);
-        zoom: 1;
         margin-bottom: 150px;
         margin-top: 150px;
-        padding: 20px;
+        padding: 40px;
         h1, h2 {
           margin-bottom: 20px; 
         }
