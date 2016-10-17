@@ -1,9 +1,11 @@
 from io import BytesIO
+from unittest import mock
 
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.conf import settings
 
 from registration import constants, forms, validators
+from registration.clients.directory_api import api_client
 
 
 def create_file_of_size(size):
@@ -17,13 +19,13 @@ def create_file_of_size(size):
     )
 
 
-def test_step_one_rejects_missing_data():
+def test_company_form_rejects_missing_data():
     form = forms.CompanyForm(data={})
     assert form.is_valid() is False
     assert 'company_number' in form.errors
 
 
-def test_step_one_rejects_too_long_company_number():
+def test_company_form_rejects_too_long_company_number():
     form = forms.CompanyForm(data={
         'company_number': '012456789',
     })
@@ -31,7 +33,7 @@ def test_step_one_rejects_too_long_company_number():
     assert 'company_number' in form.errors
 
 
-def test_step_one_rejects_too_short_company_number():
+def test_company_form_rejects_too_short_company_number():
     form = forms.CompanyForm(data={
         'company_number': '0124567',
     })
@@ -39,14 +41,14 @@ def test_step_one_rejects_too_short_company_number():
     assert 'company_number' in form.errors
 
 
-def test_step_one_accepts_valid_data():
+def test_company_form_accepts_valid_data():
     form = forms.CompanyForm(data={
         'company_number': '01245678',
     })
     assert form.is_valid() is True
 
 
-def test_step_two_accepts_valid_data():
+def test_aims_form_accepts_valid_data():
     form = forms.AimsForm(data={
         'aim_one': constants.AIMS[1][0],
         'aim_two': constants.AIMS[2][0],
@@ -54,7 +56,7 @@ def test_step_two_accepts_valid_data():
     assert form.is_valid()
 
 
-def test_step_two_rejects_no_aims():
+def test_aims_form_rejects_no_aims():
     form = forms.AimsForm(data={
         'aim_one': '',
         'aim_two': '',
@@ -62,7 +64,7 @@ def test_step_two_rejects_no_aims():
     assert form.is_valid() is False
 
 
-def test_step_three_rejects_missing_data():
+def test_user_form_rejects_missing_data():
     form = forms.UserForm(data={})
     assert 'name' in form.errors
     assert 'password' in form.errors
@@ -70,7 +72,7 @@ def test_step_three_rejects_missing_data():
     assert 'email' in form.errors
 
 
-def test_step_three_rejects_invalid_email_addresses():
+def test_user_form_rejects_invalid_email_addresses():
     form = forms.UserForm(data={
         'email': 'johnATjones.com',
     })
@@ -78,7 +80,8 @@ def test_step_three_rejects_invalid_email_addresses():
     assert 'email' in form.errors
 
 
-def test_step_three_accepts_valid_data():
+@mock.patch.object(api_client, 'is_email_address_valid', return_value=True)
+def test_user_form_accepts_valid_data(mock_is_email_address_valid):
     form = forms.UserForm(data={
         'name': 'John Johnson',
         'password': 'hunter2',
@@ -86,6 +89,17 @@ def test_step_three_accepts_valid_data():
         'email': 'john@jones.com',
     })
     assert form.is_valid()
+
+
+@mock.patch.object(api_client, 'is_email_address_valid', return_value=False)
+def test_user_form_rejects_invalid_email_addresses_via_api(
+    mock_is_email_address_valid
+):
+    form = forms.UserForm(data={
+        'email': 'john@example.com',
+    })
+    assert form.is_valid() is False
+    assert form.errors['email'] == [validators.MESSAGE_USE_CORPORATE_EMAIL]
 
 
 def test_company_profile_form_requires_name():

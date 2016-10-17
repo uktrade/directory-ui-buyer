@@ -36,7 +36,12 @@ class AimsForm(forms.Form):
 
 class UserForm(forms.Form):
     name = forms.CharField(label='Full name')
-    email = forms.EmailField(label='Email address')
+    email = forms.EmailField(
+        label='Email address',
+        validators=[
+            validators.email_domain,
+        ]
+    )
     password = forms.CharField(widget=forms.PasswordInput())
     terms_agreed = forms.BooleanField()
     referrer = forms.CharField(required=False, widget=forms.HiddenInput())
