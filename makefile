@@ -74,7 +74,7 @@ debug_webserver:
 debug_test:
 	$(DEBUG_SET_ENV_VARS) && $(FLAKE8) && $(PYTEST)
 
-debug: test_requirements debug_db debug_test
+debug: test_requirements debug_test
 
 
 .PHONY: build clean heroku_deploy test_requirements docker_run docker_debug docker_webserver_bash docker_test debug_webserver debug_test debug

@@ -1,5 +1,5 @@
-# directory-api
-[Export Directory registration form](https://www.directory.exportingisgreat.gov.uk/)
+# directory-ui
+[Export Directory UI](https://www.directory.exportingisgreat.gov.uk/)
 
 ## Build status
 
