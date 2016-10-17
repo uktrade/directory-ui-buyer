@@ -126,6 +126,3 @@ RAVEN_CONFIG = {
 }
 
 SESSION_ENGINE = "django.contrib.sessions.backends.signed_cookies"
-
-MAX_LOGO_SIZE_MEGABYTES = 10
-MAX_LOGO_SIZE_BYTES = MAX_LOGO_SIZE_MEGABYTES * 1024 * 1024
