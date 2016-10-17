@@ -1,0 +1,46 @@
+{% extends './govuk_layout.html' %}
+{% load staticfiles %}
+{% block css %}
+	<link href="{% static 'company-profile-form.css' %}" media="all" rel="stylesheet" />
+{% endblock %}
+{% block content %}
+<form class="company-profile-container" method='post' action='' enctype="multipart/form-data">
+	{% csrf_token %}
+	<div class="form-head">
+		<h1>Edit your user profile</h1>
+		<h2>Add your details to profile.</h2>
+	</div>
+	<div class="form-body">
+		<div>
+			<h2 class='form-body-title'>Add details and description related to you personally.</h2>
+			<span class="progress-indicator pull-right">{% include 'form_wizard_step_indicator.html' %}</span>
+			<div class="clearfix"></div>
+		</div>
+			{{ wizard.management_form }}
+			{% if wizard.form.forms %}
+				{{ wizard.form.management_form }}
+				{% for form in wizard.form.forms %}
+					{{ form }}
+				{% endfor %}
+			{% else %}
+				{{ wizard.form }}
+			{% endif %}
+		<hr>
+		<div class="form-foot">
+			{% if wizard.steps.prev %}
+				<button class="back-button" name="wizard_goto_step" type="submit" value="{{ wizard.steps.prev }}">Back</button>
+			{% endif %}
+
+			<div class="pull-right">
+				{% if wizard.steps.step1 != wizard.steps.count %}
+					<input class="btn btn-primary" type="submit" value="Next" />
+				{% else %}
+					<input class="btn btn-primary" type="submit" value="Finish" />
+				{% endif %}
+			</div>
+			
+			<div class="clearfix"></div>
+		</div>
+	</div>
+</form>
+{% endblock %}

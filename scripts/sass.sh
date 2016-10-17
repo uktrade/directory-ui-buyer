@@ -16,7 +16,8 @@ input_output_map="\
 	registration/static/sass/registration.scss:registration/static/registration.css \
 	registration/static/sass/company-profile-details.scss:registration/static/company-profile-details.css \
 	registration/static/sass/company-profile-form.scss:registration/static/company-profile-form.css \
-	profile/static/sass/user-profile-details.scss:profile/static/user-profile-details.css \
+	registration/static/sass/user-profile-details.scss:registration/static/user-profile-details.css \
+	registration/static/sass/user-profile-edit-form.scss:registration/static/user-profile-edit-form.css \
 "
 
 dev_command="\
