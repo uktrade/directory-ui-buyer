@@ -1,4 +1,4 @@
-Django==1.9.6
+Django==1.9.10
 django_extensions==1.6.7
 django-formtools==1.0
 gunicorn==19.5.0
