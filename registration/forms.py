@@ -1,7 +1,7 @@
 from django import forms
+from django.conf import settings
 
 from directory_validators import enrolment as validators
-from directory_validators.constants import MAX_LOGO_SIZE_MEGABYTES
 
 from registration import constants
 
@@ -23,7 +23,9 @@ class CompanyBasicInfoForm(forms.Form):
     description = forms.CharField(widget=forms.Textarea)
     logo = forms.FileField(
         help_text=(
-            'Maximum filesize: {0}MB'.format(MAX_LOGO_SIZE_MEGABYTES)
+            'Maximum filesize: {0}MB'.format(
+                settings.VALIDATOR_MAX_LOGO_SIZE_MEGABYTES
+            )
         ),
         required=False,
         validators=[validators.logo_filesize]

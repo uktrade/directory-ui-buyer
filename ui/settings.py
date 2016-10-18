@@ -126,3 +126,7 @@ RAVEN_CONFIG = {
 }
 
 SESSION_ENGINE = "django.contrib.sessions.backends.signed_cookies"
+
+VALIDATOR_MAX_LOGO_SIZE_BYTES = int(os.getenv(
+    "VALIDATOR_MAX_LOGO_SIZE_BYTES", 10 * 1024 * 1024
+))
