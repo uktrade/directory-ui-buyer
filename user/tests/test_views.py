@@ -11,10 +11,9 @@ from user.views import UserProfileDetailView
 def test_user_profile_details_calls_api(mock_retrieve_profile, rf):
     view = UserProfileDetailView.as_view()
     request = rf.get(reverse('user-detail'))
+    request.user = mock.Mock(id=1)
     view(request)
-    # TODO: ED-183
-    # update test once no longer hard-coding the user id
-    assert mock_retrieve_profile.called_once()
+    assert mock_retrieve_profile.called_once_with(1)
 
 
 @mock.patch.object(api_client.user, 'retrieve_profile')
@@ -25,6 +24,7 @@ def test_user_profile_details_exposes_context(mock_retrieve_profile, rf):
     }
     view = UserProfileDetailView.as_view()
     request = rf.get(reverse('user-detail'))
+    request.user = mock.Mock(id=1)
     response = view(request)
     assert response.status_code == http.client.OK
     assert response.template_name == [UserProfileDetailView.template_name]
