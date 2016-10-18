@@ -1,7 +1,9 @@
 from django import forms
 from django.conf import settings
 
-from registration import constants, validators
+from directory_validators import enrolment as validators
+
+from registration import constants
 
 
 class CompanyForm(forms.Form):
@@ -9,8 +11,7 @@ class CompanyForm(forms.Form):
         label='Company number',
         help_text=('This is the 8-digit number on the company certificate of '
                    'incorporation.'),
-        max_length=8,
-        min_length=8,
+        validators=[validators.company_number]
     )
 
 
@@ -22,10 +23,12 @@ class CompanyBasicInfoForm(forms.Form):
     description = forms.CharField(widget=forms.Textarea)
     logo = forms.FileField(
         help_text=(
-            'Maximum filesize: {0}MB'.format(settings.MAX_LOGO_SIZE_MEGABYTES)
+            'Maximum filesize: {0}MB'.format(
+                settings.VALIDATOR_MAX_LOGO_SIZE_MEGABYTES
+            )
         ),
         required=False,
-        validators=[validators.validate_logo_filesize]
+        validators=[validators.logo_filesize]
     )
 
 
@@ -36,7 +39,13 @@ class AimsForm(forms.Form):
 
 class UserForm(forms.Form):
     name = forms.CharField(label='Full name')
-    email = forms.EmailField(label='Email address')
+    email = forms.EmailField(
+        label='Email address',
+        validators=[
+            validators.email_domain_free,
+            validators.email_domain_disposable,
+        ]
+    )
     password = forms.CharField(widget=forms.PasswordInput())
     terms_agreed = forms.BooleanField()
     referrer = forms.CharField(required=False, widget=forms.HiddenInput())

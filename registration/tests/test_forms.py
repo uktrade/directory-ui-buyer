@@ -1,29 +1,21 @@
-from io import BytesIO
+from unittest.mock import Mock
 
-from django.core.files.uploadedfile import InMemoryUploadedFile
-from django.conf import settings
+from directory_validators import enrolment
 
-from registration import constants, forms, validators
-
-
-def create_file_of_size(size):
-    return InMemoryUploadedFile(
-        file=BytesIO(b''),
-        field_name=None,
-        name='logo.png',
-        content_type='image/png',
-        size=size,
-        charset=None
-    )
+from registration import constants, forms
 
 
-def test_step_one_rejects_missing_data():
+def create_mock_file():
+    return Mock(size=1)
+
+
+def test_company_form_rejects_missing_data():
     form = forms.CompanyForm(data={})
     assert form.is_valid() is False
     assert 'company_number' in form.errors
 
 
-def test_step_one_rejects_too_long_company_number():
+def test_company_form_rejects_too_long_company_number():
     form = forms.CompanyForm(data={
         'company_number': '012456789',
     })
@@ -31,7 +23,7 @@ def test_step_one_rejects_too_long_company_number():
     assert 'company_number' in form.errors
 
 
-def test_step_one_rejects_too_short_company_number():
+def test_company_form_rejects_too_short_company_number():
     form = forms.CompanyForm(data={
         'company_number': '0124567',
     })
@@ -39,14 +31,14 @@ def test_step_one_rejects_too_short_company_number():
     assert 'company_number' in form.errors
 
 
-def test_step_one_accepts_valid_data():
+def test_company_form_accepts_valid_data():
     form = forms.CompanyForm(data={
         'company_number': '01245678',
     })
     assert form.is_valid() is True
 
 
-def test_step_two_accepts_valid_data():
+def test_aims_form_accepts_valid_data():
     form = forms.AimsForm(data={
         'aim_one': constants.AIMS[1][0],
         'aim_two': constants.AIMS[2][0],
@@ -54,7 +46,7 @@ def test_step_two_accepts_valid_data():
     assert form.is_valid()
 
 
-def test_step_two_rejects_no_aims():
+def test_aims_form_rejects_no_aims():
     form = forms.AimsForm(data={
         'aim_one': '',
         'aim_two': '',
@@ -62,7 +54,13 @@ def test_step_two_rejects_no_aims():
     assert form.is_valid() is False
 
 
-def test_step_three_rejects_missing_data():
+def test_user_form_email_validators():
+    field = forms.UserForm.base_fields['email']
+    assert enrolment.email_domain_free in field.validators
+    assert enrolment.email_domain_disposable in field.validators
+
+
+def test_user_form_rejects_missing_data():
     form = forms.UserForm(data={})
     assert 'name' in form.errors
     assert 'password' in form.errors
@@ -70,7 +68,7 @@ def test_step_three_rejects_missing_data():
     assert 'email' in form.errors
 
 
-def test_step_three_rejects_invalid_email_addresses():
+def test_user_form_rejects_invalid_email_addresses():
     form = forms.UserForm(data={
         'email': 'johnATjones.com',
     })
@@ -78,7 +76,7 @@ def test_step_three_rejects_invalid_email_addresses():
     assert 'email' in form.errors
 
 
-def test_step_three_accepts_valid_data():
+def test_user_form_accepts_valid_data():
     form = forms.UserForm(data={
         'name': 'John Johnson',
         'password': 'hunter2',
@@ -133,7 +131,7 @@ def test_company_profile_form_rejects_invalid_website():
 
 
 def test_company_profile_form_accepts_valid_data():
-    logo = create_file_of_size(settings.MAX_LOGO_SIZE_BYTES)
+    logo = create_mock_file()
     data = {'company_name': 'Amazon UK',
             'website': 'http://amazon.co.uk',
             'description': 'Ecommerce'}
@@ -150,20 +148,9 @@ def test_company_profile_form_accepts_valid_data():
     }
 
 
-def test_company_profile_rejects_too_large_logo():
-    logo = create_file_of_size(settings.MAX_LOGO_SIZE_BYTES + 1)
-    form = forms.CompanyBasicInfoForm(data={}, files={'logo': logo})
-
-    assert form.is_valid() is False
-    assert form.errors['logo'] == [validators.MESSAGE_FILE_TOO_BIG]
-
-
-def test_company_profile_accepty_good_sized_logo():
-    logo = create_file_of_size(settings.MAX_LOGO_SIZE_BYTES)
-    form = forms.CompanyBasicInfoForm(data={}, files={'logo': logo})
-
-    form.is_valid()
-    assert 'logo' not in form.errors
+def test_company_profile_logo_validator():
+    field = forms.CompanyBasicInfoForm.base_fields['logo']
+    assert enrolment.logo_filesize in field.validators
 
 
 def test_serialize_registration_forms():
@@ -188,7 +175,7 @@ def test_serialize_registration_forms():
 
 
 def test_serialize_company_profile_forms():
-    logo = create_file_of_size(1)
+    logo = create_mock_file()
     actual = forms.serialize_company_profile_forms({
         'company_name': 'Example ltd.',
         'website': 'http://example.com',
