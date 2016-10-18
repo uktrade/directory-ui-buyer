@@ -1,6 +1,8 @@
 import http
 from unittest import mock
 
+import pytest
+
 from django.core.urlresolvers import reverse
 
 from registration.clients.directory_api import api_client
@@ -139,17 +141,23 @@ def test_company_profile_edit_api_client_failure(mock_update_profile):
 
 
 @mock.patch.object(api_client.company, 'retrieve_profile')
-def test_company_profile_details_calls_api(mock_retrieve_profile, rf):
+def test_company_profile_details_calls_api(
+    mock_retrieve_profile, rf, client
+):
     view = CompanyProfileDetailView.as_view()
     request = rf.get(reverse('company-detail'))
+    request.user = mock.Mock(session=client.session)
+    request.user.session['company_id'] = 1
+
     view(request)
-    # TODO: ED-184
-    # update test once no longer hard-coding the company id
-    assert mock_retrieve_profile.called_once()
+
+    assert mock_retrieve_profile.called_once_with(1)
 
 
 @mock.patch.object(api_client.company, 'retrieve_profile')
-def test_company_profile_details_exposes_context(mock_retrieve_profile, rf):
+def test_company_profile_details_exposes_context(
+    mock_retrieve_profile, client, rf
+):
     mock_retrieve_profile.return_value = expected_context = {
         'website': 'http://example.com',
         'description': 'Ecommerce website',
@@ -159,7 +167,27 @@ def test_company_profile_details_exposes_context(mock_retrieve_profile, rf):
     }
     view = CompanyProfileDetailView.as_view()
     request = rf.get(reverse('company-detail'))
+    # todo: replace mock with something better once login has been stabalised.
+    request.user = mock.Mock(session=client.session)
+    request.user.session['company_id'] = 1
     response = view(request)
     assert response.status_code == http.client.OK
     assert response.template_name == [CompanyProfileDetailView.template_name]
     assert response.context_data['company'] == expected_context
+
+
+def test_company_profile_details_logs_missing_session_company(
+    client, rf, caplog
+):
+    view = CompanyProfileDetailView.as_view()
+    request = rf.get(reverse('company-detail'))
+    request.session = client.session
+    # todo: replace mock with something better once login has been stabalised.
+    request.user = mock.Mock(session=client.session, id=2)
+    with pytest.raises(KeyError):
+        response = view(request)
+        assert response.status_code == http.client.INTERNAL_SERVER_ERROR
+    log = caplog.records()[0]
+    assert log.message == 'company_id is missing from the user session.'
+    assert log.user_id == 2
+    assert log.levelname == 'ERROR'

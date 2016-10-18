@@ -1,3 +1,4 @@
+import logging
 import http
 import os
 
@@ -14,6 +15,9 @@ from django.views.generic.base import View
 from registration import forms
 from registration.constants import SESSION_KEY_REFERRER
 from registration.clients.directory_api import api_client
+
+
+logger = logging.getLogger(__name__)
 
 
 class CacheMixin(object):
@@ -83,9 +87,15 @@ class CompanyProfileDetailView(TemplateView):
     template_name = 'company-profile-details.html'
 
     def get_context_data(self, **kwargs):
-        # TODO: ED-184
-        # Determine the company_id of the logged in user.
-        company_id = 1
+        # once login has been implemented company_id will be added to the user's
+        # session automatically after the user logs in.
+        session = self.request.user.session
+        if 'company_id' not in session:
+            logger.error(
+                'company_id is missing from the user session.',
+                extra={'user_id': self.request.user.id}
+            )
+        company_id = session['company_id']
         company_details = api_client.company.retrieve_profile(id=company_id)
         return {
             'company': {
