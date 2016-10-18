@@ -87,8 +87,8 @@ class CompanyProfileDetailView(TemplateView):
     template_name = 'company-profile-details.html'
 
     def get_context_data(self, **kwargs):
-        # once login has been implemented company_id will be added to the user's
-        # session automatically after the user logs in.
+        # once login has been implemented company_id will be added to
+        # the user's session automatically after the user logs in.
         session = self.request.user.session
         if 'company_id' not in session:
             logger.error(
