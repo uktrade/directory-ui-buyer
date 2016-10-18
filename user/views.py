@@ -6,7 +6,7 @@ from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.views.generic import TemplateView
 
-from registration.clients.directory_api import api_client
+from enrolment.clients.directory_api import api_client
 from user import forms
 
 

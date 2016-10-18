@@ -4,7 +4,7 @@ __pycache__/
 *$py.class
 .sass-cache/
 .venv/
-registration/staticfiles/
+enrolment/staticfiles/
 BrowserStackLocal
 node_modules/
 

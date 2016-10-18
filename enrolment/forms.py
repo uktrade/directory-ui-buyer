@@ -3,7 +3,7 @@ from django.conf import settings
 
 from directory_validators import enrolment as validators
 
-from registration import constants
+from enrolment import constants
 
 
 class CompanyForm(forms.Form):
@@ -51,9 +51,9 @@ class UserForm(forms.Form):
     referrer = forms.CharField(required=False, widget=forms.HiddenInput())
 
 
-def serialize_registration_forms(cleaned_data):
+def serialize_enrolment_forms(cleaned_data):
     """
-    Return the shape directory-api-client expects for registration.
+    Return the shape directory-api-client expects for enrolment.
 
     @param {dict} cleaned_data - All the fields in `CompanyForm`,
                                 `AimsForm`, and `AimsForm`.
@@ -73,7 +73,7 @@ def serialize_registration_forms(cleaned_data):
 
 def serialize_company_profile_forms(cleaned_data):
     """
-    Return the shape directory-api-client expects for registration.
+    Return the shape directory-api-client expects for enrolment.
 
     @param {dict} cleaned_data - All the fields in `CompanyBasicInfoForm`
     @returns dict

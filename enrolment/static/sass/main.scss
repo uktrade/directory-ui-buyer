@@ -78,7 +78,7 @@ ul, li {
 * html .clearfix             { zoom: 1; } /* IE6 */
 *:first-child+html .clearfix { zoom: 1; } /* IE7 */
 
-// The 'a11y' class is a CSS technique for preventing text 
+// The 'a11y' class is a CSS technique for preventing text
 // from visually rendering on-screen but still being available for screen readers.
 .a11y {
   border: 0;
@@ -92,7 +92,7 @@ ul, li {
 }
 
 a.teal {
-  color: #007ea3; 
+  color: #007ea3;
 }
 a.teal:hover {
   color: #33cfff;
@@ -175,7 +175,7 @@ a.teal:hover {
   }
 }
 
-body { 
+body {
   @media (max-width: 979px) {
     padding: 0;
   }
@@ -188,10 +188,10 @@ body {
     padding-bottom: 0;
     .container {
       .row-fluid {
-        .registration-intro-container {
+        .enrolment-intro-container {
           margin-bottom: 20px;
           margin-top: 140px;
-          .registration-intro {
+          .enrolment-intro {
             padding: 40px;
           }
         }
@@ -216,7 +216,7 @@ body {
         margin-top: 150px;
         padding: 40px;
         h1, h2 {
-          margin-bottom: 20px; 
+          margin-bottom: 20px;
         }
       }
     }

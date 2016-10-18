@@ -12,9 +12,9 @@ from django.utils.cache import patch_response_headers
 from django.views.generic import TemplateView
 from django.views.generic.base import View
 
-from registration import forms
-from registration.constants import SESSION_KEY_REFERRER
-from registration.clients.directory_api import api_client
+from enrolment import forms
+from enrolment.constants import SESSION_KEY_REFERRER
+from enrolment.clients.directory_api import api_client
 
 
 logger = logging.getLogger(__name__)
@@ -38,9 +38,9 @@ class CachableTemplateView(CacheMixin, TemplateView):
     pass
 
 
-class RegistrationView(SessionWizardView):
+class EnrolmentView(SessionWizardView):
     success_template = 'registered.html'
-    failure_template = 'registration-error.html'
+    failure_template = 'enrolment-error.html'
     form_list = (
         ('company', forms.CompanyForm),
         ('aims', forms.AimsForm),
@@ -61,8 +61,8 @@ class RegistrationView(SessionWizardView):
             }
 
     def done(self, *args, **kwags):
-        data = forms.serialize_registration_forms(self.get_all_cleaned_data())
-        response = api_client.registration.send_form(data)
+        data = forms.serialize_enrolment_forms(self.get_all_cleaned_data())
+        response = api_client.enrolment.send_form(data)
         if response.status_code == http.client.OK:
             template = self.success_template
         else:

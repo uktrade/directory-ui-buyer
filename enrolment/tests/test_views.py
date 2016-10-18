@@ -5,15 +5,15 @@ import pytest
 
 from django.core.urlresolvers import reverse
 
-from registration.clients.directory_api import api_client
-from registration.constants import SESSION_KEY_REFERRER
-from registration.views import (
+from enrolment.clients.directory_api import api_client
+from enrolment.constants import SESSION_KEY_REFERRER
+from enrolment.views import (
     CompanyProfileDetailView,
     CompanyProfileEditView,
     EmailConfirmationView,
-    RegistrationView,
+    EnrolmentView,
 )
-from registration import forms
+from enrolment import forms
 
 
 def test_email_confirm_missing_confirmation_code(rf):
@@ -44,13 +44,13 @@ def test_email_confirm_valid_confirmation_code(mock_confirm_email, rf):
     assert response.template_name == EmailConfirmationView.success_template
 
 
-def test_registration_view_includes_referrer(client, rf):
+def test_enrolment_view_includes_referrer(client, rf):
     request = rf.get(reverse('register'))
     request.session = client.session
     request.session[SESSION_KEY_REFERRER] = 'google'
 
-    form_pair = RegistrationView.form_list[2]
-    view = RegistrationView.as_view(form_list=(form_pair,))
+    form_pair = EnrolmentView.form_list[2]
+    view = EnrolmentView.as_view(form_list=(form_pair,))
     response = view(request)
 
     initial = response.context_data['form'].initial
@@ -58,41 +58,41 @@ def test_registration_view_includes_referrer(client, rf):
     assert initial['referrer'] == 'google'
 
 
-@mock.patch.object(RegistrationView, 'get_all_cleaned_data', return_value={})
-@mock.patch.object(forms, 'serialize_registration_forms')
-@mock.patch.object(api_client.registration, 'send_form')
-def test_registration_form_complete_api_client_call(
-    mock_send_form, mock_serialize_registration_forms, rf, client
+@mock.patch.object(EnrolmentView, 'get_all_cleaned_data', return_value={})
+@mock.patch.object(forms, 'serialize_enrolment_forms')
+@mock.patch.object(api_client.enrolment, 'send_form')
+def test_enrolment_form_complete_api_client_call(
+    mock_send_form, mock_serialize_enrolment_forms, rf, client
 ):
-    view = RegistrationView()
+    view = EnrolmentView()
     view.request = None
-    mock_serialize_registration_forms.return_value = data = {'field': 'value'}
+    mock_serialize_enrolment_forms.return_value = data = {'field': 'value'}
     view.done()
     mock_send_form.assert_called_once_with(data)
 
 
-@mock.patch.object(RegistrationView, 'get_all_cleaned_data', lambda x: {})
-@mock.patch.object(forms, 'serialize_registration_forms', lambda x: {})
-@mock.patch.object(api_client.registration, 'send_form')
-def test_registration_form_complete_api_client_success(mock_send_form):
+@mock.patch.object(EnrolmentView, 'get_all_cleaned_data', lambda x: {})
+@mock.patch.object(forms, 'serialize_enrolment_forms', lambda x: {})
+@mock.patch.object(api_client.enrolment, 'send_form')
+def test_enrolment_form_complete_api_client_success(mock_send_form):
     mock_send_form.return_value = mock.Mock(status_code=http.client.OK)
-    view = RegistrationView()
+    view = EnrolmentView()
     view.request = None
     response = view.done()
-    assert response.template_name == RegistrationView.success_template
+    assert response.template_name == EnrolmentView.success_template
 
 
-@mock.patch.object(RegistrationView, 'get_all_cleaned_data', lambda x: {})
-@mock.patch.object(forms, 'serialize_registration_forms', lambda x: {})
-@mock.patch.object(api_client.registration, 'send_form')
-def test_registration_form_complete_api_client_failure(mock_send_form):
+@mock.patch.object(EnrolmentView, 'get_all_cleaned_data', lambda x: {})
+@mock.patch.object(forms, 'serialize_enrolment_forms', lambda x: {})
+@mock.patch.object(api_client.enrolment, 'send_form')
+def test_enrolment_form_complete_api_client_failure(mock_send_form):
     mock_send_form.return_value = mock.Mock(
         status_code=http.client.BAD_REQUEST
     )
-    view = RegistrationView()
+    view = EnrolmentView()
     view.request = None
     response = view.done()
-    assert response.template_name == RegistrationView.failure_template
+    assert response.template_name == EnrolmentView.failure_template
 
 
 @mock.patch.object(
@@ -187,7 +187,7 @@ def test_company_profile_details_logs_missing_session_company(
     with pytest.raises(KeyError):
         response = view(request)
         assert response.status_code == http.client.INTERNAL_SERVER_ERROR
-    log = caplog.records()[0]
+    log = caplog.records[0]
     assert log.message == 'company_id is missing from the user session.'
     assert log.user_id == 2
     assert log.levelname == 'ERROR'

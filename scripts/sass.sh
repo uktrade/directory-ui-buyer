@@ -5,19 +5,19 @@
 libraries="\
 	--load-path node_modules/govuk_frontend_toolkit/stylesheets \
 	--load-path node_modules/trade_elements/sass \
-	--load-path registration/static/sass \
+	--load-path enrolment/static/sass \
 	--load-path node_modules/govuk-elements-sass/public/sass \
 "
 
 # put the path of source code files we want to include, and where we want them
 # to be exported to e.g., input.scss:output.css
 input_output_map="\
-	registration/static/sass/main.scss:registration/static/main.css \
-	registration/static/sass/registration.scss:registration/static/registration.css \
-	registration/static/sass/company-profile-details.scss:registration/static/company-profile-details.css \
-	registration/static/sass/company-profile-form.scss:registration/static/company-profile-form.css \
-	registration/static/sass/user-profile-details.scss:registration/static/user-profile-details.css \
-	registration/static/sass/user-profile-edit-form.scss:registration/static/user-profile-edit-form.css \
+	enrolment/static/sass/main.scss:enrolment/static/main.css \
+	enrolment/static/sass/enrolment.scss:enrolment/static/enrolment.css \
+	enrolment/static/sass/company-profile-details.scss:enrolment/static/company-profile-details.css \
+	enrolment/static/sass/company-profile-form.scss:enrolment/static/company-profile-form.css \
+	enrolment/static/sass/user-profile-details.scss:enrolment/static/user-profile-details.css \
+	enrolment/static/sass/user-profile-edit-form.scss:enrolment/static/user-profile-edit-form.css \
 "
 
 dev_command="\
@@ -35,7 +35,7 @@ watch_command="\
 
 prod_command="sass --style compressed"
 
-eval 'rm registration/static/*.css profile/static/*.css'
+eval 'rm enrolment/static/*.css profile/static/*.css'
 if [ "$1" == "dev" ]; then
 	eval $dev_command$libraries$input_output_map
 elif [ "$1" == "prod" ]; then

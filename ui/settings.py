@@ -40,17 +40,17 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "formtools",
     "ui",
-    "registration",
+    "enrolment",
     "user",
 ]
 
 MIDDLEWARE_CLASSES = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
-    # 'registration.middleware.SSLRedirectMiddleware',
+    # 'enrolment.middleware.SSLRedirectMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'registration.middleware.ReferrerMiddleware',
+    'enrolment.middleware.ReferrerMiddleware',
 ]
 
 ROOT_URLCONF = 'ui.urls'
