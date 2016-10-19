@@ -33,6 +33,8 @@ docker_run:
 	docker-compose up --build
 
 DOCKER_SET_DEBUG_ENV_VARS := \
+	export DIRECTORY_UI_API_CLIENT_API_KEY=debug; \
+	export DIRECTORY_UI_API_CLIENT_BASE_URL=http://debug; \
 	export DIRECTORY_UI_PORT=8001; \
 	export DIRECTORY_UI_SECRET_KEY=debug; \
 	export DIRECTORY_UI_DEBUG=true
@@ -68,6 +70,8 @@ DEBUG_SET_ENV_VARS := \
 	export PORT=8001; \
 	export SECRET_KEY=debug; \
 	export DEBUG=true
+	export API_CLIENT_API_KEY=debug; \
+	export API_CLIENT_BASE_URL=http://debug
 
 debug_webserver:
 	$(DEBUG_SET_ENV_VARS) && $(DJANGO_WEBSERVER)

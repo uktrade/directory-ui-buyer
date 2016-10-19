@@ -1,11 +1,11 @@
 import http
 from unittest import mock
 
+from directory_api_client.client import CompanyAPIClient, EnrolmentAPIClient
 import pytest
 
 from django.core.urlresolvers import reverse
 
-from enrolment.clients.directory_api import api_client
 from enrolment.constants import SESSION_KEY_REFERRER
 from enrolment.views import (
     CompanyProfileDetailView,
@@ -24,7 +24,7 @@ def test_email_confirm_missing_confirmation_code(rf):
     assert response.template_name == EmailConfirmationView.failure_template
 
 
-@mock.patch.object(api_client, 'confirm_email', return_value=False)
+@mock.patch.object(EnrolmentAPIClient, 'confirm_email', return_value=False)
 def test_email_confirm_invalid_confirmation_code(mock_confirm_email, rf):
     view = EmailConfirmationView.as_view()
     request = rf.get(reverse('confirm-email'), {'confirmation_code': 123})
@@ -34,7 +34,7 @@ def test_email_confirm_invalid_confirmation_code(mock_confirm_email, rf):
     assert response.template_name == EmailConfirmationView.failure_template
 
 
-@mock.patch.object(api_client, 'confirm_email', return_value=True)
+@mock.patch.object(EnrolmentAPIClient, 'confirm_email', return_value=True)
 def test_email_confirm_valid_confirmation_code(mock_confirm_email, rf):
     view = EmailConfirmationView.as_view()
     request = rf.get(reverse('confirm-email'), {'confirmation_code': 123})
@@ -72,7 +72,7 @@ def test_enrolment_view_uses_correct_template(client, rf):
 
 @mock.patch.object(EnrolmentView, 'get_all_cleaned_data', return_value={})
 @mock.patch.object(forms, 'serialize_enrolment_forms')
-@mock.patch.object(api_client.enrolment, 'send_form')
+@mock.patch.object(EnrolmentAPIClient, 'send_form')
 def test_enrolment_form_complete_api_client_call(
     mock_send_form, mock_serialize_enrolment_forms, rf, client
 ):
@@ -85,7 +85,7 @@ def test_enrolment_form_complete_api_client_call(
 
 @mock.patch.object(EnrolmentView, 'get_all_cleaned_data', lambda x: {})
 @mock.patch.object(forms, 'serialize_enrolment_forms', lambda x: {})
-@mock.patch.object(api_client.enrolment, 'send_form')
+@mock.patch.object(EnrolmentAPIClient, 'send_form')
 def test_enrolment_form_complete_api_client_success(mock_send_form):
     mock_send_form.return_value = mock.Mock(status_code=http.client.OK)
     view = EnrolmentView()
@@ -96,7 +96,7 @@ def test_enrolment_form_complete_api_client_success(mock_send_form):
 
 @mock.patch.object(EnrolmentView, 'get_all_cleaned_data', lambda x: {})
 @mock.patch.object(forms, 'serialize_enrolment_forms', lambda x: {})
-@mock.patch.object(api_client.enrolment, 'send_form')
+@mock.patch.object(EnrolmentAPIClient, 'send_form')
 def test_enrolment_form_complete_api_client_failure(mock_send_form):
     mock_send_form.return_value = mock.Mock(
         status_code=http.client.BAD_REQUEST
@@ -111,7 +111,7 @@ def test_enrolment_form_complete_api_client_failure(mock_send_form):
     CompanyProfileEditView, 'get_all_cleaned_data', return_value={}
 )
 @mock.patch.object(forms, 'serialize_company_profile_forms')
-@mock.patch.object(api_client.company, 'update_profile')
+@mock.patch.object(CompanyAPIClient, 'update_profile')
 def test_company_profile_edit_api_client_call(
         mock_update_profile, mock_serialize_company_profile_forms, rf, client):
     view = CompanyProfileEditView()
@@ -127,7 +127,7 @@ def test_company_profile_edit_api_client_call(
     CompanyProfileEditView, 'get_all_cleaned_data', lambda x: {}
 )
 @mock.patch.object(forms, 'serialize_company_profile_forms', lambda x: {})
-@mock.patch.object(api_client.company, 'update_profile')
+@mock.patch.object(CompanyAPIClient, 'update_profile')
 def test_company_profile_edit_api_client_success(mock_update_profile):
     mock_update_profile.return_value = mock.Mock(status_code=http.client.OK)
     view = CompanyProfileEditView()
@@ -140,7 +140,7 @@ def test_company_profile_edit_api_client_success(mock_update_profile):
     CompanyProfileEditView, 'get_all_cleaned_data', lambda x: {}
 )
 @mock.patch.object(forms, 'serialize_company_profile_forms', lambda x: {})
-@mock.patch.object(api_client.company, 'update_profile')
+@mock.patch.object(CompanyAPIClient, 'update_profile')
 def test_company_profile_edit_api_client_failure(mock_update_profile):
     mock_update_profile.return_value = mock.Mock(
         status_code=http.client.BAD_REQUEST
@@ -152,7 +152,7 @@ def test_company_profile_edit_api_client_failure(mock_update_profile):
     assert response.template_name == CompanyProfileEditView.failure_template
 
 
-@mock.patch.object(api_client.company, 'retrieve_profile')
+@mock.patch.object(CompanyAPIClient, 'retrieve_profile')
 def test_company_profile_details_calls_api(
     mock_retrieve_profile, rf, client
 ):
@@ -166,7 +166,7 @@ def test_company_profile_details_calls_api(
     assert mock_retrieve_profile.called_once_with(1)
 
 
-@mock.patch.object(api_client.company, 'retrieve_profile')
+@mock.patch.object(CompanyAPIClient, 'retrieve_profile')
 def test_company_profile_details_exposes_context(
     mock_retrieve_profile, client, rf
 ):

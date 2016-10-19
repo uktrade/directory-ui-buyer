@@ -130,3 +130,6 @@ SESSION_ENGINE = "django.contrib.sessions.backends.signed_cookies"
 VALIDATOR_MAX_LOGO_SIZE_BYTES = int(os.getenv(
     "VALIDATOR_MAX_LOGO_SIZE_BYTES", 10 * 1024 * 1024
 ))
+
+API_CLIENT_BASE_URL = os.getenv('API_CLIENT_BASE_URL')
+API_CLIENT_API_KEY = os.getenv('API_CLIENT_API_KEY')
