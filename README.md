@@ -8,7 +8,8 @@
 ## Requirements
 
 ### Docker
-[Docker >= 1.10](https://docs.docker.com/engine/installation/) 
+[Docker >= 1.10](https://docs.docker.com/engine/installation/)
+
 [Docker Compose >= 1.8](https://docs.docker.com/compose/install/)
 
 

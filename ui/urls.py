@@ -1,10 +1,10 @@
 from django.conf.urls import url
 from django.views.decorators.cache import cache_page
 
-from registration.views import (
+from enrolment.views import (
     CachableTemplateView,
     EmailConfirmationView,
-    RegistrationView,
+    EnrolmentView,
     CompanyProfileEditView,
     CompanyProfileDetailView,
 )
@@ -14,7 +14,7 @@ cache_me = cache_page(60 * 1)
 
 urlpatterns = [
     url(r"^$",
-        RegistrationView.as_view(),
+        EnrolmentView.as_view(),
         name="register"),
 
     url(r"^thanks$",

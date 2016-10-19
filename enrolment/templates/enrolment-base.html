@@ -2,7 +2,7 @@
 {% load staticfiles %}
 
 {% block css %}
-	<link href="{% static 'registration.css' %}" media="all" rel="stylesheet" />
+	<link href="{% static 'enrolment.css' %}" media="all" rel="stylesheet" />
 {% endblock %}
 {% block content %}
 	<div class="container">
@@ -11,13 +11,13 @@
 		<div class="row-fluid">
 			{% block formarea %}
 			{% endblock formarea %}
-			<div class="span7 registration-intro-container">
-				<div class="registration-intro black-60-percent">
+			<div class="span7 enrolment-intro-container">
+				<div class="enrolment-intro black-60-percent">
 					<div class="great-britain-logo">
 						<img src="{% static 'images/great-britain-logo.png' %}" alt="">
 					</div>
 					<h1>{% block hero_title %}{% endblock %}</h1>
-					<p class="intro-registration-text">{% block hero_text %}{% endblock %}</p>
+					<p class="intro-enrolment-text">{% block hero_text %}{% endblock %}</p>
 					<h2>Learn | Grow | Connect</h2>
 				</div>
 			</div>

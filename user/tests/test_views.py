@@ -3,7 +3,7 @@ from unittest import mock
 
 from django.core.urlresolvers import reverse
 
-from registration.clients.directory_api import api_client
+from enrolment.clients.directory_api import api_client
 from user.views import UserProfileDetailView, UserProfileEditView
 from user import forms
 

@@ -2,7 +2,7 @@ from unittest.mock import Mock
 
 from directory_validators import enrolment
 
-from registration import constants, forms
+from enrolment import constants, forms
 
 
 def create_mock_file():
@@ -153,8 +153,8 @@ def test_company_profile_logo_validator():
     assert enrolment.logo_filesize in field.validators
 
 
-def test_serialize_registration_forms():
-    actual = forms.serialize_registration_forms({
+def test_serialize_enrolment_forms():
+    actual = forms.serialize_enrolment_forms({
         'aim_one': constants.AIMS[0][0],
         'aim_two': constants.AIMS[1][0],
         'company_number': '01234567',
