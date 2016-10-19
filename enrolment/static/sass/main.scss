@@ -263,3 +263,17 @@ body {
   }
   
 }
+
+#footer.ed-footer {
+  background: #1E1348;
+  padding: 40px;
+  .footer-wrapper {
+    background: #1E1348;
+  }
+  ul li {
+    padding: 5px;
+    a {
+      color: white;
+    }
+  }
+}
