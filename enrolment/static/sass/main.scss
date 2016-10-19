@@ -147,33 +147,6 @@ a.teal:hover {
   }
 }
 
-.steps {
-  margin: 20px auto;
-  text-align: center;
-  width: 100%;
-  color: white;
-  span {
-    font-family: initial;
-    font-size: 3em;
-    line-height: 1;
-  }
-}
-
-.black-60-percent {
-  background: rgba(0,0,0,0.6);
-  -ms-filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000,endColorstr=#99000000);
-  filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000,endColorstr=#99000000);
-  zoom: 1;
-}
-
-.great-britain-logo {
-  margin: 0 0 20px;
-  max-width: 100px;
-  img {
-    width: 100%;
-    height: auto;
-  }
-}
 
 body {
   @media (max-width: 979px) {
@@ -193,21 +166,6 @@ body {
           margin-top: 140px;
           .enrolment-intro {
             padding: 40px;
-          }
-        }
-        form {
-          margin-bottom: 0;
-          .connections-platform-form {
-            padding: 20px 40px 150px;
-
-            h2 {
-              margin: 40px 0 60px 0;
-            }
-
-            .already-registered {
-              margin: 0 auto;
-              text-align: center;
-            }
           }
         }
       }

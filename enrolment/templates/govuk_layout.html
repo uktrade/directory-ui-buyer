@@ -51,7 +51,23 @@
 
 
 		{% include 'header.html' %}
-		{% include 'hero-sub-header.html' %}
+		<!-- hero sub header -->
+		<section class="ed-hero-sub-header">
+		    <div class="container">
+		        <div class="row-fluid">
+		            <span class="span12 ed-hero-sub-header-title">
+		                <h1>{% block hero_title %}{% endblock %}</h1>
+		            </span>
+		        </div>
+		        <div class="row-fluid ed-hero-sub-header-synopsis">
+		            <span class="span9">
+		                <span>{% block hero_text %}{% endblock %}</span>
+		            </span>
+		        </div>
+		    </div>
+		</section>
+		<!-- end of hero sub header -->
+
 		<div id="content" class="enrolment-content">
 			{% block content %}
 			{% endblock content %}

@@ -50,13 +50,14 @@ class EnrolmentView(SessionWizardView):
         ('aims', forms.AimsForm),
         ('user', forms.UserForm),
     )
+    templates = [
+        'company-form.html',
+        'aims-form.html',
+        'user-form.html',
+    ]
 
     def get_template_names(self):
-        return [
-            'company-form.html',
-            'aims-form.html',
-            'user-form.html',
-        ]
+        return [self.templates[self.steps.step0]]
 
     def get_form_initial(self, step):
         if step == 'user':

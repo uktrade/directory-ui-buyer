@@ -12,9 +12,9 @@
 {% endblock %}
 
 {% block formarea %}
-	<form class="span5" action="" method="post">
-		<div class="connections-platform-form black-60-percent">
-			<h2>Register</h2>
+	<form action="" method="post">
+		<div class="connections-platform-form">
+			<h1>{% block form_title %}{% endblock form_title %}</h1>
 			{% csrf_token %}
 			<div class="input-field-container">
 				{{ wizard.management_form }}
