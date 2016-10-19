@@ -225,7 +225,6 @@ body {
 
 
 .ed-header {
-  background: black;
   ul {
     list-style-type: none;
     margin: 0;
@@ -246,4 +245,21 @@ body {
     padding-top: 20px;
     padding-bottom: 20px;
   }
+}
+
+.ed-hero-sub-header {
+  color: white;
+  min-height: 200px;
+  padding-top: 20px;
+  background: url(images/banner-img1.jpg) no-repeat center center;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  .ed-hero-sub-header-title {
+    h1 {
+      margin-bottom: 20px;
+    }
+  }
+  
 }
