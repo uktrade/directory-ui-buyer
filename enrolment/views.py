@@ -38,6 +38,10 @@ class CachableTemplateView(CacheMixin, TemplateView):
     pass
 
 
+class LandingView(CacheMixin, TemplateView):
+    template_name = 'landing-page.html'
+
+
 class EnrolmentView(SessionWizardView):
     success_template = 'registered.html'
     failure_template = 'enrolment-error.html'
