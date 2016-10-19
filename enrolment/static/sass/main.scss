@@ -222,3 +222,28 @@ body {
     }
   }
 }
+
+
+.ed-header {
+  background: black;
+  ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 10px;
+    li {
+      display: inline;
+      margin: 10px;
+      a {
+        color: white;
+      }
+    }
+  }
+  .ed-header-level-one {
+    background: #110B29;
+  }
+  .ed-header-level-two {
+    background: #1E1348;
+    padding-top: 20px;
+    padding-bottom: 20px;
+  }
+}
