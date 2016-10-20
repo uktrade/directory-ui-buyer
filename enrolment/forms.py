@@ -51,6 +51,18 @@ class UserForm(forms.Form):
     referrer = forms.CharField(required=False, widget=forms.HiddenInput())
 
 
+class CompanySizeForm(forms.Form):
+    turnover = forms.CharField(
+        label='Company turnover (GBP)',
+        required=False,
+        help_text='What is the correct turnover for your company?'
+    )
+    employees = forms.ChoiceField(
+        choices=constants.EMPLOYEES,
+        help_text='How many employees are in your company?'
+    )
+
+
 def serialize_enrolment_forms(cleaned_data):
     """
     Return the shape directory-api-client expects for enrolment.
@@ -76,6 +88,7 @@ def serialize_company_profile_forms(cleaned_data):
     Return the shape directory-api-client expects for enrolment.
 
     @param {dict} cleaned_data - All the fields in `CompanyBasicInfoForm`
+                                 and `CompanySizeForm`.
     @returns dict
 
     """
@@ -84,5 +97,7 @@ def serialize_company_profile_forms(cleaned_data):
         'name': cleaned_data['company_name'],
         'website': cleaned_data['website'],
         'description': cleaned_data['description'],
-        'logo': cleaned_data['logo']
+        'logo': cleaned_data['logo'],
+        'turnover': cleaned_data['turnover'],
+        'employees': cleaned_data['employees'],
     }

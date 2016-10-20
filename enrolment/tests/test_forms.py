@@ -181,11 +181,15 @@ def test_serialize_company_profile_forms():
         'website': 'http://example.com',
         'description': 'Jolly good exporter.',
         'logo': logo,
+        'turnover': '10,000',
+        'employees': '1-10',
     })
     expected = {
         'name': 'Example ltd.',
         'website': 'http://example.com',
         'description': 'Jolly good exporter.',
-        'logo': logo
+        'logo': logo,
+        'turnover': '10,000',
+        'employees': '1-10',
     }
     assert actual == expected
