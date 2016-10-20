@@ -117,3 +117,18 @@ def test_company_profile_form_supports_file_upload():
     # http://stackoverflow.com/a/5567063/904887
     html = render_to_string('company-profile-form.html', {})
     assert 'enctype="multipart/form-data"' in html
+
+
+def test_user_form_renders_title():
+    html = render_to_string('user-form.html', {})
+    assert 'About you' in html
+
+
+def test_aims_form_renders_title():
+    html = render_to_string('aims-form.html', {})
+    assert 'Your exporting aims' in html
+
+
+def test_company_form_renders_title():
+    html = render_to_string('company-form.html', {})
+    assert 'Your company details' in html

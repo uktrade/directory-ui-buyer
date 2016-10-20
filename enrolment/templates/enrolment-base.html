@@ -5,21 +5,11 @@
 	<link href="{% static 'enrolment.css' %}" media="all" rel="stylesheet" />
 {% endblock %}
 {% block content %}
-	<div class="container">
+	<div class="container ed-enrolment">
 		<div class="clearfix"></div>
-
 		<div class="row-fluid">
-			{% block formarea %}
-			{% endblock formarea %}
-			<div class="span7 enrolment-intro-container">
-				<div class="enrolment-intro black-60-percent">
-					<div class="great-britain-logo">
-						<img src="{% static 'images/great-britain-logo.png' %}" alt="">
-					</div>
-					<h1>{% block hero_title %}{% endblock %}</h1>
-					<p class="intro-enrolment-text">{% block hero_text %}{% endblock %}</p>
-					<h2>Learn | Grow | Connect</h2>
-				</div>
+			<div class="span5">
+				{% block formarea %}{% endblock formarea %}
 			</div>
 		</div>
 	</div>
