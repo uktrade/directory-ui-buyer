@@ -1,9 +1,10 @@
 from django import forms
 from django.conf import settings
 
-from directory_validators import enrolment as validators
+from directory_validators import enrolment as shared_validators
 
 from enrolment import constants
+from enrolment import validators
 
 
 class CompanyForm(forms.Form):
@@ -11,7 +12,10 @@ class CompanyForm(forms.Form):
         label='Company number',
         help_text=('This is the 8-digit number on the company certificate of '
                    'incorporation.'),
-        validators=[validators.company_number]
+        validators=[
+            shared_validators.company_number,
+            validators.unique_company_number,
+        ]
     )
 
 
@@ -28,7 +32,7 @@ class CompanyBasicInfoForm(forms.Form):
             )
         ),
         required=False,
-        validators=[validators.logo_filesize]
+        validators=[shared_validators.logo_filesize]
     )
 
 
@@ -42,8 +46,8 @@ class UserForm(forms.Form):
     email = forms.EmailField(
         label='Email address',
         validators=[
-            validators.email_domain_free,
-            validators.email_domain_disposable,
+            shared_validators.email_domain_free,
+            shared_validators.email_domain_disposable,
         ]
     )
     password = forms.CharField(widget=forms.PasswordInput())
