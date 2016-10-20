@@ -272,9 +272,10 @@ body {
 
 .ed-hero-sub-header {
   color: white;
-  min-height: 200px;
+  min-height: 275px;
   padding-top: 20px;
-  background: url(images/banner-img1.jpg) no-repeat center center;
+  padding-bottom: 20px;
+  background: url(images/banner-img1.jpg) no-repeat 0 -105px;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
@@ -284,7 +285,12 @@ body {
       margin-bottom: 20px;
     }
   }
-  
+  .ed-hero-sub-header-breadcrumbs {
+    margin: 20px 0;
+    a {
+      color: #dedede;
+    }
+  }
 }
 
 #footer.ed-footer {

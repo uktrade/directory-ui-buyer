@@ -1,5 +1,8 @@
 {% extends "form-wrapper.html" %}
 {% block form_title %}Your company details{% endblock%}
+{% block breadcrumbs %}
+    {{ block.super }}/ <a href="{% url 'register' %}">Register</a>
+{% endblock breadcrumbs %}
 {% block form_footer_decoration %}
 <span class="already-registered">Already registered?
 	<a class="teal" href="#">Sign in
