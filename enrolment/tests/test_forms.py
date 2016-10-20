@@ -1,41 +1,25 @@
-from unittest.mock import Mock
+from unittest.mock import Mock, patch
 
-from directory_validators import enrolment
+from directory_validators import enrolment as shared_validators
 
-from enrolment import constants, forms
+from enrolment import constants, forms, validators
 
 
 def create_mock_file():
     return Mock(size=1)
 
 
+@patch.object(validators, 'unique_company_number', Mock())
 def test_company_form_rejects_missing_data():
     form = forms.CompanyForm(data={})
     assert form.is_valid() is False
     assert 'company_number' in form.errors
 
 
-def test_company_form_rejects_too_long_company_number():
-    form = forms.CompanyForm(data={
-        'company_number': '012456789',
-    })
-    assert form.is_valid() is False
-    assert 'company_number' in form.errors
-
-
-def test_company_form_rejects_too_short_company_number():
-    form = forms.CompanyForm(data={
-        'company_number': '0124567',
-    })
-    assert form.is_valid() is False
-    assert 'company_number' in form.errors
-
-
-def test_company_form_accepts_valid_data():
-    form = forms.CompanyForm(data={
-        'company_number': '01245678',
-    })
-    assert form.is_valid() is True
+def test_company_form_validators():
+    field = forms.CompanyForm.base_fields['company_number']
+    assert shared_validators.company_number in field.validators
+    assert validators.unique_company_number in field.validators
 
 
 def test_aims_form_accepts_valid_data():
@@ -56,8 +40,8 @@ def test_aims_form_rejects_no_aims():
 
 def test_user_form_email_validators():
     field = forms.UserForm.base_fields['email']
-    assert enrolment.email_domain_free in field.validators
-    assert enrolment.email_domain_disposable in field.validators
+    assert shared_validators.email_domain_free in field.validators
+    assert shared_validators.email_domain_disposable in field.validators
 
 
 def test_user_form_rejects_missing_data():
@@ -150,7 +134,7 @@ def test_company_profile_form_accepts_valid_data():
 
 def test_company_profile_logo_validator():
     field = forms.CompanyBasicInfoForm.base_fields['logo']
-    assert enrolment.logo_filesize in field.validators
+    assert shared_validators.logo_filesize in field.validators
 
 
 def test_serialize_enrolment_forms():
