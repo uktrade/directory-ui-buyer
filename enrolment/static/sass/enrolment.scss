@@ -44,11 +44,8 @@ $asset-path: '../';
       height: 100%;
       margin: 40px 0 0;
       padding: 0 20px;
-      .input-field-container {}
-      .register-btn-container {
-        input.register-btn {
-          width: 50%;
-        }
+      input.register-btn {
+        width: 50%;
       }
     }
   }

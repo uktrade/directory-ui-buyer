@@ -58,6 +58,18 @@ def test_enrolment_view_includes_referrer(client, rf):
     assert initial['referrer'] == 'google'
 
 
+def test_enrolment_view_uses_correct_template(client, rf):
+    request = rf.get(reverse('register'))
+    request.session = client.session
+
+    for form_pair in EnrolmentView.form_list:
+        step_name = form_pair[0]
+        view = EnrolmentView.as_view(form_list=(form_pair,))
+        response = view(request)
+
+        assert response.template_name == [EnrolmentView.templates[step_name]]
+
+
 @mock.patch.object(EnrolmentView, 'get_all_cleaned_data', return_value={})
 @mock.patch.object(forms, 'serialize_enrolment_forms')
 @mock.patch.object(api_client.enrolment, 'send_form')
