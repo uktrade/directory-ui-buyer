@@ -109,11 +109,11 @@ STATIC_ROOT = os.path.join(PROJECT_ROOT, 'staticfiles')
 STATIC_URL = '/static/'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
+# directory-api
+API_CLIENT_BASE_URL = os.getenv("API_CLIENT_BASE_URL")
+API_CLIENT_API_KEY = os.getenv("API_CLIENT_API_KEY")
 
-UI_SECRET = os.getenv("UI_SECRET")
-DATA_SERVER = os.getenv("DATA_SERVER")
 ANALYTICS_ID = os.getenv("ANALYTICS_ID")
-SECRET_KEY = os.getenv("SECRET_KEY")  # needed for collectstatic not sure why
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 

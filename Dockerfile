@@ -9,4 +9,4 @@ RUN pip install --no-cache-dir -r requirements.txt --src /usr/local/src
 
 COPY . /usr/src/app
 
-CMD ["/usr/src/app/docker-cmd-webserver.sh"]
+CMD ["/usr/src/app/docker/cmd-webserver.sh"]

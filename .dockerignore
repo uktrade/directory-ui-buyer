@@ -15,4 +15,4 @@ __pycache__/
 node_modules/
 
 # Local envs
-.env
+*/docker/.env
