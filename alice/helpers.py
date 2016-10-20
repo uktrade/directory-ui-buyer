@@ -90,7 +90,7 @@ class Rabbit(object):
         path = bytes(url.path, "utf-8")
         if url.query:
             path += bytes("?{}".format(url.query), "utf-8")
-        salt = bytes(settings.UI_SECRET, "utf-8")
+        salt = bytes(settings.API_CLIENT_API_KEY, "utf-8")
 
         body = prepared_request.body or b""
         if isinstance(body, str):
