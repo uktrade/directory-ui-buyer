@@ -1,5 +1,16 @@
 $asset-path: '../';
 
+html {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+*, *:before, *:after {
+  -webkit-box-sizing: inherit;
+  -moz-box-sizing: inherit;
+  box-sizing: inherit;
+}
+
 ul, li {
     list-style: none;
 }
@@ -99,54 +110,111 @@ a.teal:hover {
 }
 
 .input-field-container {
+  .helptext {
+    padding-bottom: 20px;
+  }
+
   label {
     margin-bottom: 10px;
   }
 
-  input, select {
-    border: 3px solid #ffffff;
+  input, select, textarea {
     border-radius: 0;
     font-size: 16px;
-    height: 30px;
-    margin: 0 0 40px;
-    padding: 5px 10px;
+    height: 50px;
     width: calc(100% - 26px);
+    background-color: #fff;
+    border: 3px solid #6f777b;
     &:focus {
       border: 3px solid #ffbf47;
     }
   }
+  input[type='checkbox'] {
+    height: 30px;
+    width: 30px;
+  }
 
   select {
     height: 50px;
-    width: 100%;
+    width: calc(100% - 26px);
+  }
+
+  textarea {
+    min-height: 200px;
+  }
+
+  input[type='file'] {
+    border: 0
   }
 
   ul {
     &.errorlist {
-      margin: 0;
-      padding: 0;
+      margin: 0 0 10px 0px;
+      padding: 0 0 0 10px;
+      border-left: 3px solid #b10e1e;
       li {
-        color: #ffbf47;
+        color: #b10e1e;
       }
     }
   }
 }
 
-.register-btn-container {
-  margin: 20px 0;
-  text-align: center;
-  input.register-btn {
-    background: #888888;
-    border: 0;
-    color: #ffffff;
-    height: 60px;
-    width: 150px;
+.btn-container {
+  margin-bottom: 30px;
+  margin-top: 30px;
+  input.button {
+    background-color: #00823b;
+    position: relative;
+    display: -moz-inline-stack;
+    display: inline-block;
+    padding: .526315em .789473em .263157em;
+    border: none;
+    border-radius: 0;
+    -webkit-appearance: none;
+    box-shadow: 0 2px 0 #003618;
+    font-size: 1em;
+    line-height: 1.25;
+    text-decoration: none;
+    -webkit-font-smoothing: antialiased;
+    cursor: pointer;
+    color: #fff;
+    box-sizing: border-box;
+    vertical-align: top;
+    font-size: 19px;
+    line-height: 1.31579;
     &:hover {
-      background: #666666;
+      background: #00692f;
     }
   }
 }
 
+.steps {
+  margin: 20px auto;
+  text-align: center;
+  width: 100%;
+  color: #000000;
+  span {
+    font-family: initial;
+    font-size: 3em;
+    line-height: 1;
+  }
+}
+
+.black-60-percent {
+  background: rgba(0,0,0,0.6);
+  -ms-filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000,endColorstr=#99000000);
+  filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000,endColorstr=#99000000);
+  zoom: 1;
+}
+
+.great-britain-logo {
+  margin: 0 0 20px;
+  max-width: 100px;
+  img {
+    width: 100%;
+    height: auto;
+  }
+}
 
 body {
   @media (max-width: 979px) {
@@ -163,9 +231,24 @@ body {
       .row-fluid {
         .enrolment-intro-container {
           margin-bottom: 20px;
-          margin-top: 140px;
+          margin-top: 70px;
           .enrolment-intro {
-            padding: 40px;
+            padding: 0;
+          }
+        }
+        form {
+          margin-bottom: 0;
+          .connections-platform-form {
+            padding: 20px 20px 150px;
+
+            h2 {
+              margin: 40px 0;
+            }
+
+            .already-registered {
+              margin: 0 auto;
+              text-align: center;
+            }
           }
         }
       }
@@ -180,7 +263,6 @@ body {
     }
   }
 }
-
 
 .ed-header {
   ul {
