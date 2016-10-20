@@ -64,7 +64,7 @@ docker_test: docker_remove_all
 	$(DOCKER_COMPOSE_CREATE_ENVS) && \
 	$(DOCKER_COMPOSE_REMOVE_AND_PULL) && \
 	docker-compose -f docker-compose-test.yml build && \
-	docker-compose -f docker-compose-test.yml run test
+	docker-compose -f docker-compose-test.yml run sut
 
 DEBUG_SET_ENV_VARS := \
 	export PORT=8001; \
