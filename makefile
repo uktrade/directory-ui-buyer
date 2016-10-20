@@ -10,12 +10,13 @@ heroku_deploy:
 test_requirements:
 	pip install -r requirements_test.txt
 
+API_CLIENT_ENV_VARS := API_CLIENT_API_KEY=debug API_CLIENT_BASE_URL=http://debug
 FLAKE8 := flake8 . --exclude=migrations
 PYTEST := pytest . --cov=. $(pytest_args)
 COLLECT_STATIC := python manage.py collectstatic --noinput
 
 test:
-	$(COLLECT_STATIC) && $(FLAKE8) && $(PYTEST)
+	$(COLLECT_STATIC) && $(FLAKE8) && $(API_CLIENT_ENV_VARS) $(PYTEST)
 
 DJANGO_WEBSERVER := \
 	python manage.py collectstatic --noinput && \
@@ -33,8 +34,8 @@ docker_run:
 	docker-compose up --build
 
 DOCKER_SET_DEBUG_ENV_VARS := \
-	export DIRECTORY_UI_API_CLIENT_API_KEY=debug; \
-	export DIRECTORY_UI_API_CLIENT_BASE_URL=http://debug; \
+	export API_CLIENT_API_KEY=debug; \
+	export API_CLIENT_BASE_URL=http://debug; \
 	export DIRECTORY_UI_PORT=8001; \
 	export DIRECTORY_UI_SECRET_KEY=debug; \
 	export DIRECTORY_UI_DEBUG=true
