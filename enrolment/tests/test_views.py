@@ -204,3 +204,14 @@ def test_company_profile_details_logs_missing_session_company(
     assert log.message == 'company_id is missing from the user session.'
     assert log.user_id == 2
     assert log.levelname == 'ERROR'
+
+
+def test_company_profile_edit_view_uses_correct_template(client, rf):
+    request = rf.get(reverse('company-edit'))
+    request.session = client.session
+
+    for form_pair in CompanyProfileEditView.form_list:
+        view = CompanyProfileEditView.as_view(form_list=(form_pair,))
+        response = view(request)
+
+        assert response.template_name == [CompanyProfileEditView.template_name]
