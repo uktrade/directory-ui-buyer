@@ -1,15 +1,13 @@
 import http
 from unittest import mock
 
-from directory_api_client.client import UserAPIClient
-
 from django.core.urlresolvers import reverse
 
-from user.views import UserProfileDetailView, UserProfileEditView
+from user.views import api_client, UserProfileDetailView, UserProfileEditView
 from user import forms
 
 
-@mock.patch.object(UserAPIClient, 'retrieve_profile')
+@mock.patch.object(api_client.user, 'retrieve_profile')
 def test_user_profile_details_calls_api(mock_retrieve_profile, rf):
     view = UserProfileDetailView.as_view()
     request = rf.get(reverse('user-detail'))
@@ -18,7 +16,7 @@ def test_user_profile_details_calls_api(mock_retrieve_profile, rf):
     assert mock_retrieve_profile.called_once_with(1)
 
 
-@mock.patch.object(UserAPIClient, 'retrieve_profile')
+@mock.patch.object(api_client.user, 'retrieve_profile')
 def test_user_profile_details_exposes_context(mock_retrieve_profile, rf):
     mock_retrieve_profile.return_value = expected_context = {
         'email': 'jim@example.com',
@@ -37,7 +35,7 @@ def test_user_profile_details_exposes_context(mock_retrieve_profile, rf):
     UserProfileEditView, 'get_all_cleaned_data', return_value={}
 )
 @mock.patch.object(forms, 'serialize_user_profile_forms')
-@mock.patch.object(UserAPIClient, 'update_profile')
+@mock.patch.object(api_client.user, 'update_profile')
 def test_user_profile_edit_api_client_call(
         mock_update_profile, mock_serialize_user_profile_forms, rf, client):
     view = UserProfileEditView()
@@ -53,7 +51,7 @@ def test_user_profile_edit_api_client_call(
     UserProfileEditView, 'get_all_cleaned_data', lambda x: {}
 )
 @mock.patch.object(forms, 'serialize_user_profile_forms', lambda x: {})
-@mock.patch.object(UserAPIClient, 'update_profile')
+@mock.patch.object(api_client.user, 'update_profile')
 def test_user_profile_edit_api_client_success(mock_update_profile):
     mock_update_profile.return_value = mock.Mock(status_code=http.client.OK)
     view = UserProfileEditView()
@@ -66,7 +64,7 @@ def test_user_profile_edit_api_client_success(mock_update_profile):
     UserProfileEditView, 'get_all_cleaned_data', lambda x: {}
 )
 @mock.patch.object(forms, 'serialize_user_profile_forms', lambda x: {})
-@mock.patch.object(UserAPIClient, 'update_profile')
+@mock.patch.object(api_client.user, 'update_profile')
 def test_user_profile_edit_api_client_failure(mock_update_profile):
     mock_update_profile.return_value = mock.Mock(
         status_code=http.client.BAD_REQUEST
