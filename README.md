@@ -40,6 +40,8 @@ Requires all host environment variables to be set.
 | ------------- | ------------- |
 | DIRECTORY_UI_SECRET_KEY | SECRET_KEY |
 | DIRECTORY_UI_PORT | PORT |
+| API_CLIENT_API_KEY | API_CLIENT_API_KEY |
+| API_CLIENT_BASE_URL | API_CLIENT_API_KEY |
 
 ## Debugging
 

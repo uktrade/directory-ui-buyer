@@ -2,6 +2,7 @@ import logging
 import http
 import os
 
+from directory_api_client.client import DirectoryAPIClient
 from formtools.wizard.views import SessionWizardView
 
 from django.conf import settings
@@ -14,8 +15,12 @@ from django.views.generic.base import View
 
 from enrolment import forms
 from enrolment.constants import SESSION_KEY_REFERRER
-from enrolment.clients.directory_api import api_client
 
+
+api_client = DirectoryAPIClient(
+    base_url=settings.API_CLIENT_BASE_URL,
+    api_key=settings.API_CLIENT_API_KEY,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -67,7 +72,7 @@ class EnrolmentView(SessionWizardView):
 
     def done(self, *args, **kwags):
         data = forms.serialize_enrolment_forms(self.get_all_cleaned_data())
-        response = api_client.enrolment.send_form(data)
+        response = api_client.registration.send_form(data)
         if response.status_code == http.client.OK:
             template = self.success_template
         else:
@@ -80,8 +85,8 @@ class EmailConfirmationView(View):
     failure_template = 'confirm-email-error.html'
 
     def get(self, request):
-        confirmation_code = request.GET.get('confirmation_code')
-        if confirmation_code and api_client.confirm_email(confirmation_code):
+        code = request.GET.get('confirmation_code')
+        if code and api_client.registration.confirm_email(code):
             template = self.success_template
         else:
             template = self.failure_template

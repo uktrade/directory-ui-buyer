@@ -1,13 +1,20 @@
 import http
 
+from directory_api_client.client import DirectoryAPIClient
 from formtools.wizard.views import SessionWizardView
 
+from django.conf import settings
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.views.generic import TemplateView
 
-from enrolment.clients.directory_api import api_client
 from user import forms
+
+
+api_client = DirectoryAPIClient(
+    base_url=settings.API_CLIENT_BASE_URL,
+    api_key=settings.API_CLIENT_API_KEY,
+)
 
 
 class UserProfileDetailView(TemplateView):
