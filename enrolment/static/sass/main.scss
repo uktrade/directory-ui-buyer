@@ -188,25 +188,6 @@ a.teal:hover {
   }
 }
 
-.steps {
-  margin: 20px auto;
-  text-align: center;
-  width: 100%;
-  color: #000000;
-  span {
-    font-family: initial;
-    font-size: 3em;
-    line-height: 1;
-  }
-}
-
-.black-60-percent {
-  background: rgba(0,0,0,0.6);
-  -ms-filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000,endColorstr=#99000000);
-  filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000,endColorstr=#99000000);
-  zoom: 1;
-}
-
 .great-britain-logo {
   margin: 0 0 20px;
   max-width: 100px;
@@ -239,7 +220,7 @@ body {
         form {
           margin-bottom: 0;
           .connections-platform-form {
-            padding: 20px 20px 150px;
+            padding: 5px 30px 5px;
 
             h2 {
               margin: 40px 0;
@@ -247,6 +228,7 @@ body {
 
             .already-registered {
               margin: 0 auto;
+              margin-left: 10px;
               text-align: center;
             }
           }
@@ -316,4 +298,8 @@ body {
       color: white;
     }
   }
+}
+
+.form-wrapper-btn-container {
+  line-height: 3em;
 }

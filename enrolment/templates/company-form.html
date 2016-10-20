@@ -1,3 +1,10 @@
 {% extends "form-wrapper.html" %}
 {% block form_title %}Your company details{% endblock%}
-{% block form_footer_decoration %}{% include 'snippits/already-registered-sign-in.html' %}{% endblock%}
+{% block form_footer_decoration %}
+<span class="already-registered">Already registered?
+	<a class="teal" href="#">Sign in
+		<!-- Implementing the 'a11y' class to visually hide text on-screen but still being available for screen readers -->
+		<span class="a11y"> to proceed to your company profile page.</span>
+	</a>
+</span>
+{% endblock%}
