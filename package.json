@@ -1,7 +1,7 @@
 {
-  "name": "directory-form",
+  "name": "directory-ui",
   "version": "0.0.1",
-  "description": "Simple form to capture data",
+  "description": "Directory of UK exporters UI service",
   "main": "index.js",
   "private": true,
   "scripts": {
