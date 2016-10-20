@@ -12,7 +12,7 @@
 {% endblock %}
 
 {% block formarea %}
-	<form action="" method="post">
+	<form action="" method="post" enctype="multipart/form-data">
 		<div class="connections-platform-form">
 			<h1>{% block form_title %}{% endblock form_title %}</h1>
 			{% csrf_token %}
@@ -29,18 +29,14 @@
 			</div>
 			<div class="register-btn-container btn-container">
 				<br>
+
 				{% if wizard.steps.step1 != wizard.steps.count %}
-					<input class="register-btn btn" type="submit" value="{% trans "Next" %}"/>
+					<input class="register-btn btn" type="submit" value="{% block button_next_label %}Next{% endblock%}"/>
 				{% else %}
-					<input class="register-btn btn" type="submit" value="{% trans "Register" %}"/>
+					<input class="register-btn btn" type="submit" value="{% block button_finish_label %}Register{% endblock%}"/>
 				{% endif %}
 			</div>
-			<div class="already-registered">Already registered?
-				<a class="teal" href="#">Sign in
-					<!-- Implementing the 'a11y' class to visually hide text on-screen but still being available for screen readers -->
-					<span class="a11y"> to proceed to your company profile page.</span>
-				</a>
-			</div>
+			{% block form_footer_decoration %}{% endblock %}
 
 			<div class="steps">
 				{% include 'form_wizard_step_indicator.html' %}
