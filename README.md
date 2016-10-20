@@ -38,7 +38,7 @@ Requires all host environment variables to be set.
 #### Web server
 | Host environment variable | Docker environment variable  |
 | ------------- | ------------- |
-| DIRECTORY_UI_SECRET_KEY | SECRET_KEY |
+| DIRECTORY_API_CLIENT_API_KEY_KEY | SECRET_KEY |
 | DIRECTORY_UI_PORT | PORT |
 | API_CLIENT_API_KEY | API_CLIENT_API_KEY |
 | API_CLIENT_BASE_URL | API_CLIENT_API_KEY |

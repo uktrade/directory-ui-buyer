@@ -26,7 +26,7 @@ django_webserver:
 	$(DJANGO_WEBSERVER)
 
 DOCKER_COMPOSE_REMOVE_AND_PULL := docker-compose -f docker-compose.yml -f docker-compose-test.yml rm -f && docker-compose -f docker-compose.yml -f docker-compose-test.yml pull
-DOCKER_COMPOSE_CREATE_ENVS := python env_writer.py env.json
+DOCKER_COMPOSE_CREATE_ENVS := python ./docker/env_writer.py ./docker/env.json
 
 docker_run:
 	$(DOCKER_COMPOSE_CREATE_ENVS) && \
@@ -37,6 +37,7 @@ DOCKER_SET_DEBUG_ENV_VARS := \
 	export API_CLIENT_API_KEY=debug; \
 	export API_CLIENT_BASE_URL=http://debug; \
 	export DIRECTORY_UI_PORT=8001; \
+	export DIRECTORY_UI_API_CLIENT_API_KEY_KEY=debug; \
 	export DIRECTORY_UI_SECRET_KEY=debug; \
 	export DIRECTORY_UI_DEBUG=true
 
