@@ -131,4 +131,4 @@ def test_aims_form_renders_title():
 
 def test_company_form_renders_title():
     html = render_to_string('company-form.html', {})
-    assert 'Your company details' in html
+    assert 'Join the UK Exporter Directory' in html

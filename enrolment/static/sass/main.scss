@@ -122,7 +122,7 @@ a.teal:hover {
     border-radius: 0;
     font-size: 16px;
     height: 50px;
-    width: calc(100% - 26px);
+    width: 100%;
     background-color: #fff;
     border: 3px solid #6f777b;
     &:focus {
@@ -206,31 +206,28 @@ body {
     font-size: 26px;
   }
 
+  @media (min-width: 979px) {
+    .container {
+      max-width: 960px;
+    }
+  }
   #content {
     padding-bottom: 0;
     .container {
-      .row-fluid {
-        .enrolment-intro-container {
-          margin-bottom: 20px;
-          margin-top: 70px;
-          .enrolment-intro {
-            padding: 0;
-          }
+      .enrolment-intro-container {
+        margin-bottom: 20px;
+        margin-top: 70px;
+        .enrolment-intro {
+          padding: 0;
         }
-        form {
-          margin-bottom: 0;
-          .connections-platform-form {
-            padding: 5px 30px 5px;
-
-            h2 {
-              margin: 40px 0;
-            }
-
-            .already-registered {
-              margin: 0 auto;
-              margin-left: 10px;
-              text-align: center;
-            }
+      }
+      form {
+        margin-bottom: 0;
+        .connections-platform-form {
+          .already-registered {
+            margin: 0 auto;
+            margin-left: 10px;
+            text-align: center;
           }
         }
       }

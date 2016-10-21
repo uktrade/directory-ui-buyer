@@ -11,6 +11,7 @@
 	Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
 {% endblock %}
 
+{% block sub_header %}{# prevent the subheader from showing on form pages #}{% endblock %}
 {% block formarea %}
 	<form action="" method="post" enctype="multipart/form-data">
 		<div class="connections-platform-form">
@@ -39,8 +40,5 @@
 
 		</div>
 		<div class="clearfix"></div>
-		<div class="steps">
-			{% include 'form_wizard_step_indicator.html' %}
-		</div>
 	</form>
 {% endblock %}

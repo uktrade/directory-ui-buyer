@@ -47,29 +47,28 @@
             <p>GOV.UK uses cookies to make the site simpler. <a href="https://www.gov.uk/help/cookies">Find out more about cookies</a></p>
         </div>
 
-
         {% include 'header.html' %}
-        <!-- hero sub header -->
-        <section class="ed-hero-sub-header">
-            <div class="container">
-                <div class="row-fluid ed-hero-sub-header-breadcrumbs">
-                    {% block breadcrumbs %}
-                        <a href="{% url 'index' %}">Home</a>
-                    {% endblock breadcrumbs %}
+        {% block sub_header %}
+            <section class="ed-hero-sub-header">
+                <div class="container">
+                    <div class="row-fluid ed-hero-sub-header-breadcrumbs">
+                        {% block breadcrumbs %}
+                            <a href="{% url 'index' %}">Home</a>
+                        {% endblock breadcrumbs %}
+                    </div>
+                    <div class="row-fluid">
+                        <span class="span12 ed-hero-sub-header-title">
+                            <h1>{% block hero_title %}{% endblock %}</h1>
+                        </span>
+                    </div>
+                    <div class="row-fluid ed-hero-sub-header-synopsis">
+                        <span class="span9">
+                            <span>{% block hero_text %}{% endblock %}</span>
+                        </span>
+                    </div>
                 </div>
-                <div class="row-fluid">
-                    <span class="span12 ed-hero-sub-header-title">
-                        <h1>{% block hero_title %}{% endblock %}</h1>
-                    </span>
-                </div>
-                <div class="row-fluid ed-hero-sub-header-synopsis">
-                    <span class="span9">
-                        <span>{% block hero_text %}{% endblock %}</span>
-                    </span>
-                </div>
-            </div>
-        </section>
-        <!-- end of hero sub header -->
+            </section>
+        {% endblock sub_header %}
 
         <div id="content" class="enrolment-content">
             {% block content %}
