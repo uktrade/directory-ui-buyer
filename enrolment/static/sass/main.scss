@@ -200,6 +200,9 @@ a.teal:hover {
 body {
   @media (max-width: 979px) {
     padding: 0;
+    .container {
+      padding: 20px;
+    }
   }
   h1 { font-size: 38px; }
   h2 {
