@@ -18,8 +18,9 @@ def test_company_form_rejects_missing_data():
 
 def test_company_form_validators():
     field = forms.CompanyForm.base_fields['company_number']
-    assert shared_validators.company_number in field.validators
-    assert validators.company_number in field.validators
+    inner_validators = field.validators[0].inner_validators
+    assert shared_validators.company_number in inner_validators
+    assert validators.company_number in inner_validators
 
 
 def test_aims_form_accepts_valid_data():

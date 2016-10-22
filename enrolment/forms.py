@@ -3,8 +3,7 @@ from django.conf import settings
 
 from directory_validators import enrolment as shared_validators
 
-from enrolment import constants
-from enrolment import validators
+from enrolment import constants, helpers, validators
 
 
 class CompanyForm(forms.Form):
@@ -12,10 +11,10 @@ class CompanyForm(forms.Form):
         label='Company number',
         help_text=('This is the 8-digit number on the company certificate of '
                    'incorporation.'),
-        validators=[
+        validators=helpers.halt_validation_on_failure(
             shared_validators.company_number,
             validators.company_number,
-        ]
+        )
     )
 
 
