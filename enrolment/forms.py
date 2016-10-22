@@ -66,6 +66,14 @@ class CompanySizeForm(forms.Form):
     )
 
 
+class CompanyClassificationForm(forms.Form):
+    sectors = forms.MultipleChoiceField(
+        label='What sectors is your company interested in working in?',
+        choices=constants.COMPANY_CLASSIFICATIONS,
+        widget=forms.CheckboxSelectMultiple()
+    )
+
+
 def serialize_enrolment_forms(cleaned_data):
     """
     Return the shape directory-api-client expects for enrolment.
@@ -91,7 +99,8 @@ def serialize_company_profile_forms(cleaned_data):
     Return the shape directory-api-client expects for enrolment.
 
     @param {dict} cleaned_data - All the fields in `CompanyBasicInfoForm`
-                                 and `CompanySizeForm`.
+                                 and `CompanySizeForm`, and
+                                 `CompanyClassificationForm`
     @returns dict
 
     """
@@ -103,4 +112,5 @@ def serialize_company_profile_forms(cleaned_data):
         'logo': cleaned_data['logo'],
         'turnover': cleaned_data['turnover'],
         'employees': cleaned_data['employees'],
+        'sectors': cleaned_data['sectors'],
     }

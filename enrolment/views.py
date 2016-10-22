@@ -122,12 +122,20 @@ class CompanyProfileEditView(SessionWizardView):
     form_list = (
         ('basic', forms.CompanyBasicInfoForm),
         ('size', forms.CompanySizeForm),
+        ('classification', forms.CompanyClassificationForm),
     )
     file_storage = FileSystemStorage(
         location=os.path.join(settings.MEDIA_ROOT, 'tmp-logos')
     )
     failure_template = 'company-profile-update-error.html'
-    template_name = 'company-profile-form.html'
+    templates = {
+        'basic': 'company-profile-form.html',
+        'size': 'company-profile-form.html',
+        'classification': 'company-profile-form-classification.html',
+    }
+
+    def get_template_names(self):
+        return [self.templates[self.steps.current]]
 
     def done(self, *args, **kwargs):
         data = forms.serialize_company_profile_forms(

@@ -136,7 +136,7 @@ a.teal:hover {
 
   select {
     height: 50px;
-    width: calc(100% - 26px);
+    width: 100%;
   }
 
   textarea {
@@ -227,6 +227,25 @@ body {
       form {
         margin-bottom: 0;
         .connections-platform-form {
+          ul li {
+            float: left;
+            width: 33%;
+          }
+
+          @media (min-width: 979px) and (max-width: 1200px) {
+            ul li {
+              float: left;
+              width: 50%;
+            }
+          }
+
+          @media (max-width: 979px) {
+            ul li {
+              float: left;
+              width: 100%;
+            }
+          }
+
           .already-registered {
             margin: 0 auto;
             margin-left: 10px;
@@ -309,4 +328,5 @@ body {
 
 .form-wrapper-btn-container {
   line-height: 3em;
+  clear: both; // needed for IE8 compatibility with multi column lists
 }

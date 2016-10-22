@@ -163,18 +163,20 @@ def test_serialize_company_profile_forms():
     logo = create_mock_file()
     actual = forms.serialize_company_profile_forms({
         'company_name': 'Example ltd.',
-        'website': 'http://example.com',
         'description': 'Jolly good exporter.',
-        'logo': logo,
-        'turnover': '10,000',
         'employees': '1-10',
+        'logo': logo,
+        'sectors': ['1', '2'],
+        'turnover': '10,000',
+        'website': 'http://example.com',
     })
     expected = {
-        'name': 'Example ltd.',
-        'website': 'http://example.com',
         'description': 'Jolly good exporter.',
-        'logo': logo,
-        'turnover': '10,000',
         'employees': '1-10',
+        'logo': logo,
+        'name': 'Example ltd.',
+        'sectors': ['1', '2'],
+        'turnover': '10,000',
+        'website': 'http://example.com',
     }
     assert actual == expected
