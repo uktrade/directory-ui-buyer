@@ -14,7 +14,8 @@ api_client = DirectoryAPIClient(
 )
 
 
-def unique_company_number(value):
+def company_number(value):
+    # checks "Is company active?", "does it exist", "is it already registered?"
     response = api_client.company.validate_company_number(value)
     if response.status_code == http.client.BAD_REQUEST:
-        raise ValidationError('Already registered. Please login.')
+        raise ValidationError(response.json()['number'][0])

@@ -9,7 +9,7 @@ def create_mock_file():
     return Mock(size=1)
 
 
-@patch.object(validators, 'unique_company_number', Mock())
+@patch.object(validators, 'company_number', Mock())
 def test_company_form_rejects_missing_data():
     form = forms.CompanyForm(data={})
     assert form.is_valid() is False
@@ -19,7 +19,7 @@ def test_company_form_rejects_missing_data():
 def test_company_form_validators():
     field = forms.CompanyForm.base_fields['company_number']
     assert shared_validators.company_number in field.validators
-    assert validators.unique_company_number in field.validators
+    assert validators.company_number in field.validators
 
 
 def test_aims_form_accepts_valid_data():

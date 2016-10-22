@@ -14,7 +14,7 @@ class CompanyForm(forms.Form):
                    'incorporation.'),
         validators=[
             shared_validators.company_number,
-            validators.unique_company_number,
+            validators.company_number,
         ]
     )
 
