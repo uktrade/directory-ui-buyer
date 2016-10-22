@@ -66,6 +66,14 @@ class CompanySizeForm(forms.Form):
     )
 
 
+class CompanyClassificationForm(forms.Form):
+    sectors = forms.MultipleChoiceField(
+        label='What sectors is your company interested in working in?',
+        choices=constants.COMPANY_CLASSIFICATIONS,
+        widget=forms.CheckboxSelectMultiple()
+    )
+
+
 def serialize_enrolment_forms(cleaned_data):
     """
     Return the shape directory-api-client expects for enrolment.

@@ -211,7 +211,9 @@ def test_company_profile_edit_view_uses_correct_template(client, rf):
     request.session = client.session
 
     for form_pair in CompanyProfileEditView.form_list:
+        step_name = form_pair[0]
         view = CompanyProfileEditView.as_view(form_list=(form_pair,))
         response = view(request)
 
-        assert response.template_name == [CompanyProfileEditView.template_name]
+        expected_template_name = CompanyProfileEditView.templates[step_name]
+        assert response.template_name == [expected_template_name]
