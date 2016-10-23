@@ -13,8 +13,8 @@ test:
     - make docker_test
 
 deployment:
-  hub:
+  heroku:
     branch: master
     commands:
-      - docker login -e="$HEROKU_EMAIL" -u="$HEROKU_EMAIL" -p="$HEROKU_API_KEY" registry.heroku.com
-      - docker push directory-ui-dev/web
+      - docker login --email=$HEROKU_EMAIL --username=$HEROKU_EMAIL --password=$HEROKU_API_KEY registry.heroku.com
+      - docker push registry.heroku.com/directory-ui-dev/web
