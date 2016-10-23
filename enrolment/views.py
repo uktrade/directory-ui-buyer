@@ -13,7 +13,7 @@ from django.utils.cache import patch_response_headers
 from django.views.generic import TemplateView
 from django.views.generic.base import View
 
-from enrolment import forms
+from enrolment import forms, helpers
 from enrolment.constants import SESSION_KEY_REFERRER
 
 
@@ -52,11 +52,13 @@ class EnrolmentView(SessionWizardView):
     failure_template = 'enrolment-error.html'
     form_list = (
         ('company', forms.CompanyForm),
+        ('name', forms.CompanyNameForm),
         ('aims', forms.AimsForm),
         ('user', forms.UserForm),
     )
     templates = {
         'company': 'company-form.html',
+        'name': 'company-form-name.html',
         'aims': 'aims-form.html',
         'user': 'user-form.html',
     }
@@ -68,6 +70,12 @@ class EnrolmentView(SessionWizardView):
         if step == 'user':
             return {
                 'referrer': self.request.session.get(SESSION_KEY_REFERRER)
+            }
+        if step == 'name':
+            prev_data = self.storage.get_step_data('company') or {}
+            number = prev_data.get('company-company_number')
+            return {
+                'company_name': helpers.get_company_name(number)
             }
 
     def done(self, *args, **kwags):

@@ -50,7 +50,7 @@ def test_enrolment_view_includes_referrer(client, rf):
     request.session = client.session
     request.session[SESSION_KEY_REFERRER] = 'google'
 
-    form_pair = EnrolmentView.form_list[2]
+    form_pair = EnrolmentView.form_list[3]
     view = EnrolmentView.as_view(form_list=(form_pair,))
     response = view(request)
 

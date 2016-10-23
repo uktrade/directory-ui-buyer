@@ -18,6 +18,12 @@ class CompanyForm(forms.Form):
     )
 
 
+class CompanyNameForm(forms.Form):
+    company_name = forms.CharField(
+        label='Company Name'
+    )
+
+
 class CompanyBasicInfoForm(forms.Form):
     # TODO: ED-145
     # Make sure all fields have char limits once the models are defined
@@ -78,18 +84,19 @@ def serialize_enrolment_forms(cleaned_data):
     """
     Return the shape directory-api-client expects for enrolment.
 
-    @param {dict} cleaned_data - All the fields in `CompanyForm`,
-                                `AimsForm`, and `AimsForm`.
+    @param {dict} cleaned_data - All the fields in `CompanyForm`, `AimsForm`,
+                                 `AimsForm`, and `CompanyNameForm`
     @returns dict
 
     """
 
     return {
         'aims': [cleaned_data['aim_one'], cleaned_data['aim_two']],
+        'company_name': cleaned_data['company_name'],
         'company_number': cleaned_data['company_number'],
         'email': cleaned_data['email'],
-        'personal_name': cleaned_data['name'],
         'password': cleaned_data['password'],
+        'personal_name': cleaned_data['name'],
         'referrer': cleaned_data['referrer'],
     }
 

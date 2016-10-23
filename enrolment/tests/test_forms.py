@@ -142,6 +142,7 @@ def test_serialize_enrolment_forms():
     actual = forms.serialize_enrolment_forms({
         'aim_one': constants.AIMS[0][0],
         'aim_two': constants.AIMS[1][0],
+        'company_name': 'Extreme Corp',
         'company_number': '01234567',
         'email': 'contact@example.com',
         'name': 'jim',
@@ -150,6 +151,7 @@ def test_serialize_enrolment_forms():
     })
     expected = {
         'aims': [constants.AIMS[0][0], constants.AIMS[1][0]],
+        'company_name': 'Extreme Corp',
         'company_number': '01234567',
         'email': 'contact@example.com',
         'personal_name': 'jim',
