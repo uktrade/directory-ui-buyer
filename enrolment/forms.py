@@ -52,23 +52,44 @@ class CompanyBasicInfoForm(forms.Form):
     )
 
 
-class AimsForm(forms.Form):
-    aim_one = forms.ChoiceField(choices=choices.AIMS)
-    aim_two = forms.ChoiceField(choices=choices.AIMS)
-
-
-class UserForm(forms.Form):
-    name = forms.CharField(label='Full name')
-    email = forms.EmailField(
-        label='Email address',
+class CompanyEmailAddressForm(forms.Form):
+    company_email = forms.EmailField(
+        label='Email',
+        help_text='Your company email address',
         validators=[
             shared_validators.email_domain_free,
             shared_validators.email_domain_disposable,
         ]
     )
-    password = forms.CharField(widget=forms.PasswordInput())
+    email_confirmed = forms.EmailField(
+        label='Email confirmed',
+        help_text='Confirm your email address',
+    )
+
+    def clean_email_confirmed(self):
+        email = self.cleaned_data.get('company_email')
+        confirmed = self.cleaned_data.get('email_confirmed')
+        if (email and confirmed and email != confirmed):
+            raise forms.ValidationError('Your emails do not match')
+        return confirmed
+
+
+class UserForm(forms.Form):
+    mobile_number = forms.CharField(
+        label='Mobile number'
+    )
+    mobile_confirmed = forms.CharField(
+        label='Mobile number confirmed'
+    )
     terms_agreed = forms.BooleanField()
     referrer = forms.CharField(required=False, widget=forms.HiddenInput())
+
+    def clean_mobile_confirmed(self):
+        mobile = self.cleaned_data.get('mobile_number')
+        confirmed = self.cleaned_data.get('mobile_confirmed')
+        if (mobile and confirmed and mobile != confirmed):
+            raise forms.ValidationError('Your numbers do not match')
+        return confirmed
 
 
 class CompanySizeForm(forms.Form):
@@ -95,20 +116,19 @@ def serialize_enrolment_forms(cleaned_data):
     """
     Return the shape directory-api-client expects for enrolment.
 
-    @param {dict} cleaned_data - All the fields in `CompanyForm`, `AimsForm`,
-                                 `AimsForm`, `CompanyNameForm`, and
-                                 `CompanyExportStatusForm`.
+    @param {dict} cleaned_data - All the fields in `CompanyForm`, `UserForm`,
+                                 `CorporateEmailAddressForm`,
+                                 `CompanyNameForm`, and
+                                 `CompanyExportStatusForm`
     @returns dict
 
     """
 
     return {
-        'aims': [cleaned_data['aim_one'], cleaned_data['aim_two']],
+        'company_email': cleaned_data['company_email'],
         'company_name': cleaned_data['company_name'],
         'company_number': cleaned_data['company_number'],
-        'email': cleaned_data['email'],
-        'password': cleaned_data['password'],
-        'personal_name': cleaned_data['name'],
+        'mobile_number': cleaned_data['mobile_number'],
         'referrer': cleaned_data['referrer'],
         'export_status': cleaned_data['export_status'],
     }

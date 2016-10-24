@@ -1,6 +1,5 @@
 from unittest.mock import Mock, patch
 
-from directory_validators.constants import choices
 from directory_validators import enrolment as shared_validators
 
 from enrolment import forms, validators
@@ -24,50 +23,51 @@ def test_company_form_validators():
     assert validators.company_number in inner_validators
 
 
-def test_aims_form_accepts_valid_data():
-    form = forms.AimsForm(data={
-        'aim_one': choices.AIMS[1][0],
-        'aim_two': choices.AIMS[2][0],
-    })
-    assert form.is_valid()
-
-
-def test_aims_form_rejects_no_aims():
-    form = forms.AimsForm(data={
-        'aim_one': '',
-        'aim_two': '',
-    })
-    assert form.is_valid() is False
-
-
-def test_user_form_email_validators():
-    field = forms.UserForm.base_fields['email']
+def test_company_email_form_email_validators():
+    field = forms.CompanyEmailAddressForm.base_fields['company_email']
     assert shared_validators.email_domain_free in field.validators
     assert shared_validators.email_domain_disposable in field.validators
 
 
-def test_user_form_rejects_missing_data():
-    form = forms.UserForm(data={})
-    assert 'name' in form.errors
-    assert 'password' in form.errors
-    assert 'terms_agreed' in form.errors
-    assert 'email' in form.errors
-
-
-def test_user_form_rejects_invalid_email_addresses():
-    form = forms.UserForm(data={
-        'email': 'johnATjones.com',
+def test_company_email_form_rejects_invalid_email_addresses():
+    form = forms.CompanyEmailAddressForm(data={
+        'company_email': 'johnATjones.com',
     })
     assert form.is_valid() is False
-    assert 'email' in form.errors
+    assert 'company_email' in form.errors
+
+
+def test_test_company_email_form_rejects_different_email_addresses():
+    form = forms.CompanyEmailAddressForm(data={
+        'company_email': 'john@examplecorp.com',
+        'email_confirmed': 'john@examplecorp.cm',
+    })
+    assert form.is_valid() is False
+    assert 'email_confirmed' in form.errors
+
+
+def test_test_user_form_rejects_different_mobile_numbers():
+    form = forms.UserForm(data={
+        'mobile_number': '111',
+        'mobile_confirmed': '112',
+    })
+    assert form.is_valid() is False
+    assert 'mobile_confirmed' in form.errors
+
+
+def test_user_form_rejects_missing_data():
+    form = forms.UserForm(data={})
+    assert 'mobile_number' in form.errors
+    assert 'mobile_confirmed' in form.errors
+    assert 'mobile_confirmed' in form.errors
+    assert 'terms_agreed' in form.errors
 
 
 def test_user_form_accepts_valid_data():
     form = forms.UserForm(data={
-        'name': 'John Johnson',
-        'password': 'hunter2',
+        'mobile_number': '07506674933',
+        'mobile_confirmed': '07506674933',
         'terms_agreed': 1,
-        'email': 'john@jones.com',
     })
     assert form.is_valid()
 
@@ -146,25 +146,20 @@ def test_company_export_status_form_validars():
 
 def test_serialize_enrolment_forms():
     actual = forms.serialize_enrolment_forms({
-        'aim_one': choices.AIMS[0][0],
-        'aim_two': choices.AIMS[1][0],
         'company_name': 'Extreme Corp',
         'company_number': '01234567',
-        'email': 'contact@example.com',
-        'name': 'jim',
-        'password': 'hunter2',
-        'referrer': 'google',
+        'mobile_number': '07504738222',
+        'company_email': 'contact@example.com',
         'export_status': 'YES',
+        'referrer': 'google'
     })
     expected = {
-        'aims': [choices.AIMS[0][0], choices.AIMS[1][0]],
         'company_name': 'Extreme Corp',
         'company_number': '01234567',
-        'email': 'contact@example.com',
-        'personal_name': 'jim',
-        'password': 'hunter2',
-        'referrer': 'google',
+        'mobile_number': '07504738222',
+        'company_email': 'contact@example.com',
         'export_status': 'YES',
+        'referrer': 'google'
     }
     assert actual == expected
 
