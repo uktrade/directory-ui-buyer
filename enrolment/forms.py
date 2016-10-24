@@ -2,8 +2,9 @@ from django import forms
 from django.conf import settings
 
 from directory_validators import enrolment as shared_validators
+from directory_validators.constants import choices
 
-from enrolment import constants, helpers, validators
+from enrolment import helpers, validators
 
 
 class CompanyForm(forms.Form):
@@ -21,6 +22,16 @@ class CompanyForm(forms.Form):
 class CompanyNameForm(forms.Form):
     company_name = forms.CharField(
         label='Company Name'
+    )
+
+
+class CompanyExportStatusForm(forms.Form):
+    export_status = forms.ChoiceField(
+        label=(
+            'Has your company sold products or services to overseas customers?'
+        ),
+        choices=choices.EXPORT_STATUSES,
+        validators=[shared_validators.export_status_intention]
     )
 
 
@@ -42,8 +53,8 @@ class CompanyBasicInfoForm(forms.Form):
 
 
 class AimsForm(forms.Form):
-    aim_one = forms.ChoiceField(choices=constants.AIMS)
-    aim_two = forms.ChoiceField(choices=constants.AIMS)
+    aim_one = forms.ChoiceField(choices=choices.AIMS)
+    aim_two = forms.ChoiceField(choices=choices.AIMS)
 
 
 class UserForm(forms.Form):
@@ -67,7 +78,7 @@ class CompanySizeForm(forms.Form):
         help_text='What is the correct turnover for your company?'
     )
     employees = forms.ChoiceField(
-        choices=constants.EMPLOYEES,
+        choices=choices.EMPLOYEES,
         help_text='How many employees are in your company?'
     )
 
@@ -75,7 +86,7 @@ class CompanySizeForm(forms.Form):
 class CompanyClassificationForm(forms.Form):
     sectors = forms.MultipleChoiceField(
         label='What sectors is your company interested in working in?',
-        choices=constants.COMPANY_CLASSIFICATIONS,
+        choices=choices.COMPANY_CLASSIFICATIONS,
         widget=forms.CheckboxSelectMultiple()
     )
 
@@ -85,7 +96,8 @@ def serialize_enrolment_forms(cleaned_data):
     Return the shape directory-api-client expects for enrolment.
 
     @param {dict} cleaned_data - All the fields in `CompanyForm`, `AimsForm`,
-                                 `AimsForm`, and `CompanyNameForm`
+                                 `AimsForm`, `CompanyNameForm`, and
+                                 `CompanyExportStatusForm`.
     @returns dict
 
     """
@@ -98,6 +110,7 @@ def serialize_enrolment_forms(cleaned_data):
         'password': cleaned_data['password'],
         'personal_name': cleaned_data['name'],
         'referrer': cleaned_data['referrer'],
+        'export_status': cleaned_data['export_status'],
     }
 
 

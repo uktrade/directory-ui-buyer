@@ -53,12 +53,14 @@ class EnrolmentView(SessionWizardView):
     form_list = (
         ('company', forms.CompanyForm),
         ('name', forms.CompanyNameForm),
+        ('status', forms.CompanyExportStatusForm),
         ('aims', forms.AimsForm),
         ('user', forms.UserForm),
     )
     templates = {
         'company': 'company-form.html',
         'name': 'company-form-name.html',
+        'status': 'export-status-form.html',
         'aims': 'aims-form.html',
         'user': 'user-form.html',
     }

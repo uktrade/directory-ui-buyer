@@ -1,5 +1,10 @@
 from django.template.loader import render_to_string
 
+from directory_validators.constants import choices
+
+
+from enrolment import forms
+
 company_context = {
     'company': {
         'aims': [
@@ -132,3 +137,41 @@ def test_aims_form_renders_title():
 def test_company_form_renders_title():
     html = render_to_string('company-form.html', {})
     assert 'Join the UK Exporter Directory' in html
+
+
+def test_export_status_form_error_size():
+    form = forms.CompanyExportStatusForm(data={
+        'export_status': choices.NO_EXPORT_INTENTION
+    })
+    context = {
+        'form': form
+    }
+    html = render_to_string('export-status-form.html', context)
+    assert 'span12' in html
+    assert 'Sorry, this is not the right service for your company' in html
+
+
+def test_export_status_no_form_error_size():
+    form = forms.CompanyExportStatusForm(data={
+        'export_status': choices.EXPORT_STATUSES[1][0]
+    })
+    context = {
+        'form': form
+    }
+    html = render_to_string('export-status-form.html', context)
+    assert 'span8' in html
+    assert 'Sorry, this is not the right service for your company' not in html
+    assert '<form' in html
+
+
+def test_export_status_common_invalid_form_error_size():
+    form = forms.CompanyExportStatusForm(data={
+        'export_status': ''
+    })
+    context = {
+        'form': form
+    }
+    html = render_to_string('export-status-form.html', context)
+    assert 'span8' in html
+    assert 'Sorry, this is not the right service for your company' not in html
+    assert '<form' in html

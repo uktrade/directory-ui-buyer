@@ -1,8 +1,9 @@
 from unittest.mock import Mock, patch
 
+from directory_validators.constants import choices
 from directory_validators import enrolment as shared_validators
 
-from enrolment import constants, forms, validators
+from enrolment import forms, validators
 
 
 def create_mock_file():
@@ -25,8 +26,8 @@ def test_company_form_validators():
 
 def test_aims_form_accepts_valid_data():
     form = forms.AimsForm(data={
-        'aim_one': constants.AIMS[1][0],
-        'aim_two': constants.AIMS[2][0],
+        'aim_one': choices.AIMS[1][0],
+        'aim_two': choices.AIMS[2][0],
     })
     assert form.is_valid()
 
@@ -138,25 +139,32 @@ def test_company_profile_logo_validator():
     assert shared_validators.logo_filesize in field.validators
 
 
+def test_company_export_status_form_validars():
+    field = forms.CompanyExportStatusForm.base_fields['export_status']
+    assert shared_validators.export_status_intention in field.validators
+
+
 def test_serialize_enrolment_forms():
     actual = forms.serialize_enrolment_forms({
-        'aim_one': constants.AIMS[0][0],
-        'aim_two': constants.AIMS[1][0],
+        'aim_one': choices.AIMS[0][0],
+        'aim_two': choices.AIMS[1][0],
         'company_name': 'Extreme Corp',
         'company_number': '01234567',
         'email': 'contact@example.com',
         'name': 'jim',
         'password': 'hunter2',
-        'referrer': 'google'
+        'referrer': 'google',
+        'export_status': 'YES',
     })
     expected = {
-        'aims': [constants.AIMS[0][0], constants.AIMS[1][0]],
+        'aims': [choices.AIMS[0][0], choices.AIMS[1][0]],
         'company_name': 'Extreme Corp',
         'company_number': '01234567',
         'email': 'contact@example.com',
         'personal_name': 'jim',
         'password': 'hunter2',
-        'referrer': 'google'
+        'referrer': 'google',
+        'export_status': 'YES',
     }
     assert actual == expected
 
