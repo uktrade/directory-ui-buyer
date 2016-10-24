@@ -227,6 +227,12 @@ body {
       form {
         margin-bottom: 0;
         .connections-platform-form {
+          ul.errorlist li {
+            float: none;
+            width: 100%;
+          }
+        }
+        .connections-platform-form {
           ul li {
             float: left;
             width: 33%;
