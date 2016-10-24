@@ -115,6 +115,7 @@ a.teal:focus {
 }
 
 .input-field-container {
+  margin-bottom: 40px;
   .helptext {
     padding-bottom: 20px;
   }
@@ -130,6 +131,7 @@ a.teal:focus {
     width: 100%;
     background-color: #fff;
     border: 3px solid #6f777b;
+    margin-bottom: 0;
     &:focus {
       border: 6px solid #007EA3;
     }
@@ -152,16 +154,24 @@ a.teal:focus {
     border: 0
   }
 
-  ul {
-    &.errorlist {
-      margin: 0 0 10px 0px;
-      padding: 0 0 0 10px;
-      border-left: 3px solid #b10e1e;
-      li {
-        color: #b10e1e;
+  &.has-error {
+    border-left: 5px solid #B00D23;
+    padding-left: 15px;
+    ul {
+      &.errorlist {
+        margin: 0 0 10px;
+        padding: 0;
+        li {
+          color: #b10e1e;
+          font-weight: 600;
+        }
       }
     }
+    input, select, textarea {
+      border: 3px solid #B00D23;
+    }
   }
+
 }
 
 .btn-container {
