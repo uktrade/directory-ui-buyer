@@ -4,9 +4,6 @@ clean:
 	-find . -type f -name "*.pyc" -delete
 	-find . -type d -name "__pycache__" -delete
 
-heroku_deploy:
-	heroku container:push web
-
 test_requirements:
 	pip install -r requirements_test.txt
 
@@ -84,5 +81,13 @@ debug_test:
 
 debug: test_requirements debug_test
 
+heroku_deploy_dev:
+	docker build -t registry.heroku.com/directory-ui-dev/web .
+	docker push registry.heroku.com/directory-ui-dev/web
 
-.PHONY: build clean heroku_deploy test_requirements docker_run docker_debug docker_webserver_bash docker_test debug_webserver debug_test debug
+heroku_deploy_demo:
+	docker build -t registry.heroku.com/directory-ui-demo/web .
+	docker push registry.heroku.com/directory-ui-demo/web
+
+
+.PHONY: build clean test_requirements docker_run docker_debug docker_webserver_bash docker_test debug_webserver debug_test debug heroku_deploy_dev heroku_deploy_demo
