@@ -121,7 +121,7 @@ class CompanyProfileDetailView(TemplateView):
                 'website': company_details['website'],
                 'description': company_details['description'],
                 'number': company_details['number'],
-                'aims': company_details['aims'],
+                'sectors': company_details['sectors'],
                 'logo': company_details['logo'],
             }
         }

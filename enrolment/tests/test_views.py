@@ -205,7 +205,7 @@ def test_company_profile_details_exposes_context(
         'website': 'http://example.com',
         'description': 'Ecommerce website',
         'number': 123456,
-        'aims': ['Increase Revenue'],
+        'sectors': ['Things', 'Stuff'],
         'logo': ('nice.jpg'),
     }
     view = CompanyProfileDetailView.as_view()

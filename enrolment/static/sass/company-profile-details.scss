@@ -1,13 +1,16 @@
 @import 'main.scss';
 
 .company-profile-details-body {
+  margin-bottom: -100px;
+  position: relative;
+  top: -100px;
   h3 {
     line-height: 1em;
     margin-top: 0;
     margin-bottom: 10px;
   }
   .company-profile-box {
-    border: 1px solid #dedede;
+    border: 1px solid #DFD5C5;
     padding: 10px;
     min-height: 90px;
     margin-bottom: 30px;
@@ -15,7 +18,40 @@
       list-style: initial;
     }
   }
+  .company-hero {
+    min-height: 200px;
+  }
+  ul {
+    li {
+      list-style-type: disc; 
+    }
+  }
 }
+
+.company-profile-box {
+  min-height: 70px;
+  background: #F6F4F1;
+  margin-bottom: 20px;
+  padding: 20px;
+  position: relative;
+}
+
+.company-logo {
+  .logo-container {
+    margin-top: 16px;
+    text-align: right;
+    img {}
+    @media (max-width: 767px) {
+      text-align: left;
+    }
+  }
+}
+
+.two-column-group {
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+
 
 .company-profile-details-hero-container {
   margin-bottom: 30px;
@@ -37,9 +73,17 @@
 
 
 .company-profile-details-hero-edit-button {
-  text-align: center;
+  bottom: 0;
   padding-bottom: 20px;
+  position: absolute;
+  right: 20px;
   a {
     color: white;
+  }
+
+  @media (max-width: 767px) {
+    left: 0;
+    margin-top: 20px;
+    position: relative;
   }
 }

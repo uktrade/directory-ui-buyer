@@ -7,9 +7,9 @@ from enrolment import forms
 
 company_context = {
     'company': {
-        'aims': [
-            'aim 1',
-            'aim 2'
+        'sectors': [
+            'sector 1',
+            'sector 2'
         ],
         'number': '123456',
         'name': 'UK exporting co ltd.',
@@ -27,10 +27,10 @@ user_context = {
 }
 
 
-def test_company_profile_details_renders_aims():
+def test_company_profile_details_renders_sector():
     html = render_to_string('company-profile-details.html', company_context)
-    assert 'aim 1' in html
-    assert 'aim 2' in html
+    assert 'sector 1' in html
+    assert 'sector 2' in html
 
 
 def test_company_profile_details_renders_company_number():
@@ -40,7 +40,7 @@ def test_company_profile_details_renders_company_number():
 
 def test_company_profile_details_renders_company_name():
     html = render_to_string('company-profile-details.html', company_context)
-    assert 'Company profile - UK exporting co ltd.' in html
+    assert 'UK exporting co ltd.' in html
 
 
 def test_company_profile_details_renders_description():
@@ -61,12 +61,6 @@ def test_company_profile_details_renders_logo():
 def test_company_profile_details_handles_no_description():
     html = render_to_string('company-profile-details.html', {})
     assert 'Please set your company description.' in html
-
-
-def test_company_profile_details_handles_no_company_name():
-    html = render_to_string('company-profile-details.html', {})
-    assert 'Company profile -' not in html
-    assert 'Company profile' in html
 
 
 def test_company_profile_details_handles_no_website():
