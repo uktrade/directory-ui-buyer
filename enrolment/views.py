@@ -42,11 +42,32 @@ class CachableTemplateView(CacheMixin, TemplateView):
     pass
 
 
+class UpdateCompanyProfileOnFormWizardDoneMixin:
+    def done(self, *args, **kwargs):
+        session = self.request.user.session
+        data = self.form_serializer(self.get_all_cleaned_data())
+        if 'company_id' not in session:
+            logger.error(
+                'company_id is missing from the user session.',
+                extra={'user_id': self.request.user.id}
+            )
+        company_id = session['company_id']
+        response = api_client.company.update_profile(
+            id=company_id, data=data
+        )
+        if response.ok:
+            response = redirect('company-detail')
+        else:
+            response = TemplateResponse(self.request, self.failure_template)
+        return response
+
+
 class LandingView(CacheMixin, TemplateView):
     template_name = 'landing-page.html'
 
 
-class EnrolmentView(SessionWizardView):
+class EnrolmentView(UpdateCompanyProfileOnFormWizardDoneMixin,
+                    SessionWizardView):
     success_template = 'registered.html'
     failure_template = 'enrolment-error.html'
     form_list = (
@@ -127,7 +148,8 @@ class CompanyProfileDetailView(TemplateView):
         }
 
 
-class CompanyProfileEditView(SessionWizardView):
+class CompanyProfileEditView(UpdateCompanyProfileOnFormWizardDoneMixin,
+                             SessionWizardView):
     form_list = (
         ('basic', forms.CompanyBasicInfoForm),
         ('size', forms.CompanySizeForm),
@@ -139,32 +161,14 @@ class CompanyProfileEditView(SessionWizardView):
         'size': 'company-profile-form.html',
         'classification': 'company-profile-form-classification.html',
     }
+    form_serializer = forms.serialize_company_profile_forms
 
     def get_template_names(self):
         return [self.templates[self.steps.current]]
 
-    def done(self, *args, **kwargs):
-        session = self.request.user.session
-        data = forms.serialize_company_profile_forms(
-            self.get_all_cleaned_data()
-        )
-        if 'company_id' not in session:
-            logger.error(
-                'company_id is missing from the user session.',
-                extra={'user_id': self.request.user.id}
-            )
-        company_id = session['company_id']
-        response = api_client.company.update_profile(
-            id=company_id, data=data
-        )
-        if response.ok:
-            response = redirect('company-detail')
-        else:
-            response = TemplateResponse(self.request, self.failure_template)
-        return response
 
-
-class CompanyProfileLogoEditView(SessionWizardView):
+class CompanyProfileLogoEditView(UpdateCompanyProfileOnFormWizardDoneMixin,
+                                 SessionWizardView):
     form_list = (
         ('logo', forms.CompanyLogoForm),
     )
@@ -175,26 +179,22 @@ class CompanyProfileLogoEditView(SessionWizardView):
     templates = {
         'logo': 'company-profile-logo-form.html',
     }
+    form_serializer = forms.serialize_company_logo_forms
 
     def get_template_names(self):
         return [self.templates[self.steps.current]]
 
-    def done(self, *args, **kwargs):
-        session = self.request.user.session
-        if 'company_id' not in session:
-            logger.error(
-                'company_id is missing from the user session.',
-                extra={'user_id': self.request.user.id}
-            )
-        company_id = session['company_id']
-        data = forms.serialize_company_logo_forms(
-            self.get_all_cleaned_data()
-        )
-        response = api_client.company.update_profile(
-            id=company_id, data=data,
-        )
-        if response.ok:
-            response = redirect('company-detail')
-        else:
-            response = TemplateResponse(self.request, self.failure_template)
-        return response
+
+class CompanyDescriptionEditView(UpdateCompanyProfileOnFormWizardDoneMixin,
+                                 SessionWizardView):
+    form_list = (
+        ('description', forms.CompanyDescriptionForm),
+    )
+    failure_template = 'company-profile-update-error.html'
+    templates = {
+        'description': 'company-profile-description-form.html',
+    }
+    form_serializer = forms.serialize_company_description_forms
+
+    def get_template_names(self):
+        return [self.templates[self.steps.current]]
