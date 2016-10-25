@@ -117,11 +117,10 @@ def test_company_profile_form_rejects_invalid_website():
 
 
 def test_company_profile_form_accepts_valid_data():
-    logo = create_mock_file()
     data = {'company_name': 'Amazon UK',
             'website': 'http://amazon.co.uk',
             'description': 'Ecommerce'}
-    form = forms.CompanyBasicInfoForm(data=data, files={'logo': logo})
+    form = forms.CompanyBasicInfoForm(data=data)
 
     valid = form.is_valid()
 
@@ -130,12 +129,23 @@ def test_company_profile_form_accepts_valid_data():
         'company_name': 'Amazon UK',
         'website': 'http://amazon.co.uk',
         'description': 'Ecommerce',
+    }
+
+
+def test_company_logo_form_accepts_valid_data():
+    logo = create_mock_file()
+    form = forms.CompanyLogoForm(files={'logo': logo})
+
+    valid = form.is_valid()
+
+    assert valid is True
+    assert form.cleaned_data == {
         'logo': logo,
     }
 
 
 def test_company_profile_logo_validator():
-    field = forms.CompanyBasicInfoForm.base_fields['logo']
+    field = forms.CompanyLogoForm.base_fields['logo']
     assert shared_validators.logo_filesize in field.validators
 
 
@@ -165,12 +175,10 @@ def test_serialize_enrolment_forms():
 
 
 def test_serialize_company_profile_forms():
-    logo = create_mock_file()
     actual = forms.serialize_company_profile_forms({
         'company_name': 'Example ltd.',
         'description': 'Jolly good exporter.',
         'employees': '1-10',
-        'logo': logo,
         'sectors': ['1', '2'],
         'turnover': '10,000',
         'website': 'http://example.com',
@@ -178,10 +186,20 @@ def test_serialize_company_profile_forms():
     expected = {
         'description': 'Jolly good exporter.',
         'employees': '1-10',
-        'logo': logo,
         'name': 'Example ltd.',
         'sectors': ['1', '2'],
         'turnover': '10,000',
         'website': 'http://example.com',
+    }
+    assert actual == expected
+
+
+def test_serialize_company_logo_forms():
+    logo = create_mock_file()
+    actual = forms.serialize_company_logo_forms({
+        'logo': logo,
+    })
+    expected = {
+        'logo': logo,
     }
     assert actual == expected
