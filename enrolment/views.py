@@ -133,9 +133,6 @@ class CompanyProfileEditView(SessionWizardView):
         ('size', forms.CompanySizeForm),
         ('classification', forms.CompanyClassificationForm),
     )
-    file_storage = FileSystemStorage(
-        location=os.path.join(settings.MEDIA_ROOT, 'tmp-logos')
-    )
     failure_template = 'company-profile-update-error.html'
     templates = {
         'basic': 'company-profile-form.html',
@@ -147,10 +144,55 @@ class CompanyProfileEditView(SessionWizardView):
         return [self.templates[self.steps.current]]
 
     def done(self, *args, **kwargs):
+        session = self.request.user.session
         data = forms.serialize_company_profile_forms(
             self.get_all_cleaned_data()
         )
-        response = api_client.company.update_profile(data)
+        if 'company_id' not in session:
+            logger.error(
+                'company_id is missing from the user session.',
+                extra={'user_id': self.request.user.id}
+            )
+        company_id = session['company_id']
+        response = api_client.company.update_profile(
+            id=company_id, data=data
+        )
+        if response.ok:
+            response = redirect('company-detail')
+        else:
+            response = TemplateResponse(self.request, self.failure_template)
+        return response
+
+
+class CompanyProfileLogoEditView(SessionWizardView):
+    form_list = (
+        ('logo', forms.CompanyLogoForm),
+    )
+    file_storage = FileSystemStorage(
+        location=os.path.join(settings.MEDIA_ROOT, 'tmp-logos')
+    )
+    failure_template = 'company-profile-update-error.html'
+    templates = {
+        'logo': 'company-profile-logo-form.html',
+    }
+
+    def get_template_names(self):
+        return [self.templates[self.steps.current]]
+
+    def done(self, *args, **kwargs):
+        session = self.request.user.session
+        if 'company_id' not in session:
+            logger.error(
+                'company_id is missing from the user session.',
+                extra={'user_id': self.request.user.id}
+            )
+        company_id = session['company_id']
+        data = forms.serialize_company_logo_forms(
+            self.get_all_cleaned_data()
+        )
+        response = api_client.company.update_profile(
+            id=company_id, data=data,
+        )
         if response.ok:
             response = redirect('company-detail')
         else:

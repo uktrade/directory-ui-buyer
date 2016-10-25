@@ -45,10 +45,13 @@ class CompanyBasicInfoForm(IndentedInvalidFieldsMixin, forms.Form):
     company_name = forms.CharField()
     website = forms.URLField()
     description = forms.CharField(widget=forms.Textarea)
+
+
+class CompanyLogoForm(IndentedInvalidFieldsMixin, forms.Form):
     logo = forms.FileField(
         help_text=(
             'Maximum filesize: {0}MB'.format(
-                settings.VALIDATOR_MAX_LOGO_SIZE_BYTES / 1024 / 1014
+                int(settings.VALIDATOR_MAX_LOGO_SIZE_BYTES / 1024 / 1014)
             )
         ),
         required=False,
@@ -140,10 +143,10 @@ def serialize_enrolment_forms(cleaned_data):
 
 def serialize_company_profile_forms(cleaned_data):
     """
-    Return the shape directory-api-client expects for enrolment.
+    Return the shape directory-api-client expects for company profile edit.
 
     @param {dict} cleaned_data - All the fields in `CompanyBasicInfoForm`
-                                 and `CompanySizeForm`, and
+                                 `CompanySizeForm`, `CompanyLogoForm`, and
                                  `CompanyClassificationForm`
     @returns dict
 
@@ -153,8 +156,22 @@ def serialize_company_profile_forms(cleaned_data):
         'name': cleaned_data['company_name'],
         'website': cleaned_data['website'],
         'description': cleaned_data['description'],
-        'logo': cleaned_data['logo'],
         'turnover': cleaned_data['turnover'],
         'employees': cleaned_data['employees'],
         'sectors': cleaned_data['sectors'],
+    }
+
+
+def serialize_company_logo_forms(cleaned_data):
+    """
+    Return the shape directory-api-client expects for changing logo.
+
+    @param {dict} cleaned_data - All the fields in `CompanyLogoForm`
+
+    @returns dict
+
+    """
+
+    return {
+        'logo': cleaned_data['logo'],
     }

@@ -7,6 +7,7 @@ from enrolment.views import (
     EnrolmentView,
     CompanyProfileEditView,
     CompanyProfileDetailView,
+    CompanyProfileLogoEditView,
     LandingView,
 )
 from user.views import UserProfileDetailView, UserProfileEditView
@@ -53,5 +54,9 @@ urlpatterns = [
     url(r'^company-profile/edit$',
         CompanyProfileEditView.as_view(),
         name='company-edit'),
+
+    url(r'^company-profile/logo$',
+        CompanyProfileLogoEditView.as_view(),
+        name='company-edit-logo'),
 
 ]

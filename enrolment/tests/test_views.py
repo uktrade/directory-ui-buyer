@@ -10,6 +10,7 @@ from enrolment.constants import SESSION_KEY_REFERRER
 from enrolment.views import (
     CompanyProfileDetailView,
     CompanyProfileEditView,
+    CompanyProfileLogoEditView,
     EmailConfirmationView,
     EnrolmentView,
     api_client,
@@ -101,10 +102,16 @@ def test_enrolment_form_complete_api_client_success(mock_send_form):
 @mock.patch.object(EnrolmentView, 'get_all_cleaned_data', lambda x: {})
 @mock.patch.object(forms, 'serialize_enrolment_forms', lambda x: {})
 @mock.patch.object(api_client.registration, 'send_form')
-def test_enrolment_form_complete_api_client_failure(mock_send_form):
-    response = requests.Response()
-    response.status_code = http.client.BAD_REQUEST
-    mock_send_form.return_value = response
+def test_enrolment_form_complete_api_client_fail(mock_send_form, rf, client):
+
+    request = rf.get(reverse('company-detail'))
+    request.user = mock.Mock(session=client.session)
+    request.user.session['company_id'] = 1
+
+    api_response = requests.Response()
+    api_response.status_code = http.client.BAD_REQUEST
+    mock_send_form.return_value = api_response
+
     view = EnrolmentView()
     view.request = None
     response = view.done()
@@ -118,13 +125,18 @@ def test_enrolment_form_complete_api_client_failure(mock_send_form):
 @mock.patch.object(api_client.company, 'update_profile')
 def test_company_profile_edit_api_client_call(
         mock_update_profile, mock_serialize_company_profile_forms, rf, client):
+
+    request = rf.get(reverse('company-detail'))
+    request.user = mock.Mock(session=client.session)
+    request.user.session['company_id'] = 1
+
     view = CompanyProfileEditView()
-    view.request = None
+    view.request = request
     mock_serialize_company_profile_forms.return_value = data = {
         'field': 'value'
     }
     view.done()
-    mock_update_profile.assert_called_once_with(data)
+    mock_update_profile.assert_called_once_with(id=1, data=data)
 
 
 @mock.patch.object(
@@ -132,12 +144,19 @@ def test_company_profile_edit_api_client_call(
 )
 @mock.patch.object(forms, 'serialize_company_profile_forms', lambda x: {})
 @mock.patch.object(api_client.company, 'update_profile')
-def test_company_profile_edit_api_client_success(mock_update_profile):
-    response = requests.Response()
-    response.status_code = http.client.OK
-    mock_update_profile.return_value = response
+def test_company_profile_edit_api_client_success(mock_update_profile, rf,
+                                                 client):
+
+    api_response = requests.Response()
+    api_response.status_code = http.client.OK
+    mock_update_profile.return_value = api_response
+
+    request = rf.get(reverse('company-detail'))
+    request.user = mock.Mock(session=client.session)
+    request.user.session['company_id'] = 1
+
     view = CompanyProfileEditView()
-    view.request = None
+    view.request = request
     response = view.done()
     assert response.status_code == http.client.FOUND
 
@@ -147,12 +166,18 @@ def test_company_profile_edit_api_client_success(mock_update_profile):
 )
 @mock.patch.object(forms, 'serialize_company_profile_forms', lambda x: {})
 @mock.patch.object(api_client.company, 'update_profile')
-def test_company_profile_edit_api_client_failure(mock_update_profile):
-    response = requests.Response()
-    response.status_code = http.client.BAD_REQUEST
-    mock_update_profile.return_value = response
+def test_company_profile_edit_api_client_failure(mock_update_profile, rf,
+                                                 client):
+    api_response = requests.Response()
+    api_response.status_code = http.client.BAD_REQUEST
+    mock_update_profile.return_value = api_response
+
+    request = rf.get(reverse('company-detail'))
+    request.user = mock.Mock(session=client.session)
+    request.user.session['company_id'] = 1
+
     view = CompanyProfileEditView()
-    view.request = None
+    view.request = request
     response = view.done()
     assert response.status_code == http.client.OK
     assert response.template_name == CompanyProfileEditView.failure_template
@@ -222,3 +247,68 @@ def test_company_profile_edit_view_uses_correct_template(client, rf):
 
         expected_template_name = CompanyProfileEditView.templates[step_name]
         assert response.template_name == [expected_template_name]
+
+
+@mock.patch.object(
+    CompanyProfileLogoEditView, 'get_all_cleaned_data', return_value={}
+)
+@mock.patch.object(forms, 'serialize_company_logo_forms')
+@mock.patch.object(api_client.company, 'update_profile')
+def test_company_profile_logo_api_client_call(
+        mock_update_profile, mock_serialize_company_logo_forms, rf, client):
+
+    request = rf.get(reverse('company-detail'))
+    request.user = mock.Mock(session=client.session)
+    request.user.session['company_id'] = 1
+
+    view = CompanyProfileLogoEditView()
+    view.request = request
+    mock_serialize_company_logo_forms.return_value = data = {
+        'field': 'value'
+    }
+    view.done()
+    mock_update_profile.assert_called_once_with(id=1, data=data)
+
+
+@mock.patch.object(
+    CompanyProfileLogoEditView, 'get_all_cleaned_data', lambda x: {}
+)
+@mock.patch.object(forms, 'serialize_company_logo_forms', lambda x: {})
+@mock.patch.object(api_client.company, 'update_profile')
+def test_company_profile_logo_api_client_success(mock_update_profile, rf,
+                                                 client):
+    api_response = requests.Response()
+    api_response.status_code = http.client.OK
+    mock_update_profile.return_value = api_response
+
+    request = rf.get(reverse('company-detail'))
+    request.user = mock.Mock(session=client.session)
+    request.user.session['company_id'] = 1
+
+    view = CompanyProfileLogoEditView()
+    view.request = request
+    response = view.done()
+    assert response.status_code == http.client.FOUND
+
+
+@mock.patch.object(
+    CompanyProfileLogoEditView, 'get_all_cleaned_data', lambda x: {}
+)
+@mock.patch.object(forms, 'serialize_company_logo_forms', lambda x: {})
+@mock.patch.object(api_client.company, 'update_profile')
+def test_company_profile_logo_api_client_failure(mock_update_profile, rf,
+                                                 client):
+    api_response = requests.Response()
+    api_response.status_code = http.client.BAD_REQUEST
+    mock_update_profile.return_value = api_response
+
+    request = rf.get(reverse('company-detail'))
+    request.user = mock.Mock(session=client.session)
+    request.user.session['company_id'] = 1
+
+    view = CompanyProfileLogoEditView()
+    view.request = request
+    response = view.done()
+    assert response.status_code == http.client.OK
+    expected_template_name = CompanyProfileLogoEditView.failure_template
+    assert response.template_name == expected_template_name
