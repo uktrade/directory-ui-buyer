@@ -1,4 +1,5 @@
 import http
+import requests
 from unittest import mock
 
 import pytest
@@ -88,7 +89,9 @@ def test_enrolment_form_complete_api_client_call(
 @mock.patch.object(forms, 'serialize_enrolment_forms', lambda x: {})
 @mock.patch.object(api_client.registration, 'send_form')
 def test_enrolment_form_complete_api_client_success(mock_send_form):
-    mock_send_form.return_value = mock.Mock(status_code=http.client.OK)
+    response = requests.Response()
+    response.status_code = http.client.OK
+    mock_send_form.return_value = response
     view = EnrolmentView()
     view.request = None
     response = view.done()
@@ -99,9 +102,9 @@ def test_enrolment_form_complete_api_client_success(mock_send_form):
 @mock.patch.object(forms, 'serialize_enrolment_forms', lambda x: {})
 @mock.patch.object(api_client.registration, 'send_form')
 def test_enrolment_form_complete_api_client_failure(mock_send_form):
-    mock_send_form.return_value = mock.Mock(
-        status_code=http.client.BAD_REQUEST
-    )
+    response = requests.Response()
+    response.status_code = http.client.BAD_REQUEST
+    mock_send_form.return_value = response
     view = EnrolmentView()
     view.request = None
     response = view.done()
@@ -130,7 +133,9 @@ def test_company_profile_edit_api_client_call(
 @mock.patch.object(forms, 'serialize_company_profile_forms', lambda x: {})
 @mock.patch.object(api_client.company, 'update_profile')
 def test_company_profile_edit_api_client_success(mock_update_profile):
-    mock_update_profile.return_value = mock.Mock(status_code=http.client.OK)
+    response = requests.Response()
+    response.status_code = http.client.OK
+    mock_update_profile.return_value = response
     view = CompanyProfileEditView()
     view.request = None
     response = view.done()
@@ -143,9 +148,9 @@ def test_company_profile_edit_api_client_success(mock_update_profile):
 @mock.patch.object(forms, 'serialize_company_profile_forms', lambda x: {})
 @mock.patch.object(api_client.company, 'update_profile')
 def test_company_profile_edit_api_client_failure(mock_update_profile):
-    mock_update_profile.return_value = mock.Mock(
-        status_code=http.client.BAD_REQUEST
-    )
+    response = requests.Response()
+    response.status_code = http.client.BAD_REQUEST
+    mock_update_profile.return_value = response
     view = CompanyProfileEditView()
     view.request = None
     response = view.done()

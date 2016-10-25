@@ -1,5 +1,4 @@
 import logging
-import http
 import os
 
 from directory_api_client.client import DirectoryAPIClient
@@ -83,7 +82,7 @@ class EnrolmentView(SessionWizardView):
     def done(self, *args, **kwags):
         data = forms.serialize_enrolment_forms(self.get_all_cleaned_data())
         response = api_client.registration.send_form(data)
-        if response.status_code == http.client.OK:
+        if response.ok:
             template = self.success_template
         else:
             template = self.failure_template
@@ -152,7 +151,7 @@ class CompanyProfileEditView(SessionWizardView):
             self.get_all_cleaned_data()
         )
         response = api_client.company.update_profile(data)
-        if response.status_code == http.client.OK:
+        if response.ok:
             response = redirect('company-detail')
         else:
             response = TemplateResponse(self.request, self.failure_template)

@@ -7,7 +7,11 @@ from directory_validators.constants import choices
 from enrolment import helpers, validators
 
 
-class CompanyForm(forms.Form):
+class IndentedInvalidFieldsMixin:
+    error_css_class = 'input-field-container has-error'
+
+
+class CompanyForm(IndentedInvalidFieldsMixin, forms.Form):
     company_number = forms.CharField(
         label='Company number',
         help_text=('This is the 8-digit number on the company certificate of '
@@ -19,13 +23,13 @@ class CompanyForm(forms.Form):
     )
 
 
-class CompanyNameForm(forms.Form):
+class CompanyNameForm(IndentedInvalidFieldsMixin, forms.Form):
     company_name = forms.CharField(
         label='Company Name'
     )
 
 
-class CompanyExportStatusForm(forms.Form):
+class CompanyExportStatusForm(IndentedInvalidFieldsMixin, forms.Form):
     export_status = forms.ChoiceField(
         label=(
             'Has your company sold products or services to overseas customers?'
@@ -35,7 +39,7 @@ class CompanyExportStatusForm(forms.Form):
     )
 
 
-class CompanyBasicInfoForm(forms.Form):
+class CompanyBasicInfoForm(IndentedInvalidFieldsMixin, forms.Form):
     # TODO: ED-145
     # Make sure all fields have char limits once the models are defined
     company_name = forms.CharField()
@@ -52,7 +56,7 @@ class CompanyBasicInfoForm(forms.Form):
     )
 
 
-class CompanyEmailAddressForm(forms.Form):
+class CompanyEmailAddressForm(IndentedInvalidFieldsMixin, forms.Form):
     company_email = forms.EmailField(
         label='Email',
         help_text='Your company email address',
@@ -74,7 +78,7 @@ class CompanyEmailAddressForm(forms.Form):
         return confirmed
 
 
-class UserForm(forms.Form):
+class UserForm(IndentedInvalidFieldsMixin, forms.Form):
     mobile_number = forms.CharField(
         label='Mobile number'
     )
@@ -92,7 +96,7 @@ class UserForm(forms.Form):
         return confirmed
 
 
-class CompanySizeForm(forms.Form):
+class CompanySizeForm(IndentedInvalidFieldsMixin, forms.Form):
     turnover = forms.CharField(
         label='Company turnover (GBP)',
         required=False,
@@ -104,7 +108,7 @@ class CompanySizeForm(forms.Form):
     )
 
 
-class CompanyClassificationForm(forms.Form):
+class CompanyClassificationForm(IndentedInvalidFieldsMixin, forms.Form):
     sectors = forms.MultipleChoiceField(
         label='What sectors is your company interested in working in?',
         choices=choices.COMPANY_CLASSIFICATIONS,

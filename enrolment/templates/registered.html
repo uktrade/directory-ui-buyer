@@ -1,21 +1,17 @@
-{% extends './govuk_layout.html' %}
+{% extends 'enrolment-base.html' %}
 {% load staticfiles %}
 
-{% block css %}
-	<link href="{% static 'enrolment.css' %}" media="all" rel="stylesheet" />
-{% endblock %}
-{% block content %}
+{% block sub_header %}{# prevent the subheader from showing on form pages #}{% endblock %}
+{% block formarea_container_class %}span12{% endblock %}
+{% block formarea %}
 	<div class="container">
-		<div class="registered black-60-percent">
-			<h1>You have registered</h1>
-			<h2>Thank you for registering</h2>
-			<p>Now that you have registered, lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-			<p>
-				<a class="teal" href="#">Learn more
-					<!-- Implementing the 'a11y' class to visually hide text on-screen but still being available for screen readers -->
-					<span class="a11y"> about something interesting</span>
-				</a>
-			</p>
-		</div>
+		<h1>Almost done. Verify your contact details</h1>
+		<p>
+			To verify your account you will receive an email with a link and a text message with a unique code.
+		</p>
+		<br>
+		<p>
+			Click the link in the email, and on the page you will be asked to enter the code from the text message.
+		</p>
 	</div>
-{%endblock content %}
+{%endblock formarea %}
