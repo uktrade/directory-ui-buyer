@@ -44,6 +44,18 @@ class CompanyBasicInfoForm(IndentedInvalidFieldsMixin, forms.Form):
     # Make sure all fields have char limits once the models are defined
     company_name = forms.CharField()
     website = forms.URLField()
+    keywords = forms.CharField(
+        label='Enter some keywords that describe your company.',
+        help_text=(
+            'Please seperate each keyword with a comma. Potential '
+            'internationalbuyers will be able to search by those keywords to '
+            'find your company.'
+        ),
+        widget=forms.Textarea,
+    )
+
+
+class CompanyDescriptionForm(IndentedInvalidFieldsMixin, forms.Form):
     description = forms.CharField(widget=forms.Textarea)
 
 
@@ -155,7 +167,7 @@ def serialize_company_profile_forms(cleaned_data):
     return {
         'name': cleaned_data['company_name'],
         'website': cleaned_data['website'],
-        'description': cleaned_data['description'],
+        'keywords': cleaned_data['keywords'],
         'turnover': cleaned_data['turnover'],
         'employees': cleaned_data['employees'],
         'sectors': cleaned_data['sectors'],
@@ -174,4 +186,19 @@ def serialize_company_logo_forms(cleaned_data):
 
     return {
         'logo': cleaned_data['logo'],
+    }
+
+
+def serialize_company_description_forms(cleaned_data):
+    """
+    Return the shape directory-api-client expects for changing description.
+
+    @param {dict} cleaned_data - All the fields in `CompanyDescriptionForm`
+
+    @returns dict
+
+    """
+
+    return {
+        'description': cleaned_data['description'],
     }
