@@ -1,8 +1,8 @@
-from django import forms
-from django.conf import settings
-
 from directory_validators import enrolment as shared_validators
 from directory_validators.constants import choices
+
+from django import forms
+from django.conf import settings
 
 from enrolment import helpers, validators
 
@@ -129,6 +129,27 @@ class CompanyClassificationForm(IndentedInvalidFieldsMixin, forms.Form):
         choices=choices.COMPANY_CLASSIFICATIONS,
         widget=forms.CheckboxSelectMultiple()
     )
+
+
+class PhoneNumberVerificationForm(IndentedInvalidFieldsMixin, forms.Form):
+
+    def __init__(self, *args, **kwargs):
+        self.expected_sms_code = kwargs.pop('expected_sms_code')
+        super().__init__(*args, **kwargs)
+
+    sms_code = forms.CharField(
+        label='Code',
+        help_text=(
+            'You will shortly recieve a text message with a unique code. '
+            'Please type it in the box.'
+        ),
+    )
+
+    def clean_sms_code(self):
+        sms_code = self.cleaned_data['sms_code']
+        if sms_code != self.expected_sms_code:
+            raise forms.ValidationError('Incorrect code.')
+        return sms_code
 
 
 def serialize_enrolment_forms(cleaned_data):

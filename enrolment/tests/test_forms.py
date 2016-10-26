@@ -168,6 +168,32 @@ def test_company_description_form_rejects_invalid_data():
     assert form.errors['description'] == ['This field is required.']
 
 
+def test_phone_number_verification_form_rejects_missing_data():
+    form = forms.PhoneNumberVerificationForm(expected_sms_code=123, data={})
+    assert form.is_valid() is False
+    assert form.errors['sms_code'] == ['This field is required.']
+
+
+def test_phone_number_verification_form_accepts_valid_data():
+    expected_sms_code = '123'
+    data = {
+        'sms_code': expected_sms_code,
+    }
+    form = forms.PhoneNumberVerificationForm(
+        expected_sms_code=expected_sms_code, data=data
+    )
+    assert form.is_valid() is True
+
+
+def test_phone_number_verification_form_rejects_invalid_data():
+    data = {
+        'sms_code': 567,
+    }
+    form = forms.PhoneNumberVerificationForm(expected_sms_code=123, data=data)
+    assert form.is_valid() is False
+    assert form.errors['sms_code'] == ['Incorrect code.']
+
+
 def test_serialize_enrolment_forms():
     actual = forms.serialize_enrolment_forms({
         'company_name': 'Extreme Corp',
