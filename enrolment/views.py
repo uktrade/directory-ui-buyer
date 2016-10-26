@@ -93,7 +93,7 @@ class EnrolmentView(UpdateCompanyProfileOnFormWizardDoneMixin,
     def get_form_kwargs(self, step):
         if step == 'sms_verify':
             return {
-                'encrypted_sms_code': self.request.session['sms_code']
+                'expected_sms_code': str(self.request.session.get('sms_code')),
             }
         return {}
 
@@ -115,14 +115,14 @@ class EnrolmentView(UpdateCompanyProfileOnFormWizardDoneMixin,
     def process_step(self, form):
         step = self.storage.current_step
         if step == 'user':
-            response = api_client.registration.send_sms_verification_code(
+            response = api_client.registration.send_verification_sms(
                 phone_number=form.cleaned_data['mobile_number']
             )
             if not response.ok:
                 response.raise_for_status()
-            self.request.session['sms_code'] = helpers.encrypt_sms_code(
-                sms_code=response.json()['sms_code']
-            )
+            # TODO: change session backend to no longer be cookie based
+            # because we're sharing secrets here
+            self.request.session['sms_code'] = response.json()['sms_code']
         return super().process_step(form)
 
     def done(self, *args, **kwags):

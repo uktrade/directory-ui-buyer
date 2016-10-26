@@ -41,6 +41,57 @@ def api_response_400(*args, **kwargs):
     return response
 
 
+@pytest.fixture
+def api_response_send_verification_sms_200(api_response_200):
+    response = api_response_200
+    response.json = lambda: {'sms_code': '12345'}
+    return response
+
+
+@pytest.fixture
+def user_step_data_valid():
+    return {
+        'user-mobile_number': '0123456789',
+        'user-mobile_confirmed': '0123456789',
+        'user-terms_agreed': True,
+        'enrolment_view-current_step': 'user',
+    }
+
+
+@pytest.fixture
+def sms_verify_step_data_valid():
+    return {
+        'enrolment_view-current_step': 'sms_verify',
+    }
+
+
+@pytest.fixture
+def user_step_request(rf, client, user_step_data_valid):
+    request = rf.post(reverse('register'), user_step_data_valid)
+    request.session = client.session
+    request.session['wizard_enrolment_view'] = {
+        'extra_data': {},
+        'step': 'user',
+        'step_data': {},
+        'step_files': {},
+    }
+    return request
+
+
+@pytest.fixture
+def sms_verify_step_request(rf, client, sms_verify_step_data_valid):
+    request = rf.post(reverse('register'), sms_verify_step_data_valid)
+    request.session = client.session
+    request.session['sms_code'] = '123'
+    request.session['wizard_enrolment_view'] = {
+        'extra_data': {},
+        'step': 'sms_verify',
+        'step_data': {},
+        'step_files': {},
+    }
+    return request
+
+
 def test_email_confirm_missing_confirmation_code(rf):
     view = EmailConfirmationView.as_view()
     request = rf.get(reverse('confirm-email'))
@@ -293,3 +344,41 @@ def test_views_use_correct_template(client, rf):
             response = view(request)
 
             assert response.template_name == [view_class.templates[step_name]]
+
+
+def test_enrolment_view_passes_sms_code_to_form(sms_verify_step_request):
+    response = EnrolmentView.as_view()(sms_verify_step_request)
+    assert response.context_data['form'].expected_sms_code == '123'
+
+
+@mock.patch.object(api_client.registration, 'send_verification_sms')
+def test_enrolment_calls_api(
+    mock_api_call, user_step_request,  api_response_send_verification_sms_200
+):
+    mock_api_call.return_value = api_response_send_verification_sms_200
+
+    response = EnrolmentView.as_view()(user_step_request)
+
+    assert response.status_code == http.client.OK
+    mock_api_call.assert_called_once_with(phone_number='0123456789')
+
+
+@mock.patch.object(api_client.registration, 'send_verification_sms')
+def test_enrolment_handles_good_response(
+    mock_api_call, user_step_request, api_response_send_verification_sms_200
+):
+    mock_api_call.return_value = api_response_send_verification_sms_200
+
+    response = EnrolmentView.as_view()(user_step_request)
+
+    assert response.status_code == http.client.OK
+    assert user_step_request.session['sms_code'] == '12345'
+
+
+@mock.patch.object(api_client.registration, 'send_verification_sms',
+                   api_response_400)
+def test_enrolment_handles_bad_response(user_step_request):
+    with pytest.raises(requests.exceptions.HTTPError):
+        response = EnrolmentView.as_view()(user_step_request)
+
+        assert response.status_code == http.client.INTERNAL_SERVER_ERROR

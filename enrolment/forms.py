@@ -1,16 +1,10 @@
-from django import forms
-from django.conf import settings
-
-from directory_api_client.client import DirectoryAPIClient
 from directory_validators import enrolment as shared_validators
 from directory_validators.constants import choices
 
-from enrolment import helpers, validators
+from django import forms
+from django.conf import settings
 
-api_client = DirectoryAPIClient(
-    base_url=settings.API_CLIENT_BASE_URL,
-    api_key=settings.API_CLIENT_API_KEY,
-)
+from enrolment import helpers, validators
 
 
 class IndentedInvalidFieldsMixin:
@@ -140,7 +134,7 @@ class CompanyClassificationForm(IndentedInvalidFieldsMixin, forms.Form):
 class PhoneNumberVerificationForm(IndentedInvalidFieldsMixin, forms.Form):
 
     def __init__(self, *args, **kwargs):
-        self.encrypted_sms_code = kwargs.pop('encrypted_sms_code')
+        self.expected_sms_code = kwargs.pop('expected_sms_code')
         super().__init__(*args, **kwargs)
 
     sms_code = forms.CharField(
@@ -153,8 +147,8 @@ class PhoneNumberVerificationForm(IndentedInvalidFieldsMixin, forms.Form):
 
     def clean_sms_code(self):
         sms_code = self.cleaned_data['sms_code']
-        if helpers.encrypt_sms_code(sms_code) != self.encrypted_sms_code:
-            raise forms.ValidationError('Incorrect code')
+        if sms_code != self.expected_sms_code:
+            raise forms.ValidationError('Incorrect code.')
         return sms_code
 
 
