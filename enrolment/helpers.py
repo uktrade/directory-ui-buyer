@@ -45,3 +45,7 @@ def get_company_name(number):
             logger.error('Unable to get name for "{0}". Status "{1}".'.format(
                 number, response.status_code
             ))
+
+
+def encrypt_sms_code(sms_code):
+    return sms_code

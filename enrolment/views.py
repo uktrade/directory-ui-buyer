@@ -79,6 +79,7 @@ class EnrolmentView(UpdateCompanyProfileOnFormWizardDoneMixin,
         ('status', forms.CompanyExportStatusForm),
         ('email', forms.CompanyEmailAddressForm),
         ('user', forms.UserForm),
+        ('sms_verify', forms.PhoneNumberVerificationForm),
     )
     templates = {
         'company': 'company-form.html',
@@ -86,7 +87,15 @@ class EnrolmentView(UpdateCompanyProfileOnFormWizardDoneMixin,
         'status': 'export-status-form.html',
         'email': 'email-form.html',
         'user': 'user-form.html',
+        'sms_verify': 'sms-verify-form.html'
     }
+
+    def get_form_kwargs(self, step):
+        if step == 'sms_verify':
+            return {
+                'encrypted_sms_code': self.request.session['sms_code']
+            }
+        return {}
 
     def get_template_names(self):
         return [self.templates[self.steps.current]]
@@ -98,10 +107,23 @@ class EnrolmentView(UpdateCompanyProfileOnFormWizardDoneMixin,
             }
         if step == 'name':
             prev_data = self.storage.get_step_data('company') or {}
-            number = prev_data.get('company-company_number')
+            company_number = prev_data.get('company-company_number')
             return {
-                'company_name': helpers.get_company_name(number)
+                'company_name': helpers.get_company_name(company_number)
             }
+
+    def process_step(self, form):
+        step = self.storage.current_step
+        if step == 'user':
+            response = api_client.registration.send_sms_verification_code(
+                phone_number=form.cleaned_data['mobile_number']
+            )
+            if not response.ok:
+                response.raise_for_status()
+            self.request.session['sms_code'] = helpers.encrypt_sms_code(
+                sms_code=response.json()['sms_code']
+            )
+        return super().process_step(form)
 
     def done(self, *args, **kwags):
         data = forms.serialize_enrolment_forms(self.get_all_cleaned_data())
