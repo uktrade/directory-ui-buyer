@@ -169,3 +169,8 @@ def test_export_status_common_invalid_form_error_size():
     assert 'span8' in html
     assert 'Sorry, this is not the right service for your company' not in html
     assert '<form' in html
+
+
+def test_company_profile_form_correct_title():
+    html = render_to_string('company-profile-form.html', {})
+    assert 'Your company details' in html

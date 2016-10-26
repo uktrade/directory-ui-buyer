@@ -43,9 +43,12 @@ class CachableTemplateView(CacheMixin, TemplateView):
 
 
 class UpdateCompanyProfileOnFormWizardDoneMixin:
+
+    def serialize_form_data(self):
+        return self.form_serializer(self.get_all_cleaned_data())
+
     def done(self, *args, **kwargs):
         session = self.request.user.session
-        data = self.form_serializer(self.get_all_cleaned_data())
         if 'company_id' not in session:
             logger.error(
                 'company_id is missing from the user session.',
@@ -53,7 +56,7 @@ class UpdateCompanyProfileOnFormWizardDoneMixin:
             )
         company_id = session['company_id']
         response = api_client.company.update_profile(
-            id=company_id, data=data
+            id=company_id, data=self.serialize_form_data()
         )
         if response.ok:
             response = redirect('company-detail')
@@ -161,7 +164,7 @@ class CompanyProfileEditView(UpdateCompanyProfileOnFormWizardDoneMixin,
         'size': 'company-profile-form.html',
         'classification': 'company-profile-form-classification.html',
     }
-    form_serializer = forms.serialize_company_profile_forms
+    form_serializer = staticmethod(forms.serialize_company_profile_forms)
 
     def get_template_names(self):
         return [self.templates[self.steps.current]]
@@ -179,7 +182,7 @@ class CompanyProfileLogoEditView(UpdateCompanyProfileOnFormWizardDoneMixin,
     templates = {
         'logo': 'company-profile-logo-form.html',
     }
-    form_serializer = forms.serialize_company_logo_forms
+    form_serializer = staticmethod(forms.serialize_company_logo_forms)
 
     def get_template_names(self):
         return [self.templates[self.steps.current]]
@@ -194,7 +197,7 @@ class CompanyDescriptionEditView(UpdateCompanyProfileOnFormWizardDoneMixin,
     templates = {
         'description': 'company-profile-description-form.html',
     }
-    form_serializer = forms.serialize_company_description_forms
+    form_serializer = staticmethod(forms.serialize_company_description_forms)
 
     def get_template_names(self):
         return [self.templates[self.steps.current]]

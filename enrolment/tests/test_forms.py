@@ -83,15 +83,15 @@ def test_company_profile_form_requires_name():
     assert form.errors['company_name'][0] == 'This field is required.'
 
 
-def test_company_profile_form_requires_description():
+def test_company_profile_form_requires_keywords():
     form = forms.CompanyBasicInfoForm(data={})
 
     valid = form.is_valid()
 
     assert valid is False
-    assert 'description' in form.errors
-    assert len(form.errors['description']) == 1
-    assert form.errors['description'][0] == 'This field is required.'
+    assert 'keywords' in form.errors
+    assert len(form.errors['keywords']) == 1
+    assert form.errors['keywords'][0] == 'This field is required.'
 
 
 def test_company_profile_form_requires_website():
@@ -119,7 +119,7 @@ def test_company_profile_form_rejects_invalid_website():
 def test_company_profile_form_accepts_valid_data():
     data = {'company_name': 'Amazon UK',
             'website': 'http://amazon.co.uk',
-            'description': 'Ecommerce'}
+            'keywords': 'Ecommerce'}
     form = forms.CompanyBasicInfoForm(data=data)
 
     valid = form.is_valid()
@@ -128,7 +128,7 @@ def test_company_profile_form_accepts_valid_data():
     assert form.cleaned_data == {
         'company_name': 'Amazon UK',
         'website': 'http://amazon.co.uk',
-        'description': 'Ecommerce',
+        'keywords': 'Ecommerce',
     }
 
 
@@ -154,6 +154,20 @@ def test_company_export_status_form_validars():
     assert shared_validators.export_status_intention in field.validators
 
 
+def test_company_description_form_accepts_valid_data():
+    form = forms.CompanyDescriptionForm(data={
+        'description': 'thing'
+    })
+    assert form.is_valid() is True
+    assert form.cleaned_data['description'] == 'thing'
+
+
+def test_company_description_form_rejects_invalid_data():
+    form = forms.CompanyDescriptionForm(data={})
+    assert form.is_valid() is False
+    assert form.errors['description'] == ['This field is required.']
+
+
 def test_serialize_enrolment_forms():
     actual = forms.serialize_enrolment_forms({
         'company_name': 'Extreme Corp',
@@ -177,14 +191,14 @@ def test_serialize_enrolment_forms():
 def test_serialize_company_profile_forms():
     actual = forms.serialize_company_profile_forms({
         'company_name': 'Example ltd.',
-        'description': 'Jolly good exporter.',
+        'keywords': 'Jolly good exporter.',
         'employees': '1-10',
         'sectors': ['1', '2'],
         'turnover': '10,000',
         'website': 'http://example.com',
     })
     expected = {
-        'description': 'Jolly good exporter.',
+        'keywords': 'Jolly good exporter.',
         'employees': '1-10',
         'name': 'Example ltd.',
         'sectors': ['1', '2'],
@@ -201,5 +215,15 @@ def test_serialize_company_logo_forms():
     })
     expected = {
         'logo': logo,
+    }
+    assert actual == expected
+
+
+def test_serialize_company_description_forms():
+    actual = forms.serialize_company_description_forms({
+        'description': 'Jolly good exporter.',
+    })
+    expected = {
+        'description': 'Jolly good exporter.',
     }
     assert actual == expected
