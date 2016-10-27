@@ -31,7 +31,7 @@
 .company-details-subtitle {
   color: $great-blue;
   font-size: 24px;
-  font-weight: 600;
+  font-weight: 500;
   margin-bottom: 20px;
 }
 
@@ -51,8 +51,7 @@
       display: table-cell;
       vertical-align: middle;
     }
-    img {
-    }
+    img {}
     @media (max-width: 767px) {
     }
   }
@@ -65,10 +64,14 @@
 
 .great-blue-bar {
   background: $great-blue;
-  color: $white;
   display: table!important;
   height: 80px;
   padding: 0 24px;
+  .company-name-title {
+    color: $white;
+    font-size: 36px;
+    font-weight: 500;
+  }
   .element-within {
     display: table-cell;
     float: none;
@@ -91,9 +94,14 @@
   background: $mid-blue;
   color: $white;
   display: table!important;
-  height: 80px;
+  height: 60px;
   padding: 0 24px;
   width: 100%;
+  .company-sub-title {
+    color: $white;
+    font-size: 24px;
+    font-weight: 500;
+  }
   .element-within {
     display: table-cell;
     float: none;
@@ -139,11 +147,12 @@
 
 .stone-label {
   background: $stone;
+  border-radius: 6px;
   color: $mid-grey;
-  font-size: 16px;
-  font-weight: 400;
+  font-size: 1em;
+  font-weight: 300;
   margin: 0 5px 8px 0;
-  padding: 15px;
+  padding: 9px 12px;
 }
 
 .company-profile-details-hero-edit-button {
