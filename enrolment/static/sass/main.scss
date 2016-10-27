@@ -199,6 +199,10 @@ a.teal:focus {
     border: 0
   }
 
+  li {
+    margin-bottom: 30px;
+  }
+
   &.has-error {
     border-left: 5px solid #B00D23;
     padding-left: 15px;
@@ -414,4 +418,8 @@ body {
 .form-wrapper-btn-container {
   line-height: 3em;
   clear: both; // needed for IE8 compatibility with multi column lists
+}
+
+.ed-form-classification-container li {
+  margin-bottom: 0;
 }

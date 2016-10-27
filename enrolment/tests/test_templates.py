@@ -120,7 +120,7 @@ def test_company_profile_form_supports_file_upload():
 
 def test_user_form_renders_title():
     html = render_to_string('user-form.html', {})
-    assert 'About you' in html
+    assert 'Your details' in html
 
 
 def test_aims_form_renders_title():
@@ -130,7 +130,7 @@ def test_aims_form_renders_title():
 
 def test_company_form_renders_title():
     html = render_to_string('company-form.html', {})
-    assert 'Join the UK Exporter Directory' in html
+    assert "Create your company’s profile" in html
 
 
 def test_export_status_form_error_size():
@@ -142,7 +142,7 @@ def test_export_status_form_error_size():
     }
     html = render_to_string('export-status-form.html', context)
     assert 'span12' in html
-    assert 'Sorry, this is not the right service for your company' in html
+    assert 'Try our other great business services' in html
 
 
 def test_export_status_no_form_error_size():

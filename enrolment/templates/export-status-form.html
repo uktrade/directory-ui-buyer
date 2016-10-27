@@ -1,6 +1,6 @@
 {% extends "form-wrapper.html" %}
 {% load no_export_intention from enrolment_tags %}
-{% block form_title %}Join the UK Exporter Directory{% endblock%}
+{% block form_title %}Your company's export status{% endblock%}
 {% block formarea_container_class %}
     {% if form|no_export_intention %}
         span12
@@ -10,16 +10,12 @@
 {% endblock %}
 {% block formarea %}
     {% if form|no_export_intention %}
-        <h1>Sorry, this is not the right service for your company</h1>
+        <h1>Try our other great business services</h1>
         <p>
-            Copy that explains how this service is for companies that export, exported or consider doing so.
+            The Great Trade Index promotes companies that are currently exporting or looking to export in the near future. The answers you gave suggest that your company is currently not appropriate to feature in the Great Trade Index. 
         </p>
         <p>
-            Also, here are some other DIT things that could be of use for you:
-            <ul>
-                <li><a href='#'>Link</a></li>
-                <li><a href='#'>Link</a></li>
-            </ul>
+            Visit <a href="http://www.greatbusiness.gov.uk/" target="_self">Business is Great</a> to get help and support for starting and growing your business.
         </p>
     {% else %}
         {{ block.super }}
