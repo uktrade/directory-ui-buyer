@@ -13,7 +13,7 @@ class IndentedInvalidFieldsMixin:
 
 class CompanyForm(IndentedInvalidFieldsMixin, forms.Form):
     company_number = forms.CharField(
-        label='Company number',
+        label='Company number:',
         help_text=('This is the 8-digit number on the company certificate of '
                    'incorporation.'),
         validators=helpers.halt_validation_on_failure(
@@ -25,7 +25,11 @@ class CompanyForm(IndentedInvalidFieldsMixin, forms.Form):
 
 class CompanyNameForm(IndentedInvalidFieldsMixin, forms.Form):
     company_name = forms.CharField(
-        label='Company Name'
+        label='Company Name:',
+        help_text=(
+            'Please click next if this is your company.'
+        ),
+        widget=forms.TextInput(attrs={'readonly': 'readonly'}),
     )
 
 
@@ -40,29 +44,39 @@ class CompanyExportStatusForm(IndentedInvalidFieldsMixin, forms.Form):
 
 
 class CompanyBasicInfoForm(IndentedInvalidFieldsMixin, forms.Form):
-    # TODO: ED-145
-    # Make sure all fields have char limits once the models are defined
-    company_name = forms.CharField()
-    website = forms.URLField()
-    keywords = forms.CharField(
-        label='Enter some keywords that describe your company.',
+    company_name = forms.CharField(
         help_text=(
-            'Please seperate each keyword with a comma. Potential '
-            'internationalbuyers will be able to search by those keywords to '
-            'find your company.'
+            'You can change this from the Companies House listing to '
+            'better fit your profile.'
+        ),
+        max_length=255,
+    )
+    website = forms.URLField(max_length=255)
+    keywords = forms.CharField(
+        label='Enter up to 10 keywords that describe your company:',
+        help_text=(
+            'Keywords should be separated with commas. These keywords will be '
+            'used to help potential overseas buyers find your company.'
         ),
         widget=forms.Textarea,
+        max_length=1000,
     )
 
 
 class CompanyDescriptionForm(IndentedInvalidFieldsMixin, forms.Form):
-    description = forms.CharField(widget=forms.Textarea)
+    description = forms.CharField(
+        widget=forms.Textarea,
+        label='Describe your business to overseas buyers:',
+        help_text='Maximum 1,000 characters.',
+        max_length=1000,
+    )
 
 
 class CompanyLogoForm(IndentedInvalidFieldsMixin, forms.Form):
     logo = forms.FileField(
         help_text=(
-            'Maximum filesize: {0}MB'.format(
+            'For best results this should be a transparent PNG file of 600 x '
+            '600 pixels and more than {0}MB'.format(
                 int(settings.VALIDATOR_MAX_LOGO_SIZE_BYTES / 1024 / 1014)
             )
         ),
@@ -73,16 +87,19 @@ class CompanyLogoForm(IndentedInvalidFieldsMixin, forms.Form):
 
 class CompanyEmailAddressForm(IndentedInvalidFieldsMixin, forms.Form):
     company_email = forms.EmailField(
-        label='Email',
-        help_text='Your company email address',
+        label='Email address:',
+        help_text=(
+            'Please enter a company email address rather than personal email '
+            'address. This will not replace your username.'
+        ),
         validators=[
             shared_validators.email_domain_free,
             shared_validators.email_domain_disposable,
         ]
     )
     email_confirmed = forms.EmailField(
-        label='Email confirmed',
-        help_text='Confirm your email address',
+        label='Email confirmed:',
+        help_text='Please confirm your email address.',
     )
 
     def clean_email_confirmed(self):
@@ -95,12 +112,18 @@ class CompanyEmailAddressForm(IndentedInvalidFieldsMixin, forms.Form):
 
 class UserForm(IndentedInvalidFieldsMixin, forms.Form):
     mobile_number = forms.CharField(
-        label='Mobile number'
+        label='Mobile number:',
+        help_text='We will use this to send you a verification code.',
     )
     mobile_confirmed = forms.CharField(
-        label='Mobile number confirmed'
+        label='Mobile number confirmed:'
     )
-    terms_agreed = forms.BooleanField()
+    terms_agreed = forms.BooleanField(
+        label=(
+            'Tick this box to accept the terms and conditions of the Great '
+            'Trade Index.'
+        )
+    )
     referrer = forms.CharField(required=False, widget=forms.HiddenInput())
 
     def clean_mobile_confirmed(self):
@@ -112,14 +135,13 @@ class UserForm(IndentedInvalidFieldsMixin, forms.Form):
 
 
 class CompanySizeForm(IndentedInvalidFieldsMixin, forms.Form):
-    turnover = forms.CharField(
-        label='Company turnover (GBP)',
-        required=False,
-        help_text='What is the correct turnover for your company?'
-    )
     employees = forms.ChoiceField(
         choices=choices.EMPLOYEES,
-        help_text='How many employees are in your company?'
+        label='How many employees are in your company?',
+        help_text=(
+            'Customers may use this to judge how capable you are of '
+            'fulfilling orders.'
+        )
     )
 
 
@@ -138,10 +160,11 @@ class PhoneNumberVerificationForm(IndentedInvalidFieldsMixin, forms.Form):
         super().__init__(*args, **kwargs)
 
     sms_code = forms.CharField(
-        label='Code',
+        label='Enter the code from the text message we sent you:',
         help_text=(
-            'You will shortly recieve a text message with a unique code. '
-            'Please type it in the box.'
+            'We have sent you an SMS text message to your mobile phone '
+            'containing an six digit code which you’ll need to enter on the '
+            'verification page to complete your Export Connect account.'
         ),
     )
 
@@ -189,7 +212,6 @@ def serialize_company_profile_forms(cleaned_data):
         'name': cleaned_data['company_name'],
         'website': cleaned_data['website'],
         'keywords': cleaned_data['keywords'],
-        'turnover': cleaned_data['turnover'],
         'employees': cleaned_data['employees'],
         'sectors': cleaned_data['sectors'],
     }

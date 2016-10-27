@@ -199,6 +199,10 @@ a.teal:focus {
     border: 0
   }
 
+  li {
+    margin-bottom: 30px;
+  }
+
   &.has-error {
     border-left: 5px solid #B00D23;
     padding-left: 15px;
@@ -371,7 +375,7 @@ body {
   min-height: 275px;
   padding-top: 20px;
   padding-bottom: 20px;
-  background: url(images/banner-img1.jpg) no-repeat 0 -105px;
+  background: url(images/banner-img1.jpg) no-repeat 0 0;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
@@ -414,4 +418,8 @@ body {
 .form-wrapper-btn-container {
   line-height: 3em;
   clear: both; // needed for IE8 compatibility with multi column lists
+}
+
+.ed-form-classification-container li {
+  margin-bottom: 0;
 }
