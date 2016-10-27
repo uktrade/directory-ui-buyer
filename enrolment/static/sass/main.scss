@@ -338,12 +338,14 @@ body {
 
 .ed-header {
   ul {
-    list-style-type: none;
+    @media (min-width: 979px) {
+      list-style-type: none;
+      padding: 10px;
+    }
     margin: 0;
-    padding: 10px;
     li {
       display: inline;
-      margin: 10px;
+      margin-right: 20px;
       a {
         color: white;
       }
@@ -360,7 +362,9 @@ body {
     background: #1E1348;
     padding-top: 5px;
     padding-bottom: 10px;
-    line-height: 4em;
+    @media (min-width: 979px) {
+      line-height: 4em;
+    }
   }
 }
 
