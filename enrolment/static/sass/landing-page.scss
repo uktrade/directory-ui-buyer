@@ -3,10 +3,15 @@
 .ed-landing-page {
 	background: $great-blue;
 	color: $white;
-	min-height: 200px;
 	padding: 24px;
 	position: relative;
 	top: -100px;
+  margin-top: 40px;
+  .ed-landing-page-login-synopsis {
+    @media (min-width: 979px) {
+      margin-top: 20px;
+    }
+  }
 }
 
 .page-title {
