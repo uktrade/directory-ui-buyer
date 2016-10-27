@@ -222,25 +222,23 @@ a.teal:focus {
 .btn-container {
   margin-bottom: 30px;
   margin-top: 30px;
-  input.button {
+  .button {
     background-color: #00549F;
     position: relative;
     display: -moz-inline-stack;
     display: inline-block;
-    padding: .5em;
+    padding: 21px 24px;
     border: none;
     border-radius: 0;
     -webkit-appearance: none;
-    font-size: 1em;
-    line-height: 1.25;
+    font-weight: 500;
     text-decoration: none;
     -webkit-font-smoothing: antialiased;
     cursor: pointer;
     color: #fff;
     box-sizing: border-box;
     vertical-align: top;
-    font-size: 19px;
-    line-height: 1.31579;
+    line-height: 1;
     font-family: 'Roboto', sans-serif;
     &:focus {
       background: #007EA3;

@@ -2,11 +2,9 @@
 
 .user-profile-details-container {
   margin-bottom: 60px;
-  padding-left: 30px;
   margin-top: 30px;
   @media (min-width: 767px) {
     margin-top: 60px;
-    border-left: 3px solid black;
   }
   h1 {
     padding-bottom: 30px;
@@ -17,5 +15,17 @@
   p {
     font-size: 1.3em;
     margin-bottom: 20px;
+  }
+  .detail-container {
+    margin-bottom: 20px;
+    @media (max-width: 767px) {
+      float: left;
+    }
+  }
+  .description-text {
+    font-weight: 600;
+  }
+  .btn-container {
+    margin: 0;
   }
 }

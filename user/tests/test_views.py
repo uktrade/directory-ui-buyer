@@ -19,8 +19,9 @@ def test_user_profile_details_calls_api(mock_retrieve_profile, rf):
 @mock.patch.object(api_client.user, 'retrieve_profile')
 def test_user_profile_details_exposes_context(mock_retrieve_profile, rf):
     mock_retrieve_profile.return_value = expected_context = {
-        'email': 'jim@example.com',
-        'name': 'Jim Jackson',
+        'company_email': 'jim@example.com',
+        'company_id': '01234567',
+        'mobile_number': '02343543333',
     }
     view = UserProfileDetailView.as_view()
     request = rf.get(reverse('user-detail'))
