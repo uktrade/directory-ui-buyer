@@ -1,6 +1,58 @@
 @import 'main.scss';
 
 .ed-landing-page {
-  padding-top: 60px;
-  padding-bottom: 60px;
+	background: $great-blue;
+	color: $white;
+	min-height: 200px;
+	padding: 24px;
+	position: relative;
+	top: -100px;
+}
+
+.page-title {
+	color: #fff;
+	font-size: 36px;
+	font-weight: 500;
+}
+
+a .register-interest-btn {
+    background: $mid-blue;
+    border: 0;
+    border-radius: 0;
+    color: $white;
+    margin-top: 5px;
+    padding: 20px 0;
+    text-align: center;
+    width: 100%;
+}
+
+
+.mid-blue-bar {
+  background: $mid-blue;
+  color: $white;
+  display: table!important;
+  height: 60px;
+  padding: 0 24px;
+  width: 100%;
+  .company-sub-title {
+    color: $white;
+    font-size: 24px;
+    font-weight: 500;
+  }
+  .element-within {
+    display: table-cell;
+    float: none;
+    vertical-align: middle;
+    a {
+      color: $white;
+      &:focus {
+        background: #007EA3;
+      }
+    }
+  }
+  @media (max-width: 767px) {
+    .element-within {
+      display: block;
+    }
+  }
 }
