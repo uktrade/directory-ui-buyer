@@ -8,20 +8,21 @@ from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.views.generic import TemplateView
 
+from sso.utils import SSOLoginRequiredMixin
 from user import forms
 
 
 api_client = DirectoryAPIClient(
     base_url=settings.API_CLIENT_BASE_URL,
-    api_key=settings.API_CLIENT_API_KEY,
+    api_key=settings.API_CLIENT_KEY,
 )
 
 
-class UserProfileDetailView(TemplateView):
+class UserProfileDetailView(SSOLoginRequiredMixin, TemplateView):
     template_name = 'user-profile-details.html'
 
     def get_context_data(self, **kwargs):
-        user_id = self.request.user.id
+        user_id = self.request.sso_user.id
         user_details = api_client.user.retrieve_profile(id=user_id)
         return {
             'user': {
@@ -31,7 +32,7 @@ class UserProfileDetailView(TemplateView):
         }
 
 
-class UserProfileEditView(SessionWizardView):
+class UserProfileEditView(SSOLoginRequiredMixin, SessionWizardView):
     form_list = (
         ('basic_info', forms.UserBasicInfoForm),
     )

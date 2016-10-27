@@ -21,7 +21,7 @@ BASE_DIR = os.path.dirname(PROJECT_ROOT)
 # See https://docs.djangoproject.com/en/1.9/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv("SECRET_KEY")
+SECRET_KEY = os.environ["SECRET_KEY"]
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = bool(os.getenv("DEBUG", False))
@@ -47,9 +47,9 @@ INSTALLED_APPS = [
 MIDDLEWARE_CLASSES = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
-    # 'enrolment.middleware.SSLRedirectMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'sso.middleware.SSOUserMiddleware',
     'enrolment.middleware.ReferrerMiddleware',
 ]
 
@@ -110,8 +110,15 @@ STATIC_URL = '/static/'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # directory-api
-API_CLIENT_BASE_URL = os.getenv("API_CLIENT_BASE_URL")
-API_CLIENT_API_KEY = os.getenv("API_CLIENT_API_KEY")
+API_CLIENT_BASE_URL = os.environ["API_CLIENT_BASE_URL"]
+API_CLIENT_KEY = os.environ["API_CLIENT_KEY"]
+
+# directory-sso
+SSO_API_CLIENT_BASE_URL = os.environ["SSO_API_CLIENT_BASE_URL"]
+SSO_API_CLIENT_KEY = os.environ["SSO_API_CLIENT_KEY"]
+SSO_LOGIN_URL = os.environ["SSO_LOGIN_URL"]
+SSO_REDIRECT_FIELD_NAME = os.environ["SSO_REDIRECT_FIELD_NAME"]
+SSO_SESSION_COOKIE = os.environ["SSO_SESSION_COOKIE"]
 
 ANALYTICS_ID = os.getenv("ANALYTICS_ID")
 
@@ -120,9 +127,6 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 # Sentry
 RAVEN_CONFIG = {
     "dsn": os.getenv("SENTRY_DSN"),
-    # If you are using git, you can also automatically configure the
-    # release based on the git info.
-    # 'release': raven.fetch_git_sha(os.path.dirname(__file__)),
 }
 
 SESSION_ENGINE = "django.contrib.sessions.backends.signed_cookies"
@@ -130,6 +134,3 @@ SESSION_ENGINE = "django.contrib.sessions.backends.signed_cookies"
 VALIDATOR_MAX_LOGO_SIZE_BYTES = int(os.getenv(
     "VALIDATOR_MAX_LOGO_SIZE_BYTES", 10 * 1024 * 1024
 ))
-
-API_CLIENT_BASE_URL = os.getenv('API_CLIENT_BASE_URL')
-API_CLIENT_API_KEY = os.getenv('API_CLIENT_API_KEY')

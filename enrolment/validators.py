@@ -10,7 +10,7 @@ from django.conf import settings
 
 api_client = DirectoryAPIClient(
     base_url=settings.API_CLIENT_BASE_URL,
-    api_key=settings.API_CLIENT_API_KEY,
+    api_key=settings.API_CLIENT_KEY,
 )
 
 
