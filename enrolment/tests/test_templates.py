@@ -65,7 +65,7 @@ def test_company_profile_details_handles_no_description():
 
 def test_company_profile_details_handles_no_website():
     html = render_to_string('company-profile-details.html', {})
-    assert 'Please set your website address.' in html
+    assert 'Please set your website address' in html
 
 
 def test_form_wrapper_next_button():
