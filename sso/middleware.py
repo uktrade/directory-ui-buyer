@@ -6,7 +6,7 @@ from sso.utils import SSOUser, sso_api_client
 class SSOUserMiddleware:
 
     def process_request(self, request):
-        sso_response = sso_api_client.get_session_user(
+        sso_response = sso_api_client.user.get_session_user(
             session_id=request.COOKIES.get(settings.SSO_SESSION_COOKIE)
         )
 
