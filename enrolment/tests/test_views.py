@@ -185,13 +185,13 @@ def test_company_profile_edit_api_client_call(
 
     request = rf.get(reverse('company-detail'))
     request.sso_user = mock.Mock(id=1, email="test@example.com")
-    request.session = client.session
-    request.session['company_id'] = 1
 
     view = CompanyProfileEditView()
     view.request = request
     view.done()
-    mock_update_profile.assert_called_once_with(id=1, data={'field': 'value'})
+    mock_update_profile.assert_called_once_with(
+        sso_user_id=1, data={'field': 'value'}
+    )
 
 
 @mock.patch.object(CompanyProfileEditView, 'get_all_cleaned_data',
@@ -247,20 +247,14 @@ def test_company_profile_details_exposes_context(mock_retrieve_profile,
     assert response.context_data['company'] == expected_context
 
 
-def test_company_profile_details_logs_missing_session_company(client, rf,
-                                                              caplog):
+def test_company_profile_details_logs_missing_sso_user(client, rf):
     view = CompanyProfileDetailView.as_view()
     request = rf.get(reverse('company-detail'))
-    request.session = client.session
-    request.sso_user = mock.Mock(id=2, email="test@example.com")
+    request.sso_user = None
 
-    with pytest.raises(KeyError):
-        response = view(request)
-        assert response.status_code == http.client.INTERNAL_SERVER_ERROR
-    log = caplog.records[0]
-    assert log.message == 'company_id is missing from the user session.'
-    assert log.user_id == 2
-    assert log.levelname == 'ERROR'
+    response = view(request)
+    # Redirects to SSO login
+    assert response.status_code == http.client.FOUND
 
 
 @mock.patch.object(CompanyProfileLogoEditView, 'serialize_form_data',
@@ -271,7 +265,9 @@ def test_company_profile_logo_api_client_call(mock_update_profile,
     view = CompanyProfileLogoEditView()
     view.request = company_request
     view.done()
-    mock_update_profile.assert_called_once_with(id=1, data={'field': 'value'})
+    mock_update_profile.assert_called_once_with(
+        sso_user_id=1, data={'field': 'value'}
+    )
 
 
 @mock.patch.object(CompanyProfileLogoEditView, 'serialize_form_data',
@@ -307,7 +303,9 @@ def test_company_profile_description_api_client_call(mock_update_profile,
     view = CompanyDescriptionEditView()
     view.request = company_request
     view.done()
-    mock_update_profile.assert_called_once_with(id=1, data={'field': 'value'})
+    mock_update_profile.assert_called_once_with(
+        sso_user_id=1, data={'field': 'value'}
+    )
 
 
 @mock.patch.object(CompanyDescriptionEditView, 'serialize_form_data',
