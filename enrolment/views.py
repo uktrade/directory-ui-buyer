@@ -49,15 +49,9 @@ class UpdateCompanyProfileOnFormWizardDoneMixin:
         return self.form_serializer(self.get_all_cleaned_data())
 
     def done(self, *args, **kwargs):
-        session = self.request.session
-        if 'company_id' not in session:
-            logger.error(
-                'company_id is missing from the user session.',
-                extra={'user_id': self.request.sso_user.id}
-            )
-        company_id = session['company_id']
         response = api_client.company.update_profile(
-            id=company_id, data=self.serialize_form_data()
+            sso_user_id=self.request.sso_user.id,
+            data=self.serialize_form_data()
         )
         if response.ok:
             response = redirect('company-detail')
@@ -156,16 +150,9 @@ class CompanyProfileDetailView(SSOLoginRequiredMixin, TemplateView):
     template_name = 'company-profile-details.html'
 
     def get_context_data(self, **kwargs):
-        # once login has been implemented company_id will be added to
-        # the user's session automatically after the user logs in.
-        session = self.request.session
-        if 'company_id' not in session:
-            logger.error(
-                'company_id is missing from the user session.',
-                extra={'user_id': self.request.sso_user.id}
-            )
-        company_id = session['company_id']
-        company_details = api_client.company.retrieve_profile(id=company_id)
+        company_details = api_client.company.retrieve_profile(
+            sso_user_id=self.request.sso_user.id
+        )
         return {
             'company': {
                 'website': company_details['website'],

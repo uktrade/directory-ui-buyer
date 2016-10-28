@@ -22,8 +22,9 @@ class UserProfileDetailView(SSOLoginRequiredMixin, TemplateView):
     template_name = 'user-profile-details.html'
 
     def get_context_data(self, **kwargs):
-        user_id = self.request.sso_user.id
-        user_details = api_client.user.retrieve_profile(id=user_id)
+        user_details = api_client.user.retrieve_profile(
+            sso_id=self.request.sso_user.id
+        )
         return {
             'user': {
                 'company_email': user_details['company_email'],
@@ -48,7 +49,10 @@ class UserProfileEditView(SSOLoginRequiredMixin, SessionWizardView):
         data = forms.serialize_user_profile_forms(
             self.get_all_cleaned_data()
         )
-        response = api_client.user.update_profile(data)
+        response = api_client.user.update_profile(
+            sso_id=self.request.sso_user.id,
+            data=data
+        )
         if response.status_code == http.client.OK:
             response = redirect('user-detail')
         else:
