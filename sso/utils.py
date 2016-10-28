@@ -31,7 +31,7 @@ class SSOLoginRequiredMixin:
 
     def handle_no_permission(self):
         return self.redirect_to_login(
-            next_url=self.request.get_full_path(),
+            next_url=self.request.build_absolute_uri(),
         )
 
     def redirect_to_login(self, next_url):
