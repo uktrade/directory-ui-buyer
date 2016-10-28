@@ -26,8 +26,9 @@ class UserProfileDetailView(SSOLoginRequiredMixin, TemplateView):
         user_details = api_client.user.retrieve_profile(id=user_id)
         return {
             'user': {
-                'name': user_details['name'],
-                'email': user_details['email'],
+                'company_email': user_details['company_email'],
+                'mobile_number': user_details['mobile_number'],
+                'company_id': user_details['company_id'],
             }
         }
 

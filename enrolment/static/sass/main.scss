@@ -199,6 +199,10 @@ a.teal:focus {
     border: 0
   }
 
+  li {
+    margin-bottom: 30px;
+  }
+
   &.has-error {
     border-left: 5px solid #B00D23;
     padding-left: 15px;
@@ -222,25 +226,23 @@ a.teal:focus {
 .btn-container {
   margin-bottom: 30px;
   margin-top: 30px;
-  input.button {
+  .button {
     background-color: #00549F;
     position: relative;
     display: -moz-inline-stack;
     display: inline-block;
-    padding: .5em;
+    padding: 21px 24px;
     border: none;
     border-radius: 0;
     -webkit-appearance: none;
-    font-size: 1em;
-    line-height: 1.25;
+    font-weight: 500;
     text-decoration: none;
     -webkit-font-smoothing: antialiased;
     cursor: pointer;
     color: #fff;
     box-sizing: border-box;
     vertical-align: top;
-    font-size: 19px;
-    line-height: 1.31579;
+    line-height: 1;
     font-family: 'Roboto', sans-serif;
     &:focus {
       background: #007EA3;
@@ -373,7 +375,7 @@ body {
   min-height: 275px;
   padding-top: 20px;
   padding-bottom: 20px;
-  background: url(images/banner-img1.jpg) no-repeat 0 -105px;
+  background: url(images/banner-img1.jpg) no-repeat 0 0;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
@@ -416,4 +418,8 @@ body {
 .form-wrapper-btn-container {
   line-height: 3em;
   clear: both; // needed for IE8 compatibility with multi column lists
+}
+
+.ed-form-classification-container li {
+  margin-bottom: 0;
 }
