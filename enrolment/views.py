@@ -14,11 +14,12 @@ from django.views.generic.base import View
 
 from enrolment import forms, helpers
 from enrolment.constants import SESSION_KEY_REFERRER
+from sso.utils import SSOLoginRequiredMixin
 
 
 api_client = DirectoryAPIClient(
     base_url=settings.API_CLIENT_BASE_URL,
-    api_key=settings.API_CLIENT_API_KEY,
+    api_key=settings.API_CLIENT_KEY,
 )
 
 logger = logging.getLogger(__name__)
@@ -48,11 +49,11 @@ class UpdateCompanyProfileOnFormWizardDoneMixin:
         return self.form_serializer(self.get_all_cleaned_data())
 
     def done(self, *args, **kwargs):
-        session = self.request.user.session
+        session = self.request.session
         if 'company_id' not in session:
             logger.error(
                 'company_id is missing from the user session.',
-                extra={'user_id': self.request.user.id}
+                extra={'user_id': self.request.sso_user.id}
             )
         company_id = session['company_id']
         response = api_client.company.update_profile(
@@ -69,8 +70,11 @@ class LandingView(CacheMixin, TemplateView):
     template_name = 'landing-page.html'
 
 
-class EnrolmentView(UpdateCompanyProfileOnFormWizardDoneMixin,
-                    SessionWizardView):
+class EnrolmentView(
+        SSOLoginRequiredMixin,
+        UpdateCompanyProfileOnFormWizardDoneMixin,
+        SessionWizardView):
+
     success_template = 'registered.html'
     failure_template = 'enrolment-error.html'
     form_list = (
@@ -148,17 +152,17 @@ class EmailConfirmationView(View):
         return TemplateResponse(request, template)
 
 
-class CompanyProfileDetailView(TemplateView):
+class CompanyProfileDetailView(SSOLoginRequiredMixin, TemplateView):
     template_name = 'company-profile-details.html'
 
     def get_context_data(self, **kwargs):
         # once login has been implemented company_id will be added to
         # the user's session automatically after the user logs in.
-        session = self.request.user.session
+        session = self.request.session
         if 'company_id' not in session:
             logger.error(
                 'company_id is missing from the user session.',
-                extra={'user_id': self.request.user.id}
+                extra={'user_id': self.request.sso_user.id}
             )
         company_id = session['company_id']
         company_details = api_client.company.retrieve_profile(id=company_id)
@@ -173,8 +177,11 @@ class CompanyProfileDetailView(TemplateView):
         }
 
 
-class CompanyProfileEditView(UpdateCompanyProfileOnFormWizardDoneMixin,
-                             SessionWizardView):
+class CompanyProfileEditView(
+        SSOLoginRequiredMixin,
+        UpdateCompanyProfileOnFormWizardDoneMixin,
+        SessionWizardView):
+
     form_list = (
         ('basic', forms.CompanyBasicInfoForm),
         ('size', forms.CompanySizeForm),
@@ -192,8 +199,11 @@ class CompanyProfileEditView(UpdateCompanyProfileOnFormWizardDoneMixin,
         return [self.templates[self.steps.current]]
 
 
-class CompanyProfileLogoEditView(UpdateCompanyProfileOnFormWizardDoneMixin,
-                                 SessionWizardView):
+class CompanyProfileLogoEditView(
+        SSOLoginRequiredMixin,
+        UpdateCompanyProfileOnFormWizardDoneMixin,
+        SessionWizardView):
+
     form_list = (
         ('logo', forms.CompanyLogoForm),
     )
@@ -210,8 +220,11 @@ class CompanyProfileLogoEditView(UpdateCompanyProfileOnFormWizardDoneMixin,
         return [self.templates[self.steps.current]]
 
 
-class CompanyDescriptionEditView(UpdateCompanyProfileOnFormWizardDoneMixin,
-                                 SessionWizardView):
+class CompanyDescriptionEditView(
+        SSOLoginRequiredMixin,
+        UpdateCompanyProfileOnFormWizardDoneMixin,
+        SessionWizardView):
+
     form_list = (
         ('description', forms.CompanyDescriptionForm),
     )

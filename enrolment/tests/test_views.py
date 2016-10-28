@@ -22,8 +22,9 @@ from enrolment import forms
 @pytest.fixture
 def company_request(rf, client):
     request = rf.get('/')
-    request.user = mock.Mock(session=client.session)
-    request.user.session['company_id'] = 1
+    request.sso_user = mock.Mock(id=1, email="test@example.com")
+    request.session = client.session
+    request.session['company_id'] = 1
     return request
 
 
@@ -68,6 +69,7 @@ def sms_verify_step_data_valid():
 @pytest.fixture
 def user_step_request(rf, client, user_step_data_valid):
     request = rf.post(reverse('register'), user_step_data_valid)
+    request.sso_user = mock.Mock(id=1, email="test@example.com")
     request.session = client.session
     request.session['wizard_enrolment_view'] = {
         'extra_data': {},
@@ -81,6 +83,7 @@ def user_step_request(rf, client, user_step_data_valid):
 @pytest.fixture
 def sms_verify_step_request(rf, client, sms_verify_step_data_valid):
     request = rf.post(reverse('register'), sms_verify_step_data_valid)
+    request.sso_user = mock.Mock(id=1, email="test@example.com")
     request.session = client.session
     request.session['sms_code'] = '123'
     request.session['wizard_enrolment_view'] = {
@@ -95,6 +98,7 @@ def sms_verify_step_request(rf, client, sms_verify_step_data_valid):
 def test_email_confirm_missing_confirmation_code(rf):
     view = EmailConfirmationView.as_view()
     request = rf.get(reverse('confirm-email'))
+    request.sso_user = mock.Mock(id=1, email="test@example.com")
     response = view(request)
     assert response.status_code == http.client.OK
     assert response.template_name == EmailConfirmationView.failure_template
@@ -125,6 +129,7 @@ def test_enrolment_view_includes_referrer(client, rf):
     request = rf.get(reverse('register'))
     request.session = client.session
     request.session[SESSION_KEY_REFERRER] = 'google'
+    request.sso_user = mock.Mock(id=1, email="test@example.com")
 
     form_pair = EnrolmentView.form_list[4]
     view = EnrolmentView.as_view(form_list=(form_pair,))
@@ -179,8 +184,9 @@ def test_company_profile_edit_api_client_call(
         mock_update_profile, rf, client):
 
     request = rf.get(reverse('company-detail'))
-    request.user = mock.Mock(session=client.session)
-    request.user.session['company_id'] = 1
+    request.sso_user = mock.Mock(id=1, email="test@example.com")
+    request.session = client.session
+    request.session['company_id'] = 1
 
     view = CompanyProfileEditView()
     view.request = request
@@ -246,8 +252,8 @@ def test_company_profile_details_logs_missing_session_company(client, rf,
     view = CompanyProfileDetailView.as_view()
     request = rf.get(reverse('company-detail'))
     request.session = client.session
-    # todo: replace mock with something better once login has been stabalised.
-    request.user = mock.Mock(session=client.session, id=2)
+    request.sso_user = mock.Mock(id=2, email="test@example.com")
+
     with pytest.raises(KeyError):
         response = view(request)
         assert response.status_code == http.client.INTERNAL_SERVER_ERROR
@@ -330,6 +336,7 @@ def test_company_profile_description_api_client_failure(company_request):
 
 def test_views_use_correct_template(client, rf):
     request = rf.get(reverse('register'))
+    request.sso_user = mock.Mock(id=1, email="test@example.com")
     request.session = client.session
     view_classes = [
         CompanyDescriptionEditView,

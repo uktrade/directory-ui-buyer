@@ -11,7 +11,7 @@ from user import forms
 def test_user_profile_details_calls_api(mock_retrieve_profile, rf):
     view = UserProfileDetailView.as_view()
     request = rf.get(reverse('user-detail'))
-    request.user = mock.Mock(id=1)
+    request.sso_user = mock.Mock(id=1, email="test@example.com")
     view(request)
     assert mock_retrieve_profile.called_once_with(1)
 
@@ -25,7 +25,7 @@ def test_user_profile_details_exposes_context(mock_retrieve_profile, rf):
     }
     view = UserProfileDetailView.as_view()
     request = rf.get(reverse('user-detail'))
-    request.user = mock.Mock(id=1)
+    request.sso_user = mock.Mock(id=1, email="test@example.com")
     response = view(request)
     assert response.status_code == http.client.OK
     assert response.template_name == [UserProfileDetailView.template_name]
