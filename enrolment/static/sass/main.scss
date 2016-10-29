@@ -151,9 +151,11 @@ ul, li {
 
 a.teal {
   color: #007ea3;
+  border-bottom: 1px solid #007ea3;
 }
 a.teal:hover {
-  color: #33cfff;
+  border-bottom: 1px dashed #007ea3;
+  text-decoration: none;
 }
 #skiplink-container a.skiplink,
 a.teal:focus {
@@ -173,7 +175,8 @@ a.teal:focus {
     font-size: 16px;
     height: 50px;
     width: 100%;
-    background-color: #fff;
+    color: #4a4a4a;
+    background-color: #fafafa;
     border: 3px solid #6f777b;
     margin-bottom: 10px;
     font-family: 'Roboto', sans-serif;
@@ -261,17 +264,23 @@ a.teal:focus {
 }
 
 body {
+  background-color: #fafafa;
+
   font-family: 'Roboto', sans-serif;
   font-size: 18px;
   font-weight: 300;
-  line-height: 1.4;
+  line-height: 24px;
   @media (max-width: 979px) {
     padding: 0;
     .container {
       padding: 20px;
     }
   }
-  h1 { font-size: 38px; }
+  h1 {
+    font-size: 48px;
+    font-weight: 400;
+    line-height: 50px;
+  }
   h2 {
     font-size: 26px;
   }
@@ -345,10 +354,15 @@ body {
       margin-right: 20px;
       a {
         color: white;
+        border-bottom: 1px solid #777;
       }
       a:focus {
         background: #007EA3;
         color: #ffffff;
+      }
+      a:hover {
+        border-bottom: 1px dashed #fff;
+        text-decoration: none;
       }
     }
   }
@@ -384,10 +398,15 @@ body {
     margin: 20px 0;
     a {
       color: #dedede;
+      border-bottom: 1px solid #dedede;
     }
     a:focus {
       background: #007EA3;
       color: #ffffff;
+    }
+    a:hover {
+      border-bottom: 1px dashed #fff;
+      text-decoration: none;
     }
   }
 }
@@ -401,11 +420,16 @@ body {
   ul li {
     padding: 5px;
     a {
-      color: white;
+      color: $white;
+      border-bottom: 1px solid #777;
     }
     a:focus {
       background: #007EA3;
       color: #ffffff;
+    }
+    a:hover {
+      border-bottom: 1px dashed $white;
+      text-decoration: none;
     }
   }
 }
