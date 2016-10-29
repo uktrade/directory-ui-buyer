@@ -17,14 +17,30 @@ from enrolment.views import (
     api_client,
 )
 from enrolment import forms
+from sso.utils import SSOUser
 
 
 @pytest.fixture
-def company_request(rf, client):
+def sso_user():
+    return SSOUser(
+        id=1,
+        email='jim@example.com',
+    )
+
+
+@pytest.fixture
+def company_request(rf, client, sso_user):
     request = rf.get('/')
     request.sso_user = mock.Mock(id=1, email="test@example.com")
     request.session = client.session
     request.session['company_id'] = 1
+    return request
+
+
+@pytest.fixture
+def sso_request(company_request, sso_user):
+    request = company_request
+    request.sso_user = sso_user
     return request
 
 
@@ -154,10 +170,10 @@ def test_enrolment_view_includes_referrer(client, rf):
 @mock.patch.object(forms, 'serialize_enrolment_forms')
 @mock.patch.object(api_client.registration, 'send_form')
 def test_enrolment_form_complete_api_client_call(mock_send_form,
-                                                 mock_serialize_forms, rf,
-                                                 client):
+                                                 mock_serialize_forms,
+                                                 sso_request):
     view = EnrolmentView()
-    view.request = None
+    view.request = sso_request
     mock_serialize_forms.return_value = data = {'field': 'value'}
     view.done()
     mock_send_form.assert_called_once_with(data)
@@ -166,10 +182,10 @@ def test_enrolment_form_complete_api_client_call(mock_send_form,
 @mock.patch.object(EnrolmentView, 'get_all_cleaned_data', lambda x: {})
 @mock.patch.object(forms, 'serialize_enrolment_forms', lambda x: {})
 @mock.patch.object(api_client.registration, 'send_form', api_response_200)
-def test_enrolment_form_complete_api_client_success():
+def test_enrolment_form_complete_api_client_success(sso_request):
 
     view = EnrolmentView()
-    view.request = None
+    view.request = sso_request
     response = view.done()
     assert response.template_name == EnrolmentView.success_template
 

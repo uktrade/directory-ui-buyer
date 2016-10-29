@@ -125,6 +125,7 @@ class EnrolmentView(
 
     def done(self, *args, **kwags):
         data = forms.serialize_enrolment_forms(self.get_all_cleaned_data())
+        data['sso_id'] = self.request.sso_user.id
         response = api_client.registration.send_form(data)
         if response.ok:
             template = self.success_template
