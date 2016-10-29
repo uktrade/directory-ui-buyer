@@ -12,7 +12,7 @@ from enrolment.views import (
     CompanyProfileDetailView,
     CompanyProfileEditView,
     CompanyProfileLogoEditView,
-    EmailConfirmationView,
+    CompanyEmailConfirmationView,
     EnrolmentView,
     api_client,
 )
@@ -96,33 +96,43 @@ def sms_verify_step_request(rf, client, sms_verify_step_data_valid):
 
 
 def test_email_confirm_missing_confirmation_code(rf):
-    view = EmailConfirmationView.as_view()
-    request = rf.get(reverse('confirm-email'))
+    view = CompanyEmailConfirmationView.as_view()
+    request = rf.get(reverse('confirm-company-email'))
     request.sso_user = mock.Mock(id=1, email="test@example.com")
     response = view(request)
     assert response.status_code == http.client.OK
-    assert response.template_name == EmailConfirmationView.failure_template
+    assert response.template_name == (
+        CompanyEmailConfirmationView.failure_template
+    )
 
 
 @mock.patch.object(api_client.registration, 'confirm_email',
                    return_value=False)
 def test_email_confirm_invalid_confirmation_code(mock_confirm_email, rf):
-    view = EmailConfirmationView.as_view()
-    request = rf.get(reverse('confirm-email'), {'confirmation_code': 123})
+    view = CompanyEmailConfirmationView.as_view()
+    request = rf.get(reverse(
+        'confirm-company-email'), {'code': 123}
+    )
     response = view(request)
     assert mock_confirm_email.called_with(123)
     assert response.status_code == http.client.OK
-    assert response.template_name == EmailConfirmationView.failure_template
+    assert response.template_name == (
+        CompanyEmailConfirmationView.failure_template
+    )
 
 
 @mock.patch.object(api_client.registration, 'confirm_email', return_value=True)
 def test_email_confirm_valid_confirmation_code(mock_confirm_email, rf):
-    view = EmailConfirmationView.as_view()
-    request = rf.get(reverse('confirm-email'), {'confirmation_code': 123})
+    view = CompanyEmailConfirmationView.as_view()
+    request = rf.get(reverse(
+        'confirm-company-email'), {'code': 123}
+    )
     response = view(request)
     assert mock_confirm_email.called_with(123)
     assert response.status_code == http.client.OK
-    assert response.template_name == EmailConfirmationView.success_template
+    assert response.template_name == (
+        CompanyEmailConfirmationView.success_template
+    )
 
 
 def test_enrolment_view_includes_referrer(client, rf):
