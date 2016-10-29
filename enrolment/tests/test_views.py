@@ -66,6 +66,21 @@ def api_response_send_verification_sms_200(api_response_200):
 
 
 @pytest.fixture
+def api_response_company_profile_200(api_response_200):
+    response = api_response_200
+    payload = {
+        'website': 'http://example.com',
+        'description': 'Ecommerce website',
+        'number': 123456,
+        'sectors': ['Things', 'Stuff'],
+        'logo': 'nice.jpg',
+        'name': 'Great company',
+    }
+    response.json = lambda: payload
+    return response
+
+
+@pytest.fixture
 def user_step_data_valid():
     return {
         'user-mobile_number': '0123456789',
@@ -257,20 +272,28 @@ def test_company_profile_details_calls_api(mock_retrieve_profile,
 
 
 @mock.patch.object(api_client.company, 'retrieve_profile')
-def test_company_profile_details_exposes_context(mock_retrieve_profile,
-                                                 company_request):
-    mock_retrieve_profile.return_value = expected_context = {
-        'website': 'http://example.com',
-        'description': 'Ecommerce website',
-        'number': 123456,
-        'sectors': ['Things', 'Stuff'],
-        'logo': ('nice.jpg'),
-    }
+def test_company_profile_details_exposes_context(
+    mock_retrieve_profile, company_request, api_response_company_profile_200
+):
+    mock_retrieve_profile.return_value = api_response_company_profile_200
     view = CompanyProfileDetailView.as_view()
     response = view(company_request)
     assert response.status_code == http.client.OK
     assert response.template_name == [CompanyProfileDetailView.template_name]
-    assert response.context_data['company'] == expected_context
+    assert response.context_data['company'] == (
+        api_response_company_profile_200.json()
+    )
+
+
+@mock.patch.object(api_client.company, 'retrieve_profile')
+def test_company_profile_details_handles_bad_status(
+    mock_retrieve_profile, company_request, api_response_400
+):
+    mock_retrieve_profile.return_value = api_response_400
+    view = CompanyProfileDetailView.as_view()
+
+    with pytest.raises(requests.exceptions.HTTPError):
+        view(company_request)
 
 
 def test_company_profile_details_logs_missing_sso_user(client, rf):

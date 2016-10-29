@@ -32,7 +32,7 @@ docker_run:
 
 DOCKER_SET_DEBUG_ENV_VARS := \
 	export DIRECTORY_UI_API_CLIENT_KEY=debug; \
-	export DIRECTORY_UI_API_CLIENT_BASE_URL=http://api.trade.great.dev; \
+	export DIRECTORY_UI_API_CLIENT_BASE_URL=http://api.trade.great.dev:8000; \
 	export DIRECTORY_UI_SSO_API_CLIENT_KEY=debug; \
 	export DIRECTORY_UI_SSO_API_CLIENT_BASE_URL=http://sso.trade.great.dev:8003/api/v1/; \
 	export DIRECTORY_UI_SSO_LOGIN_URL=http://sso.trade.great.dev:8003/accounts/login/; \
@@ -78,9 +78,9 @@ DEBUG_SET_ENV_VARS := \
 	export SECRET_KEY=debug; \
 	export DEBUG=true ;\
 	export API_CLIENT_KEY=debug; \
-	export API_CLIENT_BASE_URL=http://api.trade.great.dev; \
+	export API_CLIENT_BASE_URL=http://api.trade.great.dev:8000; \
 	export SSO_API_CLIENT_KEY=debug; \
-	export SSO_API_CLIENT_BASE_URL=http://api.trade.great.dev:8003/api/v1/; \
+	export SSO_API_CLIENT_BASE_URL=http://sso.trade.great.dev:8003/api/v1/; \
 	export SSO_LOGIN_URL=http://sso.trade.great.dev:8003/accounts/login/; \
 	export SSO_LOGOUT_URL=http://sso.trade.great.dev:8003/accounts/logout/?next=http://ui.trade.great.dev:8001; \
 	export SSO_SIGNUP_URL=http://sso.trade.great.dev:8003/accounts/signup/; \

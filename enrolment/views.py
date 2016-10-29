@@ -151,16 +151,20 @@ class CompanyProfileDetailView(SSOLoginRequiredMixin, TemplateView):
     template_name = 'company-profile-details.html'
 
     def get_context_data(self, **kwargs):
-        company_details = api_client.company.retrieve_profile(
+        response = api_client.company.retrieve_profile(
             sso_user_id=self.request.sso_user.id
         )
+        if not response.ok:
+            response.raise_for_status()
+        details = response.json()
         return {
             'company': {
-                'website': company_details['website'],
-                'description': company_details['description'],
-                'number': company_details['number'],
-                'sectors': company_details['sectors'],
-                'logo': company_details['logo'],
+                'website': details['website'],
+                'description': details['description'],
+                'number': details['number'],
+                'sectors': details['sectors'],
+                'logo': details['logo'],
+                'name': details['name'],
             }
         }
 

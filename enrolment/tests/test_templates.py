@@ -16,6 +16,7 @@ company_context = {
         'description': 'Exporters of UK wares.',
         'website': 'www.ukexportersnow.co.uk',
         'logo': 'www.ukexportersnow.co.uk/logo.png',
+        'keywords': 'word1 word2'
     }
 }
 
@@ -27,10 +28,15 @@ user_context = {
 }
 
 
-def test_company_profile_details_renders_sector():
+def test_company_profile_details_renders_sectors():
     html = render_to_string('company-profile-details.html', company_context)
     assert 'sector 1' in html
     assert 'sector 2' in html
+
+
+def test_company_profile_details_handles_no_sectors():
+    html = render_to_string('company-profile-details.html', {})
+    assert "Please set your company's sectors." in html
 
 
 def test_company_profile_details_renders_company_number():
@@ -48,24 +54,29 @@ def test_company_profile_details_renders_description():
     assert 'Exporters of UK wares.' in html
 
 
+def test_company_profile_details_renders_keywords():
+    html = render_to_string('company-profile-details.html', company_context)
+    assert "word1 word2" in html
+
+
+def test_company_profile_details_handles_no_keywords():
+    html = render_to_string('company-profile-details.html', {})
+    assert "Please set your company's keywords." in html
+
+
 def test_company_profile_details_renders_website():
     html = render_to_string('company-profile-details.html', company_context)
     assert 'www.ukexportersnow.co.uk' in html
 
 
+def test_company_profile_details_handles_no_website():
+    html = render_to_string('company-profile-details.html', {})
+    assert "Please set your company's website address" in html
+
+
 def test_company_profile_details_renders_logo():
     html = render_to_string('company-profile-details.html', company_context)
     assert 'www.ukexportersnow.co.uk/logo.png' in html
-
-
-def test_company_profile_details_handles_no_description():
-    html = render_to_string('company-profile-details.html', {})
-    assert 'Please set your company description.' in html
-
-
-def test_company_profile_details_handles_no_website():
-    html = render_to_string('company-profile-details.html', {})
-    assert 'Please set your website address' in html
 
 
 def test_form_wrapper_next_button():
