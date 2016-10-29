@@ -3,7 +3,7 @@ from django.views.decorators.cache import cache_page
 
 from enrolment.views import (
     CachableTemplateView,
-    EmailConfirmationView,
+    CompanyEmailConfirmationView,
     EnrolmentView,
     CompanyDescriptionEditView,
     CompanyProfileEditView,
@@ -36,9 +36,9 @@ urlpatterns = [
         cache_me(CachableTemplateView.as_view(template_name="terms.html")),
         name="terms"),
 
-    url(r'^confirm-email$',
-        EmailConfirmationView.as_view(),
-        name='confirm-email'),
+    url(r'^confirm-company-email$',
+        CompanyEmailConfirmationView.as_view(),
+        name='confirm-company-email'),
 
     url(r'^company-profile$',
         CompanyProfileDetailView.as_view(),
