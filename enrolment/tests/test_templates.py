@@ -174,3 +174,29 @@ def test_export_status_common_invalid_form_error_size():
 def test_company_profile_form_correct_title():
     html = render_to_string('company-profile-form.html', {})
     assert 'Your company details' in html
+
+
+def test_header_logged_in():
+    context = {
+        'sso_is_logged_in': True,
+        'sso_login_url': 'login.com',
+        'sso_logout_url': 'logout.com',
+    }
+    html = render_to_string('header.html', context)
+    assert 'Login' not in html
+    assert context['sso_login_url'] not in html
+    assert 'Logout' in html
+    assert context['sso_logout_url'] in html
+
+
+def test_header_logged_out():
+    context = {
+        'sso_is_logged_in': False,
+        'sso_login_url': 'login.com',
+        'sso_logout_url': 'logout.com',
+    }
+    html = render_to_string('header.html', context)
+    assert 'Login' in html
+    assert context['sso_login_url'] in html
+    assert 'Logout' not in html
+    assert context['sso_logout_url'] not in html

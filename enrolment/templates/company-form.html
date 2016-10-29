@@ -3,11 +3,3 @@
 {% block breadcrumbs %}
     {{ block.super }}/ <a href="{% url 'register' %}">Register</a>
 {% endblock breadcrumbs %}
-{% block form_footer_decoration %}
-<span class="already-registered">Already registered?
-	<a class="teal" href="#">Sign in
-		<!-- Implementing the 'a11y' class to visually hide text on-screen but still being available for screen readers -->
-		<span class="a11y"> to proceed to your company profile page.</span>
-	</a>
-</span>
-{% endblock%}

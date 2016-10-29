@@ -15,9 +15,15 @@
                 <li>
                     <a href="#">Events</a>
                 </li>
+                {% if not sso_is_logged_in %}
                 <li>
-                    <a href="#">Login</a>
+                    <a href="{{ sso_login_url }}" target="_self">Login</a>
                 </li>
+                {% else %}
+                <li>
+                    <a href="{{ sso_logout_url }}" target="_self">Logout</a>
+                </li>
+                {% endif %}
             </ul>
         </div>
     </div>
