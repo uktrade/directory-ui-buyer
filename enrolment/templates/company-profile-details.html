@@ -31,6 +31,13 @@
 				<div class="logo-container">
 					<div class="logo">
 						{% if company.logo %}<img src="{{company.logo}}" />{% endif %}
+						<a href="{% url 'company-edit-logo' %}" target="_self">
+						{% if company.logo %}
+							Change logo
+						{% else %}
+							Set logo
+						{% endif %}
+						</a>
 					</div>
 				</div>
 			</div>

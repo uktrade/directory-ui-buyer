@@ -79,6 +79,16 @@ def test_company_profile_details_renders_logo():
     assert 'www.ukexportersnow.co.uk/logo.png' in html
 
 
+def test_company_profile_details_renders_change_logo_button():
+    html = render_to_string('company-profile-details.html', company_context)
+    assert 'Change logo' in html
+
+
+def test_company_profile_details_renders_set_logo_button():
+    html = render_to_string('company-profile-details.html', {})
+    assert 'Set logo' in html
+
+
 def test_form_wrapper_next_button():
     context = {
         'wizard': {
