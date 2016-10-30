@@ -171,9 +171,9 @@ class PhoneNumberVerificationForm(IndentedInvalidFieldsMixin, forms.Form):
     sms_code = forms.CharField(
         label='Enter the code from the text message we sent you:',
         help_text=(
-            'We have sent you an SMS text message to your mobile phone '
-            'containing an six digit code which you’ll need to enter on the '
-            'verification page to complete your Export Connect account.'
+            'We have sent you an SMS text message containing a six digit '
+            'code. Verify your company profile by entering the code. Contact '
+            'us if you do not receive the text message in 10 minutes.'
         ),
     )
 
