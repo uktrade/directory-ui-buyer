@@ -91,6 +91,23 @@ def api_response_company_profile_200(api_response_200):
 
 
 @pytest.fixture
+def api_response_company_profile_no_sectors_200(api_response_200):
+    response = api_response_200
+    payload = {
+        'website': 'http://example.com',
+        'description': 'Ecommerce website',
+        'number': 123456,
+        'sectors': None,
+        'logo': 'nice.jpg',
+        'name': 'Great company',
+        'keywords': 'word1 word2',
+        'employees': '501-1000',
+    }
+    response.json = lambda: payload
+    return response
+
+
+@pytest.fixture
 def user_step_data_valid():
     return {
         'user-mobile_number': '0123456789',
@@ -311,6 +328,27 @@ def test_company_profile_details_exposes_context(
     expected['sectors'] = helpers.get_sectors_labels(
         json.loads(expected['sectors'])
     )
+    assert response.context_data['company'] == expected
+
+
+@mock.patch('enrolment.helpers.user_has_company', mock.Mock(return_value=True))
+@mock.patch.object(api_client.company, 'retrieve_profile')
+def test_company_profile_details_exposes_context_no_sectors(
+    mock_retrieve_profile, company_request,
+    api_response_company_profile_no_sectors_200
+):
+    mock_retrieve_profile.return_value = (
+        api_response_company_profile_no_sectors_200
+    )
+    view = UserCompanyProfileDetailView.as_view()
+    response = view(company_request)
+    assert response.status_code == http.client.OK
+    assert response.template_name == [
+        UserCompanyProfileDetailView.template_name
+    ]
+    expected = api_response_company_profile_no_sectors_200.json().copy()
+    expected['employees'] = helpers.get_employees_label(expected['employees'])
+    expected['sectors'] = []
     assert response.context_data['company'] == expected
 
 
