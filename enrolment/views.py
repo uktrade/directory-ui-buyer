@@ -70,7 +70,8 @@ class EnrolmentView(SSOLoginRequiredMixin, SessionWizardView):
     }
 
     def dispatch(self, request, *args, **kwargs):
-        if helpers.user_has_company(sso_user_id=self.request.sso_user.id):
+        sso_user = self.request.sso_user
+        if sso_user and helpers.user_has_company(sso_user_id=sso_user.id):
             return redirect('company-edit')
         else:
             return super(EnrolmentView, self).dispatch(
