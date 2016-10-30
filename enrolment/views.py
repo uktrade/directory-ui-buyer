@@ -126,13 +126,12 @@ class EnrolmentView(SSOLoginRequiredMixin, SessionWizardView):
 
 
 class CompanyEmailConfirmationView(View):
-    success_template = 'confirm-company-email-success.html'
     failure_template = 'confirm-company-email-error.html'
 
     def get(self, request):
         code = request.GET.get('code')
         if code and api_client.registration.confirm_email(code):
-            template = self.success_template
+            return redirect('company-detail')
         else:
             template = self.failure_template
         return TemplateResponse(request, template)

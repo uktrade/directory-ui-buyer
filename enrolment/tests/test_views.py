@@ -169,10 +169,8 @@ def test_email_confirm_valid_confirmation_code(mock_confirm_email, rf):
     )
     response = view(request)
     assert mock_confirm_email.called_with(123)
-    assert response.status_code == http.client.OK
-    assert response.template_name == (
-        CompanyEmailConfirmationView.success_template
-    )
+    assert response.status_code == http.client.FOUND
+    assert response.get('Location') == reverse('company-detail')
 
 
 @mock.patch('enrolment.helpers.user_has_company',
