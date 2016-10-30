@@ -16,7 +16,7 @@ from enrolment.views import (
     EnrolmentView,
     api_client,
 )
-from enrolment import forms
+from enrolment import forms, helpers
 from sso.utils import SSOUser
 
 
@@ -79,7 +79,7 @@ def api_response_company_profile_200(api_response_200):
         'website': 'http://example.com',
         'description': 'Ecommerce website',
         'number': 123456,
-        'sectors': ['Things', 'Stuff'],
+        'sectors': ['SECURITY'],
         'logo': 'nice.jpg',
         'name': 'Great company',
         'keywords': 'word1 word2',
@@ -282,7 +282,10 @@ def test_company_profile_edit_api_client_failure(company_request):
 @mock.patch('enrolment.helpers.user_has_company', mock.Mock(return_value=True))
 @mock.patch.object(api_client.company, 'retrieve_profile')
 def test_company_profile_details_calls_api(mock_retrieve_profile,
-                                           company_request):
+                                           company_request,
+                                           api_response_company_profile_200):
+
+    mock_retrieve_profile.return_value = api_response_company_profile_200
     view = UserCompanyProfileDetailView.as_view()
 
     view(company_request)
@@ -302,9 +305,10 @@ def test_company_profile_details_exposes_context(
     assert response.template_name == [
         UserCompanyProfileDetailView.template_name
     ]
-    assert response.context_data['company'] == (
-        api_response_company_profile_200.json()
-    )
+    expected = api_response_company_profile_200.json().copy()
+    expected['employees'] = helpers.get_employees_label(expected['employees'])
+    expected['sectors'] = helpers.get_sectors_labels(expected['sectors'])
+    assert response.context_data['company'] == expected
 
 
 @mock.patch('enrolment.helpers.user_has_company', mock.Mock(return_value=True))

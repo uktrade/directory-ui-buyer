@@ -2,6 +2,7 @@ import http
 import logging
 
 from directory_api_client.client import DirectoryAPIClient
+from directory_validators.constants import choices
 import requests
 
 from django.conf import settings
@@ -12,6 +13,9 @@ api_client = DirectoryAPIClient(
     base_url=settings.API_CLIENT_BASE_URL,
     api_key=settings.API_CLIENT_KEY,
 )
+
+EMPLOYEE_CHOICES = {key: value for key, value in choices.EMPLOYEES}
+SECTOR_CHOICES = {key: value for key, value in choices.COMPANY_CLASSIFICATIONS}
 
 
 def get_referrer_from_request(request):
@@ -58,3 +62,15 @@ def user_has_company(sso_user_id):
         has_company = False
 
     return has_company
+
+
+def get_employees_label(employees_value):
+    if not employees_value:
+        return employees_value
+    return EMPLOYEE_CHOICES[employees_value]
+
+
+def get_sectors_labels(sectors_values):
+    if not sectors_values:
+        return sectors_values
+    return [SECTOR_CHOICES[sector_value] for sector_value in sectors_values]

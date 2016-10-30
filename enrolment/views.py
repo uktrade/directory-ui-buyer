@@ -166,11 +166,11 @@ class UserCompanyProfileDetailView(UserCompanyBaseView, TemplateView):
                 'website': details['website'],
                 'description': details['description'],
                 'number': details['number'],
-                'sectors': details['sectors'],
+                'sectors': helpers.get_sectors_labels(details['sectors']),
                 'logo': details['logo'],
                 'name': details['name'],
                 'keywords': details['keywords'],
-                'employees': details['employees'],
+                'employees': helpers.get_employees_label(details['employees']),
             }
         }
 

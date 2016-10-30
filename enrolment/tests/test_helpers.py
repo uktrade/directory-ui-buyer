@@ -111,3 +111,21 @@ def test_user_has_company_404(mock_retrieve_user_profile):
     user_has_company = helpers.user_has_company(sso_user_id=1)
 
     assert user_has_company is False
+
+
+def test_get_employees_label():
+    assert helpers.get_employees_label('1001-10000') == '1,001-10,000'
+
+
+def test_get_sectors_labels():
+    values = ['AGRICULTURE_HORTICULTURE_AND_FISHERIES', 'AEROSPACE']
+    expected = ['Agriculture, Horticulture and Fisheries', 'Aerospace']
+    assert helpers.get_sectors_labels(values) == expected
+
+
+def test_get_employees_label_none():
+    assert helpers.get_employees_label('') == ''
+
+
+def test_get_sectors_labels_none():
+    assert helpers.get_sectors_labels([]) == []
