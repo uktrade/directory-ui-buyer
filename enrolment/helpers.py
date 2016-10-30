@@ -67,10 +67,10 @@ def user_has_company(sso_user_id):
 def get_employees_label(employees_value):
     if not employees_value:
         return employees_value
-    return EMPLOYEE_CHOICES[employees_value]
+    return EMPLOYEE_CHOICES.get(employees_value)
 
 
 def get_sectors_labels(sectors_values):
     if not sectors_values:
         return sectors_values
-    return [SECTOR_CHOICES[sector_value] for sector_value in sectors_values]
+    return [SECTOR_CHOICES.get(value)for value in sectors_values]

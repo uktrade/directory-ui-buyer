@@ -1,4 +1,5 @@
 import http
+import json
 import requests
 from unittest import mock
 
@@ -79,7 +80,7 @@ def api_response_company_profile_200(api_response_200):
         'website': 'http://example.com',
         'description': 'Ecommerce website',
         'number': 123456,
-        'sectors': ['SECURITY'],
+        'sectors': json.dumps(['SECURITY']),
         'logo': 'nice.jpg',
         'name': 'Great company',
         'keywords': 'word1 word2',
@@ -307,7 +308,9 @@ def test_company_profile_details_exposes_context(
     ]
     expected = api_response_company_profile_200.json().copy()
     expected['employees'] = helpers.get_employees_label(expected['employees'])
-    expected['sectors'] = helpers.get_sectors_labels(expected['sectors'])
+    expected['sectors'] = helpers.get_sectors_labels(
+        json.loads(expected['sectors'])
+    )
     assert response.context_data['company'] == expected
 
 
@@ -481,7 +484,7 @@ def test_enrolment_logged_in_has_company_redirects(
     response = EnrolmentView.as_view()(sso_request)
 
     assert response.status_code == http.client.FOUND
-    assert response.get('Location') == reverse('company-edit')
+    assert response.get('Location') == reverse('company-detail')
     mock_user_has_company.assert_called_once_with(sso_user_id=sso_user.id)
 
 
