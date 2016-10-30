@@ -42,7 +42,7 @@ Requires all host environment variables to be set.
 | DIRECTORY_UI_PORT | PORT |
 | DIRECTORY_UI_API_CLIENT_KEY | API_CLIENT_KEY |
 | DIRECTORY_UI_API_CLIENT_BASE_URL | API_CLIENT_BASE_URL |
-
+| DIRECTORY_UI_COMPANIES_HOUSE_SEARCH_URL | COMPANIES_HOUSE_SEARCH_URL |
 ## Debugging
 
 ### Setup debug environment
