@@ -162,7 +162,7 @@ class UserCompanyProfileDetailView(UserCompanyBaseView, TemplateView):
         if not response.ok:
             response.raise_for_status()
         details = response.json()
-        sectors = json.loads(details['sectors'])
+        sectors = json.loads(details['sectors']) if details['sectors'] else []
         return {
             'company': {
                 'website': details['website'],
