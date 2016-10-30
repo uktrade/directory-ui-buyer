@@ -120,16 +120,17 @@ class CompanyEmailAddressForm(IndentedInvalidFieldsMixin, forms.Form):
 
 class UserForm(IndentedInvalidFieldsMixin, forms.Form):
     mobile_number = forms.CharField(
-        label='Mobile number:',
+        label='Your mobile phone number:',
         help_text='We will use this to send you a verification code.',
     )
     mobile_confirmed = forms.CharField(
-        label='Mobile number confirmed:'
+        label='Please confirm your mobile phone number:'
     )
     terms_agreed = forms.BooleanField(
-        label=(
-            'Tick this box to accept the terms and conditions of the Great '
-            'Trade Index.'
+        label=mark_safe(
+            'Tick this box to accept the '
+            '<a href="/terms_and_conditions" target="_blank">terms and '
+            'conditions</a> of the Find a Buyer service.'
         )
     )
     referrer = forms.CharField(required=False, widget=forms.HiddenInput())
