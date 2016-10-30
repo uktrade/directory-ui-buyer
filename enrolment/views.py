@@ -1,4 +1,5 @@
 import logging
+import json
 import os
 
 from directory_api_client.client import DirectoryAPIClient
@@ -73,7 +74,7 @@ class EnrolmentView(SSOLoginRequiredMixin, SessionWizardView):
         if request.sso_user is None:
             return self.handle_no_permission()
         elif helpers.user_has_company(sso_user_id=request.sso_user.id):
-            return redirect('company-edit')
+            return redirect('company-detail')
         else:
             return super(EnrolmentView, self).dispatch(
                 request, *args, **kwargs
@@ -161,12 +162,13 @@ class UserCompanyProfileDetailView(UserCompanyBaseView, TemplateView):
         if not response.ok:
             response.raise_for_status()
         details = response.json()
+        sectors = json.loads(details['sectors']) if details['sectors'] else []
         return {
             'company': {
                 'website': details['website'],
                 'description': details['description'],
                 'number': details['number'],
-                'sectors': helpers.get_sectors_labels(details['sectors']),
+                'sectors': helpers.get_sectors_labels(sectors),
                 'logo': details['logo'],
                 'name': details['name'],
                 'keywords': details['keywords'],

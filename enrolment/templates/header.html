@@ -21,6 +21,9 @@
                 </li>
                 {% else %}
                 <li>
+                    <a href="{% url 'company-detail' %}" target="_self">Profile</a>
+                </li>
+                <li>
                     <a href="{{ sso_logout_url }}" target="_self">Logout</a>
                 </li>
                 {% endif %}
