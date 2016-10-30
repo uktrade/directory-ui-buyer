@@ -1,3 +1,5 @@
+import json
+
 from directory_validators import enrolment as shared_validators
 from directory_validators.constants import choices
 
@@ -213,7 +215,7 @@ def serialize_company_profile_forms(cleaned_data):
         'website': cleaned_data['website'],
         'keywords': cleaned_data['keywords'],
         'employees': cleaned_data['employees'],
-        'sectors': cleaned_data['sectors'],
+        'sectors': json.dumps(cleaned_data['sectors']),
     }
 
 

@@ -226,7 +226,7 @@ def test_serialize_company_profile_forms():
         'keywords': 'Jolly good exporter.',
         'employees': '1-10',
         'name': 'Example ltd.',
-        'sectors': ['1', '2'],
+        'sectors': '["1", "2"]',
         'website': 'http://example.com',
     }
     assert actual == expected

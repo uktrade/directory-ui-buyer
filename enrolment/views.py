@@ -169,6 +169,8 @@ class UserCompanyProfileDetailView(UserCompanyBaseView, TemplateView):
                 'sectors': details['sectors'],
                 'logo': details['logo'],
                 'name': details['name'],
+                'keywords': details['keywords'],
+                'employees': details['employees'],
             }
         }
 
@@ -179,11 +181,11 @@ class UpdateCompanyProfileOnFormWizardDoneMixin:
         return self.form_serializer(self.get_all_cleaned_data())
 
     def done(self, *args, **kwargs):
-        response = api_client.company.update_profile(
+        api_response = api_client.company.update_profile(
             sso_user_id=self.request.sso_user.id,
             data=self.serialize_form_data()
         )
-        if response.ok:
+        if api_response.ok:
             response = redirect('company-detail')
         else:
             response = TemplateResponse(self.request, self.failure_template)

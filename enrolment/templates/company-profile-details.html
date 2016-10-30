@@ -39,8 +39,8 @@
 			<div class="span4 key-facts">
 				<div class="company-details-subtitle">Key facts</div>
 				<div class="number-of-employees">
-				{% if company.employees_label %}
-					Number of employees: {{company.employees_label}}
+				{% if company.employees %}
+					Number of employees: {{company.employees}}
 				{% else %}
 					<a href="{% url 'company-edit' %}" target="_self">Please set your number of employees.</a>
 				{% endif %}

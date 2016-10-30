@@ -16,7 +16,7 @@ company_context = {
         'description': 'Exporters of UK wares.',
         'website': 'www.ukexportersnow.co.uk',
         'logo': 'www.ukexportersnow.co.uk/logo.png',
-        'keywords': 'word1 word2'
+        'keywords': 'word1 word2',
     }
 }
 

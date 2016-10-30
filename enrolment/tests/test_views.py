@@ -82,6 +82,8 @@ def api_response_company_profile_200(api_response_200):
         'sectors': ['Things', 'Stuff'],
         'logo': 'nice.jpg',
         'name': 'Great company',
+        'keywords': 'word1 word2',
+        'employees': '501-1000',
     }
     response.json = lambda: payload
     return response
