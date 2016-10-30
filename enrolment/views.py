@@ -25,7 +25,8 @@ api_client = DirectoryAPIClient(
 logger = logging.getLogger(__name__)
 
 
-class CacheMixin(object):
+class CacheMixin:
+
     def render_to_response(self, context, **response_kwargs):
         # Get response from parent TemplateView class
         response = super().render_to_response(
@@ -43,31 +44,11 @@ class CachableTemplateView(CacheMixin, TemplateView):
     pass
 
 
-class UpdateCompanyProfileOnFormWizardDoneMixin:
-
-    def serialize_form_data(self):
-        return self.form_serializer(self.get_all_cleaned_data())
-
-    def done(self, *args, **kwargs):
-        response = api_client.company.update_profile(
-            sso_user_id=self.request.sso_user.id,
-            data=self.serialize_form_data()
-        )
-        if response.ok:
-            response = redirect('company-detail')
-        else:
-            response = TemplateResponse(self.request, self.failure_template)
-        return response
-
-
 class LandingView(CacheMixin, TemplateView):
     template_name = 'landing-page.html'
 
 
-class EnrolmentView(
-        SSOLoginRequiredMixin,
-        UpdateCompanyProfileOnFormWizardDoneMixin,
-        SessionWizardView):
+class EnrolmentView(SSOLoginRequiredMixin, SessionWizardView):
 
     success_template = 'registered.html'
     failure_template = 'enrolment-error.html'
@@ -87,6 +68,14 @@ class EnrolmentView(
         'user': 'user-form.html',
         'sms_verify': 'sms-verify-form.html'
     }
+
+    def dispatch(self, request, *args, **kwargs):
+        if helpers.user_has_company(sso_user_id=self.request.sso_user.id):
+            return redirect('company-edit')
+        else:
+            return super(EnrolmentView, self).dispatch(
+                request, *args, **kwargs
+            )
 
     def get_form_kwargs(self, step):
         if step == 'sms_verify':
@@ -147,7 +136,21 @@ class CompanyEmailConfirmationView(View):
         return TemplateResponse(request, template)
 
 
-class CompanyProfileDetailView(SSOLoginRequiredMixin, TemplateView):
+class UserCompanyBaseView(SSOLoginRequiredMixin):
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.sso_user is None:
+            return self.handle_no_permission()
+        else:
+            if not helpers.user_has_company(self.request.sso_user.id):
+                return redirect('register')
+            else:
+                return super(UserCompanyBaseView, self).dispatch(
+                    request, *args, **kwargs
+                )
+
+
+class UserCompanyProfileDetailView(UserCompanyBaseView, TemplateView):
     template_name = 'company-profile-details.html'
 
     def get_context_data(self, **kwargs):
@@ -169,8 +172,25 @@ class CompanyProfileDetailView(SSOLoginRequiredMixin, TemplateView):
         }
 
 
-class CompanyProfileEditView(
-        SSOLoginRequiredMixin,
+class UpdateCompanyProfileOnFormWizardDoneMixin:
+
+    def serialize_form_data(self):
+        return self.form_serializer(self.get_all_cleaned_data())
+
+    def done(self, *args, **kwargs):
+        response = api_client.company.update_profile(
+            sso_user_id=self.request.sso_user.id,
+            data=self.serialize_form_data()
+        )
+        if response.ok:
+            response = redirect('company-detail')
+        else:
+            response = TemplateResponse(self.request, self.failure_template)
+        return response
+
+
+class UserCompanyProfileEditView(
+        UserCompanyBaseView,
         UpdateCompanyProfileOnFormWizardDoneMixin,
         SessionWizardView):
 
@@ -191,8 +211,8 @@ class CompanyProfileEditView(
         return [self.templates[self.steps.current]]
 
 
-class CompanyProfileLogoEditView(
-        SSOLoginRequiredMixin,
+class UserCompanyProfileLogoEditView(
+        UserCompanyBaseView,
         UpdateCompanyProfileOnFormWizardDoneMixin,
         SessionWizardView):
 
@@ -212,8 +232,8 @@ class CompanyProfileLogoEditView(
         return [self.templates[self.steps.current]]
 
 
-class CompanyDescriptionEditView(
-        SSOLoginRequiredMixin,
+class UserCompanyDescriptionEditView(
+        UserCompanyBaseView,
         UpdateCompanyProfileOnFormWizardDoneMixin,
         SessionWizardView):
 

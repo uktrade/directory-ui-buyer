@@ -88,3 +88,26 @@ def test_get_company_name_handles_good_status(
 
     mock_retrieve_companies_house_profile.assert_called_once_with('01234567')
     assert name == 'Extreme Corp'
+
+
+@patch.object(helpers.api_client.user, 'retrieve_profile')
+def test_user_has_company(mock_retrieve_user_profile):
+    mock_response = Response()
+    mock_response.status_code = http.client.OK
+    mock_response.json = lambda: {'company': 'Extreme Corp'}
+    mock_retrieve_user_profile.return_value = mock_response
+
+    user_has_company = helpers.user_has_company(sso_user_id=1)
+
+    assert user_has_company is True
+
+
+@patch.object(helpers.api_client.user, 'retrieve_profile')
+def test_user_has_company_404(mock_retrieve_user_profile):
+    mock_response = Response()
+    mock_response.status_code = http.client.NOT_FOUND
+    mock_retrieve_user_profile.return_value = mock_response
+
+    user_has_company = helpers.user_has_company(sso_user_id=1)
+
+    assert user_has_company is False

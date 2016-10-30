@@ -5,10 +5,10 @@ from enrolment.views import (
     CachableTemplateView,
     CompanyEmailConfirmationView,
     EnrolmentView,
-    CompanyDescriptionEditView,
-    CompanyProfileEditView,
-    CompanyProfileDetailView,
-    CompanyProfileLogoEditView,
+    UserCompanyDescriptionEditView,
+    UserCompanyProfileEditView,
+    UserCompanyProfileDetailView,
+    UserCompanyProfileLogoEditView,
     LandingView,
 )
 from user.views import UserProfileDetailView, UserProfileEditView
@@ -41,7 +41,7 @@ urlpatterns = [
         name='confirm-company-email'),
 
     url(r'^company-profile$',
-        CompanyProfileDetailView.as_view(),
+        UserCompanyProfileDetailView.as_view(),
         name='company-detail'),
 
     url(r'^user-profile$',
@@ -53,15 +53,15 @@ urlpatterns = [
         name='user-edit'),
 
     url(r'^company-profile/edit$',
-        CompanyProfileEditView.as_view(),
+        UserCompanyProfileEditView.as_view(),
         name='company-edit'),
 
     url(r'^company-profile/logo$',
-        CompanyProfileLogoEditView.as_view(),
+        UserCompanyProfileLogoEditView.as_view(),
         name='company-edit-logo'),
 
     url(r'^company-profile/description$',
-        CompanyDescriptionEditView.as_view(),
+        UserCompanyDescriptionEditView.as_view(),
         name='company-edit-description'),
 
 ]

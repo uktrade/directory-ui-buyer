@@ -8,10 +8,10 @@ from django.core.urlresolvers import reverse
 
 from enrolment.constants import SESSION_KEY_REFERRER
 from enrolment.views import (
-    CompanyDescriptionEditView,
-    CompanyProfileDetailView,
-    CompanyProfileEditView,
-    CompanyProfileLogoEditView,
+    UserCompanyDescriptionEditView,
+    UserCompanyProfileDetailView,
+    UserCompanyProfileEditView,
+    UserCompanyProfileLogoEditView,
     CompanyEmailConfirmationView,
     EnrolmentView,
     api_client,
@@ -31,7 +31,7 @@ def sso_user():
 @pytest.fixture
 def company_request(rf, client, sso_user):
     request = rf.get('/')
-    request.sso_user = mock.Mock(id=1, email="test@example.com")
+    request.sso_user = sso_user
     request.session = client.session
     request.session['company_id'] = 1
     return request
@@ -98,9 +98,9 @@ def sms_verify_step_data_valid():
 
 
 @pytest.fixture
-def user_step_request(rf, client, user_step_data_valid):
+def user_step_request(rf, client, user_step_data_valid, sso_user):
     request = rf.post(reverse('register'), user_step_data_valid)
-    request.sso_user = mock.Mock(id=1, email="test@example.com")
+    request.sso_user = sso_user
     request.session = client.session
     request.session['wizard_enrolment_view'] = {
         'extra_data': {},
@@ -112,9 +112,9 @@ def user_step_request(rf, client, user_step_data_valid):
 
 
 @pytest.fixture
-def sms_verify_step_request(rf, client, sms_verify_step_data_valid):
+def sms_verify_step_request(rf, client, sms_verify_step_data_valid, sso_user):
     request = rf.post(reverse('register'), sms_verify_step_data_valid)
-    request.sso_user = mock.Mock(id=1, email="test@example.com")
+    request.sso_user = sso_user
     request.session = client.session
     request.session['sms_code'] = '123'
     request.session['wizard_enrolment_view'] = {
@@ -126,10 +126,10 @@ def sms_verify_step_request(rf, client, sms_verify_step_data_valid):
     return request
 
 
-def test_email_confirm_missing_confirmation_code(rf):
+def test_email_confirm_missing_confirmation_code(rf, sso_user):
     view = CompanyEmailConfirmationView.as_view()
     request = rf.get(reverse('confirm-company-email'))
-    request.sso_user = mock.Mock(id=1, email="test@example.com")
+    request.sso_user = sso_user
     response = view(request)
     assert response.status_code == http.client.OK
     assert response.template_name == (
@@ -166,11 +166,14 @@ def test_email_confirm_valid_confirmation_code(mock_confirm_email, rf):
     )
 
 
-def test_enrolment_view_includes_referrer(client, rf):
+@mock.patch(
+    'enrolment.helpers.user_has_company', mock.Mock(return_value=False)
+)
+def test_enrolment_view_includes_referrer(client, rf, sso_user):
     request = rf.get(reverse('register'))
     request.session = client.session
     request.session[SESSION_KEY_REFERRER] = 'google'
-    request.sso_user = mock.Mock(id=1, email="test@example.com")
+    request.sso_user = sso_user
 
     form_pair = EnrolmentView.form_list[4]
     view = EnrolmentView.as_view(form_list=(form_pair,))
@@ -181,6 +184,7 @@ def test_enrolment_view_includes_referrer(client, rf):
     assert initial['referrer'] == 'google'
 
 
+@mock.patch('enrolment.helpers.user_has_company', mock.Mock(return_value=True))
 @mock.patch.object(EnrolmentView, 'get_all_cleaned_data', return_value={})
 @mock.patch.object(forms, 'serialize_enrolment_forms')
 @mock.patch.object(api_client.registration, 'send_form')
@@ -194,6 +198,7 @@ def test_enrolment_form_complete_api_client_call(mock_send_form,
     mock_send_form.assert_called_once_with(data)
 
 
+@mock.patch('enrolment.helpers.user_has_company', mock.Mock(return_value=True))
 @mock.patch.object(EnrolmentView, 'get_all_cleaned_data', lambda x: {})
 @mock.patch.object(forms, 'serialize_enrolment_forms', lambda x: {})
 @mock.patch.object(api_client.registration, 'send_form', api_response_200)
@@ -205,6 +210,7 @@ def test_enrolment_form_complete_api_client_success(sso_request):
     assert response.template_name == EnrolmentView.success_template
 
 
+@mock.patch('enrolment.helpers.user_has_company', mock.Mock(return_value=True))
 @mock.patch.object(EnrolmentView, 'get_all_cleaned_data', lambda x: {})
 @mock.patch.object(forms, 'serialize_enrolment_forms', lambda x: {})
 @mock.patch.object(api_client.registration, 'send_form', api_response_400)
@@ -216,88 +222,99 @@ def test_enrolment_form_complete_api_client_fail(company_request):
     assert response.template_name == EnrolmentView.failure_template
 
 
-@mock.patch.object(CompanyProfileEditView, 'get_all_cleaned_data',
+@mock.patch('enrolment.helpers.user_has_company', mock.Mock(return_value=True))
+@mock.patch.object(UserCompanyProfileEditView, 'get_all_cleaned_data',
                    return_value={})
-@mock.patch.object(CompanyProfileEditView, 'serialize_form_data',
+@mock.patch.object(UserCompanyProfileEditView, 'serialize_form_data',
                    lambda x: {'field': 'value'})
 @mock.patch.object(api_client.company, 'update_profile')
 def test_company_profile_edit_api_client_call(
-        mock_update_profile, rf, client):
+        mock_update_profile, rf, client, company_request):
 
-    request = rf.get(reverse('company-detail'))
-    request.sso_user = mock.Mock(id=1, email="test@example.com")
-
-    view = CompanyProfileEditView()
-    view.request = request
+    view = UserCompanyProfileEditView()
+    view.request = company_request
     view.done()
     mock_update_profile.assert_called_once_with(
         sso_user_id=1, data={'field': 'value'}
     )
 
 
-@mock.patch.object(CompanyProfileEditView, 'get_all_cleaned_data',
+@mock.patch('enrolment.helpers.user_has_company', mock.Mock(return_value=True))
+@mock.patch.object(UserCompanyProfileEditView, 'get_all_cleaned_data',
                    lambda x: {})
-@mock.patch.object(CompanyProfileEditView, 'serialize_form_data', lambda x: {})
+@mock.patch.object(
+    UserCompanyProfileEditView, 'serialize_form_data', lambda x: {}
+)
 @mock.patch.object(api_client.company, 'update_profile', api_response_200)
 def test_company_profile_edit_api_client_success(company_request):
 
-    view = CompanyProfileEditView()
+    view = UserCompanyProfileEditView()
     view.request = company_request
     response = view.done()
     assert response.status_code == http.client.FOUND
 
 
+@mock.patch('enrolment.helpers.user_has_company', mock.Mock(return_value=True))
 @mock.patch.object(
-    CompanyProfileEditView, 'get_all_cleaned_data', lambda x: {}
+    UserCompanyProfileEditView, 'get_all_cleaned_data', lambda x: {}
 )
-@mock.patch.object(CompanyProfileEditView, 'serialize_form_data', lambda x: {})
+@mock.patch.object(
+    UserCompanyProfileEditView, 'serialize_form_data', lambda x: {}
+)
 @mock.patch.object(api_client.company, 'update_profile', api_response_400)
 def test_company_profile_edit_api_client_failure(company_request):
 
-    view = CompanyProfileEditView()
+    view = UserCompanyProfileEditView()
     view.request = company_request
     response = view.done()
     assert response.status_code == http.client.OK
-    assert response.template_name == CompanyProfileEditView.failure_template
+    assert response.template_name == (
+        UserCompanyProfileEditView.failure_template
+    )
 
 
+@mock.patch('enrolment.helpers.user_has_company', mock.Mock(return_value=True))
 @mock.patch.object(api_client.company, 'retrieve_profile')
 def test_company_profile_details_calls_api(mock_retrieve_profile,
                                            company_request):
-    view = CompanyProfileDetailView.as_view()
+    view = UserCompanyProfileDetailView.as_view()
 
     view(company_request)
 
     assert mock_retrieve_profile.called_once_with(1)
 
 
+@mock.patch('enrolment.helpers.user_has_company', mock.Mock(return_value=True))
 @mock.patch.object(api_client.company, 'retrieve_profile')
 def test_company_profile_details_exposes_context(
     mock_retrieve_profile, company_request, api_response_company_profile_200
 ):
     mock_retrieve_profile.return_value = api_response_company_profile_200
-    view = CompanyProfileDetailView.as_view()
+    view = UserCompanyProfileDetailView.as_view()
     response = view(company_request)
     assert response.status_code == http.client.OK
-    assert response.template_name == [CompanyProfileDetailView.template_name]
+    assert response.template_name == [
+        UserCompanyProfileDetailView.template_name
+    ]
     assert response.context_data['company'] == (
         api_response_company_profile_200.json()
     )
 
 
+@mock.patch('enrolment.helpers.user_has_company', mock.Mock(return_value=True))
 @mock.patch.object(api_client.company, 'retrieve_profile')
 def test_company_profile_details_handles_bad_status(
     mock_retrieve_profile, company_request, api_response_400
 ):
     mock_retrieve_profile.return_value = api_response_400
-    view = CompanyProfileDetailView.as_view()
+    view = UserCompanyProfileDetailView.as_view()
 
     with pytest.raises(requests.exceptions.HTTPError):
         view(company_request)
 
 
 def test_company_profile_details_logs_missing_sso_user(client, rf):
-    view = CompanyProfileDetailView.as_view()
+    view = UserCompanyProfileDetailView.as_view()
     request = rf.get(reverse('company-detail'))
     request.sso_user = None
 
@@ -306,12 +323,13 @@ def test_company_profile_details_logs_missing_sso_user(client, rf):
     assert response.status_code == http.client.FOUND
 
 
-@mock.patch.object(CompanyProfileLogoEditView, 'serialize_form_data',
+@mock.patch('enrolment.helpers.user_has_company', mock.Mock(return_value=True))
+@mock.patch.object(UserCompanyProfileLogoEditView, 'serialize_form_data',
                    lambda x: {'field': 'value'})
 @mock.patch.object(api_client.company, 'update_profile')
 def test_company_profile_logo_api_client_call(mock_update_profile,
                                               company_request):
-    view = CompanyProfileLogoEditView()
+    view = UserCompanyProfileLogoEditView()
     view.request = company_request
     view.done()
     mock_update_profile.assert_called_once_with(
@@ -319,37 +337,40 @@ def test_company_profile_logo_api_client_call(mock_update_profile,
     )
 
 
-@mock.patch.object(CompanyProfileLogoEditView, 'serialize_form_data',
+@mock.patch('enrolment.helpers.user_has_company', mock.Mock(return_value=True))
+@mock.patch.object(UserCompanyProfileLogoEditView, 'serialize_form_data',
                    lambda x: {})
 @mock.patch.object(api_client.company, 'update_profile', api_response_200)
 def test_company_profile_logo_api_client_success(company_request):
 
-    view = CompanyProfileLogoEditView()
+    view = UserCompanyProfileLogoEditView()
     view.request = company_request
     response = view.done()
     assert response.status_code == http.client.FOUND
 
 
-@mock.patch.object(CompanyProfileLogoEditView, 'serialize_form_data',
+@mock.patch('enrolment.helpers.user_has_company', mock.Mock(return_value=True))
+@mock.patch.object(UserCompanyProfileLogoEditView, 'serialize_form_data',
                    lambda x: {})
 @mock.patch.object(api_client.company, 'update_profile', api_response_400)
 def test_company_profile_logo_api_client_failure(company_request):
 
-    view = CompanyProfileLogoEditView()
+    view = UserCompanyProfileLogoEditView()
     view.request = company_request
     response = view.done()
     assert response.status_code == http.client.OK
-    expected_template_name = CompanyProfileLogoEditView.failure_template
+    expected_template_name = UserCompanyProfileLogoEditView.failure_template
     assert response.template_name == expected_template_name
 
 
-@mock.patch.object(CompanyDescriptionEditView, 'serialize_form_data',
+@mock.patch('enrolment.helpers.user_has_company', mock.Mock(return_value=True))
+@mock.patch.object(UserCompanyDescriptionEditView, 'serialize_form_data',
                    lambda x: {'field': 'value'})
 @mock.patch.object(api_client.company, 'update_profile')
 def test_company_profile_description_api_client_call(mock_update_profile,
                                                      company_request):
 
-    view = CompanyDescriptionEditView()
+    view = UserCompanyDescriptionEditView()
     view.request = company_request
     view.done()
     mock_update_profile.assert_called_once_with(
@@ -357,38 +378,41 @@ def test_company_profile_description_api_client_call(mock_update_profile,
     )
 
 
-@mock.patch.object(CompanyDescriptionEditView, 'serialize_form_data',
+@mock.patch('enrolment.helpers.user_has_company', mock.Mock(return_value=True))
+@mock.patch.object(UserCompanyDescriptionEditView, 'serialize_form_data',
                    lambda x: {})
 @mock.patch.object(api_client.company, 'update_profile', api_response_200)
 def test_company_profile_description_api_client_success(company_request):
 
-    view = CompanyDescriptionEditView()
+    view = UserCompanyDescriptionEditView()
     view.request = company_request
     response = view.done()
     assert response.status_code == http.client.FOUND
 
 
-@mock.patch.object(CompanyDescriptionEditView, 'serialize_form_data',
+@mock.patch('enrolment.helpers.user_has_company', mock.Mock(return_value=True))
+@mock.patch.object(UserCompanyDescriptionEditView, 'serialize_form_data',
                    lambda x: {})
 @mock.patch.object(api_client.company, 'update_profile', api_response_400)
 def test_company_profile_description_api_client_failure(company_request):
 
-    view = CompanyDescriptionEditView()
+    view = UserCompanyDescriptionEditView()
     view.request = company_request
     response = view.done()
     assert response.status_code == http.client.OK
-    expected_template_name = CompanyDescriptionEditView.failure_template
+    expected_template_name = UserCompanyDescriptionEditView.failure_template
     assert response.template_name == expected_template_name
 
 
-def test_views_use_correct_template(client, rf):
+@mock.patch(
+    'enrolment.helpers.user_has_company', mock.Mock(return_value=False)
+)
+def test_enrolment_views_use_correct_template(client, rf, sso_user):
     request = rf.get(reverse('register'))
-    request.sso_user = mock.Mock(id=1, email="test@example.com")
+    request.sso_user = sso_user
     request.session = client.session
     view_classes = [
-        CompanyDescriptionEditView,
-        EnrolmentView,
-        CompanyProfileEditView
+        EnrolmentView
     ]
     for view_class in view_classes:
         assert view_class.form_list
@@ -400,14 +424,61 @@ def test_views_use_correct_template(client, rf):
             assert response.template_name == [view_class.templates[step_name]]
 
 
+@mock.patch(
+    'enrolment.helpers.user_has_company', mock.Mock(return_value=True)
+)
+def test_company_edit_views_use_correct_template(client, rf, sso_user):
+    request = rf.get(reverse('company-edit'))
+    request.sso_user = sso_user
+    request.session = client.session
+    view_classes = [
+        UserCompanyProfileEditView
+    ]
+    for view_class in view_classes:
+        assert view_class.form_list
+        for form_pair in view_class.form_list:
+            step_name = form_pair[0]
+            view = view_class.as_view(form_list=(form_pair,))
+            response = view(request)
+
+            assert response.template_name == [view_class.templates[step_name]]
+
+
+@mock.patch(
+    'enrolment.helpers.user_has_company', mock.Mock(return_value=True)
+)
+def test_company_description_edit_views_use_correct_template(
+        client, rf, sso_user):
+    request = rf.get(reverse('company-edit-description'))
+    request.sso_user = sso_user
+    request.session = client.session
+    view_classes = [
+        UserCompanyDescriptionEditView
+    ]
+    for view_class in view_classes:
+        assert view_class.form_list
+        for form_pair in view_class.form_list:
+            step_name = form_pair[0]
+            view = view_class.as_view(form_list=(form_pair,))
+            response = view(request)
+
+            assert response.template_name == [view_class.templates[step_name]]
+
+
+@mock.patch(
+    'enrolment.helpers.user_has_company', mock.Mock(return_value=False)
+)
 def test_enrolment_view_passes_sms_code_to_form(sms_verify_step_request):
     response = EnrolmentView.as_view()(sms_verify_step_request)
     assert response.context_data['form'].expected_sms_code == '123'
 
 
+@mock.patch(
+    'enrolment.helpers.user_has_company', mock.Mock(return_value=False)
+)
 @mock.patch.object(api_client.registration, 'send_verification_sms')
 def test_enrolment_calls_api(
-    mock_api_call, user_step_request,  api_response_send_verification_sms_200
+    mock_api_call, user_step_request, api_response_send_verification_sms_200
 ):
     mock_api_call.return_value = api_response_send_verification_sms_200
 
@@ -417,9 +488,13 @@ def test_enrolment_calls_api(
     mock_api_call.assert_called_once_with(phone_number='0123456789')
 
 
+@mock.patch(
+    'enrolment.helpers.user_has_company', mock.Mock(return_value=False)
+)
 @mock.patch.object(api_client.registration, 'send_verification_sms')
 def test_enrolment_handles_good_response(
-    mock_api_call, user_step_request, api_response_send_verification_sms_200
+    mock_api_call,
+    user_step_request, api_response_send_verification_sms_200
 ):
     mock_api_call.return_value = api_response_send_verification_sms_200
 
@@ -429,9 +504,13 @@ def test_enrolment_handles_good_response(
     assert user_step_request.session['sms_code'] == '12345'
 
 
+@mock.patch(
+    'enrolment.helpers.user_has_company', mock.Mock(return_value=False)
+)
 @mock.patch.object(api_client.registration, 'send_verification_sms',
                    api_response_400)
 def test_enrolment_handles_bad_response(user_step_request):
+
     with pytest.raises(requests.exceptions.HTTPError):
         response = EnrolmentView.as_view()(user_step_request)
 

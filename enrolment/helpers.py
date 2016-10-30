@@ -45,3 +45,16 @@ def get_company_name(number):
             logger.error('Unable to get name for "{0}". Status "{1}".'.format(
                 number, response.status_code
             ))
+
+
+def user_has_company(sso_user_id):
+    response = api_client.user.retrieve_profile(
+        sso_id=sso_user_id
+    )
+
+    if response.ok:
+        has_company = bool(response.json()['company'])
+    else:
+        has_company = False
+
+    return has_company
