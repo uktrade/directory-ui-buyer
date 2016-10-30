@@ -107,8 +107,7 @@ class CompanyEmailAddressForm(IndentedInvalidFieldsMixin, forms.Form):
         ]
     )
     email_confirmed = forms.EmailField(
-        label='Email confirmed:',
-        help_text='Please confirm your email address.',
+        label='Please confirm your email address:',
     )
 
     def clean_email_confirmed(self):
