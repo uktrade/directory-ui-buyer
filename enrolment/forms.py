@@ -120,7 +120,9 @@ class CompanyEmailAddressForm(IndentedInvalidFieldsMixin, forms.Form):
 class UserForm(IndentedInvalidFieldsMixin, forms.Form):
     mobile_number = forms.CharField(
         label='Your mobile phone number:',
-        help_text='We will use this to send you a verification code.',
+        help_text=(
+            'We will send a verification code to this mobile phone number.'
+        )
     )
     mobile_confirmed = forms.CharField(
         label='Please confirm your mobile phone number:'
