@@ -98,8 +98,8 @@ class CompanyEmailAddressForm(IndentedInvalidFieldsMixin, forms.Form):
     company_email = forms.EmailField(
         label='Email address:',
         help_text=(
-            'Please enter a company email address rather than personal email '
-            'address. This will not replace your username.'
+            'Please enter a company email address rather than a personal '
+            'email address. This will not replace your username.'
         ),
         validators=[
             shared_validators.email_domain_free,
