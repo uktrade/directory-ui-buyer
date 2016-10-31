@@ -27,6 +27,7 @@ def test_company_email_form_email_validators():
     field = forms.CompanyEmailAddressForm.base_fields['company_email']
     assert shared_validators.email_domain_free in field.validators
     assert shared_validators.email_domain_disposable in field.validators
+    assert validators.email_address in field.validators
 
 
 def test_company_email_form_rejects_invalid_email_addresses():
