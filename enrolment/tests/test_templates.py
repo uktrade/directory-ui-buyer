@@ -36,7 +36,7 @@ def test_company_profile_details_renders_sectors():
 
 def test_company_profile_details_handles_no_sectors():
     html = render_to_string('company-profile-details.html', {})
-    assert "Please set your company's sectors." in html
+    assert "Edit your company's sectors." in html
 
 
 def test_company_profile_details_renders_company_number():
@@ -61,7 +61,7 @@ def test_company_profile_details_renders_keywords():
 
 def test_company_profile_details_handles_no_keywords():
     html = render_to_string('company-profile-details.html', {})
-    assert "Please set your company's keywords." in html
+    assert "Edit your company's keywords." in html
 
 
 def test_company_profile_details_renders_website():
@@ -71,7 +71,7 @@ def test_company_profile_details_renders_website():
 
 def test_company_profile_details_handles_no_website():
     html = render_to_string('company-profile-details.html', {})
-    assert "Please set your company's website address" in html
+    assert "Edit your company's website address" in html
 
 
 def test_company_profile_details_renders_logo():

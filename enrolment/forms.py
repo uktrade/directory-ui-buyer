@@ -18,10 +18,10 @@ class CompanyForm(IndentedInvalidFieldsMixin, forms.Form):
     company_number = forms.CharField(
         label='Company number:',
         help_text=mark_safe(
-            'This is the 8-digit number on the company certificate of '
+            'This is the company number on your certificate of '
             'incorporation. Find your company number from '
             '<a href="{url}" target="_blank">Companies House'
-            '</a>'.format(url=settings.COMPANIES_HOUSE_SEARCH_URL)
+            '</a>.'.format(url=settings.COMPANIES_HOUSE_SEARCH_URL)
         ),
         validators=helpers.halt_validation_on_failure(
             shared_validators.company_number,
@@ -34,9 +34,8 @@ class CompanyNameForm(IndentedInvalidFieldsMixin, forms.Form):
     company_name = forms.CharField(
         label='Company Name:',
         help_text=(
-            "Click next if this is your company. If it is not your company "
-            "then click back in your browser and re-enter your company's "
-            "number."
+            "If this is not your company then click back in your browser "
+            "and re-enter your company's number."
         ),
         widget=forms.TextInput(attrs={'readonly': 'readonly'}),
     )
@@ -99,7 +98,7 @@ class CompanyEmailAddressForm(IndentedInvalidFieldsMixin, forms.Form):
         label='Email address:',
         help_text=(
             'Please enter a company email address rather than a personal '
-            'email address. This will not replace your username.'
+            'email address.'
         ),
         validators=[
             shared_validators.email_domain_free,
@@ -121,7 +120,9 @@ class CompanyEmailAddressForm(IndentedInvalidFieldsMixin, forms.Form):
 class UserForm(IndentedInvalidFieldsMixin, forms.Form):
     mobile_number = forms.CharField(
         label='Your mobile phone number:',
-        help_text='We will use this to send you a verification code.',
+        help_text=(
+            'We will send a verification code to this mobile phone number.'
+        )
     )
     mobile_confirmed = forms.CharField(
         label='Please confirm your mobile phone number:'
@@ -148,8 +149,8 @@ class CompanySizeForm(IndentedInvalidFieldsMixin, forms.Form):
         choices=choices.EMPLOYEES,
         label='How many employees are in your company?',
         help_text=(
-            'Customers may use this to judge how capable you are of '
-            'fulfilling orders.'
+            'Tell international buyers more about your business for tailored '
+            'results.'
         )
     )
 
@@ -169,11 +170,12 @@ class PhoneNumberVerificationForm(IndentedInvalidFieldsMixin, forms.Form):
         super().__init__(*args, **kwargs)
 
     sms_code = forms.CharField(
-        label='Enter the code from the text message we sent you:',
-        help_text=(
-            'We have sent you an SMS text message containing a six digit '
-            'code. Verify your company profile by entering the code. Contact '
-            'us if you do not receive the text message in 10 minutes.'
+        label='Enter the verification code from the text message we sent you:',
+        help_text=mark_safe(
+            'We sent you a text message containing a six digit code. '
+            'Continue creating your Find a Buyer profile by entering '
+            'this code. <a href="#" target="_self">Create a new code</a> if '
+            'you do not receive the text message in 10 minutes.'
         ),
     )
 
