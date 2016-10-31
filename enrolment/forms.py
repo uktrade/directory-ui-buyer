@@ -34,9 +34,8 @@ class CompanyNameForm(IndentedInvalidFieldsMixin, forms.Form):
     company_name = forms.CharField(
         label='Company Name:',
         help_text=(
-            "Click next if this is your company. If it is not your company "
-            "then click back in your browser and re-enter your company's "
-            "number."
+            "If this is not your company then click back in your browser "
+            "and re-enter your company's number."
         ),
         widget=forms.TextInput(attrs={'readonly': 'readonly'}),
     )
@@ -99,7 +98,7 @@ class CompanyEmailAddressForm(IndentedInvalidFieldsMixin, forms.Form):
         label='Email address:',
         help_text=(
             'Please enter a company email address rather than a personal '
-            'email address. This will not replace your username.'
+            'email address.'
         ),
         validators=[
             shared_validators.email_domain_free,
