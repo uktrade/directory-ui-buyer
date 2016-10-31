@@ -170,11 +170,12 @@ class PhoneNumberVerificationForm(IndentedInvalidFieldsMixin, forms.Form):
         super().__init__(*args, **kwargs)
 
     sms_code = forms.CharField(
-        label='Enter the code from the text message we sent you:',
-        help_text=(
-            'We have sent you an SMS text message containing a six digit '
-            'code. Verify your company profile by entering the code. Contact '
-            'us if you do not receive the text message in 10 minutes.'
+        label='Enter the verification code from the text message we sent you:',
+        help_text=mark_safe(
+            'We sent you a text message containing a six digit code. '
+            'Continue creating your Find a Buyer profile by entering '
+            'this code. <a href="#" target="_self">Create a new code</a> if '
+            'you do not receive the text message in 10 minutes.'
         ),
     )
 
