@@ -25,24 +25,29 @@ def test_company_form_validators():
 
 def test_company_email_form_email_validators():
     field = forms.CompanyEmailAddressForm.base_fields['company_email']
-    assert shared_validators.email_domain_free in field.validators
-    assert shared_validators.email_domain_disposable in field.validators
-    assert validators.email_address in field.validators
+    inner_validators = field.validators[1].inner_validators
+    assert shared_validators.email_domain_free in inner_validators
+    assert shared_validators.email_domain_disposable in inner_validators
+    assert validators.email_address in inner_validators
 
 
+@patch('enrolment.validators.api_client', Mock())
 def test_company_email_form_rejects_invalid_email_addresses():
     form = forms.CompanyEmailAddressForm(data={
         'company_email': 'johnATjones.com',
     })
+
     assert form.is_valid() is False
     assert 'company_email' in form.errors
 
 
+@patch('enrolment.validators.api_client', Mock())
 def test_test_company_email_form_rejects_different_email_addresses():
     form = forms.CompanyEmailAddressForm(data={
         'company_email': 'john@examplecorp.com',
         'email_confirmed': 'john@examplecorp.cm',
     })
+
     assert form.is_valid() is False
     assert 'email_confirmed' in form.errors
 
