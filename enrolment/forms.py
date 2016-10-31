@@ -149,8 +149,8 @@ class CompanySizeForm(IndentedInvalidFieldsMixin, forms.Form):
         choices=choices.EMPLOYEES,
         label='How many employees are in your company?',
         help_text=(
-            'Customers may use this to judge how capable you are of '
-            'fulfilling orders.'
+            'Tell international buyers more about your business for tailored '
+            'results.'
         )
     )
 
