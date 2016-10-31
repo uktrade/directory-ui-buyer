@@ -94,6 +94,9 @@ class CompanyLogoForm(IndentedInvalidFieldsMixin, forms.Form):
 
 
 class CompanyEmailAddressForm(IndentedInvalidFieldsMixin, forms.Form):
+    error_messages = {
+        'different': 'Your emails do not match'
+    }
     company_email = forms.EmailField(
         label='Email address:',
         help_text=(
@@ -114,11 +117,14 @@ class CompanyEmailAddressForm(IndentedInvalidFieldsMixin, forms.Form):
         email = self.cleaned_data.get('company_email')
         confirmed = self.cleaned_data.get('email_confirmed')
         if (email and confirmed and email != confirmed):
-            raise forms.ValidationError('Your emails do not match')
+            raise forms.ValidationError(self.error_messages['different'])
         return confirmed
 
 
 class UserForm(IndentedInvalidFieldsMixin, forms.Form):
+    error_messages = {
+        'different': 'Your emails do not match.'
+    }
     mobile_number = forms.CharField(
         label='Your mobile phone number:',
         help_text=(
@@ -141,7 +147,7 @@ class UserForm(IndentedInvalidFieldsMixin, forms.Form):
         mobile = self.cleaned_data.get('mobile_number')
         confirmed = self.cleaned_data.get('mobile_confirmed')
         if (mobile and confirmed and mobile != confirmed):
-            raise forms.ValidationError('Your numbers do not match')
+            raise forms.ValidationError(self.error_messages['different'])
         return confirmed
 
 
@@ -166,9 +172,9 @@ class CompanyClassificationForm(IndentedInvalidFieldsMixin, forms.Form):
 
 class PhoneNumberVerificationForm(IndentedInvalidFieldsMixin, forms.Form):
 
-    def __init__(self, *args, **kwargs):
-        self.expected_sms_code = kwargs.pop('expected_sms_code')
-        super().__init__(*args, **kwargs)
+    error_messages = {
+        'different': 'Incorrect code.'
+    }
 
     sms_code = forms.CharField(
         label='Enter the verification code from the text message we sent you:',
@@ -180,10 +186,14 @@ class PhoneNumberVerificationForm(IndentedInvalidFieldsMixin, forms.Form):
         ),
     )
 
+    def __init__(self, *args, **kwargs):
+        self.expected_sms_code = kwargs.pop('expected_sms_code')
+        super().__init__(*args, **kwargs)
+
     def clean_sms_code(self):
         sms_code = self.cleaned_data['sms_code']
         if sms_code != self.expected_sms_code:
-            raise forms.ValidationError('Incorrect code.')
+            raise forms.ValidationError(self.error_messages['different'])
         return sms_code
 
 

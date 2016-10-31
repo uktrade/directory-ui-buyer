@@ -2,7 +2,15 @@ from unittest.mock import Mock, patch
 
 from directory_validators import enrolment as shared_validators
 
+from django.forms.fields import Field
+from django.core.validators import EmailValidator, URLValidator
+
 from enrolment import forms, validators
+
+
+REQUIRED_MESSAGE = Field.default_error_messages['required']
+EMAIL_FORMAT_MESSAGE = EmailValidator.message
+URL_FORMAT_MESSAGE = URLValidator.message
 
 
 def create_mock_file():
@@ -13,7 +21,7 @@ def create_mock_file():
 def test_company_form_rejects_missing_data():
     form = forms.CompanyForm(data={})
     assert form.is_valid() is False
-    assert 'company_number' in form.errors
+    assert form.errors['company_number'] == [REQUIRED_MESSAGE]
 
 
 def test_company_form_validators():
@@ -38,7 +46,7 @@ def test_company_email_form_rejects_invalid_email_addresses():
     })
 
     assert form.is_valid() is False
-    assert 'company_email' in form.errors
+    assert form.errors['company_email'] == [EMAIL_FORMAT_MESSAGE]
 
 
 @patch('enrolment.validators.api_client', Mock())
@@ -47,9 +55,10 @@ def test_test_company_email_form_rejects_different_email_addresses():
         'company_email': 'john@examplecorp.com',
         'email_confirmed': 'john@examplecorp.cm',
     })
+    expected = forms.CompanyEmailAddressForm.error_messages['different']
 
     assert form.is_valid() is False
-    assert 'email_confirmed' in form.errors
+    assert form.errors['email_confirmed'] == [expected]
 
 
 def test_test_user_form_rejects_different_mobile_numbers():
@@ -57,8 +66,10 @@ def test_test_user_form_rejects_different_mobile_numbers():
         'mobile_number': '111',
         'mobile_confirmed': '112',
     })
+    expected = forms.UserForm.error_messages['different']
+
     assert form.is_valid() is False
-    assert 'mobile_confirmed' in form.errors
+    assert form.errors['mobile_confirmed'] == [expected]
 
 
 def test_user_form_rejects_missing_data():
@@ -78,48 +89,20 @@ def test_user_form_accepts_valid_data():
     assert form.is_valid()
 
 
-def test_company_profile_form_requires_name():
+def test_company_profile_form_required_fields():
     form = forms.CompanyBasicInfoForm(data={})
 
     valid = form.is_valid()
 
     assert valid is False
-    assert 'company_name' in form.errors
-    assert len(form.errors['company_name']) == 1
-    assert form.errors['company_name'][0] == 'This field is required.'
+    assert form.errors['company_name'] == [REQUIRED_MESSAGE]
+    assert form.errors['website'] == [REQUIRED_MESSAGE]
+    assert form.errors['keywords'] == [REQUIRED_MESSAGE]
 
 
-def test_company_profile_form_requires_keywords():
-    form = forms.CompanyBasicInfoForm(data={})
-
-    valid = form.is_valid()
-
-    assert valid is False
-    assert 'keywords' in form.errors
-    assert len(form.errors['keywords']) == 1
-    assert form.errors['keywords'][0] == 'This field is required.'
-
-
-def test_company_profile_form_requires_website():
-    form = forms.CompanyBasicInfoForm(data={})
-
-    valid = form.is_valid()
-
-    assert valid is False
-    assert 'website' in form.errors
-    assert len(form.errors['website']) == 1
-    assert form.errors['website'][0] == 'This field is required.'
-
-
-def test_company_profile_form_rejects_invalid_website():
-    form = forms.CompanyBasicInfoForm(data={'website': 'google'})
-
-    valid = form.is_valid()
-
-    assert valid is False
-    assert 'website' in form.errors
-    assert len(form.errors['website']) == 1
-    assert form.errors['website'][0] == 'Enter a valid URL.'
+def test_company_profile_form_url_validator():
+    field = forms.CompanyBasicInfoForm.base_fields['website']
+    assert isinstance(field.validators[0], URLValidator)
 
 
 def test_company_profile_form_accepts_valid_data():
@@ -171,13 +154,13 @@ def test_company_description_form_accepts_valid_data():
 def test_company_description_form_rejects_invalid_data():
     form = forms.CompanyDescriptionForm(data={})
     assert form.is_valid() is False
-    assert form.errors['description'] == ['This field is required.']
+    assert form.errors['description'] == [REQUIRED_MESSAGE]
 
 
 def test_phone_number_verification_form_rejects_missing_data():
     form = forms.PhoneNumberVerificationForm(expected_sms_code=123, data={})
     assert form.is_valid() is False
-    assert form.errors['sms_code'] == ['This field is required.']
+    assert form.errors['sms_code'] == [REQUIRED_MESSAGE]
 
 
 def test_phone_number_verification_form_accepts_valid_data():
@@ -196,8 +179,10 @@ def test_phone_number_verification_form_rejects_invalid_data():
         'sms_code': 567,
     }
     form = forms.PhoneNumberVerificationForm(expected_sms_code=123, data=data)
+    expected = forms.PhoneNumberVerificationForm.error_messages['different']
+
     assert form.is_valid() is False
-    assert form.errors['sms_code'] == ['Incorrect code.']
+    assert form.errors['sms_code'] == [expected]
 
 
 def test_serialize_enrolment_forms():
