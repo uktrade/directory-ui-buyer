@@ -5,6 +5,7 @@ from directory_validators.constants import choices
 
 from django import forms
 from django.conf import settings
+from django.utils.safestring import mark_safe
 
 from enrolment import helpers, validators
 
@@ -16,8 +17,12 @@ class IndentedInvalidFieldsMixin:
 class CompanyForm(IndentedInvalidFieldsMixin, forms.Form):
     company_number = forms.CharField(
         label='Company number:',
-        help_text=('This is the 8-digit number on the company certificate of '
-                   'incorporation.'),
+        help_text=mark_safe(
+            'This is the 8-digit number on the company certificate of '
+            'incorporation. Find your company number from '
+            '<a href="{url}" target="_blank">Companies House'
+            '</a>'.format(url=settings.COMPANIES_HOUSE_SEARCH_URL)
+        ),
         validators=helpers.halt_validation_on_failure(
             shared_validators.company_number,
             validators.company_number,
@@ -29,7 +34,9 @@ class CompanyNameForm(IndentedInvalidFieldsMixin, forms.Form):
     company_name = forms.CharField(
         label='Company Name:',
         help_text=(
-            'Please click next if this is your company.'
+            "Click next if this is your company. If it is not your company "
+            "then click back in your browser and re-enter your company's "
+            "number."
         ),
         widget=forms.TextInput(attrs={'readonly': 'readonly'}),
     )
@@ -100,8 +107,7 @@ class CompanyEmailAddressForm(IndentedInvalidFieldsMixin, forms.Form):
         ]
     )
     email_confirmed = forms.EmailField(
-        label='Email confirmed:',
-        help_text='Please confirm your email address.',
+        label='Please confirm your email address:',
     )
 
     def clean_email_confirmed(self):
@@ -114,16 +120,17 @@ class CompanyEmailAddressForm(IndentedInvalidFieldsMixin, forms.Form):
 
 class UserForm(IndentedInvalidFieldsMixin, forms.Form):
     mobile_number = forms.CharField(
-        label='Mobile number:',
+        label='Your mobile phone number:',
         help_text='We will use this to send you a verification code.',
     )
     mobile_confirmed = forms.CharField(
-        label='Mobile number confirmed:'
+        label='Please confirm your mobile phone number:'
     )
     terms_agreed = forms.BooleanField(
-        label=(
-            'Tick this box to accept the terms and conditions of the Great '
-            'Trade Index.'
+        label=mark_safe(
+            'Tick this box to accept the '
+            '<a href="/terms_and_conditions" target="_blank">terms and '
+            'conditions</a> of the Find a Buyer service.'
         )
     )
     referrer = forms.CharField(required=False, widget=forms.HiddenInput())
@@ -164,9 +171,9 @@ class PhoneNumberVerificationForm(IndentedInvalidFieldsMixin, forms.Form):
     sms_code = forms.CharField(
         label='Enter the code from the text message we sent you:',
         help_text=(
-            'We have sent you an SMS text message to your mobile phone '
-            'containing an six digit code which you’ll need to enter on the '
-            'verification page to complete your Export Connect account.'
+            'We have sent you an SMS text message containing a six digit '
+            'code. Verify your company profile by entering the code. Contact '
+            'us if you do not receive the text message in 10 minutes.'
         ),
     )
 
