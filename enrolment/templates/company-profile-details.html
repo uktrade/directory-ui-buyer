@@ -49,7 +49,9 @@
 				{% if company.employees %}
 					Number of employees: {{company.employees}}
 				{% else %}
-					<a href="{% url 'company-edit' %}" target="_self">Please set your number of employees.</a>
+					<a href="{% url 'company-edit' %}" target="_self">
+						Edit your company's key facts
+					</a>
 				{% endif %}
 				</div>
 			</div>
@@ -73,7 +75,7 @@
 				<span>{{company.description}}</span>
 				{% else %}
 				<a href="{% url 'company-edit-description' %}" target="_self">
-					Please set your company's description.
+					Edit your company's description.
 				</a>
 				{% endif%}
 			</div>
@@ -93,7 +95,7 @@
 					{% endfor %}
 					{% if not company.sectors %}
 					<a href="{% url 'company-edit' %}" target="_self">
-						Please set your company's sectors.
+						Edit your company's sectors.
 					</a>
 					{% endif %}
 				</div>
@@ -109,7 +111,7 @@
 					<span>{{company.keywords}}</span>
 					{% else %}
 					<a href="{% url 'company-edit' %}" target="_self">
-						Please set your company's keywords.
+						Edit your company's keywords.
 					</a>
 					{% endif %}
 				</div>
