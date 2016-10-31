@@ -100,10 +100,11 @@ class CompanyEmailAddressForm(IndentedInvalidFieldsMixin, forms.Form):
             'Please enter a company email address rather than a personal '
             'email address.'
         ),
-        validators=[
+        validators=helpers.halt_validation_on_failure(
             shared_validators.email_domain_free,
             shared_validators.email_domain_disposable,
-        ]
+            validators.email_address,
+        )
     )
     email_confirmed = forms.EmailField(
         label='Please confirm your email address:',
