@@ -18,10 +18,10 @@ class CompanyForm(IndentedInvalidFieldsMixin, forms.Form):
     company_number = forms.CharField(
         label='Company number:',
         help_text=mark_safe(
-            'This is the 8-digit number on the company certificate of '
+            'This is the company number on your certificate of '
             'incorporation. Find your company number from '
             '<a href="{url}" target="_blank">Companies House'
-            '</a>'.format(url=settings.COMPANIES_HOUSE_SEARCH_URL)
+            '</a>.'.format(url=settings.COMPANIES_HOUSE_SEARCH_URL)
         ),
         validators=helpers.halt_validation_on_failure(
             shared_validators.company_number,
