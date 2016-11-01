@@ -6,12 +6,33 @@
 	padding: 24px;
 	position: relative;
 	top: -100px;
-  margin-top: 40px;
-  .ed-landing-page-login-synopsis {
-    @media (min-width: 979px) {
-      margin-top: 20px;
-    }
-  }
+	margin-top: 40px;
+
+	&.international {
+		margin-top: 0;
+	}
+
+	.ed-landing-page-login-synopsis {
+		@media (min-width: 979px) {
+	  		margin-top: 20px;
+		}
+	}
+}
+
+.input-field-container {
+	margin-bottom: 0;
+	input, select {
+		height: 60px;
+		border: 0;
+		margin-bottom: 0;
+		padding: 0 24px;
+		@media (max-width: 767px) {
+			margin-bottom: 20px;
+		}
+	}
+	label {
+		margin-bottom: 0;
+	}
 }
 
 .page-title {
@@ -25,8 +46,7 @@ a .register-interest-btn {
     border: 0;
     border-radius: 0;
     color: $white;
-    margin-top: 5px;
-    padding: 20px 0;
+    padding: 17px 0 18px;
     text-align: center;
     width: 100%;
 }

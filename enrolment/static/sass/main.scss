@@ -149,6 +149,10 @@ ul, li {
   margin-left: .5em;
 }
 
+.bold {
+  font-weight: 600;
+}
+
 a.teal {
   color: #007ea3;
   border-bottom: 1px solid #007ea3;
@@ -157,10 +161,30 @@ a.teal:hover {
   border-bottom: 1px dashed #007ea3;
   text-decoration: none;
 }
+
+a.white-link {
+  color: $white;
+  border-bottom: 1px solid $white;
+  text-decoration: none;
+}
+a.white-link:hover {
+  border-bottom: 1px dashed $white;
+}
+
 #skiplink-container a.skiplink,
 a.teal:focus {
   background: #007EA3;
   color: #ffffff;
+}
+
+.custom-hr {
+  border-top: 0;
+}
+
+label, input, button, select, textarea {
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1.4;
 }
 
 .input-field-container {
@@ -168,11 +192,13 @@ a.teal:focus {
   
   label {
     margin-bottom: 10px;
+    font-size: 18px;
+    font-weight: 400; 
   }
 
   input, select, textarea {
     border-radius: 0;
-    font-size: 16px;
+    font-size: 18px;
     height: 50px;
     width: 100%;
     color: #4a4a4a;
@@ -252,6 +278,10 @@ a.teal:focus {
       outline: 0;
     }
   }
+}
+
+.checkbox-txt {
+  margin-left: 20px;
 }
 
 .great-britain-logo {
