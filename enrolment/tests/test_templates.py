@@ -221,3 +221,16 @@ def test_header_logged_out():
     assert context['sso_login_url'] in html
     assert 'Logout' not in html
     assert context['sso_logout_url'] not in html
+
+
+def test_google_tag_manager():
+    expected_head = render_to_string('google_tag_manager_head.html')
+    expected_body = render_to_string('google_tag_manager_body.html')
+
+    html = render_to_string('govuk_layout.html')
+
+    assert expected_head in html
+    assert expected_body in html
+    # sanity check
+    assert 'www.googletagmanager.com' in expected_head
+    assert 'www.googletagmanager.com' in expected_body
