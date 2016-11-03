@@ -129,3 +129,37 @@ def test_get_employees_label_none():
 
 def test_get_sectors_labels_none():
     assert helpers.get_sectors_labels([]) == []
+
+
+@patch.object(helpers, 'get_ip', return_value=None)
+def test_is_request_international_IP_not_exposed_in_request(mock_get_ip, rf):
+    request = rf.get('/')
+
+    actual = helpers.is_request_international(request)
+
+    mock_get_ip.assert_called_once_with(request)
+    assert actual is False
+
+
+@patch.object(helpers, 'get_ip', return_value='127.0.0.1')
+def test_is_request_international_IP_not_in_database(mock_get_ip, rf):
+    request = rf.get('/')
+
+    actual = helpers.is_request_international(request)
+
+    mock_get_ip.assert_called_once_with(request)
+    assert actual is False
+
+
+def test_is_request_international_IP_from_international_users(rf):
+    request = rf.get('/')
+    for ip in ['2.0.0.0', '3.0.0.0', '2.144.0.0']:
+        with patch.object(helpers, 'get_ip', return_value=ip):
+            assert helpers.is_request_international(request) is True
+
+
+@patch.object(helpers, 'get_ip', return_value='90.254.120.205')
+def test_is_request_international_IP_from_domestic_user(rf):
+    request = rf.get('/')
+
+    assert helpers.is_request_international(request) is False
