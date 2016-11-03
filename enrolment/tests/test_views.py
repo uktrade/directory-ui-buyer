@@ -9,13 +9,14 @@ from django.core.urlresolvers import reverse
 
 from enrolment.constants import SESSION_KEY_REFERRER
 from enrolment.views import (
+    api_client,
+    CompanyEmailConfirmationView,
+    EnrolmentView,
+    LandingView,
     UserCompanyDescriptionEditView,
     UserCompanyProfileDetailView,
     UserCompanyProfileEditView,
-    UserCompanyProfileLogoEditView,
-    CompanyEmailConfirmationView,
-    EnrolmentView,
-    api_client,
+    UserCompanyProfileLogoEditView
 )
 from enrolment import forms, helpers
 from sso.utils import SSOUser
@@ -582,3 +583,23 @@ def test_enrolment_handles_bad_response(user_step_request):
         response = EnrolmentView.as_view()(user_step_request)
 
         assert response.status_code == http.client.INTERNAL_SERVER_ERROR
+
+
+@mock.patch.object(helpers, 'is_request_international', return_value=True)
+def test_landing_view_international_template(
+    mock_is_request_international, sso_request
+):
+    response = LandingView.as_view()(sso_request)
+
+    assert response.template_name == [LandingView.international_template_name]
+    mock_is_request_international.assert_called_once_with(sso_request)
+
+
+@mock.patch.object(helpers, 'is_request_international', return_value=False)
+def test_landing_view_domestic_template(
+    mock_is_request_international, sso_request
+):
+    response = LandingView.as_view()(sso_request)
+
+    assert response.template_name == [LandingView.domestic_template_name]
+    mock_is_request_international.assert_called_once_with(sso_request)

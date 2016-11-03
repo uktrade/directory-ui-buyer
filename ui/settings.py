@@ -139,3 +139,5 @@ VALIDATOR_MAX_LOGO_SIZE_BYTES = int(os.getenv(
 ))
 
 COMPANIES_HOUSE_SEARCH_URL = os.environ["COMPANIES_HOUSE_SEARCH_URL"]
+
+GEOIP_PATH = os.path.join(BASE_DIR, 'geodata')

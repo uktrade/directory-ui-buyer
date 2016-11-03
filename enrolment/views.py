@@ -46,7 +46,14 @@ class CachableTemplateView(CacheMixin, TemplateView):
 
 
 class LandingView(CacheMixin, TemplateView):
-    template_name = 'landing-page.html'
+    domestic_template_name = 'landing-page.html'
+    international_template_name = 'landing-page-international.html'
+
+    def get_template_names(self):
+        if helpers.is_request_international(self.request):
+            return [self.international_template_name]
+        else:
+            return [self.domestic_template_name]
 
 
 class EnrolmentView(SSOLoginRequiredMixin, SessionWizardView):
