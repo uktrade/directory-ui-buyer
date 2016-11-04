@@ -631,5 +631,5 @@ def test_landing_view_international_submit(
 
     assert response.template_name == LandingView.success_template
     mock_send_form.assert_called_once_with(
-        data=forms.serialize_international_buyer_forms(buyer_form_data)
+        forms.serialize_international_buyer_forms(buyer_form_data)
     )
