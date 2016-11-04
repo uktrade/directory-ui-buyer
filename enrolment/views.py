@@ -11,6 +11,7 @@ from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.utils.cache import patch_response_headers
 from django.views.generic import TemplateView
+from django.views.generic.edit import FormView
 from django.views.generic.base import View
 
 from enrolment import forms, helpers
@@ -45,15 +46,22 @@ class CachableTemplateView(CacheMixin, TemplateView):
     pass
 
 
-class LandingView(CacheMixin, TemplateView):
+class LandingView(FormView):
     domestic_template_name = 'landing-page.html'
     international_template_name = 'landing-page-international.html'
+    success_template = 'landing-page-international-success.html'
+    form_class = forms.InternationalBuyerForm
 
     def get_template_names(self):
         if helpers.is_request_international(self.request):
             return [self.international_template_name]
         else:
             return [self.domestic_template_name]
+
+    def form_valid(self, form):
+        data = forms.serialize_international_buyer_forms(form.cleaned_data)
+        api_client.buyer.send_form(data=data)
+        return TemplateResponse(self.request, self.success_template)
 
 
 class EnrolmentView(SSOLoginRequiredMixin, SessionWizardView):

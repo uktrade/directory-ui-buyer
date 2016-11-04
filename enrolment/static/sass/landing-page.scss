@@ -17,13 +17,32 @@
 	  		margin-top: 20px;
 		}
 	}
+
+  a {
+    color: white;
+    border-bottom: 1px solid #777;
+    font-weight: bold;
+  }
+
+  a:hover {
+    border-bottom: 1px dashed #fff;
+    text-decoration: none;
+  }
+
+  .register-interest-btn {
+    background: #00549f;
+    border: 0;
+    border-radius: 0;
+    color: #fff;
+    padding: 18px;
+    text-align: center;
+  }
 }
 
 .input-field-container {
 	margin-bottom: 0;
 	input, select {
 		height: 60px;
-		border: 0;
 		margin-bottom: 0;
 		padding: 0 24px;
 		@media (max-width: 767px) {
