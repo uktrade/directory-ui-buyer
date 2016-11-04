@@ -263,3 +263,17 @@ def test_serialize_company_description_forms():
         'description': 'Jolly good exporter.',
     }
     assert actual == expected
+
+
+def test_serialize_international_buyer_forms():
+    actual = forms.serialize_international_buyer_forms({
+        'full_name': 'Jim Example',
+        'email_address': 'jim@example.com',
+        'sector': 'AEROSPACE',
+    })
+    expected = {
+        'name': 'Jim Example',
+        'email': 'jim@example.com',
+        'sector': 'AEROSPACE',
+    }
+    assert actual == expected

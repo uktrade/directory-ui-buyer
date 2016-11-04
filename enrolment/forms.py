@@ -287,3 +287,21 @@ def serialize_company_description_forms(cleaned_data):
     return {
         'description': cleaned_data['description'],
     }
+
+
+def serialize_international_buyer_forms(cleaned_data):
+    """
+    Return the shape directory-api-client expects for saving international
+    buyers.
+
+    @param {dict} cleaned_data - All the fields in `InternationalBuyerForm`
+
+    @returns dict
+
+    """
+
+    return {
+        'name': cleaned_data['full_name'],
+        'email': cleaned_data['email_address'],
+        'sector': cleaned_data['sector'],
+    }

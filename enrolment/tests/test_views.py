@@ -31,11 +31,27 @@ def sso_user():
 
 
 @pytest.fixture
+def buyer_form_data():
+    return {
+        'full_name': 'Jim Example',
+        'email_address': 'jim@example.com',
+        'sector': 'AEROSPACE',
+        'terms': True
+    }
+
+
+@pytest.fixture
+def buyer_request(rf, client, buyer_form_data):
+    request = rf.post('/', buyer_form_data)
+    request.session = client.session
+    return request
+
+
+@pytest.fixture
 def company_request(rf, client, sso_user):
     request = rf.get('/')
     request.sso_user = sso_user
     request.session = client.session
-    request.session['company_id'] = 1
     return request
 
 
@@ -603,3 +619,17 @@ def test_landing_view_domestic_template(
 
     assert response.template_name == [LandingView.domestic_template_name]
     mock_is_request_international.assert_called_once_with(sso_request)
+
+
+@mock.patch.object(helpers, 'is_request_international',
+                   mock.Mock(return_value=True))
+@mock.patch.object(api_client.buyer, 'send_form')
+def test_landing_view_international_submit(
+    mock_send_form, buyer_request, buyer_form_data
+):
+    response = LandingView.as_view()(buyer_request)
+
+    assert response.template_name == LandingView.success_template
+    mock_send_form.assert_called_once_with(
+        data=forms.serialize_international_buyer_forms(buyer_form_data)
+    )

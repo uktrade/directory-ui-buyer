@@ -49,6 +49,7 @@ class CachableTemplateView(CacheMixin, TemplateView):
 class LandingView(FormView):
     domestic_template_name = 'landing-page.html'
     international_template_name = 'landing-page-international.html'
+    success_template = 'landing-page-international-success.html'
     form_class = forms.InternationalBuyerForm
 
     def get_template_names(self):
@@ -56,6 +57,11 @@ class LandingView(FormView):
             return [self.international_template_name]
         else:
             return [self.domestic_template_name]
+
+    def form_valid(self, form):
+        data = forms.serialize_international_buyer_forms(form.cleaned_data)
+        api_client.buyer.send_form(data=data)
+        return TemplateResponse(self.request, self.success_template)
 
 
 class EnrolmentView(SSOLoginRequiredMixin, SessionWizardView):
