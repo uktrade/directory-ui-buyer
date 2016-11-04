@@ -200,10 +200,10 @@ class PhoneNumberVerificationForm(IndentedInvalidFieldsMixin, forms.Form):
 class InternationalBuyerForm(IndentedInvalidFieldsMixin, forms.Form):
     PLEASE_SELECT_LABEL = 'Please select a sector'
 
-    full_name = forms.CharField(label='Your name:')
-    email_address = forms.EmailField(label='Your email address:')
+    full_name = forms.CharField(label='Your name')
+    email_address = forms.EmailField(label='Your email address')
     sector = forms.ChoiceField(
-        label='Sector:',
+        label='Sector',
         choices=(
             [['', PLEASE_SELECT_LABEL]] + list(choices.COMPANY_CLASSIFICATIONS)
         )
@@ -211,8 +211,8 @@ class InternationalBuyerForm(IndentedInvalidFieldsMixin, forms.Form):
     terms = forms.BooleanField(
         label=mark_safe(
             'I agree to the <a target="_self" '
-            'href="/terms_and_conditions">terms and conditions</a> of the '
-            'website:'
+            'href="/terms_and_conditions">terms and conditions</a> of '
+            'Exporting is GREAT.'
         )
     )
 
