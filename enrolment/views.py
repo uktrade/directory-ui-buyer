@@ -11,6 +11,7 @@ from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.utils.cache import patch_response_headers
 from django.views.generic import TemplateView
+from django.views.generic.edit import FormView
 from django.views.generic.base import View
 
 from enrolment import forms, helpers
@@ -45,9 +46,10 @@ class CachableTemplateView(CacheMixin, TemplateView):
     pass
 
 
-class LandingView(CacheMixin, TemplateView):
+class LandingView(FormView):
     domestic_template_name = 'landing-page.html'
     international_template_name = 'landing-page-international.html'
+    form_class = forms.InternationalBuyerForm
 
     def get_template_names(self):
         if helpers.is_request_international(self.request):

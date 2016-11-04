@@ -74,10 +74,11 @@ def test_test_user_form_rejects_different_mobile_numbers():
 
 def test_user_form_rejects_missing_data():
     form = forms.UserForm(data={})
-    assert 'mobile_number' in form.errors
-    assert 'mobile_confirmed' in form.errors
-    assert 'mobile_confirmed' in form.errors
-    assert 'terms_agreed' in form.errors
+
+    assert form.is_valid() is False
+    assert form.errors['mobile_number'] == [REQUIRED_MESSAGE]
+    assert form.errors['mobile_confirmed'] == [REQUIRED_MESSAGE]
+    assert form.errors['terms_agreed'] == [REQUIRED_MESSAGE]
 
 
 def test_user_form_accepts_valid_data():
@@ -85,6 +86,26 @@ def test_user_form_accepts_valid_data():
         'mobile_number': '07506674933',
         'mobile_confirmed': '07506674933',
         'terms_agreed': 1,
+    })
+    assert form.is_valid()
+
+
+def test_international_form_missing_data():
+    form = forms.InternationalBuyerForm(data={})
+
+    assert form.is_valid() is False
+    assert form.errors['full_name'] == [REQUIRED_MESSAGE]
+    assert form.errors['email_address'] == [REQUIRED_MESSAGE]
+    assert form.errors['sector'] == [REQUIRED_MESSAGE]
+    assert form.errors['terms'] == [REQUIRED_MESSAGE]
+
+
+def test_international_form_accepts_valid_data():
+    form = forms.InternationalBuyerForm(data={
+        'full_name': 'Jim Example',
+        'email_address': 'jim@example.com',
+        'sector': 'AEROSPACE',
+        'terms': True
     })
     assert form.is_valid()
 
