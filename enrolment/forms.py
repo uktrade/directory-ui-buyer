@@ -84,7 +84,7 @@ class CompanyLogoForm(IndentedInvalidFieldsMixin, forms.Form):
     logo = forms.FileField(
         help_text=(
             'For best results this should be a transparent PNG file of 600 x '
-            '600 pixels and more than {0}MB'.format(
+            '600 pixels and no more than {0}MB'.format(
                 int(settings.VALIDATOR_MAX_LOGO_SIZE_BYTES / 1024 / 1014)
             )
         ),
