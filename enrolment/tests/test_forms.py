@@ -1,6 +1,7 @@
 from unittest.mock import Mock, patch
 
-from directory_validators import enrolment as shared_validators
+from directory_validators import company as shared_company_validators
+from directory_validators import enrolment as shared_enrolment_validators
 
 from django.forms.fields import Field
 from django.core.validators import EmailValidator, URLValidator
@@ -27,16 +28,16 @@ def test_company_form_rejects_missing_data():
 def test_company_form_validators():
     field = forms.CompanyForm.base_fields['company_number']
     inner_validators = field.validators[0].inner_validators
-    assert shared_validators.company_number in inner_validators
+    assert shared_enrolment_validators.company_number in inner_validators
     assert validators.company_number in inner_validators
 
 
 def test_company_email_form_email_validators():
     field = forms.CompanyEmailAddressForm.base_fields['company_email']
-    inner_validators = field.validators[1].inner_validators
-    assert shared_validators.email_domain_free in inner_validators
-    assert shared_validators.email_domain_disposable in inner_validators
-    assert validators.email_address in inner_validators
+    inner = field.validators[1].inner_validators
+    assert shared_enrolment_validators.email_domain_free in inner
+    assert shared_enrolment_validators.email_domain_disposable in inner
+    assert validators.email_address in inner
 
 
 @patch('enrolment.validators.api_client', Mock())
@@ -121,6 +122,11 @@ def test_company_profile_form_required_fields():
     assert form.errors['keywords'] == [REQUIRED_MESSAGE]
 
 
+def test_company_profile_form_keywords_validator():
+    field = forms.CompanyBasicInfoForm.base_fields['keywords']
+    assert shared_company_validators.keywords_word_limit in field.validators
+
+
 def test_company_profile_form_url_validator():
     field = forms.CompanyBasicInfoForm.base_fields['website']
     assert isinstance(field.validators[0], URLValidator)
@@ -173,12 +179,13 @@ def test_company_logo_form_logo_is_required():
 
 def test_company_profile_logo_validator():
     field = forms.CompanyLogoForm.base_fields['logo']
-    assert shared_validators.logo_filesize in field.validators
+    assert shared_enrolment_validators.logo_filesize in field.validators
 
 
 def test_company_export_status_form_validars():
     field = forms.CompanyExportStatusForm.base_fields['export_status']
-    assert shared_validators.export_status_intention in field.validators
+    validator = shared_enrolment_validators.export_status_intention
+    assert validator in field.validators
 
 
 def test_company_description_form_accepts_valid_data():
@@ -221,6 +228,11 @@ def test_phone_number_verification_form_rejects_invalid_data():
 
     assert form.is_valid() is False
     assert form.errors['sms_code'] == [expected]
+
+
+def test_company_classification_form_sectors_validator():
+    field = forms.CompanyClassificationForm.base_fields['sectors']
+    assert shared_company_validators.sector_choice_limit in field.validators
 
 
 def test_serialize_enrolment_forms():

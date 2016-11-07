@@ -1,6 +1,7 @@
 import json
 
-from directory_validators import enrolment as shared_validators
+from directory_validators import enrolment as shared_enrolment_validators
+from directory_validators import company as shared_company_validators
 from directory_validators.constants import choices
 
 from django import forms
@@ -24,7 +25,7 @@ class CompanyForm(IndentedInvalidFieldsMixin, forms.Form):
             '</a>.'.format(url=settings.COMPANIES_HOUSE_SEARCH_URL)
         ),
         validators=helpers.halt_validation_on_failure(
-            shared_validators.company_number,
+            shared_enrolment_validators.company_number,
             validators.company_number,
         )
     )
@@ -47,7 +48,7 @@ class CompanyExportStatusForm(IndentedInvalidFieldsMixin, forms.Form):
             'Has your company sold products or services to overseas customers?'
         ),
         choices=choices.EXPORT_STATUSES,
-        validators=[shared_validators.export_status_intention]
+        validators=[shared_enrolment_validators.export_status_intention]
     )
 
 
@@ -74,6 +75,7 @@ class CompanyBasicInfoForm(IndentedInvalidFieldsMixin, forms.Form):
         ),
         widget=forms.Textarea,
         max_length=1000,
+        validators=[shared_company_validators.keywords_word_limit]
     )
 
 
@@ -95,7 +97,7 @@ class CompanyLogoForm(IndentedInvalidFieldsMixin, forms.Form):
             )
         ),
         required=True,
-        validators=[shared_validators.logo_filesize]
+        validators=[shared_enrolment_validators.logo_filesize]
     )
 
 
@@ -110,8 +112,8 @@ class CompanyEmailAddressForm(IndentedInvalidFieldsMixin, forms.Form):
             'email address.'
         ),
         validators=helpers.halt_validation_on_failure(
-            shared_validators.email_domain_free,
-            shared_validators.email_domain_disposable,
+            shared_enrolment_validators.email_domain_free,
+            shared_enrolment_validators.email_domain_disposable,
             validators.email_address,
         )
     )
@@ -170,9 +172,13 @@ class CompanySizeForm(IndentedInvalidFieldsMixin, forms.Form):
 
 class CompanyClassificationForm(IndentedInvalidFieldsMixin, forms.Form):
     sectors = forms.MultipleChoiceField(
-        label='What sectors is your company interested in working in?',
+        label=(
+            'What sectors is your company interested in working in? '
+            'Choose no more than 10 sectors.'
+        ),
         choices=choices.COMPANY_CLASSIFICATIONS,
-        widget=forms.CheckboxSelectMultiple()
+        widget=forms.CheckboxSelectMultiple(),
+        validators=[shared_company_validators.sector_choice_limit]
     )
 
 
