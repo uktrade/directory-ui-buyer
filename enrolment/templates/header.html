@@ -2,50 +2,60 @@
 <header class="ed-header">
     <div class="row-fluid ed-header-level-one">
         <div class="container">
-            <ul class="pull-right">
-                <li>
-                    <a href="#">Export Opportunities</a>
-                </li>
-                <li>
-                    <a href="#">Find a Buyer</a>
-                </li>
-                <li>
-                    <a href="#">Selling Online Overseas</a>
-                </li>
-                <li>
-                    <a href="#">Events</a>
-                </li>
-                {% if not sso_is_logged_in %}
-                <li>
-                    <a href="{{ sso_login_url }}" target="_self">Login</a>
-                </li>
-                {% else %}
-                <li>
-                    <a href="{% url 'company-detail' %}" target="_self">Profile</a>
-                </li>
-                <li>
-                    <a href="{{ sso_logout_url }}" target="_self">Logout</a>
-                </li>
-                {% endif %}
-            </ul>
+            <div class="level-one-container">
+                <h3 class="our-services-top hide-in-mobile">Our services:</h3>
+                <ul class="">
+                    <li class="hide-in-mobile"><a href="https://www.exportingisgreat.gov.uk/opportunities" title="Exporting opportunities">Exporting opportunities</a></li>
+                    <li class="hide-in-mobile"><a href="http://find-a-buyer.export.great.gov.uk/" title="Find a buyer">Find a buyer</a></li>
+                    <li class="hide-in-mobile"><a href="https://selling-online-overseas.export.great.gov.uk/" title="Selling online overseas">Selling online overseas</a></li>
+                    <li class="hide-in-mobile"><a href="https://www.events.ukti.gov.uk/" title="Events">Events</a></li>
+                    {% if not sso_is_logged_in %}
+                        <li><a href="{{ sso_login_url }}" target="_self" title="Login">Login</a></li>
+                    {% else %}
+                        <li><a href="{% url 'company-detail' %}" target="_self" title="Profile">Profile</a></li>
+                        <li><a href="{{ sso_logout_url }}" target="_self" title="Logout">Logout</a></li>
+                    {% endif %}
+                </ul>
+            </div>
         </div>
     </div>
+
     <div class="row-fluid ed-header-level-two">
         <div class="container">
-            <img height="83px" src="{% static 'images/exporting_is_great.png' %}" />
+            <img class="header-main-logo" height="83px" width="300px" src="{% static 'images/EiG-logo-withHMG.png' %}" />
             <span>
-                <ul class="pull-right">
-                    <li>
-                        <a href="#">New to Exporting</a>
-                    </li>
-                    <li>
-                        <a href="#">Occasional Exporter</a>
-                    </li>
-                    <li>
-                        <a href="#">Regular Exporter</a>
-                    </li>
+                <ul class="header-nav-links">
+                    <li><a href="https://www.exportingisgreat.gov.uk/new/" title="New to Exporting">New to Exporting</a></li>
+                    <li><a href="https://www.exportingisgreat.gov.uk/occasional/" title="Occasional Exporter">Occasional Exporter</a></li>
+                    <li><a href="https://www.exportingisgreat.gov.uk/regular/" title="Regular Exporter">Regular Exporter</a></li>
                 </ul>
             </span>
         </span>
+    </div>
+
+    <div class="row-fluid ed-header-mobile-view" id="">
+        <div class="header-nav">
+            <div class="background--indigo soft-half--sides soft--ends header-nav--top">
+                <nav>
+                    <h3 class="font-white font-weight-medium font-size-15">Our services:</h3>
+                    <ul class="mobile-secondary-nav">
+                        <li class="header-nav-link"><a class="font-reg" href="https://www.exportingisgreat.gov.uk/opportunities" title="Exporting opportunities">Exporting opportunities</a></li>
+                        <li class="header-nav-link"><a class="font-reg" href="http://find-a-buyer.export.great.gov.uk/" title="Find a buyer">Find a buyer</a></li>
+                        <li class="header-nav-link"><a class="font-reg" href="https://selling-online-overseas.export.great.gov.uk/" title="Selling online overseas">Selling online overseas</a></li>
+                        <li class="header-nav-link"><a class="font-reg" href="https://www.events.ukti.gov.uk/" title="Events">Events</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="soft-half--sides">
+                <nav>
+                    <h3 class="font-white font-weight-medium font-size-15 push--top desktop-only">Exporting is GREAT:</h3>
+                    <ul id="secondaryNav" class="mobile-secondary-nav">
+                        <li class="header-nav-link"><a title="NEW TO EXPORTING" href="exportingisgreat.gov.uk/new/" class="active">NEW TO EXPORTING</a></li>
+                        <li class="header-nav-link"><a title="OCCASIONAL EXPORTER" href="exportingisgreat.gov.uk/occasional/">OCCASIONAL EXPORTER</a></li>
+                        <li class="header-nav-link"><a title="REGULAR EXPORTER" href="exportingisgreat.gov.uk/regular/">REGULAR EXPORTER</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
     </div>
 </header>
