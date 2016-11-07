@@ -126,6 +126,13 @@ def test_company_profile_form_url_validator():
     assert isinstance(field.validators[0], URLValidator)
 
 
+def test_company_profile_form_url_help_text():
+    form = forms.CompanyBasicInfoForm()
+    # to show `\\` to the user we must use four slashes (\\\\)
+    message = 'must start with either http:\\\\ or https:\\\\'
+    assert message in str(form)
+
+
 def test_company_profile_form_accepts_valid_data():
     data = {'company_name': 'Amazon UK',
             'website': 'http://amazon.co.uk',
