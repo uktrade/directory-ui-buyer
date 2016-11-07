@@ -104,10 +104,12 @@ USE_TZ = True
 
 MEDIA_ROOT = os.path.join(PROJECT_ROOT, 'media')
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/1.9/howto/static-files/
+# Static files served with Whitenoise and AWS Cloudfront
+# http://whitenoise.evans.io/en/stable/django.html#instructions-for-amazon-cloudfront
+# http://whitenoise.evans.io/en/stable/django.html#restricting-cloudfront-to-static-files
 STATIC_ROOT = os.path.join(PROJECT_ROOT, 'staticfiles')
-STATIC_URL = '/static/'
+STATIC_HOST = os.environ.get('STATIC_HOST', '')
+STATIC_URL = STATIC_HOST + '/static/'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # directory-api
