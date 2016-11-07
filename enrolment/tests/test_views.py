@@ -13,6 +13,7 @@ from enrolment.views import (
     CompanyEmailConfirmationView,
     EnrolmentView,
     LandingView,
+    FeedbackView,
     UserCompanyDescriptionEditView,
     UserCompanyProfileDetailView,
     UserCompanyProfileEditView,
@@ -644,3 +645,13 @@ def test_landing_view_international_submit(
     mock_send_form.assert_called_once_with(
         forms.serialize_international_buyer_forms(buyer_form_data)
     )
+
+
+def test_feedback_redirect(rf, settings):
+    request = rf.get(reverse('feedback'))
+
+    response = FeedbackView.as_view()(request)
+
+    assert settings.FEEDBACK_FORM_URL
+    assert response.status_code == http.client.FOUND
+    assert response.get('Location') == settings.FEEDBACK_FORM_URL
