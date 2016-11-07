@@ -6,6 +6,7 @@
 	padding: 24px;
 	position: relative;
 	top: -100px;
+  margin-bottom: -100px;
 	margin-top: 40px;
 
 	&.international {
@@ -70,7 +71,6 @@ a .register-interest-btn {
     width: 100%;
 }
 
-
 .mid-blue-bar {
   background: $mid-blue;
   color: $white;
@@ -82,6 +82,13 @@ a .register-interest-btn {
     color: $white;
     font-size: 24px;
     font-weight: 500;
+    a {
+      border-bottom: 1px solid #fff;
+      text-decoration: none;
+      &:hover {
+        border-bottom: 1px dashed #fff;
+      }
+    }
   }
   .element-within {
     display: table-cell;
@@ -97,6 +104,118 @@ a .register-interest-btn {
   @media (max-width: 767px) {
     .element-within {
       display: block;
+    }
+  }
+}
+
+.ipad-image {
+  margin-bottom: 40px;
+  &.international {
+    margin-top: 60px;
+  }
+  @media (max-width: 960px) {
+    margin-top: 40px;
+  }
+}
+.ipad-intro-txt {
+  font-size: 24px;
+  line-height: 1.2;
+  max-width: 80%;
+  margin: 0 auto 40px;
+  @media (max-width: 960px) {
+    max-width: 100%;
+  }
+}
+
+.ipad-img-container {
+  .desktop-mode {
+    display: block;
+    position: relative;
+    @media (max-width: 980px) {
+      display: none;
+    }
+    .ipad-img-with-arrows {
+      text-align: center;
+      
+      .top-left-text, .bottom-left-text, .top-right-text, .bottom-right-text {
+        position: absolute;
+        text-align: left;
+        width: 220px;
+      }
+      .top-left-text{
+        top: 80px;
+        left: 0;
+      }
+      .top-right-text {
+        top: 60px;
+        right: 0;
+      }
+      .bottom-left-text {
+        bottom: 100px;
+        left: 0;
+      }
+      .bottom-right-text {
+        bottom: 120px;
+        right: 0;
+      }
+
+      img {
+        max-width: 80%;
+      }
+    }
+  }
+  .mobile-mode {
+    display: none;
+    @media (max-width: 980px) {
+      display: block;
+    }
+  }
+}
+
+.explanation-text-list {
+  margin-top: 40px;
+  ol {
+    li {
+      list-style-type: decimal;
+      margin-bottom: 40px;
+      @media (max-width: 768px) {
+        margin-bottom: 20px;
+      }
+    }
+  }
+}
+
+.hero-profiles {
+  background: #f2eee8;
+  margin-bottom: 40px;
+  padding: 20px;
+  .profile {
+    @media (max-width: 768px) {
+      margin-bottom: 40px;
+    }
+    .hero-profile-img-container {
+      img {
+        width: 100%;
+      }
+    }
+    .hero-profile-title {
+      font-weight: 500;
+      margin-top: 10px;
+    }
+    .hero-profile-txt { 
+      margin-top: 10px;
+    }
+    .hero-profile-link {
+      margin-top: 10px;
+      a {
+        border-bottom: 1px solid $mid-blue;
+        color: $mid-blue;
+        font-weight: 500;
+        text-decoration: none;
+        &:hover {
+          border-bottom: 1px dashed $mid-blue;
+        }
+      }
     }
   }
 }
