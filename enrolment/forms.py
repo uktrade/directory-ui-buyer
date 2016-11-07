@@ -94,7 +94,7 @@ class CompanyLogoForm(IndentedInvalidFieldsMixin, forms.Form):
                 int(settings.VALIDATOR_MAX_LOGO_SIZE_BYTES / 1024 / 1014)
             )
         ),
-        required=False,
+        required=True,
         validators=[shared_validators.logo_filesize]
     )
 
