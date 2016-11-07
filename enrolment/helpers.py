@@ -55,13 +55,17 @@ def get_company_name(number):
             ))
 
 
-def user_has_company(sso_user_id):
+def user_has_verified_company(sso_user_id):
     response = api_client.user.retrieve_profile(
         sso_id=sso_user_id
     )
 
     if response.ok:
-        has_company = bool(response.json()['company'])
+        profile = response.json()
+        has_company = bool(
+            profile['company'] and
+            profile['company_email_confirmed']
+        )
     else:
         has_company = False
 
