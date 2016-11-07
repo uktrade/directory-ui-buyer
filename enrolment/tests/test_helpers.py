@@ -91,26 +91,51 @@ def test_get_company_name_handles_good_status(
 
 
 @patch.object(helpers.api_client.user, 'retrieve_profile')
-def test_user_has_company(mock_retrieve_user_profile):
+def test_user_has_verified_company_no_company(mock_retrieve_user_profile):
     mock_response = Response()
     mock_response.status_code = http.client.OK
-    mock_response.json = lambda: {'company': 'Extreme Corp'}
+    mock_response.json = lambda: {
+        'company': '',
+        'company_email_confirmed': False,
+    }
     mock_retrieve_user_profile.return_value = mock_response
 
-    user_has_company = helpers.user_has_company(sso_user_id=1)
-
-    assert user_has_company is True
+    assert helpers.user_has_verified_company(sso_user_id=1) is False
 
 
 @patch.object(helpers.api_client.user, 'retrieve_profile')
-def test_user_has_company_404(mock_retrieve_user_profile):
+def test_user_has_verified_company_unconfirmed(mock_retrieve_user_profile):
+    mock_response = Response()
+    mock_response.status_code = http.client.OK
+    mock_response.json = lambda: {
+        'company': 'Extreme Corp',
+        'company_email_confirmed': False,
+    }
+    mock_retrieve_user_profile.return_value = mock_response
+
+    assert helpers.user_has_verified_company(sso_user_id=1) is False
+
+
+@patch.object(helpers.api_client.user, 'retrieve_profile')
+def test_user_has_verified_company(mock_retrieve_user_profile):
+    mock_response = Response()
+    mock_response.status_code = http.client.OK
+    mock_response.json = lambda: {
+        'company': 'Extreme Corp',
+        'company_email_confirmed': True,
+    }
+    mock_retrieve_user_profile.return_value = mock_response
+
+    assert helpers.user_has_verified_company(sso_user_id=1) is True
+
+
+@patch.object(helpers.api_client.user, 'retrieve_profile')
+def test_user_has_verified_company_404(mock_retrieve_user_profile):
     mock_response = Response()
     mock_response.status_code = http.client.NOT_FOUND
     mock_retrieve_user_profile.return_value = mock_response
 
-    user_has_company = helpers.user_has_company(sso_user_id=1)
-
-    assert user_has_company is False
+    assert helpers.user_has_verified_company(sso_user_id=1) is False
 
 
 def test_get_employees_label():

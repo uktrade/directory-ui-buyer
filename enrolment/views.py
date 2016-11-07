@@ -88,7 +88,7 @@ class EnrolmentView(SSOLoginRequiredMixin, SessionWizardView):
     def dispatch(self, request, *args, **kwargs):
         if request.sso_user is None:
             return self.handle_no_permission()
-        elif helpers.user_has_company(sso_user_id=request.sso_user.id):
+        elif helpers.user_has_verified_company(request.sso_user.id):
             return redirect('company-detail')
         else:
             return super(EnrolmentView, self).dispatch(
@@ -159,7 +159,7 @@ class UserCompanyBaseView(SSOLoginRequiredMixin):
         if request.sso_user is None:
             return self.handle_no_permission()
         else:
-            if not helpers.user_has_company(self.request.sso_user.id):
+            if not helpers.user_has_verified_company(self.request.sso_user.id):
                 return redirect('register')
             else:
                 return super(UserCompanyBaseView, self).dispatch(
