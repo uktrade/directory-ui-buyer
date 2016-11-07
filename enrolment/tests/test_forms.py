@@ -154,6 +154,16 @@ def test_company_logo_form_accepts_valid_data():
     }
 
 
+def test_company_logo_form_logo_is_required():
+    form = forms.CompanyLogoForm(files={'logo': None})
+
+    valid = form.is_valid()
+
+    assert valid is False
+    assert 'logo' in form.errors
+    assert 'This field is required.' in form.errors['logo']
+
+
 def test_company_profile_logo_validator():
     field = forms.CompanyLogoForm.base_fields['logo']
     assert shared_validators.logo_filesize in field.validators
