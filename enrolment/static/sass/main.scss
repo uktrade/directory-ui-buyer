@@ -390,6 +390,14 @@ body {
 .ed-header {
   .level-one-container {
     text-align: right;
+    ul {
+      li {
+        a {
+          font-weight: 400;
+          padding-bottom: 2px;
+        }
+      }
+    }
   }
   ul {
 
@@ -474,10 +482,27 @@ body {
   }
   .ed-header-level-two {
     background: #1E1348;
-    padding-top: 10px;
-    padding-bottom: 10px;
+    padding-top: 15px;
+    padding-bottom: 14px;
+
+    .header-main-logo {
+      float: left;
+    }
+
+    .eig-links {
+      float: right;
+      nav {
+        .header-nav-links {
+          height: 0;
+          margin-top: -5px;
+        }
+      }
+    }
+
     @media (min-width: 979px) {
-      line-height: 4em;
+      .container {
+        // padding: 0 10px;
+      }
     }
 
     @media (max-width: 960px) {
@@ -500,6 +525,7 @@ body {
       text-align: left;
       h3 {
         line-height: 23px;
+        margin: 0;
         padding: 0; 
       }
       ul.mobile-secondary-nav {
@@ -555,8 +581,9 @@ body {
           padding-left: 10px;
       }
       .soft-half--sides {
-          padding-left: 10px;
-          padding-right: 10px;
+        padding-left: 10px;
+        padding-right: 10px;
+        padding-top: 20px;
       }
       .soft--ends {
           padding-bottom: 20px;
@@ -585,7 +612,7 @@ body {
 
 #footer.ed-footer {
   background: #1E1348;
-  padding: 40px;
+  padding: 40px 40px 50px;
   @media (max-width: 960px) {
     padding: 40px 0;
 
@@ -600,17 +627,18 @@ body {
         display: flex;
         flex-flow: column;
         .logo {
-
           order: 3;
+          width: 100%;
         }
         .links {
           margin-left: 0;
           order: 2;
-
+          width: 100%;
         }
         .subscribe {
           margin-left: 0;
           order: 1;
+          width: 100%;
           .footer-section {
             border-top: 0;
             padding-top: 0;
@@ -636,10 +664,15 @@ body {
       text-decoration: none;
     }
   }
-  .footer-img {
-    width: 250px;
-    @media (max-width: 960px) {
-      width: 200px;
+
+  .hmg-logo {
+    img {
+      max-width: 250px;
+    }
+  }
+  .eig-logo-footer {
+    img {
+      max-width: 200px;
     }
   }
   p.copyright-text {
@@ -657,7 +690,9 @@ body {
     color: $white;
     font-weight: 500;
     font-size: 20px;
-    margin-bottom: 30px;
+    margin: 0 0 30px 0;
+    padding: 0;
+    line-height: 30px;
   }
   ul.footer-links-container {
     margin: 0;
