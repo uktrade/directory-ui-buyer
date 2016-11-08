@@ -40,6 +40,7 @@ DOCKER_SET_DEBUG_ENV_VARS := \
 	export DIRECTORY_UI_SSO_SIGNUP_URL=http://sso.trade.great.dev:8003/accounts/signup/; \
 	export DIRECTORY_UI_SSO_REDIRECT_FIELD_NAME=next; \
 	export DIRECTORY_UI_SSO_SESSION_COOKIE=debug_sso_session_cookie; \
+	export DIRECTORY_UI_UI_SESSION_COOKIE_SECURE=false; \
 	export DIRECTORY_UI_PORT=8001; \
 	export DIRECTORY_UI_SECRET_KEY=debug; \
 	export DIRECTORY_UI_DEBUG=true; \
@@ -88,6 +89,7 @@ DEBUG_SET_ENV_VARS := \
 	export SSO_SIGNUP_URL=http://sso.trade.great.dev:8003/accounts/signup/; \
 	export SSO_REDIRECT_FIELD_NAME=next; \
 	export SSO_SESSION_COOKIE=debug_sso_session_cookie; \
+	export UI_SESSION_COOKIE_SECURE=false; \
 	export COMPANIES_HOUSE_SEARCH_URL=https://beta.companieshouse.gov.uk; \
 	export FEEDBACK_FORM_URL=https://contact-us.export.great.gov.uk/feedback/directory/
 

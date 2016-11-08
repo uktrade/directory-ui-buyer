@@ -44,11 +44,12 @@ Requires all host environment variables to be set.
 | DIRECTORY_UI_API_CLIENT_BASE_URL | API_CLIENT_BASE_URL |
 | DIRECTORY_UI_COMPANIES_HOUSE_SEARCH_URL | COMPANIES_HOUSE_SEARCH_URL |
 | DIRECTORY_UI_SSO_API_CLIENT_BASE_URL | SSO_API_CLIENT_BASE_URL |
+| DIRECTORY_UI_UI_SESSION_COOKIE_SECURE | UI_SESSION_COOKIE_SECURE |
 
 ## Debugging
 
 ### Setup debug environment
-    
+
     $ make debug
 
 ### Run debug webserver
