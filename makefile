@@ -43,7 +43,8 @@ DOCKER_SET_DEBUG_ENV_VARS := \
 	export DIRECTORY_UI_PORT=8001; \
 	export DIRECTORY_UI_SECRET_KEY=debug; \
 	export DIRECTORY_UI_DEBUG=true; \
-	export DIRECTORY_UI_COMPANIES_HOUSE_SEARCH_URL=https://beta.companieshouse.gov.uk
+	export DIRECTORY_UI_COMPANIES_HOUSE_SEARCH_URL=https://beta.companieshouse.gov.uk; \
+	export DIRECTORY_UI_FEEDBACK_FORM_URL=https://contact-us.export.great.gov.uk/feedback/directory/
 
 DOCKER_REMOVE_ALL := \
 	docker ps -a | \
@@ -86,8 +87,9 @@ DEBUG_SET_ENV_VARS := \
 	export SSO_LOGOUT_URL=http://sso.trade.great.dev:8003/accounts/logout/?next=http://ui.trade.great.dev:8001; \
 	export SSO_SIGNUP_URL=http://sso.trade.great.dev:8003/accounts/signup/; \
 	export SSO_REDIRECT_FIELD_NAME=next; \
-	export SSO_SESSION_COOKIE=debug_sso_session_cookie
-	export COMPANIES_HOUSE_SEARCH_URL=https://beta.companieshouse.gov.uk
+	export SSO_SESSION_COOKIE=debug_sso_session_cookie; \
+	export COMPANIES_HOUSE_SEARCH_URL=https://beta.companieshouse.gov.uk; \
+	export FEEDBACK_FORM_URL=https://contact-us.export.great.gov.uk/feedback/directory/
 
 debug_webserver:
 	$(DEBUG_SET_ENV_VARS) && $(DJANGO_WEBSERVER)

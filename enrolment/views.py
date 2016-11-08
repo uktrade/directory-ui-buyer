@@ -10,7 +10,7 @@ from django.core.files.storage import FileSystemStorage
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.utils.cache import patch_response_headers
-from django.views.generic import TemplateView
+from django.views.generic import RedirectView, TemplateView
 from django.views.generic.edit import FormView
 from django.views.generic.base import View
 
@@ -268,3 +268,9 @@ class UserCompanyDescriptionEditView(
 
     def get_template_names(self):
         return [self.templates[self.steps.current]]
+
+
+class FeedbackView(RedirectView):
+
+    def get_redirect_url(self):
+        return settings.FEEDBACK_FORM_URL

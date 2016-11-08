@@ -5,6 +5,7 @@ from enrolment.views import (
     CachableTemplateView,
     CompanyEmailConfirmationView,
     EnrolmentView,
+    FeedbackView,
     UserCompanyDescriptionEditView,
     UserCompanyProfileEditView,
     UserCompanyProfileDetailView,
@@ -63,5 +64,9 @@ urlpatterns = [
     url(r'^company-profile/description$',
         UserCompanyDescriptionEditView.as_view(),
         name='company-edit-description'),
+    url(
+        r"^feedback$",
+        FeedbackView.as_view(),
+        name="feedback"),
 
 ]
