@@ -679,3 +679,23 @@ body {
 .ed-form-classification-container li {
   margin-bottom: 0;
 }
+
+.ed-error-page-container {
+  color: #4a4a4a;
+  .ed-error-page-title {
+    margin-top: 40px;
+    margin-bottom: 40px;
+  }
+  ul.ed-error-page-synopsis {
+    margin:0;
+    li {
+      margin-bottom: 10px;
+    }
+  }
+  .ed-error-page-status {
+    padding-bottom: 40px;
+  }
+  hr {
+    border-bottom: 1px solid #4f0b7b;
+  }
+}
