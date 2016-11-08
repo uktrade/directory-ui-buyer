@@ -103,7 +103,7 @@ class CompanyLogoForm(IndentedInvalidFieldsMixin, forms.Form):
 
 class CompanyEmailAddressForm(IndentedInvalidFieldsMixin, forms.Form):
     error_messages = {
-        'different': 'Your emails do not match'
+        'different': 'Your emails do not match.'
     }
     company_email = forms.EmailField(
         label='Email address:',
@@ -131,7 +131,7 @@ class CompanyEmailAddressForm(IndentedInvalidFieldsMixin, forms.Form):
 
 class UserForm(IndentedInvalidFieldsMixin, forms.Form):
     error_messages = {
-        'different': 'Your emails do not match.'
+        'different': 'Your phone numbers do not match.'
     }
     mobile_number = forms.CharField(
         label='Your mobile phone number:',
