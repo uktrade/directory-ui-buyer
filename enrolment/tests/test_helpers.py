@@ -144,7 +144,7 @@ def test_get_employees_label():
 
 def test_get_sectors_labels():
     values = ['AGRICULTURE_HORTICULTURE_AND_FISHERIES', 'AEROSPACE']
-    expected = ['Agriculture, Horticulture and Fisheries', 'Aerospace']
+    expected = ['Agriculture, horticulture and fisheries', 'Aerospace']
     assert helpers.get_sectors_labels(values) == expected
 
 
