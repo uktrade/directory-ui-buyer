@@ -33,7 +33,7 @@ class CompanyForm(IndentedInvalidFieldsMixin, forms.Form):
 
 class CompanyNameForm(IndentedInvalidFieldsMixin, forms.Form):
     company_name = forms.CharField(
-        label='Company Name:',
+        label='Company name:',
         help_text=(
             "If this is not your company then click back in your browser "
             "and re-enter your company's number."
