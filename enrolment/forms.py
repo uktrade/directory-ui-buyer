@@ -63,8 +63,8 @@ class CompanyBasicInfoForm(IndentedInvalidFieldsMixin, forms.Form):
     website = forms.URLField(
         max_length=255,
         help_text=(
-            'The website address must start with either http:\\\\ or '
-            'https:\\\\'
+            'The website address must start with either http:// or '
+            'https://'
         )
     )
     keywords = forms.CharField(
