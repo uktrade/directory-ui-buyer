@@ -135,6 +135,9 @@ RAVEN_CONFIG = {
 }
 
 SESSION_ENGINE = "django.contrib.sessions.backends.signed_cookies"
+SESSION_COOKIE_SECURE = os.getenv('SESSION_COOKIE_SECURE', 'true') == 'true'
+SESSION_COOKIE_HTTPONLY = True
+CSRF_COOKIE_SECURE = True
 
 VALIDATOR_MAX_LOGO_SIZE_BYTES = int(os.getenv(
     "VALIDATOR_MAX_LOGO_SIZE_BYTES", 10 * 1024 * 1024
