@@ -48,10 +48,6 @@
             </div>
         </div>
 
-        <div id="global-cookie-message">
-            <p>GOV.UK uses cookies to make the site simpler. <a href="https://www.gov.uk/help/cookies">Find out more about cookies</a></p>
-        </div>
-
         {% include 'header.html' %}
         {% block sub_header %}
             <section class="ed-hero-sub-header">
@@ -79,7 +75,6 @@
 
         <div id="global-app-error" class="app-error hidden"></div>
 
-        <script src="{% static 'govuk-0.18.0/assets/javascripts/govuk-template.js' %}"></script>
         <script src="{% static 'javascripts/index.js' %}"></script>
 
         {% block bodyScripts %}{% endblock bodyScripts %}
