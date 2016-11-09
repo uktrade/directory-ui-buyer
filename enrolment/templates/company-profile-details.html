@@ -11,12 +11,14 @@
 		<!-- Company name, contact details & URLS -->
 		<div class="row-fluid">
 			<div class="span12 great-blue-bar">
-				<h1 class="element-within span6 company-name-title">{{company.name}}</h1>
-				<div class="web-address span6 element-within">
+				<h1 class="element-within company-name-title">
+					<span class="dont-break-out">{{company.name}}</span>
+				</h1>
+				<div class="web-address element-within">
 					{% if company.website %}
-					<a href="{{company.website}}" class="arrow-link external-link-white" target="_blank">
-						{{company.website}}
-						<span class="a11y">(Opens in a new window)</span>
+					<a href="{{company.website}}" class="arrow-link external-link-white dont-break-out" target="_blank">
+						<span class="url pull-left">{{company.website}}</span>
+						<span class="a11y pull-left">(Opens in a new window)</span>
 					</a>
 					{% else %}
 					<a href="{% url 'company-edit' %}" target="_self">
