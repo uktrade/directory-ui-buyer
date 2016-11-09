@@ -54,6 +54,7 @@ class CompanyExportStatusForm(IndentedInvalidFieldsMixin, forms.Form):
 
 class CompanyBasicInfoForm(IndentedInvalidFieldsMixin, forms.Form):
     company_name = forms.CharField(
+        label='Change your company name',
         help_text=(
             'You can change this from the Companies House listing to '
             'better fit your profile.'
