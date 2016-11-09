@@ -13,6 +13,8 @@ from enrolment import forms, validators
 REQUIRED_MESSAGE = Field.default_error_messages['required']
 EMAIL_FORMAT_MESSAGE = EmailValidator.message
 URL_FORMAT_MESSAGE = URLValidator.message
+TERMS_CONDITIONS_MESSAGE = \
+    forms.InternationalBuyerForm.TERMS_CONDITIONS_MESSAGE
 
 
 def create_mock_file():
@@ -109,7 +111,7 @@ def test_international_form_missing_data():
     assert form.errors['full_name'] == [REQUIRED_MESSAGE]
     assert form.errors['email_address'] == [REQUIRED_MESSAGE]
     assert form.errors['sector'] == [REQUIRED_MESSAGE]
-    assert form.errors['terms'] == [REQUIRED_MESSAGE]
+    assert form.errors['terms'] == [TERMS_CONDITIONS_MESSAGE]
 
 
 def test_international_form_accepts_valid_data():

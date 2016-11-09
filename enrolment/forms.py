@@ -217,6 +217,8 @@ class PhoneNumberVerificationForm(IndentedInvalidFieldsMixin, forms.Form):
 
 class InternationalBuyerForm(IndentedInvalidFieldsMixin, forms.Form):
     PLEASE_SELECT_LABEL = 'Please select a sector'
+    TERMS_CONDITIONS_MESSAGE = ('Tick the box to confirm you agree to '
+                                'the terms and conditions.')
 
     full_name = forms.CharField(label='Your name')
     email_address = forms.EmailField(label='Your email address')
@@ -231,7 +233,8 @@ class InternationalBuyerForm(IndentedInvalidFieldsMixin, forms.Form):
             'I agree to the <a target="_self" '
             'href="/terms_and_conditions">terms and conditions</a> of '
             'Exporting is GREAT.'
-        )
+        ),
+        error_messages={'required': TERMS_CONDITIONS_MESSAGE}
     )
 
 
