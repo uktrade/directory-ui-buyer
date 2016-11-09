@@ -170,8 +170,8 @@ class CompanySizeForm(IndentedInvalidFieldsMixin, forms.Form):
         choices=choices.EMPLOYEES,
         label='How many employees are in your company?',
         help_text=(
-            'Tell international buyers more about your business for tailored '
-            'results.'
+            'Tell international buyers more about your business to ensure '
+            'the right buyers can find you.'
         )
     )
 
