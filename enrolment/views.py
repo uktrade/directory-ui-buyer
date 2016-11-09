@@ -15,7 +15,7 @@ from django.views.generic.edit import FormView
 from django.views.generic.base import View
 
 from enrolment import forms, helpers
-from enrolment.constants import SESSION_KEY_REFERRER
+from enrolment import constants
 from sso.utils import SSOLoginRequiredMixin
 
 
@@ -104,8 +104,9 @@ class EnrolmentView(SSOLoginRequiredMixin, SessionWizardView):
 
     def get_form_initial(self, step):
         if step == 'user':
+            referrer = self.request.session.get(constants.SESSION_KEY_REFERRER)
             return {
-                'referrer': self.request.session.get(SESSION_KEY_REFERRER)
+                'referrer': referrer
             }
         if step == 'name':
             prev_data = self.storage.get_step_data('company') or {}
@@ -268,6 +269,8 @@ class UserCompanyDescriptionEditView(
 
 
 class FeedbackView(RedirectView):
+    url = constants.FEEDBACK_FORM_URL
 
-    def get_redirect_url(self):
-        return settings.FEEDBACK_FORM_URL
+
+class TermsView(RedirectView):
+    url = constants.TERMS_AND_CONDITIONS_URL

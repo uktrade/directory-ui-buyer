@@ -7,13 +7,14 @@ import pytest
 
 from django.core.urlresolvers import reverse
 
-from enrolment.constants import SESSION_KEY_REFERRER
+from enrolment import constants
 from enrolment.views import (
     api_client,
     CompanyEmailConfirmationView,
     EnrolmentView,
     InternationalLandingView,
     FeedbackView,
+    TermsView,
     UserCompanyDescriptionEditView,
     UserCompanyProfileDetailView,
     UserCompanyProfileEditView,
@@ -214,7 +215,7 @@ def test_email_confirm_valid_confirmation_code(mock_confirm_email, rf):
 def test_enrolment_view_includes_referrer(client, rf, sso_user):
     request = rf.get(reverse('register'))
     request.session = client.session
-    request.session[SESSION_KEY_REFERRER] = 'google'
+    request.session[constants.SESSION_KEY_REFERRER] = 'google'
     request.sso_user = sso_user
 
     form_pair = EnrolmentView.form_list[4]
@@ -631,11 +632,19 @@ def test_international_landing_view_submit(
     )
 
 
-def test_feedback_redirect(rf, settings):
+def test_feedback_redirect(rf):
     request = rf.get(reverse('feedback'))
 
     response = FeedbackView.as_view()(request)
 
-    assert settings.FEEDBACK_FORM_URL
     assert response.status_code == http.client.FOUND
-    assert response.get('Location') == settings.FEEDBACK_FORM_URL
+    assert response.get('Location') == constants.FEEDBACK_FORM_URL
+
+
+def test_terms_redirect(rf):
+    request = rf.get(reverse('terms'))
+
+    response = TermsView.as_view()(request)
+
+    assert response.status_code == http.client.FOUND
+    assert response.get('Location') == constants.TERMS_AND_CONDITIONS_URL
