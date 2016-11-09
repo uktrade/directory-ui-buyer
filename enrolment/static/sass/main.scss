@@ -521,7 +521,7 @@ body {
     padding: 0;
     width: 100%;
     .header-nav {
-      padding: 10px 0;
+      padding: 0;
       text-align: left;
       h3 {
         line-height: 23px;
@@ -732,5 +732,46 @@ body {
   }
   hr {
     border-bottom: 1px solid #4f0b7b;
+  }
+}
+
+
+.ed-international-success-container {
+  h1 {
+    margin-top: 40px;
+    margin-bottom: 40px;
+  }
+  .ed-international-success-synopsis {
+    margin-bottom: 40px;
+  }
+}
+
+body.js-enabled .js-header-nav-menu.js-header-nav-menu-hide {
+  display: none;
+}
+
+.header-nav-menu-toggle-button {
+  color: white;
+  font-weight: bold;
+  position: absolute;
+  bottom: 0;
+  right: 5px;
+  @media (min-width: 960px) {
+    display: none;
+  }
+}
+
+.ed-header-level-two {
+  .ed-header-image-container {
+    position: relative;
+    @media (max-width: 979px) {
+      padding-left: 5px;
+    }
+  }
+}
+
+.header-main-logo {
+  @media (max-width: 640px) {
+    width: 70%;
   }
 }

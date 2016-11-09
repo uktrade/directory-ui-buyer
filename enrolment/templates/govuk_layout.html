@@ -32,7 +32,7 @@
 
         <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" media="all" rel="stylesheet" />
         <link href="{% static 'vendor/bootstrap/css/bootstrap-responsive.min.css' %}" media="all" rel="stylesheet" />
-        
+
         {% block css %}
             <link href="{% static 'main.css' %}" media="all" rel="stylesheet" />
         {% endblock %}
@@ -80,6 +80,7 @@
         <div id="global-app-error" class="app-error hidden"></div>
 
         <script src="{% static 'govuk-0.18.0/assets/javascripts/govuk-template.js' %}"></script>
+        <script src="{% static 'javascripts/index.js' %}"></script>
 
         {% block bodyScripts %}{% endblock bodyScripts %}
     </body>

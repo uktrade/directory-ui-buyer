@@ -12,7 +12,7 @@ from enrolment.views import (
     api_client,
     CompanyEmailConfirmationView,
     EnrolmentView,
-    LandingView,
+    InternationalLandingView,
     FeedbackView,
     UserCompanyDescriptionEditView,
     UserCompanyProfileDetailView,
@@ -619,35 +619,13 @@ def test_enrolment_handles_bad_response(user_step_request):
         assert response.status_code == http.client.INTERNAL_SERVER_ERROR
 
 
-@mock.patch.object(helpers, 'is_request_international', return_value=True)
-def test_landing_view_international_template(
-    mock_is_request_international, sso_request
-):
-    response = LandingView.as_view()(sso_request)
-
-    assert response.template_name == [LandingView.international_template_name]
-    mock_is_request_international.assert_called_once_with(sso_request)
-
-
-@mock.patch.object(helpers, 'is_request_international', return_value=False)
-def test_landing_view_domestic_template(
-    mock_is_request_international, sso_request
-):
-    response = LandingView.as_view()(sso_request)
-
-    assert response.template_name == [LandingView.domestic_template_name]
-    mock_is_request_international.assert_called_once_with(sso_request)
-
-
-@mock.patch.object(helpers, 'is_request_international',
-                   mock.Mock(return_value=True))
 @mock.patch.object(api_client.buyer, 'send_form')
-def test_landing_view_international_submit(
+def test_international_landing_view_submit(
     mock_send_form, buyer_request, buyer_form_data
 ):
-    response = LandingView.as_view()(buyer_request)
+    response = InternationalLandingView.as_view()(buyer_request)
 
-    assert response.template_name == LandingView.success_template
+    assert response.template_name == InternationalLandingView.success_template
     mock_send_form.assert_called_once_with(
         forms.serialize_international_buyer_forms(buyer_form_data)
     )
