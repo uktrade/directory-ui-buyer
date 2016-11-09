@@ -7,13 +7,17 @@
   "scripts": {
     "sass-watch": "./scripts/sass.sh watch",
     "sass-dev": "./scripts/sass.sh dev",
-    "sass-prod": "./scripts/sass.sh prod"
+    "sass-prod": "./scripts/sass.sh prod",
+    "test": "mocha enrolment/tests/javascript"
   },
   "author": "Graham Veal",
   "license": "ISC",
   "devDependencies": {
+    "chai": "^3.5.0",
     "govuk-elements-sass": "^1.2.1",
     "govuk_frontend_toolkit": "^4.13.0",
+    "jsdom": "^9.8.3",
+    "mocha": "^3.1.2",
     "trade_elements": "0.0.3"
   }
 }

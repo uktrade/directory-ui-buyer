@@ -1,5 +1,4 @@
 (function(){
-
   var menuToggleClass = 'js-header-nav-menu-toggle-button';
   var menuShowClass = 'js-header-nav-menu';
   var menuHideClass = menuShowClass + ' js-header-nav-menu-hide';

@@ -743,6 +743,7 @@ body {
   }
   .ed-international-success-synopsis {
     margin-bottom: 40px;
+  }
 }
 
 body.js-enabled .js-header-nav-menu.js-header-nav-menu-hide {
@@ -754,7 +755,7 @@ body.js-enabled .js-header-nav-menu.js-header-nav-menu-hide {
   font-weight: bold;
   position: absolute;
   bottom: 0;
-  right: 30px;
+  right: 5px;
   @media (min-width: 960px) {
     display: none;
   }
