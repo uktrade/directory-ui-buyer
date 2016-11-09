@@ -3,12 +3,9 @@ import logging
 
 from directory_api_client.client import DirectoryAPIClient
 from directory_validators.constants import choices
-from ipware.ip import get_ip
-from geoip2.errors import AddressNotFoundError
 import requests
 
 from django.conf import settings
-from django.contrib.gis.geoip2 import GeoIP2
 
 
 logger = logging.getLogger(__name__)
@@ -82,13 +79,3 @@ def get_sectors_labels(sectors_values):
     if not sectors_values:
         return sectors_values
     return [SECTOR_CHOICES.get(value)for value in sectors_values]
-
-
-def is_request_international(request):
-    ip = get_ip(request)
-    if ip:
-        try:
-            return GeoIP2().country_code(ip) != 'GB'
-        except AddressNotFoundError:
-            pass
-    return False
