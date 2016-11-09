@@ -12,6 +12,7 @@ from enrolment.views import (
     UserCompanyProfileLogoEditView,
     DomesticLandingView,
     InternationalLandingView,
+    TermsView,
 )
 from user.views import UserProfileDetailView, UserProfileEditView
 
@@ -39,7 +40,7 @@ urlpatterns = [
         name="problem"),
 
     url(r"^terms_and_conditions$",
-        cache_me(CachableTemplateView.as_view(template_name="terms.html")),
+        cache_me(TermsView.as_view()),
         name="terms"),
 
     url(r'^confirm-company-email$',
