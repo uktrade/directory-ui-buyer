@@ -10,7 +10,8 @@ from enrolment.views import (
     UserCompanyProfileEditView,
     UserCompanyProfileDetailView,
     UserCompanyProfileLogoEditView,
-    LandingView,
+    DomesticLandingView,
+    InternationalLandingView,
 )
 from user.views import UserProfileDetailView, UserProfileEditView
 
@@ -18,7 +19,11 @@ cache_me = cache_page(60 * 1)
 
 urlpatterns = [
     url(r"^$",
-        LandingView.as_view(),
+        DomesticLandingView.as_view(),
+        name="index"),
+
+    url(r"^international$",
+        InternationalLandingView.as_view(),
         name="index"),
 
     url(r"^register$",
