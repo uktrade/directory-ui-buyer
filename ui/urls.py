@@ -13,6 +13,7 @@ from enrolment.views import (
     DomesticLandingView,
     InternationalLandingView,
     TermsView,
+    NewToExportingView,
 )
 from user.views import UserProfileDetailView, UserProfileEditView
 
@@ -42,6 +43,10 @@ urlpatterns = [
     url(r"^terms_and_conditions$",
         cache_me(TermsView.as_view()),
         name="terms"),
+
+    url(r"^new_to_exporting$",
+        cache_me(NewToExportingView.as_view()),
+        name="new-to-exporting"),
 
     url(r'^confirm-company-email$',
         CompanyEmailConfirmationView.as_view(),

@@ -15,6 +15,7 @@ from enrolment.views import (
     InternationalLandingView,
     FeedbackView,
     TermsView,
+    NewToExportingView,
     UserCompanyDescriptionEditView,
     UserCompanyProfileDetailView,
     UserCompanyProfileEditView,
@@ -648,3 +649,12 @@ def test_terms_redirect(rf):
 
     assert response.status_code == http.client.FOUND
     assert response.get('Location') == constants.TERMS_AND_CONDITIONS_URL
+
+
+def test_new_exporter_redirect(rf):
+    request = rf.get(reverse('terms'))
+
+    response = NewToExportingView.as_view()(request)
+
+    assert response.status_code == http.client.FOUND
+    assert response.get('Location') == constants.NEW_TO_EXPORTING_URL
