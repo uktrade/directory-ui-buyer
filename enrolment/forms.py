@@ -68,10 +68,13 @@ class CompanyBasicInfoForm(IndentedInvalidFieldsMixin, forms.Form):
         )
     )
     keywords = forms.CharField(
-        label='Enter up to 10 keywords that describe your company:',
+        label=(
+            'Enter up to 10 keywords that describe your company '
+            '(separated by commas):'
+        ),
         help_text=(
-            'Keywords should be separated with commas. These keywords will be '
-            'used to help potential overseas buyers find your company.'
+            'These keywords will be used to help potential overseas buyers '
+            'find your company.'
         ),
         widget=forms.Textarea,
         max_length=1000,
