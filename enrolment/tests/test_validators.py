@@ -43,3 +43,22 @@ def test_validate_email_address_valid(mock_validate_email_address):
         status_code=http.client.OK
     )
     assert validators.email_address('01245678') is None
+
+
+@patch.object(validators.api_client.user, 'validate_mobile_number')
+def test_validate_mobile_number_invalid(mock_mock_validate_mobile_number):
+    error = 'Already registered. Please login.'
+    mock_mock_validate_mobile_number.return_value = Mock(
+        status_code=http.client.BAD_REQUEST,
+        json=lambda: {'mobile_number': [error]}
+    )
+    with pytest.raises(ValidationError, message=error):
+        validators.mobile_number('01245678')
+
+
+@patch.object(validators.api_client.user, 'validate_mobile_number')
+def test_validate_mobile_number_valid(mock_validate_mobile_number):
+    mock_validate_mobile_number.return_value = Mock(
+        status_code=http.client.OK
+    )
+    assert validators.mobile_number('01245678') is None

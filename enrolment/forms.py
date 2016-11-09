@@ -137,6 +137,9 @@ class UserForm(IndentedInvalidFieldsMixin, forms.Form):
         label='Your mobile phone number:',
         help_text=(
             'We will send a verification code to this mobile phone number.'
+        ),
+        validators=helpers.halt_validation_on_failure(
+            validators.mobile_number,
         )
     )
     mobile_confirmed = forms.CharField(

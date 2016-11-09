@@ -62,6 +62,7 @@ def test_test_company_email_form_rejects_different_email_addresses():
     assert form.errors['email_confirmed'] == [expected]
 
 
+@patch('enrolment.validators.api_client', Mock())
 def test_test_user_form_rejects_different_mobile_numbers():
     form = forms.UserForm(data={
         'mobile_number': '111',
@@ -73,6 +74,7 @@ def test_test_user_form_rejects_different_mobile_numbers():
     assert form.errors['mobile_confirmed'] == [expected]
 
 
+@patch('enrolment.validators.api_client', Mock())
 def test_user_form_rejects_missing_data():
     form = forms.UserForm(data={})
 
@@ -82,6 +84,7 @@ def test_user_form_rejects_missing_data():
     assert form.errors['terms_agreed'] == [REQUIRED_MESSAGE]
 
 
+@patch('enrolment.validators.api_client', Mock())
 def test_user_form_accepts_valid_data():
     form = forms.UserForm(data={
         'mobile_number': '07506674933',
@@ -89,6 +92,13 @@ def test_user_form_accepts_valid_data():
         'terms_agreed': 1,
     })
     assert form.is_valid()
+
+
+@patch('enrolment.validators.api_client', Mock())
+def test_user_form_validators():
+    field = forms.UserForm.base_fields['mobile_number']
+    inner_validators = field.validators[0].inner_validators
+    assert validators.mobile_number in inner_validators
 
 
 def test_international_form_missing_data():

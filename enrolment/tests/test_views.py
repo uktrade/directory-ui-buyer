@@ -19,7 +19,7 @@ from enrolment.views import (
     UserCompanyProfileEditView,
     UserCompanyProfileLogoEditView
 )
-from enrolment import forms, helpers
+from enrolment import forms, helpers, validators
 from sso.utils import SSOUser
 
 
@@ -574,6 +574,8 @@ def test_enrolment_logged_out_has_company_redirects(
 
 @mock.patch('enrolment.helpers.user_has_verified_company',
             mock.Mock(return_value=False))
+@mock.patch.object(validators.api_client.user, 'validate_mobile_number',
+                   mock.Mock())
 @mock.patch.object(api_client.registration, 'send_verification_sms')
 def test_enrolment_calls_api(
     mock_api_call, user_step_request, api_response_send_verification_sms_200
@@ -588,6 +590,8 @@ def test_enrolment_calls_api(
 
 @mock.patch('enrolment.helpers.user_has_verified_company',
             mock.Mock(return_value=False))
+@mock.patch.object(validators.api_client.user, 'validate_mobile_number',
+                   mock.Mock())
 @mock.patch.object(api_client.registration, 'send_verification_sms')
 def test_enrolment_handles_good_response(
     mock_api_call,
@@ -603,6 +607,8 @@ def test_enrolment_handles_good_response(
 
 @mock.patch('enrolment.helpers.user_has_verified_company',
             mock.Mock(return_value=False))
+@mock.patch.object(validators.api_client.user, 'validate_mobile_number',
+                   mock.Mock())
 @mock.patch.object(api_client.registration, 'send_verification_sms',
                    api_response_400)
 def test_enrolment_handles_bad_response(user_step_request):
