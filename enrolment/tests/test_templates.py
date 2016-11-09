@@ -163,7 +163,7 @@ def test_export_status_form_error_size():
     }
     html = render_to_string('export-status-form.html', context)
     assert 'span12' in html
-    assert 'Try our other great business services' in html
+    assert 'Try our other business services' in html
 
 
 def test_export_status_no_form_error_size():

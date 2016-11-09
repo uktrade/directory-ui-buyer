@@ -10,12 +10,12 @@
 {% endblock %}
 {% block formarea %}
     {% if form|no_export_intention %}
-        <h1>Try our other great business services</h1>
+        <h1>Try our other business services</h1>
         <p>
             The Find a Buyer service promotes companies that are currently exporting or looking to export in the near future. The answers you gave suggest that your company is currently not appropriate to feature in the Find a Buyer service. 
         </p>
         <p>
-            Visit <a href="http://www.greatbusiness.gov.uk/" target="_self">Business is Great</a> to get help and support for starting and growing your business.
+            If you want to get your business ready to export, check out the <a href="{% url 'new-to-exporting' %}" target="_self">Exporting is GREAT advice for new exporters</a>.
         </p>
     {% else %}
         {{ block.super }}

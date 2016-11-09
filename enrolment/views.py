@@ -274,3 +274,7 @@ class FeedbackView(RedirectView):
 
 class TermsView(RedirectView):
     url = constants.TERMS_AND_CONDITIONS_URL
+
+
+class NewToExportingView(RedirectView):
+    url = constants.NEW_TO_EXPORTING_URL
