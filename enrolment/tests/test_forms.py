@@ -5,6 +5,7 @@ from directory_validators import enrolment as shared_enrolment_validators
 
 from django.forms.fields import Field
 from django.core.validators import EmailValidator, URLValidator
+from django.core.urlresolvers import reverse
 
 from enrolment import forms, validators
 
@@ -203,6 +204,13 @@ def test_company_description_form_rejects_invalid_data():
     form = forms.CompanyDescriptionForm(data={})
     assert form.is_valid() is False
     assert form.errors['description'] == [REQUIRED_MESSAGE]
+
+
+def test_phone_number_verification_form_help_text_links_to_register():
+    field = forms.PhoneNumberVerificationForm.base_fields['sms_code']
+    expected = reverse('register')
+
+    assert expected in field.help_text
 
 
 def test_phone_number_verification_form_rejects_missing_data():
