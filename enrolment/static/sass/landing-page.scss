@@ -157,6 +157,9 @@ a .register-interest-btn {
       .bottom-right-text {
         bottom: 100px;
         right: 0;
+        &.international {
+          bottom: 120px;
+        }
       }
 
       img {
