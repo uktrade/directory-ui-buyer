@@ -17,7 +17,6 @@ input_output_map="\
 	enrolment/static/sass/company-profile-details.scss:enrolment/static/company-profile-details.css \
 	enrolment/static/sass/company-profile-form.scss:enrolment/static/company-profile-form.css \
 	enrolment/static/sass/user-profile-details.scss:enrolment/static/user-profile-details.css \
-	enrolment/static/sass/user-profile-edit-form.scss:enrolment/static/user-profile-edit-form.css \
 	enrolment/static/sass/landing-page.scss:enrolment/static/landing-page.css \
 "
 

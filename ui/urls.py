@@ -15,7 +15,7 @@ from enrolment.views import (
     TermsView,
     NewToExportingView,
 )
-from user.views import UserProfileDetailView, UserProfileEditView
+from user.views import UserProfileDetailView
 
 cache_me = cache_page(60 * 1)
 
@@ -59,10 +59,6 @@ urlpatterns = [
     url(r'^user-profile$',
         UserProfileDetailView.as_view(),
         name='user-detail'),
-
-    url(r'^user-profile/edit$',
-        UserProfileEditView.as_view(),
-        name='user-edit'),
 
     url(r'^company-profile/edit$',
         UserCompanyProfileEditView.as_view(),
