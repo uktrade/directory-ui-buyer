@@ -272,6 +272,13 @@ class UserCompanyDescriptionEditView(
     def get_template_names(self):
         return [self.templates[self.steps.current]]
 
+    def get_form_initial(self, step):
+        sso_user_id = self.request.sso_user.id
+        response = api_client.company.retrieve_profile(sso_user_id)
+        if not response.ok:
+            response.raise_for_status()
+        return response.json()
+
 
 class FeedbackView(RedirectView):
     url = constants.FEEDBACK_FORM_URL

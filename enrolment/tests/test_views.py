@@ -495,6 +495,8 @@ def test_company_profile_logo_api_client_failure(company_request):
             mock.Mock(return_value=True))
 @mock.patch.object(UserCompanyDescriptionEditView, 'serialize_form_data',
                    lambda x: {'field': 'value'})
+@mock.patch.object(api_client.company, 'retrieve_profile',
+                   mock.Mock(return_value=mock.Mock(json=lambda: {})))
 @mock.patch.object(api_client.company, 'update_profile')
 def test_company_profile_description_api_client_call(mock_update_profile,
                                                      company_request):
@@ -511,6 +513,8 @@ def test_company_profile_description_api_client_call(mock_update_profile,
             mock.Mock(return_value=True))
 @mock.patch.object(UserCompanyDescriptionEditView, 'serialize_form_data',
                    mock.Mock(return_value={}))
+@mock.patch.object(api_client.company, 'retrieve_profile',
+                   mock.Mock(return_value=mock.Mock(json=lambda: {})))
 @mock.patch.object(api_client.company, 'update_profile', api_response_200)
 def test_company_profile_description_api_client_success(company_request):
 
@@ -524,6 +528,8 @@ def test_company_profile_description_api_client_success(company_request):
             mock.Mock(return_value=True))
 @mock.patch.object(UserCompanyDescriptionEditView, 'serialize_form_data',
                    mock.Mock(return_value={}))
+@mock.patch.object(api_client.company, 'retrieve_profile',
+                   mock.Mock(return_value=mock.Mock(json=lambda: {})))
 @mock.patch.object(api_client.company, 'update_profile', api_response_400)
 def test_company_profile_description_api_client_failure(company_request):
 
@@ -533,6 +539,51 @@ def test_company_profile_description_api_client_failure(company_request):
     assert response.status_code == http.client.OK
     expected_template_name = UserCompanyDescriptionEditView.failure_template
     assert response.template_name == expected_template_name
+
+
+@mock.patch('enrolment.helpers.user_has_verified_company',
+            mock.Mock(return_value=True))
+@mock.patch.object(api_client.company, 'retrieve_profile')
+def test_company_description_edit_calls_api(
+    mock_retrieve_profile, company_request, api_response_company_profile_200
+):
+
+    mock_retrieve_profile.return_value = api_response_company_profile_200
+    view = UserCompanyDescriptionEditView.as_view()
+
+    view(company_request)
+
+    assert mock_retrieve_profile.called_once_with(1)
+
+
+@mock.patch('enrolment.helpers.user_has_verified_company',
+            mock.Mock(return_value=True))
+@mock.patch.object(api_client.company, 'retrieve_profile')
+def test_company_profile_description_exposes_api_result_to_form(
+    mock_retrieve_profile, company_request, api_response_company_profile_200
+):
+
+    mock_retrieve_profile.return_value = api_response_company_profile_200
+    view = UserCompanyDescriptionEditView.as_view()
+    expected = api_response_company_profile_200.json()
+
+    response = view(company_request)
+
+    assert response.context_data['form'].initial == expected
+
+
+@mock.patch('enrolment.helpers.user_has_verified_company',
+            mock.Mock(return_value=True))
+@mock.patch.object(api_client.company, 'retrieve_profile')
+def test_company_description_edit_handles_bad_api_response(
+    mock_retrieve_profile, company_request, api_response_400
+):
+
+    mock_retrieve_profile.return_value = api_response_400
+    view = UserCompanyDescriptionEditView.as_view()
+
+    with pytest.raises(requests.exceptions.HTTPError):
+        view(company_request)
 
 
 @mock.patch('enrolment.helpers.user_has_verified_company',
@@ -569,9 +620,10 @@ def test_company_edit_views_use_correct_template(client, rf, sso_user):
         assert response.template_name == [view_class.templates[step_name]]
 
 
-@mock.patch(
-    'enrolment.helpers.user_has_verified_company', mock.Mock(return_value=True)
-)
+@mock.patch('enrolment.helpers.user_has_verified_company',
+            mock.Mock(return_value=True))
+@mock.patch.object(api_client.company, 'retrieve_profile',
+                   mock.Mock(return_value=mock.Mock(json=lambda: {})))
 def test_company_description_edit_views_use_correct_template(
         client, rf, sso_user):
     request = rf.get(reverse('company-edit-description'))
