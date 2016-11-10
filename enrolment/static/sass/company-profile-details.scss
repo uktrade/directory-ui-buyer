@@ -40,6 +40,11 @@
   margin-bottom: 20px;
   padding: 20px;
   position: relative;
+  @media (max-width: 767px) {
+    .key-facts {
+      margin-bottom: 20px;
+    }
+  }
   .description-content {
     margin-bottom: 10px;
   }
