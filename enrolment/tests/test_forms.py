@@ -130,7 +130,7 @@ def test_company_profile_form_required_fields():
     valid = form.is_valid()
 
     assert valid is False
-    assert form.errors['company_name'] == [REQUIRED_MESSAGE]
+    assert form.errors['name'] == [REQUIRED_MESSAGE]
     assert form.errors['website'] == [REQUIRED_MESSAGE]
     assert form.errors['keywords'] == [REQUIRED_MESSAGE]
 
@@ -146,7 +146,7 @@ def test_company_profile_form_url_validator():
 
 
 def test_company_profile_form_accepts_valid_data():
-    data = {'company_name': 'Amazon UK',
+    data = {'name': 'Amazon UK',
             'website': 'http://amazon.co.uk',
             'keywords': 'Ecommerce'}
     form = forms.CompanyBasicInfoForm(data=data)
@@ -155,7 +155,7 @@ def test_company_profile_form_accepts_valid_data():
 
     assert valid is True
     assert form.cleaned_data == {
-        'company_name': 'Amazon UK',
+        'name': 'Amazon UK',
         'website': 'http://amazon.co.uk',
         'keywords': 'Ecommerce',
     }
@@ -250,7 +250,7 @@ def test_company_classification_form_sectors_validator():
 
 def test_serialize_enrolment_forms():
     actual = forms.serialize_enrolment_forms({
-        'company_name': 'Extreme Corp',
+        'name': 'Extreme Corp',
         'company_number': '01234567',
         'mobile_number': '07504738222',
         'company_email': 'contact@example.com',
@@ -270,7 +270,7 @@ def test_serialize_enrolment_forms():
 
 def test_serialize_company_profile_forms():
     actual = forms.serialize_company_profile_forms({
-        'company_name': 'Example ltd.',
+        'name': 'Example ltd.',
         'keywords': 'Jolly good exporter.',
         'employees': '1-10',
         'sectors': ['1', '2'],
@@ -280,7 +280,7 @@ def test_serialize_company_profile_forms():
         'keywords': 'Jolly good exporter.',
         'employees': '1-10',
         'name': 'Example ltd.',
-        'sectors': '["1", "2"]',
+        'sectors': ['1', '2'],
         'website': 'http://example.com',
     }
     assert actual == expected
