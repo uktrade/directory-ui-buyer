@@ -1,5 +1,4 @@
 import logging
-import json
 import os
 
 from directory_api_client.client import DirectoryAPIClient
@@ -175,13 +174,12 @@ class UserCompanyProfileDetailView(UserCompanyBaseView, TemplateView):
         if not response.ok:
             response.raise_for_status()
         details = response.json()
-        sectors = json.loads(details['sectors']) if details['sectors'] else []
         return {
             'company': {
                 'website': details['website'],
                 'description': details['description'],
                 'number': details['number'],
-                'sectors': helpers.get_sectors_labels(sectors),
+                'sectors': helpers.get_sectors_labels(details['sectors']),
                 'logo': details['logo'],
                 'name': details['name'],
                 'keywords': details['keywords'],
@@ -224,6 +222,13 @@ class UserCompanyProfileEditView(
         'classification': 'company-profile-form-classification.html',
     }
     form_serializer = staticmethod(forms.serialize_company_profile_forms)
+
+    def get_form_initial(self, step):
+        sso_user_id = self.request.sso_user.id
+        response = api_client.company.retrieve_profile(sso_user_id)
+        if not response.ok:
+            response.raise_for_status()
+        return response.json()
 
     def get_template_names(self):
         return [self.templates[self.steps.current]]

@@ -1,5 +1,3 @@
-import json
-
 from directory_validators import enrolment as shared_enrolment_validators
 from directory_validators import company as shared_company_validators
 from directory_validators.constants import choices
@@ -32,7 +30,7 @@ class CompanyForm(IndentedInvalidFieldsMixin, forms.Form):
 
 
 class CompanyNameForm(IndentedInvalidFieldsMixin, forms.Form):
-    company_name = forms.CharField(
+    name = forms.CharField(
         label='Company name:',
         help_text=(
             "If this is not your company then click back in your browser "
@@ -53,7 +51,7 @@ class CompanyExportStatusForm(IndentedInvalidFieldsMixin, forms.Form):
 
 
 class CompanyBasicInfoForm(IndentedInvalidFieldsMixin, forms.Form):
-    company_name = forms.CharField(
+    name = forms.CharField(
         label='Change your company name',
         help_text=(
             'Enter your preferred business name'
@@ -252,7 +250,7 @@ def serialize_enrolment_forms(cleaned_data):
 
     return {
         'company_email': cleaned_data['company_email'],
-        'company_name': cleaned_data['company_name'],
+        'company_name': cleaned_data['name'],
         'company_number': cleaned_data['company_number'],
         'mobile_number': cleaned_data['mobile_number'],
         'referrer': cleaned_data['referrer'],
@@ -272,11 +270,11 @@ def serialize_company_profile_forms(cleaned_data):
     """
 
     return {
-        'name': cleaned_data['company_name'],
+        'name': cleaned_data['name'],
         'website': cleaned_data['website'],
         'keywords': cleaned_data['keywords'],
         'employees': cleaned_data['employees'],
-        'sectors': json.dumps(cleaned_data['sectors']),
+        'sectors': cleaned_data['sectors'],
     }
 
 
