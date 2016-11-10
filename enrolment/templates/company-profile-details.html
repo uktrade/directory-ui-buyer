@@ -50,12 +50,11 @@
 				<div class="company-details-subtitle">Key facts</div>
 				<div class="number-of-employees">
 				{% if company.employees %}
-					Number of employees: {{company.employees}}
-				{% else %}
+					Number of employees: {{company.employees}}<br />
+				{% endif %}
 					<a href="{% url 'company-edit' %}" target="_self">
 						Edit your company's key facts.
 					</a>
-				{% endif %}
 				</div>
 			</div>
 
@@ -75,12 +74,11 @@
 		<div class="row-fluid company-profile-box">
 			<div class="span12">
 				{% if company.description %}
-				<span>{{company.description}}</span>
-				{% else %}
+				<span>{{company.description}}</span><br />
+				{% endif %}
 				<a href="{% url 'company-edit-description' %}" target="_self">
 					Edit your company's description.
 				</a>
-				{% endif%}
 			</div>
 		</div>
 
@@ -96,11 +94,10 @@
 					{% for sector in company.sectors %}
 						<span class="label stone-label">{{ sector }}</span>
 					{% endfor %}
-					{% if not company.sectors %}
+					{% if company.sectors %}<br />{% endif %}
 					<a href="{% url 'company-edit' %}" target="_self">
 						Edit your company's sectors.
 					</a>
-					{% endif %}
 				</div>
 			</div>
 
@@ -111,12 +108,11 @@
 				</div>
 				<div class="company-profile-box">
 					{% if company.keywords %}
-					<span>{{company.keywords}}</span>
-					{% else %}
+					<span>{{company.keywords}}</span><br />
+					{% endif %}
 					<a href="{% url 'company-edit' %}" target="_self">
 						Edit your company's keywords.
 					</a>
-					{% endif %}
 				</div>
 			</div>
 		</div>
