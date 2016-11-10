@@ -201,12 +201,21 @@ a .register-interest-btn {
         width: 100%;
       }
     }
+    .coming-soon {
+      margin-bottom: 20px;
+      margin-top: 20px;
+    }
     .hero-profile-title {
       font-weight: 500;
       margin-top: 10px;
     }
     .hero-profile-txt { 
       margin-top: 10px;
+      min-height: 150px;
+      @media (max-width: 768px) {
+        min-height: 60px;
+      }
+
     }
     .hero-profile-link {
       margin-top: 10px;
