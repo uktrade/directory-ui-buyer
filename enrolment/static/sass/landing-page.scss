@@ -14,8 +14,10 @@
 	}
 
 	.ed-landing-page-login-synopsis {
+    margin-bottom: 20px;
+    text-align: center;
 		@media (min-width: 979px) {
-	  		margin-top: 20px;
+	  	margin-top: 20px;
 		}
 	}
 
@@ -37,6 +39,12 @@
     color: #fff;
     padding: 18px;
     text-align: center;
+    &.aqua {
+      background: $aqua;
+      color: $white;
+      margin: 0 auto;
+      max-width: 230px;
+    }
   }
 }
 
