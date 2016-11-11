@@ -12,9 +12,6 @@ from enrolment.views import (
     CompanyEmailConfirmationView,
     EnrolmentView,
     InternationalLandingView,
-    FeedbackView,
-    TermsView,
-    NewToExportingView,
     UserCompanyDescriptionEditView,
     UserCompanyProfileDetailView,
     UserCompanyProfileEditView,
@@ -728,30 +725,3 @@ def test_international_landing_view_submit(
     mock_send_form.assert_called_once_with(
         forms.serialize_international_buyer_forms(buyer_form_data)
     )
-
-
-def test_feedback_redirect(rf):
-    request = rf.get(reverse('feedback'))
-
-    response = FeedbackView.as_view()(request)
-
-    assert response.status_code == http.client.FOUND
-    assert response.get('Location') == constants.FEEDBACK_FORM_URL
-
-
-def test_terms_redirect(rf):
-    request = rf.get(reverse('terms'))
-
-    response = TermsView.as_view()(request)
-
-    assert response.status_code == http.client.FOUND
-    assert response.get('Location') == constants.TERMS_AND_CONDITIONS_URL
-
-
-def test_new_exporter_redirect(rf):
-    request = rf.get(reverse('terms'))
-
-    response = NewToExportingView.as_view()(request)
-
-    assert response.status_code == http.client.FOUND
-    assert response.get('Location') == constants.NEW_TO_EXPORTING_URL

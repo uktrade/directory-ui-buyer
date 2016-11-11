@@ -1,25 +1,24 @@
-from django.conf.urls import url
+from django.conf.urls import url, include
 from django.views.decorators.cache import cache_page
 
 from enrolment.views import (
     CachableTemplateView,
     CompanyEmailConfirmationView,
     EnrolmentView,
-    FeedbackView,
     UserCompanyDescriptionEditView,
     UserCompanyProfileEditView,
     UserCompanyProfileDetailView,
     UserCompanyProfileLogoEditView,
     DomesticLandingView,
     InternationalLandingView,
-    TermsView,
-    NewToExportingView,
 )
 from user.views import UserProfileDetailView
 
 cache_me = cache_page(60 * 1)
 
+
 urlpatterns = [
+    url(r"^", include('directory_constants.urls', namespace='external')),
     url(r"^$",
         DomesticLandingView.as_view(),
         name="index"),
@@ -39,14 +38,6 @@ urlpatterns = [
     url(r"^sorry$",
         cache_me(CachableTemplateView.as_view(template_name="sorry.html")),
         name="problem"),
-
-    url(r"^terms_and_conditions$",
-        cache_me(TermsView.as_view()),
-        name="terms"),
-
-    url(r"^new_to_exporting$",
-        cache_me(NewToExportingView.as_view()),
-        name="new-to-exporting"),
 
     url(r'^confirm-company-email$',
         CompanyEmailConfirmationView.as_view(),
@@ -71,9 +62,5 @@ urlpatterns = [
     url(r'^company-profile/description$',
         UserCompanyDescriptionEditView.as_view(),
         name='company-edit-description'),
-    url(
-        r"^feedback$",
-        FeedbackView.as_view(),
-        name="feedback"),
 
 ]
