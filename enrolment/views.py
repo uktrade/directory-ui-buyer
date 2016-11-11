@@ -278,15 +278,3 @@ class UserCompanyDescriptionEditView(
         if not response.ok:
             response.raise_for_status()
         return response.json()
-
-
-class FeedbackView(RedirectView):
-    url = constants.FEEDBACK_FORM_URL
-
-
-class TermsView(RedirectView):
-    url = constants.TERMS_AND_CONDITIONS_URL
-
-
-class NewToExportingView(RedirectView):
-    url = constants.NEW_TO_EXPORTING_URL
