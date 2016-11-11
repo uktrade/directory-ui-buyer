@@ -1,13 +1,6 @@
 {% extends "form-wrapper.html" %}
 {% load no_export_intention from enrolment_tags %}
 {% block form_title %}Your company's previous exports{% endblock%}
-{% block formarea_container_class %}
-    {% if form|no_export_intention %}
-        span8
-    {% else %}
-        {{ block.super }}
-    {% endif %}
-{% endblock %}
 {% block formarea %}
     {% if form|no_export_intention %}
         <h1>Try our other business services</h1>

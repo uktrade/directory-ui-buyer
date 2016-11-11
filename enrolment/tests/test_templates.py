@@ -154,7 +154,7 @@ def test_company_form_renders_title():
     assert "Create your company’s profile" in html
 
 
-def test_export_status_form_error_size():
+def test_export_status_form_error():
     form = forms.CompanyExportStatusForm(data={
         'export_status': choices.NO_EXPORT_INTENTION
     })
@@ -162,7 +162,6 @@ def test_export_status_form_error_size():
         'form': form
     }
     html = render_to_string('export-status-form.html', context)
-    assert 'span12' in html
     assert 'Try our other business services' in html
 
 
@@ -174,7 +173,6 @@ def test_export_status_no_form_error_size():
         'form': form
     }
     html = render_to_string('export-status-form.html', context)
-    assert 'span8' in html
     assert 'Sorry, this is not the right service for your company' not in html
     assert '<form' in html
 
