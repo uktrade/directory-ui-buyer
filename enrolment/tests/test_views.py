@@ -10,12 +10,8 @@ from enrolment import constants
 from enrolment.views import (
     api_client,
     CompanyEmailConfirmationView,
-    ContactView,
     EnrolmentView,
     InternationalLandingView,
-    FeedbackView,
-    TermsView,
-    NewToExportingView,
     UserCompanyDescriptionEditView,
     UserCompanyProfileDetailView,
     UserCompanyProfileEditView,

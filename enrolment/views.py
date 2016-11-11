@@ -9,7 +9,7 @@ from django.core.files.storage import FileSystemStorage
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.utils.cache import patch_response_headers
-from django.views.generic import RedirectView, TemplateView
+from django.views.generic import TemplateView
 from django.views.generic.edit import FormView
 from django.views.generic.base import View
 

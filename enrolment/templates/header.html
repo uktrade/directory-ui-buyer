@@ -5,14 +5,14 @@
             <div class="level-one-container">
                 <h3 class="our-services-top hide-in-mobile">Our services:</h3>
                 <ul class="">
-                    <li class="hide-in-mobile"><a href="{% url 'oppertunities' %}" title="Exporting opportunities">Exporting opportunities</a></li>
+                    <li class="hide-in-mobile"><a href="{% url 'export_opportunities' %}" title="Exporting opportunities">Exporting opportunities</a></li>
                     <li class="hide-in-mobile"><a href="{% url 'find_a_buyer' %}" title="Find a buyer">Find a buyer</a></li>
                     <li class="hide-in-mobile"><a href="{% url 'selling_online_overseas' %}" title="Selling online overseas">Selling online overseas</a></li>
                     <li class="hide-in-mobile"><a href="{% url 'events' %}" title="Events">Events</a></li>
                     {% if not sso_is_logged_in %}
                         <li><a href="{{ sso_login_url }}" target="_self" title="Login">Login</a></li>
                     {% else %}
-                        <li><a href="{% url 'company_detail' %}" target="_self" title="Profile">Profile</a></li>
+                        <li><a href="{% url 'company-detail' %}" target="_self" title="Profile">Profile</a></li>
                         <li><a href="{{ sso_logout_url }}" target="_self" title="Logout">Logout</a></li>
                     {% endif %}
                 </ul>
@@ -47,7 +47,7 @@
                     <nav>
                         <h3 class="font-white font-weight-medium font-size-15">Our services:</h3>
                         <ul class="mobile-secondary-nav">
-                            <li class="header-nav-link"><a class="font-reg" href="{% url 'export_oppertunities' %}" title="Exporting opportunities">Exporting opportunities</a></li>
+                            <li class="header-nav-link"><a class="font-reg" href="{% url 'export_opportunities' %}" title="Exporting opportunities">Exporting opportunities</a></li>
                             <li class="header-nav-link"><a class="font-reg" href="{% url 'find_a_buyer' %}" title="Find a buyer">Find a buyer</a></li>
                             <li class="header-nav-link"><a class="font-reg" href="{% url 'selling_online_overseas' %}" title="Selling online overseas">Selling online overseas</a></li>
                             <li class="header-nav-link"><a class="font-reg" href="{% url 'events' %}" title="Events">Events</a></li>

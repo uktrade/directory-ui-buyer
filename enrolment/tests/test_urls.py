@@ -1,37 +1,30 @@
 import http
 
+from django.core.urlresolvers import resolve, reverse
+
 from enrolment import constants
 
-
-def test_feedback_redirect(client):
-    response = client.get(reverse('feedback'))
-
-    assert response.status_code == http.client.FOUND
-    assert response.get('Location') == constants.FEEDBACK_FORM_URL
-
-
-def test_terms_redirect(rf):
-    request = rf.get(reverse('terms'))
-
-    response = TermsView.as_view()(request)
-
-    assert response.status_code == http.client.FOUND
-    assert response.get('Location') == constants.TERMS_AND_CONDITIONS_URL
-
-
-def test_new_exporter_redirect(rf):
-    request = rf.get(reverse('terms'))
-
-    response = NewToExportingView.as_view()(request)
-
-    assert response.status_code == http.client.FOUND
-    assert response.get('Location') == constants.NEW_TO_EXPORTING_URL
+destinations = {
+    'about': constants.ABOUT_URL,
+    'contact': constants.CONTACT_US_URL,
+    'events': constants.EVENTS_URL,
+    'export_opportunities': constants.EXPORT_OPPORTUNITIES_URL,
+    'feedback': constants.FEEDBACK_FORM_URL,
+    'find_a_buyer': constants.FIND_A_BUYER_URL,
+    'new_to_exporting': constants.NEW_TO_EXPORTING_URL,
+    'occasional_exporter': constants.OCCASIONAL_EXPORTER_URL,
+    'regular_exporter': constants.REGULAR_EXPORTER_URL,
+    'selling_online_overseas': constants.SELLING_ONLINE_OVERSEAS_URL,
+    'terms': constants.TERMS_AND_CONDITIONS_URL,
+    'privacy': constants.PRIVACY_URL,
+}
 
 
-def test_contact_redirect(rf):
-    request = rf.get(reverse('contact'))
+def test_redirects(rf):
+    for name, expected_url in destinations.items():
+        url = reverse(name)
+        request = rf.get(url)
+        response = resolve(url).func(request)
 
-    response = ContactView.as_view()(request)
-
-    assert response.status_code == http.client.FOUND
-    assert response.get('Location') == constants.CONTACT_US_URL
+        assert response.status_code == http.client.FOUND
+        assert response.get('Location') == expected_url

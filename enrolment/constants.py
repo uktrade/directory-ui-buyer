@@ -14,11 +14,11 @@ TERMS_AND_CONDITIONS_URL = (
 
 NEW_TO_EXPORTING_URL = 'https://exportingisgreat.gov.uk/new/'
 
-EXPORT_OPPERTUNITIES_URL = 'https://www.exportingisgreat.gov.uk/opportunities'
+EXPORT_OPPORTUNITIES_URL = 'https://www.exportingisgreat.gov.uk/opportunities'
 
 FIND_A_BUYER_URL = 'http://find-a-buyer.export.great.gov.uk/'
 
-SELLING_ONLINE_VERSEAS_URL = (
+SELLING_ONLINE_OVERSEAS_URL = (
     'https://selling-online-overseas.export.great.gov.uk/'
 )
 
@@ -29,3 +29,12 @@ OCCASIONAL_EXPORTER_URL = (
 )
 
 REGULAR_EXPORTER_URL = 'https://www.exportingisgreat.gov.uk/regular/'
+
+ABOUT_URL = 'https://www.exportingisgreat.gov.uk/about'
+
+PRIVACY_URL = 'https://www.exportingisgreat.gov.uk/privacy-and-cookies/'
+
+DIT_URL = (
+	'https://www.gov.uk/government/organisations/'
+	'department-for-international-trade'
+)

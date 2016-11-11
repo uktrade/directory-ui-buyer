@@ -6,17 +6,13 @@ from enrolment import constants
 from enrolment.views import (
     CachableTemplateView,
     CompanyEmailConfirmationView,
-    ContactView,
     EnrolmentView,
-    FeedbackView,
     UserCompanyDescriptionEditView,
     UserCompanyProfileEditView,
     UserCompanyProfileDetailView,
     UserCompanyProfileLogoEditView,
     DomesticLandingView,
     InternationalLandingView,
-    TermsView,
-    NewToExportingView,
 )
 from user.views import UserProfileDetailView
 
@@ -31,7 +27,7 @@ external_urls = [
 
     url(r"^new_to_exporting$",
         RedirectView.as_view(url=constants.NEW_TO_EXPORTING_URL),
-        name="new-to-exporting"),
+        name="new_to_exporting"),
 
     url(r"^feedback$",
         RedirectView.as_view(url=constants.FEEDBACK_FORM_URL),
@@ -45,9 +41,9 @@ external_urls = [
         RedirectView.as_view(url=constants.EVENTS_URL),
         name="events"),
 
-    url(r"^export_oppertunities$",
-        RedirectView.as_view(url=constants.EXPORT_OPPERTUNITIES_URL),
-        name="export_oppertunities"),
+    url(r"^export_opportunities$",
+        RedirectView.as_view(url=constants.EXPORT_OPPORTUNITIES_URL),
+        name="export_opportunities"),
 
     url(r"^find_a_buyer$",
         RedirectView.as_view(url=constants.FIND_A_BUYER_URL),
@@ -60,10 +56,23 @@ external_urls = [
     url(r"^regular_exporter$",
         RedirectView.as_view(url=constants.REGULAR_EXPORTER_URL),
         name="regular_exporter"),
-    
+
     url(r"^selling_online_overseas$",
-        RedirectView.as_view(url=constants.SELLING_ONLINE_VERSEAS_URL),
+        RedirectView.as_view(url=constants.SELLING_ONLINE_OVERSEAS_URL),
         name="selling_online_overseas"),
+
+    url(r"^about$",
+        RedirectView.as_view(url=constants.ABOUT_URL),
+        name="about"),
+
+    url(r"^privacy$",
+        RedirectView.as_view(url=constants.PRIVACY_URL),
+        name="privacy"),
+
+    url(r"^DIT$",
+        RedirectView.as_view(url=constants.DIT_URL),
+        name="DIT"),
+
 
 ]
 
