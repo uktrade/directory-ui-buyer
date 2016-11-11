@@ -1,24 +1,21 @@
 @import 'main.scss';
 
 .ed-landing-page {
-	background: $great-blue;
-	color: $white;
-	padding: 24px;
-	position: relative;
-	top: -100px;
+  background: $great-blue;
+  color: $white;
+  padding: 24px;
+  position: relative;
+  top: -100px;
   margin-bottom: -100px;
-	margin-top: 40px;
+  margin-top: 40px;
 
-	&.international {
-		margin-top: 0;
-	}
+  &.international {
+    margin-top: 0;
+  }
 
-	.ed-landing-page-login-synopsis {
+  .ed-landing-page-login-synopsis {
     margin-bottom: 20px;
     text-align: center;
-		@media (min-width: 979px) {
-	  	margin-top: 20px;
-		}
 	}
 
   a {
@@ -61,6 +58,12 @@
 	label {
 		margin-bottom: 0;
 	}
+}
+
+.checkbox-tc {
+  @media (max-width: 767px) {
+    margin-bottom: 20px;
+  }
 }
 
 .page-title {
