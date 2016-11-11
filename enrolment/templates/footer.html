@@ -18,10 +18,10 @@
                 <div class="footer-section">
                     <h3 class="footer-header">Our services</h3>
                     <ul class="footer-links-container">
-                      <li class="footer-links"><a href="https://www.exportingisgreat.gov.uk/opportunities" title="Exporting opportunities">Exporting opportunities</a></li>
-                      <li class="footer-links"><a href="http://find-a-buyer.export.great.gov.uk/" title="Find a buyer">Find a buyer</a></li>
-                      <li class="footer-links"><a href="https://selling-online-overseas.export.great.gov.uk/" title="Selling online overseas">Selling online overseas</a></li>
-                      <li class="footer-links"><a href="https://events.trade.gov.uk" title="Events">Events</a></li>
+                      <li class="footer-links"><a href="{% url 'export_opportunities' %}" title="Exporting opportunities">Exporting opportunities</a></li>
+                      <li class="footer-links"><a href="{% url 'find_a_buyer' %}" title="Find a buyer">Find a buyer</a></li>
+                      <li class="footer-links"><a href="{% url 'selling_online_overseas' %}" title="Selling online overseas">Selling online overseas</a></li>
+                      <li class="footer-links"><a href="{% url 'events' %}" title="Events">Events</a></li>
                     </ul>
                 </div>
             </div>
@@ -30,14 +30,14 @@
                 <div class="footer-section">
                     <h3 class="footer-header">Exporting is GREAT</h3>
                     <ul class="footer-links-container">
-                        <li class="footer-links"><a href="https://www.exportingisgreat.gov.uk/new/" title="">New to exporting</a></li>
-                        <li class="footer-links"><a href="https://www.exportingisgreat.gov.uk/occasional/" title="">Occasional exporter</a></li>
-                        <li class="footer-links"><a href="https://www.exportingisgreat.gov.uk/regular/" title="">Regular exporter</a></li>
-                        <li class="footer-links"><a href="https://www.exportingisgreat.gov.uk/about" title="">About</a></li>
-                        <li class="footer-links"><a href="https://contact-us.export.great.gov.uk/directory" title="">Contact Us</a></li>
-                        <li class="footer-links"><a href="https://www.exportingisgreat.gov.uk/privacy-and-cookies/" title="">Privacy &amp; cookies</a></li>
-                        <li class="footer-links"><a href="https://www.exportingisgreat.gov.uk/terms-and-conditions/" title="">Terms &amp; conditions</a></li>
-                        <li class="footer-links"><a href="https://www.gov.uk/government/organisations/department-for-international-trade" title="">Department for International Trade</a></li>
+                        <li class="footer-links"><a href="{% url 'new_to_exporting' %}" title="">New to exporting</a></li>
+                        <li class="footer-links"><a href="{% url 'occasional_exporter' %}" title="">Occasional exporter</a></li>
+                        <li class="footer-links"><a href="{% url 'regular_exporter' %}" title="">Regular exporter</a></li>
+                        <li class="footer-links"><a href="{% url 'about' %}" title="">About</a></li>
+                        <li class="footer-links"><a href="{% url 'contact' %}" title="">Contact Us</a></li>
+                        <li class="footer-links"><a href="{% url 'privacy' %}" title="">Privacy &amp; cookies</a></li>
+                        <li class="footer-links"><a href="{% url 'terms' %}" title="">Terms &amp; conditions</a></li>
+                        <li class="footer-links"><a href="{% url 'DIT' %}" title="">Department for International Trade</a></li>
                     </ul>
                 </div>
             </div>

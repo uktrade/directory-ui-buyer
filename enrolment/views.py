@@ -9,7 +9,7 @@ from django.core.files.storage import FileSystemStorage
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.utils.cache import patch_response_headers
-from django.views.generic import RedirectView, TemplateView
+from django.views.generic import TemplateView
 from django.views.generic.edit import FormView
 from django.views.generic.base import View
 
@@ -278,15 +278,3 @@ class UserCompanyDescriptionEditView(
         if not response.ok:
             response.raise_for_status()
         return response.json()
-
-
-class FeedbackView(RedirectView):
-    url = constants.FEEDBACK_FORM_URL
-
-
-class TermsView(RedirectView):
-    url = constants.TERMS_AND_CONDITIONS_URL
-
-
-class NewToExportingView(RedirectView):
-    url = constants.NEW_TO_EXPORTING_URL

@@ -5,10 +5,10 @@
             <div class="level-one-container">
                 <h3 class="our-services-top hide-in-mobile">Our services:</h3>
                 <ul class="">
-                    <li class="hide-in-mobile"><a href="https://www.exportingisgreat.gov.uk/opportunities" title="Exporting opportunities">Exporting opportunities</a></li>
-                    <li class="hide-in-mobile"><a href="http://find-a-buyer.export.great.gov.uk/" title="Find a buyer">Find a buyer</a></li>
-                    <li class="hide-in-mobile"><a href="https://selling-online-overseas.export.great.gov.uk/" title="Selling online overseas">Selling online overseas</a></li>
-                    <li class="hide-in-mobile"><a href="https://events.trade.gov.uk" title="Events">Events</a></li>
+                    <li class="hide-in-mobile"><a href="{% url 'export_opportunities' %}" title="Exporting opportunities">Exporting opportunities</a></li>
+                    <li class="hide-in-mobile"><a href="{% url 'find_a_buyer' %}" title="Find a buyer">Find a buyer</a></li>
+                    <li class="hide-in-mobile"><a href="{% url 'selling_online_overseas' %}" title="Selling online overseas">Selling online overseas</a></li>
+                    <li class="hide-in-mobile"><a href="{% url 'events' %}" title="Events">Events</a></li>
                     {% if not sso_is_logged_in %}
                         <li><a href="{{ sso_login_url }}" target="_self" title="Login">Login</a></li>
                     {% else %}
@@ -31,9 +31,9 @@
                 <nav>
                 <h3 class="a11y">Exporting is GREAT:</h3>
                 <ul class="header-nav-links">
-                    <li class="header-nav-link"><a title="new to exporting" href="https://www.exportingisgreat.gov.uk/new/" class="">NEW TO EXPORTING</a></li>
-                    <li class="header-nav-link"><a title="occasional exporter" href="https://www.exportingisgreat.gov.uk/occasional/">OCCASIONAL EXPORTER</a></li>
-                    <li class="header-nav-link"><a title="regular exporter" href="https://www.exportingisgreat.gov.uk/regular/">REGULAR EXPORTER</a></li>
+                    <li class="header-nav-link"><a title="new to exporting" href="{% url 'new_to_exporting' %}" class="">NEW TO EXPORTING</a></li>
+                    <li class="header-nav-link"><a title="occasional exporter" href="{% url 'occasional_exporter' %}">OCCASIONAL EXPORTER</a></li>
+                    <li class="header-nav-link"><a title="regular exporter" href="{% url 'regular_exporter' %}">REGULAR EXPORTER</a></li>
                     </ul>
                 </nav>
             </div>
@@ -47,10 +47,10 @@
                     <nav>
                         <h3 class="font-white font-weight-medium font-size-15">Our services:</h3>
                         <ul class="mobile-secondary-nav">
-                            <li class="header-nav-link"><a class="font-reg" href="https://www.exportingisgreat.gov.uk/opportunities" title="Exporting opportunities">Exporting opportunities</a></li>
-                            <li class="header-nav-link"><a class="font-reg" href="http://find-a-buyer.export.great.gov.uk/" title="Find a buyer">Find a buyer</a></li>
-                            <li class="header-nav-link"><a class="font-reg" href="https://selling-online-overseas.export.great.gov.uk/" title="Selling online overseas">Selling online overseas</a></li>
-                            <li class="header-nav-link"><a class="font-reg" href="https://events.trade.gov.uk" title="Events">Events</a></li>
+                            <li class="header-nav-link"><a class="font-reg" href="{% url 'export_opportunities' %}" title="Exporting opportunities">Exporting opportunities</a></li>
+                            <li class="header-nav-link"><a class="font-reg" href="{% url 'find_a_buyer' %}" title="Find a buyer">Find a buyer</a></li>
+                            <li class="header-nav-link"><a class="font-reg" href="{% url 'selling_online_overseas' %}" title="Selling online overseas">Selling online overseas</a></li>
+                            <li class="header-nav-link"><a class="font-reg" href="{% url 'events' %}" title="Events">Events</a></li>
                         </ul>
                     </nav>
                 </div>
@@ -58,9 +58,9 @@
                     <nav>
                         <h3 class="font-white font-weight-medium font-size-15 push--top desktop-only">Exporting is GREAT:</h3>
                         <ul id="secondaryNav" class="mobile-secondary-nav">
-                            <li class="header-nav-link"><a title="NEW TO EXPORTING" href="exportingisgreat.gov.uk/new/" class="">NEW TO EXPORTING</a></li>
-                            <li class="header-nav-link"><a title="OCCASIONAL EXPORTER" href="exportingisgreat.gov.uk/occasional/">OCCASIONAL EXPORTER</a></li>
-                            <li class="header-nav-link"><a title="REGULAR EXPORTER" href="exportingisgreat.gov.uk/regular/">REGULAR EXPORTER</a></li>
+                            <li class="header-nav-link"><a title="NEW TO EXPORTING" href="{% url 'new_to_exporting' %}" class="">NEW TO EXPORTING</a></li>
+                            <li class="header-nav-link"><a title="OCCASIONAL EXPORTER" href="{% url 'occasional_exporter' %}">OCCASIONAL EXPORTER</a></li>
+                            <li class="header-nav-link"><a title="REGULAR EXPORTER" href="{% url 'regular_exporter' %}">REGULAR EXPORTER</a></li>
                         </ul>
                     </nav>
                 </div>
