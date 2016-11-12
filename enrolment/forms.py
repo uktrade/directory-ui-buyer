@@ -283,7 +283,6 @@ def serialize_company_logo_forms(cleaned_data):
     Return the shape directory-api-client expects for changing logo.
 
     @param {dict} cleaned_data - All the fields in `CompanyLogoForm`
-
     @returns dict
 
     """
@@ -298,7 +297,6 @@ def serialize_company_description_forms(cleaned_data):
     Return the shape directory-api-client expects for changing description.
 
     @param {dict} cleaned_data - All the fields in `CompanyDescriptionForm`
-
     @returns dict
 
     """
@@ -314,7 +312,6 @@ def serialize_international_buyer_forms(cleaned_data):
     buyers.
 
     @param {dict} cleaned_data - All the fields in `InternationalBuyerForm`
-
     @returns dict
 
     """
@@ -323,4 +320,32 @@ def serialize_international_buyer_forms(cleaned_data):
         'name': cleaned_data['full_name'],
         'email': cleaned_data['email_address'],
         'sector': cleaned_data['sector'],
+    }
+
+
+def get_company_name_form_initial_data(name):
+    """
+    Returns the shape of initial data that CompanyNameForm expects.
+
+    @param {str} name
+    @returns dict
+
+    """
+
+    return {
+        'name': name,
+    }
+
+
+def get_user_form_initial_data(referrer):
+    """
+    Returns the shape of initial data that UserForm expects.
+
+    @param {str} referrer
+    @returns dict
+
+    """
+
+    return {
+        'referrer': referrer,
     }

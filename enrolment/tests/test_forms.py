@@ -319,3 +319,23 @@ def test_serialize_international_buyer_forms():
         'sector': 'AEROSPACE',
     }
     assert actual == expected
+
+
+def test_get_company_name_form_initial_data():
+    actual = forms.get_company_name_form_initial_data(
+        name='Example'
+    )
+    expected = {
+        'name': 'Example'
+    }
+    assert actual == expected
+
+
+def test_get_user_form_initial_data():
+    actual = forms.get_user_form_initial_data(
+        referrer='google'
+    )
+    expected = {
+        'referrer': 'google'
+    }
+    assert actual == expected
