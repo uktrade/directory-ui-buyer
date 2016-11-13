@@ -679,6 +679,10 @@ body {
   .ed-hero-sub-header-title {
     h1 {
       margin-bottom: 20px;
+      @media (max-width: 979px) {
+        text-align: center;
+        margin-bottom: 40px;
+      }
     }
   }
 }
