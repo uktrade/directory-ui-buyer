@@ -9,7 +9,7 @@ from django.core.files.storage import FileSystemStorage
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.utils.cache import patch_response_headers
-from django.views.generic import RedirectView, TemplateView
+from django.views.generic import TemplateView
 from django.views.generic.edit import FormView
 from django.views.generic.base import View
 
@@ -104,15 +104,12 @@ class EnrolmentView(SSOLoginRequiredMixin, SessionWizardView):
     def get_form_initial(self, step):
         if step == 'user':
             referrer = self.request.session.get(constants.SESSION_KEY_REFERRER)
-            return {
-                'referrer': referrer
-            }
+            return forms.get_user_form_initial_data(referrer=referrer)
         if step == 'name':
             prev_data = self.storage.get_step_data('company') or {}
             company_number = prev_data.get('company-company_number')
-            return {
-                'company_name': helpers.get_company_name(company_number)
-            }
+            name = helpers.get_company_name(company_number)
+            return forms.get_company_name_form_initial_data(name=name)
 
     def process_step(self, form):
         step = self.storage.current_step
@@ -278,15 +275,3 @@ class UserCompanyDescriptionEditView(
         if not response.ok:
             response.raise_for_status()
         return response.json()
-
-
-class FeedbackView(RedirectView):
-    url = constants.FEEDBACK_FORM_URL
-
-
-class TermsView(RedirectView):
-    url = constants.TERMS_AND_CONDITIONS_URL
-
-
-class NewToExportingView(RedirectView):
-    url = constants.NEW_TO_EXPORTING_URL

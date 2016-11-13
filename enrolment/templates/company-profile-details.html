@@ -33,7 +33,11 @@
 			<div class="span3 company-logo">
 				<div class="logo-container">
 					<div class="logo">
-						{% if company.logo %}<img src="{{company.logo}}" />{% endif %}
+						{% if company.logo %}
+						<div class="description-content">
+							<img src="{{company.logo}}" />
+						</div>
+						{% endif %}
 						<a href="{% url 'company-edit-logo' %}" target="_self">
 						{% if company.logo %}
 							Change logo
@@ -50,12 +54,13 @@
 				<div class="company-details-subtitle">Key facts</div>
 				<div class="number-of-employees">
 				{% if company.employees %}
-					Number of employees: {{company.employees}}
-				{% else %}
+					<div class="description-content">
+						Number of employees: {{company.employees}}
+					</div>
+				{% endif %}
 					<a href="{% url 'company-edit' %}" target="_self">
 						Edit your company's key facts.
 					</a>
-				{% endif %}
 				</div>
 			</div>
 
@@ -75,12 +80,11 @@
 		<div class="row-fluid company-profile-box">
 			<div class="span12">
 				{% if company.description %}
-				<span>{{company.description}}</span>
-				{% else %}
+				<div class="description-content">{{company.description}}</div>
+				{% endif %}
 				<a href="{% url 'company-edit-description' %}" target="_self">
 					Edit your company's description.
 				</a>
-				{% endif%}
 			</div>
 		</div>
 
@@ -96,11 +100,12 @@
 					{% for sector in company.sectors %}
 						<span class="label stone-label">{{ sector }}</span>
 					{% endfor %}
-					{% if not company.sectors %}
+					{% if company.sectors %}
+					<div class="description-content"></div>
+					{% endif %}
 					<a href="{% url 'company-edit' %}" target="_self">
 						Edit your company's sectors.
 					</a>
-					{% endif %}
 				</div>
 			</div>
 
@@ -111,12 +116,11 @@
 				</div>
 				<div class="company-profile-box">
 					{% if company.keywords %}
-					<span>{{company.keywords}}</span>
-					{% else %}
+					<div class="description-content">{{company.keywords}}</div>
+					{% endif %}
 					<a href="{% url 'company-edit' %}" target="_self">
 						Edit your company's keywords.
 					</a>
-					{% endif %}
 				</div>
 			</div>
 		</div>
