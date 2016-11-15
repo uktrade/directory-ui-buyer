@@ -271,8 +271,6 @@ def test_enrolment_form_complete_api_client_fail(company_request):
                    return_value={})
 @mock.patch.object(UserCompanyProfileEditView, 'serialize_form_data',
                    mock.Mock(return_value={'field': 'value'}))
-@mock.patch.object(api_client.company, 'retrieve_profile',
-                   mock.Mock(return_value=mock.Mock(json=lambda: {})))
 @mock.patch.object(api_client.company, 'update_profile')
 def test_company_profile_edit_api_client_call(
         mock_update_profile, rf, client, company_request):
@@ -292,8 +290,6 @@ def test_company_profile_edit_api_client_call(
 @mock.patch.object(UserCompanyProfileEditView, 'serialize_form_data',
                    mock.Mock(return_value={}))
 @mock.patch.object(api_client.company, 'update_profile', api_response_200)
-@mock.patch.object(api_client.company, 'retrieve_profile',
-                   mock.Mock(return_value=mock.Mock(json=lambda: {})))
 def test_company_profile_edit_api_client_success(company_request):
     view = UserCompanyProfileEditView()
     view.request = company_request
@@ -307,8 +303,6 @@ def test_company_profile_edit_api_client_success(company_request):
                    mock.Mock(return_value={}))
 @mock.patch.object(UserCompanyProfileEditView, 'serialize_form_data',
                    mock.Mock(return_value={}))
-@mock.patch.object(api_client.company, 'retrieve_profile',
-                   mock.Mock(return_value=mock.Mock(json=lambda: {})))
 @mock.patch.object(api_client.company, 'update_profile', api_response_400)
 def test_company_profile_edit_api_client_failure(company_request):
 
@@ -492,8 +486,6 @@ def test_company_profile_logo_api_client_failure(company_request):
             mock.Mock(return_value=True))
 @mock.patch.object(UserCompanyDescriptionEditView, 'serialize_form_data',
                    lambda x: {'field': 'value'})
-@mock.patch.object(api_client.company, 'retrieve_profile',
-                   mock.Mock(return_value=mock.Mock(json=lambda: {})))
 @mock.patch.object(api_client.company, 'update_profile')
 def test_company_profile_description_api_client_call(mock_update_profile,
                                                      company_request):
@@ -510,8 +502,6 @@ def test_company_profile_description_api_client_call(mock_update_profile,
             mock.Mock(return_value=True))
 @mock.patch.object(UserCompanyDescriptionEditView, 'serialize_form_data',
                    mock.Mock(return_value={}))
-@mock.patch.object(api_client.company, 'retrieve_profile',
-                   mock.Mock(return_value=mock.Mock(json=lambda: {})))
 @mock.patch.object(api_client.company, 'update_profile', api_response_200)
 def test_company_profile_description_api_client_success(company_request):
 
@@ -525,8 +515,6 @@ def test_company_profile_description_api_client_success(company_request):
             mock.Mock(return_value=True))
 @mock.patch.object(UserCompanyDescriptionEditView, 'serialize_form_data',
                    mock.Mock(return_value={}))
-@mock.patch.object(api_client.company, 'retrieve_profile',
-                   mock.Mock(return_value=mock.Mock(json=lambda: {})))
 @mock.patch.object(api_client.company, 'update_profile', api_response_400)
 def test_company_profile_description_api_client_failure(company_request):
 

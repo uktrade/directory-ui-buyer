@@ -1,7 +1,6 @@
 import logging
 import os
 
-from directory_api_client.client import DirectoryAPIClient
 from formtools.wizard.views import SessionWizardView
 
 from django.conf import settings
@@ -13,15 +12,11 @@ from django.views.generic import TemplateView
 from django.views.generic.edit import FormView
 from django.views.generic.base import View
 
+from api_client import api_client
 from enrolment import forms, helpers
 from enrolment import constants
 from sso.utils import SSOLoginRequiredMixin
 
-
-api_client = DirectoryAPIClient(
-    base_url=settings.API_CLIENT_BASE_URL,
-    api_key=settings.API_CLIENT_KEY,
-)
 
 logger = logging.getLogger(__name__)
 

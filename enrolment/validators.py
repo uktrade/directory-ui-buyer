@@ -2,16 +2,9 @@
 # directory-validators
 import http
 
-from directory_api_client.client import DirectoryAPIClient
-
 from django.forms import ValidationError
-from django.conf import settings
 
-
-api_client = DirectoryAPIClient(
-    base_url=settings.API_CLIENT_BASE_URL,
-    api_key=settings.API_CLIENT_KEY,
-)
+from api_client import api_client
 
 
 def company_number(value):

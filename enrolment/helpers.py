@@ -1,12 +1,5 @@
-from directory_api_client.client import DirectoryAPIClient
+from api_client import api_client
 from directory_validators.constants import choices
-
-from django.conf import settings
-
-api_client = DirectoryAPIClient(
-    base_url=settings.API_CLIENT_BASE_URL,
-    api_key=settings.API_CLIENT_KEY,
-)
 
 EMPLOYEE_CHOICES = {key: value for key, value in choices.EMPLOYEES}
 SECTOR_CHOICES = {key: value for key, value in choices.COMPANY_CLASSIFICATIONS}

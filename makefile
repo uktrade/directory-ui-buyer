@@ -31,6 +31,7 @@ docker_run:
 	docker-compose up --build
 
 DOCKER_SET_DEBUG_ENV_VARS := \
+	export DIRECTORY_UI_API_CLIENT_CLASS_NAME=unit-test; \
 	export DIRECTORY_UI_API_CLIENT_KEY=debug; \
 	export DIRECTORY_UI_API_CLIENT_BASE_URL=http://api.trade.great.dev:8000; \
 	export DIRECTORY_UI_SSO_API_CLIENT_KEY=debug; \
@@ -79,6 +80,7 @@ DEBUG_SET_ENV_VARS := \
 	export PORT=8001; \
 	export SECRET_KEY=debug; \
 	export DEBUG=true ;\
+	export API_CLIENT_CLASS_NAME=unit-test; \
 	export API_CLIENT_KEY=debug; \
 	export API_CLIENT_BASE_URL=http://api.trade.great.dev:8000; \
 	export SSO_API_CLIENT_KEY=debug; \
