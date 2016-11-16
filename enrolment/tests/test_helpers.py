@@ -1,8 +1,8 @@
 import http
 from unittest.mock import patch
 
-from requests import Response
-from requests.exceptions import HTTPError, ConnectionError, SSLError, Timeout
+import pytest
+from requests import exceptions, Response
 
 from django import forms
 
@@ -31,6 +31,18 @@ class MockHaltingValidatorForm(forms.Form):
     )
 
 
+def profile_api_400(*args, **kwargs):
+    response = Response()
+    response.status_code = http.client.BAD_REQUEST
+    return response
+
+
+def profile_api_404(*args, **kwargs):
+    response = Response()
+    response.status_code = http.client.NOT_FOUND
+    return response
+
+
 def test_validator_raises_all():
     form = MockForm({'field': 'value'})
     assert form.is_valid() is False
@@ -45,39 +57,20 @@ def test_halt_validation_on_failure_raises_first():
     assert 'error two' not in form.errors['field']
 
 
-@patch.object(helpers.api_client.company, 'retrieve_companies_house_profile',)
-def test_get_company_name_handles_exception(
-        mock_retrieve_companies_house_profile, caplog):
-    exceptions = [HTTPError, ConnectionError, SSLError, Timeout]
-    for exception in exceptions:
-        mock_retrieve_companies_house_profile.side_effect = exception('!')
-        response = helpers.get_company_name('01234567')
-        log = caplog.records[0]
-        assert response is None
-        assert log.levelname == 'ERROR'
-        assert log.msg == 'Unable to get name for "01234567".'
-
-
-@patch.object(helpers.api_client.company, 'retrieve_companies_house_profile',)
+@patch.object(helpers.api_client.company, 'retrieve_companies_house_profile')
 def test_get_company_name_handles_bad_status(
-        mock_retrieve_companies_house_profile, caplog):
+    mock_retrieve_companies_house_profile
+):
+    mock_retrieve_companies_house_profile.return_value = profile_api_400()
 
-    mock_response = Response()
-    mock_response.status_code = http.client.BAD_REQUEST
-    mock_retrieve_companies_house_profile.return_value = mock_response
-
-    name = helpers.get_company_name('01234567')
-    log = caplog.records[0]
-
-    mock_retrieve_companies_house_profile.assert_called_once_with('01234567')
-    assert name is None
-    assert log.levelname == 'ERROR'
-    assert log.msg == 'Unable to get name for "01234567". Status "400".'
+    with pytest.raises(exceptions.HTTPError):
+        helpers.get_company_name('01234567')
 
 
 @patch.object(helpers.api_client.company, 'retrieve_companies_house_profile',)
 def test_get_company_name_handles_good_status(
-        mock_retrieve_companies_house_profile, caplog):
+    mock_retrieve_companies_house_profile
+):
 
     mock_response = Response()
     mock_response.status_code = http.client.OK
@@ -129,12 +122,8 @@ def test_user_has_verified_company(mock_retrieve_user_profile):
     assert helpers.user_has_verified_company(sso_user_id=1) is True
 
 
-@patch.object(helpers.api_client.user, 'retrieve_profile')
-def test_user_has_verified_company_404(mock_retrieve_user_profile):
-    mock_response = Response()
-    mock_response.status_code = http.client.NOT_FOUND
-    mock_retrieve_user_profile.return_value = mock_response
-
+@patch.object(helpers.api_client.user, 'retrieve_profile', profile_api_404)
+def test_user_has_verified_company_404():
     assert helpers.user_has_verified_company(sso_user_id=1) is False
 
 

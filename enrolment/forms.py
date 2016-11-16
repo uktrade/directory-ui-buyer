@@ -6,7 +6,7 @@ from django import forms
 from django.conf import settings
 from django.utils.safestring import mark_safe
 
-from enrolment import helpers, validators
+from enrolment import fields, helpers, validators
 
 
 class IndentedInvalidFieldsMixin:
@@ -14,7 +14,7 @@ class IndentedInvalidFieldsMixin:
 
 
 class CompanyForm(IndentedInvalidFieldsMixin, forms.Form):
-    company_number = forms.CharField(
+    company_number = fields.PaddedCharField(
         label='Company number:',
         help_text=mark_safe(
             'This is the company number on your certificate of '
@@ -25,7 +25,9 @@ class CompanyForm(IndentedInvalidFieldsMixin, forms.Form):
         validators=helpers.halt_validation_on_failure(
             shared_enrolment_validators.company_number,
             validators.company_number,
-        )
+        ),
+        max_length=8,
+        fillchar='0',
     )
 
 

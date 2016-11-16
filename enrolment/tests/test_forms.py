@@ -7,7 +7,7 @@ from django.forms.fields import Field
 from django.core.validators import EmailValidator, URLValidator
 from django.core.urlresolvers import reverse
 
-from enrolment import forms, validators
+from enrolment import fields, forms, validators
 
 
 REQUIRED_MESSAGE = Field.default_error_messages['required']
@@ -26,6 +26,14 @@ def test_company_form_rejects_missing_data():
     form = forms.CompanyForm(data={})
     assert form.is_valid() is False
     assert form.errors['company_number'] == [REQUIRED_MESSAGE]
+
+
+def test_company_form_fields():
+    field = forms.CompanyForm.base_fields['company_number']
+
+    assert isinstance(field, fields.PaddedCharField)
+    assert field.max_length == 8
+    assert field.fillchar == '0'
 
 
 def test_company_form_validators():

@@ -583,6 +583,8 @@ def test_company_description_edit_handles_bad_api_response(
         view(company_request)
 
 
+@mock.patch.object(helpers, 'get_company_name',
+                   mock.Mock(return_value='Example corp'))
 @mock.patch('enrolment.helpers.user_has_verified_company',
             mock.Mock(return_value=False))
 def test_enrolment_views_use_correct_template(client, rf, sso_user):

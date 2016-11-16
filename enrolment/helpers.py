@@ -1,14 +1,7 @@
-import http
-import logging
-
 from directory_api_client.client import DirectoryAPIClient
 from directory_validators.constants import choices
-import requests
 
 from django.conf import settings
-
-
-logger = logging.getLogger(__name__)
 
 api_client = DirectoryAPIClient(
     base_url=settings.API_CLIENT_BASE_URL,
@@ -39,17 +32,10 @@ def halt_validation_on_failure(*validators):
 
 
 def get_company_name(number):
-    try:
-        response = api_client.company.retrieve_companies_house_profile(number)
-    except requests.exceptions.RequestException:
-        logger.exception('Unable to get name for "{0}".'.format(number))
-    else:
-        if response.status_code == http.client.OK:
-            return response.json()['company_name']
-        else:
-            logger.error('Unable to get name for "{0}". Status "{1}".'.format(
-                number, response.status_code
-            ))
+    response = api_client.company.retrieve_companies_house_profile(number)
+    if not response.ok:
+        response.raise_for_status()
+    return response.json()['company_name']
 
 
 def user_has_verified_company(sso_user_id):

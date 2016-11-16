@@ -106,9 +106,8 @@ class EnrolmentView(SSOLoginRequiredMixin, SessionWizardView):
             referrer = self.request.session.get(constants.SESSION_KEY_REFERRER)
             return forms.get_user_form_initial_data(referrer=referrer)
         if step == 'name':
-            prev_data = self.storage.get_step_data('company') or {}
-            company_number = prev_data.get('company-company_number')
-            name = helpers.get_company_name(company_number)
+            cleaned_data = self.get_cleaned_data_for_step('company') or {}
+            name = helpers.get_company_name(cleaned_data.get('company_number'))
             return forms.get_company_name_form_initial_data(name=name)
 
     def process_step(self, form):
