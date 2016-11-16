@@ -25,7 +25,7 @@ urlpatterns = [
 
     url(r"^international$",
         InternationalLandingView.as_view(),
-        name="index"),
+        name="international"),
 
     url(r"^register$",
         EnrolmentView.as_view(),
