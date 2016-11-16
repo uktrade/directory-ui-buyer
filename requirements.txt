@@ -9,4 +9,4 @@ phonenumberslite==7.7.4
 git+https://github.com/uktrade/directory-validators.git@1.1.1#egg=directory_validators
 git+https://github.com/uktrade/directory-api-client.git@0.5.0#egg=directory_api_client
 git+https://github.com/uktrade/directory-sso-api-client.git@1.0.1#egg=directory_sso_api_client
-git+https://github.com/uktrade/directory-constants.git@1.0.0#egg=directory_constants
+git+https://github.com/uktrade/directory-constants.git@1.0.1#egg=directory_constants
