@@ -126,8 +126,8 @@ def api_response_company_profile_no_sectors_200(api_response_200):
 @pytest.fixture
 def user_step_data_valid():
     return {
-        'user-mobile_number': '0123456789',
-        'user-mobile_confirmed': '0123456789',
+        'user-mobile_number': '07507605444',
+        'user-mobile_confirmed': '07507605444',
         'user-terms_agreed': True,
         'enrolment_view-current_step': 'user',
     }
@@ -687,7 +687,7 @@ def test_enrolment_calls_api(
     response = EnrolmentView.as_view()(user_step_request)
 
     assert response.status_code == http.client.OK
-    mock_api_call.assert_called_once_with(phone_number='0123456789')
+    mock_api_call.assert_called_once_with(phone_number='07507605444')
 
 
 @mock.patch('enrolment.helpers.user_has_verified_company',

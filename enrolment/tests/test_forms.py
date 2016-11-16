@@ -86,6 +86,18 @@ def test_company_form_fields():
     assert field.fillchar == '0'
 
 
+def test_user_form_fields():
+    mobile_number_field = forms.UserForm.base_fields['mobile_number']
+    mobile_confirmed_field = forms.UserForm.base_fields['mobile_confirmed']
+
+    assert isinstance(mobile_number_field, fields.MobilePhoneNumberField)
+    # we dont want both fields to be MobilePhoneNumberField - that would
+    # result in validation inside the field's `to_python` firing before
+    # clean_mobile_confirmed fires, meaning different mobile number in
+    # mobile_confirmed could show 'invalid number' instead of 'not the same'.
+    assert isinstance(mobile_confirmed_field, CharField)
+
+
 def test_company_form_validators():
     field = forms.CompanyForm.base_fields['company_number']
     inner_validators = field.validators[0].inner_validators
@@ -126,8 +138,8 @@ def test_test_company_email_form_rejects_different_email_addresses():
 @patch('enrolment.validators.api_client', Mock())
 def test_test_user_form_rejects_different_mobile_numbers():
     form = forms.UserForm(data={
-        'mobile_number': '111',
-        'mobile_confirmed': '112',
+        'mobile_number': '07507605443',
+        'mobile_confirmed': '07507605444',
     })
     expected = forms.UserForm.error_messages['different']
 
