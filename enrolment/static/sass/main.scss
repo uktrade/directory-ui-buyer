@@ -33,6 +33,10 @@ input[type="color"]:focus,
     -webkit-box-shadow: none;
 }
 
+input[type="file"] {
+  line-height: 1em;
+}
+
 ul, li {
     list-style: none;
 }
