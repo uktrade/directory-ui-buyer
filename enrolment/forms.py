@@ -13,7 +13,14 @@ class IndentedInvalidFieldsMixin:
     error_css_class = 'input-field-container has-error'
 
 
-class CompanyForm(IndentedInvalidFieldsMixin, forms.Form):
+class AutoFocusFieldMixin:
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        first_field_name = next(field for field in self.fields)
+        self.fields[first_field_name].widget.attrs['autofocus'] = 'autofocus'
+
+
+class CompanyForm(AutoFocusFieldMixin, IndentedInvalidFieldsMixin, forms.Form):
     company_number = fields.PaddedCharField(
         label='Company number:',
         help_text=mark_safe(
@@ -31,7 +38,8 @@ class CompanyForm(IndentedInvalidFieldsMixin, forms.Form):
     )
 
 
-class CompanyNameForm(IndentedInvalidFieldsMixin, forms.Form):
+class CompanyNameForm(AutoFocusFieldMixin, IndentedInvalidFieldsMixin,
+                      forms.Form):
     name = forms.CharField(
         label='Company name:',
         help_text=(
@@ -42,7 +50,8 @@ class CompanyNameForm(IndentedInvalidFieldsMixin, forms.Form):
     )
 
 
-class CompanyExportStatusForm(IndentedInvalidFieldsMixin, forms.Form):
+class CompanyExportStatusForm(AutoFocusFieldMixin, IndentedInvalidFieldsMixin,
+                              forms.Form):
     export_status = forms.ChoiceField(
         label=(
             'Has your company sold products or services to overseas customers?'
@@ -52,7 +61,8 @@ class CompanyExportStatusForm(IndentedInvalidFieldsMixin, forms.Form):
     )
 
 
-class CompanyBasicInfoForm(IndentedInvalidFieldsMixin, forms.Form):
+class CompanyBasicInfoForm(AutoFocusFieldMixin, IndentedInvalidFieldsMixin,
+                           forms.Form):
     name = forms.CharField(
         label='Change your company name',
         help_text=(
@@ -82,7 +92,8 @@ class CompanyBasicInfoForm(IndentedInvalidFieldsMixin, forms.Form):
     )
 
 
-class CompanyDescriptionForm(IndentedInvalidFieldsMixin, forms.Form):
+class CompanyDescriptionForm(AutoFocusFieldMixin, IndentedInvalidFieldsMixin,
+                             forms.Form):
     description = forms.CharField(
         widget=forms.Textarea,
         label='Describe your business to overseas buyers:',
@@ -91,7 +102,8 @@ class CompanyDescriptionForm(IndentedInvalidFieldsMixin, forms.Form):
     )
 
 
-class CompanyLogoForm(IndentedInvalidFieldsMixin, forms.Form):
+class CompanyLogoForm(AutoFocusFieldMixin, IndentedInvalidFieldsMixin,
+                      forms.Form):
     logo = forms.FileField(
         help_text=(
             'For best results this should be a transparent PNG file of 600 x '
@@ -104,7 +116,8 @@ class CompanyLogoForm(IndentedInvalidFieldsMixin, forms.Form):
     )
 
 
-class CompanyEmailAddressForm(IndentedInvalidFieldsMixin, forms.Form):
+class CompanyEmailAddressForm(AutoFocusFieldMixin, IndentedInvalidFieldsMixin,
+                              forms.Form):
     error_messages = {
         'different': 'Your emails do not match.'
     }
@@ -132,7 +145,7 @@ class CompanyEmailAddressForm(IndentedInvalidFieldsMixin, forms.Form):
         return confirmed
 
 
-class UserForm(IndentedInvalidFieldsMixin, forms.Form):
+class UserForm(AutoFocusFieldMixin, IndentedInvalidFieldsMixin, forms.Form):
     error_messages = {
         'different': 'Your phone numbers do not match.'
     }
@@ -165,7 +178,8 @@ class UserForm(IndentedInvalidFieldsMixin, forms.Form):
         return confirmed
 
 
-class CompanySizeForm(IndentedInvalidFieldsMixin, forms.Form):
+class CompanySizeForm(AutoFocusFieldMixin, IndentedInvalidFieldsMixin,
+                      forms.Form):
     employees = forms.ChoiceField(
         choices=choices.EMPLOYEES,
         label='How many employees are in your company?',
@@ -176,7 +190,8 @@ class CompanySizeForm(IndentedInvalidFieldsMixin, forms.Form):
     )
 
 
-class CompanyClassificationForm(IndentedInvalidFieldsMixin, forms.Form):
+class CompanyClassificationForm(AutoFocusFieldMixin,
+                                IndentedInvalidFieldsMixin, forms.Form):
     sectors = forms.MultipleChoiceField(
         label=(
             'What sectors is your company interested in working in? '
@@ -188,7 +203,8 @@ class CompanyClassificationForm(IndentedInvalidFieldsMixin, forms.Form):
     )
 
 
-class PhoneNumberVerificationForm(IndentedInvalidFieldsMixin, forms.Form):
+class PhoneNumberVerificationForm(AutoFocusFieldMixin,
+                                  IndentedInvalidFieldsMixin, forms.Form):
 
     error_messages = {
         'different': 'Incorrect code.'
@@ -215,7 +231,8 @@ class PhoneNumberVerificationForm(IndentedInvalidFieldsMixin, forms.Form):
         return sms_code
 
 
-class InternationalBuyerForm(IndentedInvalidFieldsMixin, forms.Form):
+class InternationalBuyerForm(AutoFocusFieldMixin, IndentedInvalidFieldsMixin,
+                             forms.Form):
     PLEASE_SELECT_LABEL = 'Please select a sector'
     TERMS_CONDITIONS_MESSAGE = ('Tick the box to confirm you agree to '
                                 'the terms and conditions.')

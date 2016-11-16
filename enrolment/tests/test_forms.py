@@ -3,7 +3,8 @@ from unittest.mock import Mock, patch
 from directory_validators import company as shared_company_validators
 from directory_validators import enrolment as shared_enrolment_validators
 
-from django.forms.fields import Field
+from django.forms import Form
+from django.forms.fields import CharField, Field
 from django.core.validators import EmailValidator, URLValidator
 from django.core.urlresolvers import reverse
 
@@ -17,8 +18,57 @@ TERMS_CONDITIONS_MESSAGE = \
     forms.InternationalBuyerForm.TERMS_CONDITIONS_MESSAGE
 
 
+class FormWithAutoFocusFieldMixin(forms.AutoFocusFieldMixin, Form):
+    field1 = CharField()
+    field1 = CharField()
+
+
 def create_mock_file():
     return Mock(size=1)
+
+
+def auto_focus_field_autofocus():
+    form = FormWithAutoFocusFieldMixin()
+    assert form.fields['field1'].widget.attrs['autofocus'] == 'autofocus'
+    assert form.fields['field2'].widget.attrs == {}
+
+
+def test_auto_focus_mixin_installed():
+    FormClasses = [
+        forms.CompanyNameForm,
+        forms.CompanyForm,
+        forms.CompanyExportStatusForm,
+        forms.CompanyBasicInfoForm,
+        forms.CompanyDescriptionForm,
+        forms.CompanyLogoForm,
+        forms.CompanyEmailAddressForm,
+        forms.UserForm,
+        forms.CompanySizeForm,
+        forms.CompanyClassificationForm,
+        forms.PhoneNumberVerificationForm,
+        forms.InternationalBuyerForm,
+    ]
+    for FormClass in FormClasses:
+        assert issubclass(FormClass, forms.AutoFocusFieldMixin)
+
+
+def test_indent_invalid_mixin_installed():
+    FormClasses = [
+        forms.CompanyNameForm,
+        forms.CompanyForm,
+        forms.CompanyExportStatusForm,
+        forms.CompanyBasicInfoForm,
+        forms.CompanyDescriptionForm,
+        forms.CompanyLogoForm,
+        forms.CompanyEmailAddressForm,
+        forms.UserForm,
+        forms.CompanySizeForm,
+        forms.CompanyClassificationForm,
+        forms.PhoneNumberVerificationForm,
+        forms.InternationalBuyerForm,
+    ]
+    for FormClass in FormClasses:
+        assert issubclass(FormClass, forms.IndentedInvalidFieldsMixin)
 
 
 @patch.object(validators, 'company_number', Mock())
