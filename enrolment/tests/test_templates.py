@@ -28,6 +28,16 @@ user_context = {
 }
 
 
+def test_company_description_form_cancel_button():
+    html = render_to_string('company-profile-description-form.html', {})
+    assert 'Cancel' in html
+
+
+def test_company_logo_form_cancel_button():
+    html = render_to_string('company-profile-logo-form.html', {})
+    assert 'Cancel' in html
+
+
 def test_company_profile_details_renders_sectors():
     html = render_to_string('company-profile-details.html', company_context)
     assert 'sector 1' in html
