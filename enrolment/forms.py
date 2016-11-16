@@ -368,3 +368,18 @@ def get_user_form_initial_data(referrer):
     return {
         'referrer': referrer,
     }
+
+
+def get_email_form_initial_data(email):
+    """
+    Returns the shape of initial data that CompanyEmailAddressForm expects.
+
+    @param {str} email
+    @returns dict
+
+    """
+
+    return {
+        'company_email': email,
+        'email_confirmed': email,
+    }

@@ -225,6 +225,22 @@ def test_enrolment_view_includes_referrer(client, rf, sso_user):
 
 
 @mock.patch('enrolment.helpers.user_has_verified_company',
+            mock.Mock(return_value=False))
+def test_enrolment_email_view_includes_email(client, rf, sso_user):
+    request = rf.get(reverse('register'))
+    request.session = client.session
+    request.sso_user = sso_user
+
+    form_pair = EnrolmentView.form_list[3]
+    view = EnrolmentView.as_view(form_list=(form_pair,))
+    response = view(request)
+
+    initial = response.context_data['form'].initial
+    assert form_pair[0] == 'email'
+    assert initial == forms.get_email_form_initial_data(sso_user.email)
+
+
+@mock.patch('enrolment.helpers.user_has_verified_company',
             mock.Mock(return_value=True))
 @mock.patch.object(EnrolmentView, 'get_all_cleaned_data', return_value={})
 @mock.patch.object(forms, 'serialize_enrolment_forms')

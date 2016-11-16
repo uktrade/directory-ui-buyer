@@ -97,10 +97,14 @@ class EnrolmentView(SSOLoginRequiredMixin, SessionWizardView):
         return [self.templates[self.steps.current]]
 
     def get_form_initial(self, step):
-        if step == 'user':
+        if step == 'email':
+            return forms.get_email_form_initial_data(
+                email=self.request.sso_user.email
+            )
+        elif step == 'user':
             referrer = self.request.session.get(constants.SESSION_KEY_REFERRER)
             return forms.get_user_form_initial_data(referrer=referrer)
-        if step == 'name':
+        elif step == 'name':
             cleaned_data = self.get_cleaned_data_for_step('company') or {}
             name = helpers.get_company_name(cleaned_data.get('company_number'))
             return forms.get_company_name_form_initial_data(name=name)

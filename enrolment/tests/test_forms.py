@@ -397,3 +397,15 @@ def test_get_user_form_initial_data():
         'referrer': 'google'
     }
     assert actual == expected
+
+
+def test_get_email_form_initial_data():
+    actual = forms.get_email_form_initial_data(
+        email='jerry@example.com',
+    )
+    expected = {
+        'company_email': 'jerry@example.com',
+        'email_confirmed': 'jerry@example.com',
+    }
+
+    assert actual == expected
