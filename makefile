@@ -96,6 +96,9 @@ DEBUG_SET_ENV_VARS := \
 debug_webserver:
 	$(DEBUG_SET_ENV_VARS) && $(DJANGO_WEBSERVER)
 
+debug_pytest:
+	$(DEBUG_SET_ENV_VARS) && $(PYTEST)
+
 debug_test:
 	$(DEBUG_SET_ENV_VARS) && $(FLAKE8) && $(PYTEST)
 

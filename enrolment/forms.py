@@ -1,3 +1,4 @@
+
 from directory_validators import enrolment as shared_enrolment_validators
 from directory_validators import company as shared_company_validators
 from directory_validators.constants import choices
@@ -149,7 +150,7 @@ class UserForm(AutoFocusFieldMixin, IndentedInvalidFieldsMixin, forms.Form):
     error_messages = {
         'different': 'Your phone numbers do not match.'
     }
-    mobile_number = forms.CharField(
+    mobile_number = fields.MobilePhoneNumberField(
         label='Your mobile phone number:',
         help_text=(
             'We will send a verification code to this mobile phone number.'
