@@ -18,7 +18,7 @@ cache_me = cache_page(60 * 1)
 
 
 urlpatterns = [
-    url(r"^", include('directory_constants.urls', namespace='external')),
+    url(r"^", include('directory_constants.urls', namespace='constants')),
     url(r"^$",
         DomesticLandingView.as_view(),
         name="index"),
