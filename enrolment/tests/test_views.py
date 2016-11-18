@@ -123,6 +123,7 @@ def api_response_company_profile_200(api_response_200):
         'name': 'Great company',
         'keywords': 'word1 word2',
         'employees': '501-1000',
+        'date_of_creation': '2 Mar 2015',
     }
     response.json = lambda: payload
     return response
@@ -140,6 +141,7 @@ def api_response_company_profile_no_sectors_200(api_response_200):
         'name': 'Great company',
         'keywords': 'word1 word2',
         'employees': '501-1000',
+        'date_of_creation': '2 Mar 2015',
     }
     response.json = lambda: payload
     return response

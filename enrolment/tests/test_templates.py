@@ -17,6 +17,7 @@ company_context = {
         'website': 'www.ukexportersnow.co.uk',
         'logo': 'www.ukexportersnow.co.uk/logo.png',
         'keywords': 'word1 word2',
+        'date_of_creation': '2 Mar 2015',
     }
 }
 
@@ -26,6 +27,8 @@ user_context = {
         'email': 'email@example.com',
     }
 }
+
+DATE_CREATED_LABEL = 'Date incorporated'
 
 
 def test_company_description_form_cancel_button():
@@ -42,6 +45,17 @@ def test_company_profile_details_renders_sectors():
     html = render_to_string('company-profile-details.html', company_context)
     assert 'sector 1' in html
     assert 'sector 2' in html
+
+
+def test_company_profile_details_renders_date_created():
+    html = render_to_string('company-profile-details.html', company_context)
+    assert '2 Mar 2015' in html
+    assert DATE_CREATED_LABEL in html
+
+
+def test_company_profile_details_handles_no_date_created():
+    html = render_to_string('company-profile-details.html')
+    assert DATE_CREATED_LABEL not in html
 
 
 def test_company_profile_details_handles_no_sectors():

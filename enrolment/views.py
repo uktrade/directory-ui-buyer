@@ -193,6 +193,7 @@ class UserCompanyProfileDetailView(UserCompanyBaseView, TemplateView):
                 'website': details['website'],
                 'description': details['description'],
                 'number': details['number'],
+                'date_of_creation': details['date_of_creation'],
                 'sectors': helpers.get_sectors_labels(details['sectors']),
                 'logo': details['logo'],
                 'name': details['name'],
