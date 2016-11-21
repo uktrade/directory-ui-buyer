@@ -27,8 +27,8 @@ urlpatterns = [
         InternationalLandingView.as_view(),
         name="international"),
 
-    url(r"^register$",
-        EnrolmentView.as_view(),
+    url(r"^register/(?P<step>.+)$",
+        EnrolmentView.as_view(url_name='register', done_step_name='finished'),
         name="register"),
 
     url(r"^thanks$",

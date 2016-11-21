@@ -1,7 +1,7 @@
 import logging
 import os
 
-from formtools.wizard.views import SessionWizardView
+from formtools.wizard.views import NamedUrlSessionWizardView, SessionWizardView
 
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
@@ -55,25 +55,32 @@ class InternationalLandingView(FormView):
         return TemplateResponse(self.request, self.success_template)
 
 
-class EnrolmentView(SSOLoginRequiredMixin, SessionWizardView):
+class EnrolmentView(SSOLoginRequiredMixin, NamedUrlSessionWizardView):
+
+    COMPANY = 'company-number'
+    NAME = 'company-name'
+    STATUS = 'exports'
+    EMAIL = 'email'
+    USER = 'mobile'
+    SMS_VERIFY = 'mobile-verify'
 
     success_template = 'registered.html'
     failure_template = 'enrolment-error.html'
     form_list = (
-        ('company', forms.CompanyForm),
-        ('name', forms.CompanyNameForm),
-        ('status', forms.CompanyExportStatusForm),
-        ('email', forms.CompanyEmailAddressForm),
-        ('user', forms.UserForm),
-        ('sms_verify', forms.PhoneNumberVerificationForm),
+        (COMPANY, forms.CompanyForm),
+        (NAME, forms.CompanyNameForm),
+        (STATUS, forms.CompanyExportStatusForm),
+        (EMAIL, forms.CompanyEmailAddressForm),
+        (USER, forms.UserForm),
+        (SMS_VERIFY, forms.PhoneNumberVerificationForm),
     )
     templates = {
-        'company': 'company-form.html',
-        'name': 'company-form-name.html',
-        'status': 'export-status-form.html',
-        'email': 'email-form.html',
-        'user': 'user-form.html',
-        'sms_verify': 'sms-verify-form.html'
+        COMPANY: 'company-form.html',
+        NAME: 'company-form-name.html',
+        STATUS: 'export-status-form.html',
+        EMAIL: 'email-form.html',
+        USER: 'user-form.html',
+        SMS_VERIFY: 'sms-verify-form.html',
     }
 
     def dispatch(self, request, *args, **kwargs):
@@ -87,7 +94,7 @@ class EnrolmentView(SSOLoginRequiredMixin, SessionWizardView):
             )
 
     def get_form_kwargs(self, step):
-        if step == 'sms_verify':
+        if step == self.SMS_VERIFY:
             return {
                 'expected_sms_code': str(self.request.session.get('sms_code')),
             }
@@ -97,21 +104,21 @@ class EnrolmentView(SSOLoginRequiredMixin, SessionWizardView):
         return [self.templates[self.steps.current]]
 
     def get_form_initial(self, step):
-        if step == 'email':
+        if step == self.EMAIL:
             return forms.get_email_form_initial_data(
                 email=self.request.sso_user.email
             )
-        elif step == 'user':
+        elif step == self.USER:
             referrer = self.request.session.get(constants.SESSION_KEY_REFERRER)
             return forms.get_user_form_initial_data(referrer=referrer)
-        elif step == 'name':
+        elif step == self.NAME:
             cleaned_data = self.get_cleaned_data_for_step('company') or {}
             name = helpers.get_company_name(cleaned_data.get('company_number'))
             return forms.get_company_name_form_initial_data(name=name)
 
     def process_step(self, form):
         step = self.storage.current_step
-        if step == 'user':
+        if step == self.USER:
             response = api_client.registration.send_verification_sms(
                 phone_number=form.cleaned_data['mobile_number']
             )

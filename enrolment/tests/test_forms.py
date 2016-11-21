@@ -8,7 +8,7 @@ from django.forms.fields import CharField, Field
 from django.core.validators import EmailValidator, URLValidator
 from django.core.urlresolvers import reverse
 
-from enrolment import fields, forms, validators
+from enrolment import fields, forms, validators, views
 
 
 REQUIRED_MESSAGE = Field.default_error_messages['required']
@@ -280,7 +280,7 @@ def test_company_description_form_rejects_invalid_data():
 
 def test_phone_number_verification_form_help_text_links_to_register():
     field = forms.PhoneNumberVerificationForm.base_fields['sms_code']
-    expected = reverse('register')
+    expected = reverse('register', kwargs={'step': views.EnrolmentView.USER})
 
     assert expected in field.help_text
 

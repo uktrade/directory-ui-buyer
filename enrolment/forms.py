@@ -216,8 +216,9 @@ class PhoneNumberVerificationForm(AutoFocusFieldMixin,
         help_text=mark_safe(
             'We sent you a text message containing a six digit code. Continue '
             'creating your Find a Buyer profile by entering this code. '
-            '<a href="/register" target="_self">Create a new code</a> if you '
-            'do not receive the text message in 10 minutes.'
+            '<a href="/register/mobile" target="_self">'
+            'Create a new code</a> if you do not receive the text message in '
+            '10 minutes.'
         ),
     )
 
