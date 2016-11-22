@@ -2,7 +2,9 @@ import http
 from unittest.mock import patch
 
 import pytest
-from requests import exceptions, Response
+from requests import Response
+from requests.exceptions import HTTPError
+import requests_mock
 
 from django import forms
 
@@ -55,32 +57,6 @@ def test_halt_validation_on_failure_raises_first():
     assert form.is_valid() is False
     assert 'error one' in form.errors['field']
     assert 'error two' not in form.errors['field']
-
-
-@patch.object(helpers.api_client.company, 'retrieve_companies_house_profile')
-def test_get_company_name_handles_bad_status(
-    mock_retrieve_companies_house_profile
-):
-    mock_retrieve_companies_house_profile.return_value = profile_api_400()
-
-    with pytest.raises(exceptions.HTTPError):
-        helpers.get_company_name('01234567')
-
-
-@patch.object(helpers.api_client.company, 'retrieve_companies_house_profile',)
-def test_get_company_name_handles_good_status(
-    mock_retrieve_companies_house_profile
-):
-
-    mock_response = Response()
-    mock_response.status_code = http.client.OK
-    mock_response.json = lambda: {'company_name': 'Extreme Corp'}
-    mock_retrieve_companies_house_profile.return_value = mock_response
-
-    name = helpers.get_company_name('01234567')
-
-    mock_retrieve_companies_house_profile.assert_called_once_with('01234567')
-    assert name == 'Extreme Corp'
 
 
 @patch.object(helpers.api_client.user, 'retrieve_profile')
@@ -143,3 +119,96 @@ def test_get_employees_label_none():
 
 def test_get_sectors_labels_none():
     assert helpers.get_sectors_labels([]) == []
+
+
+@patch.object(helpers, 'get_companies_house_profile')
+def test_cache_company_details_saves_in_session(
+    mock_get_companies_house_profile, client
+):
+    data = {
+        'date_of_creation': '2000-10-10',
+        'company_name': 'Example corp',
+        'company_status': 'active',
+    }
+    response = Response()
+    response.status_code = http.client.OK
+    response.json = lambda: data
+    session = client.session
+    mock_get_companies_house_profile.return_value = response
+
+    helpers.cache_company_details(session, '01234567')
+
+    mock_get_companies_house_profile.assert_called_once_with(number='01234567')
+    assert session[helpers.COMPANIES_HOUSE_PROFILE_SESSION_KEY] == data
+    assert session.modified is True
+
+
+@patch.object(helpers, 'get_companies_house_profile')
+def test_cache_company_details_handles_bad_response(
+    mock_get_companies_house_profile, client
+):
+    response = Response()
+    response.status_code = http.client.BAD_REQUEST
+
+    session = client.session
+    mock_get_companies_house_profile.return_value = response
+
+    with pytest.raises(HTTPError):
+        helpers.cache_company_details(session, '01234567')
+
+
+def test_companies_house_client_consumes_auth(settings):
+    settings.COMPANIES_HOUSE_API_KEY = 'ff'
+    with requests_mock.mock() as mock:
+        mock.get('https://thing.com')
+        response = helpers.companies_house_client('https://thing.com')
+    expected = 'Basic ZmY6'  # base64 encoded ff
+    assert response.request.headers['Authorization'] == expected
+
+
+def test_companies_house_client_logs_unauth(caplog):
+    with requests_mock.mock() as mock:
+        mock.get(
+            'https://thing.com',
+            status_code=http.client.UNAUTHORIZED,
+        )
+        helpers.companies_house_client('https://thing.com')
+    log = caplog.records[0]
+    assert log.levelname == 'ERROR'
+    assert log.msg == helpers.MESSAGE_AUTH_FAILED
+
+
+def test_get_companies_house_profile():
+    profile = {'company_status': 'active'}
+    with requests_mock.mock() as mock:
+        mock.get(
+            'https://api.companieshouse.gov.uk/company/01234567',
+            status_code=http.client.OK,
+            json=profile
+        )
+        response = helpers.get_companies_house_profile('01234567')
+    assert response.json() == profile
+
+
+def test_get_cached_company_date_of_creation(client):
+    session = client.session
+    key = helpers.COMPANIES_HOUSE_PROFILE_SESSION_KEY
+    session[key] = {'date_of_creation': '2000-10-10'}
+
+    assert helpers.get_cached_company_date_of_creation(session) == '2000-10-10'
+
+
+def test_get_cached_company_name(client):
+    session = client.session
+    key = helpers.COMPANIES_HOUSE_PROFILE_SESSION_KEY
+    session[key] = {'company_name': 'Example corp'}
+
+    assert helpers.get_cached_company_name(session) == 'Example corp'
+
+
+def test_get_cached_company_status(client):
+    session = client.session
+    key = helpers.COMPANIES_HOUSE_PROFILE_SESSION_KEY
+    session[key] = {'company_status': 'active'}
+
+    assert helpers.get_cached_company_status(session) == 'active'

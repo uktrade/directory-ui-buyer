@@ -1,13 +1,19 @@
-
+import http
 from directory_validators import enrolment as shared_enrolment_validators
 from directory_validators import company as shared_company_validators
 from directory_validators.constants import choices
+
+import requests
 
 from django import forms
 from django.conf import settings
 from django.utils.safestring import mark_safe
 
 from enrolment import fields, helpers, validators
+
+
+MESSAGE_COMPANY_NOT_FOUND = 'Company not found. Please check the number.'
+MESSAGE_TRY_AGAIN_LATER = 'Error. Please try again later.'
 
 
 class IndentedInvalidFieldsMixin:
@@ -22,6 +28,11 @@ class AutoFocusFieldMixin:
 
 
 class CompanyForm(AutoFocusFieldMixin, IndentedInvalidFieldsMixin, forms.Form):
+
+    def __init__(self, session, *args, **kwargs):
+        self.session = session
+        super().__init__(*args, **kwargs)
+
     company_number = fields.PaddedCharField(
         label='Company number:',
         help_text=mark_safe(
@@ -32,11 +43,32 @@ class CompanyForm(AutoFocusFieldMixin, IndentedInvalidFieldsMixin, forms.Form):
         ),
         validators=helpers.halt_validation_on_failure(
             shared_enrolment_validators.company_number,
-            validators.company_number,
+            validators.company_unique,
         ),
         max_length=8,
         fillchar='0',
     )
+
+    def clean_company_number(self):
+        value = self.cleaned_data['company_number']
+        # by this point the number passed `company_number.validarors`,
+        # so we know at least the company is correct length and is unique
+        try:
+            # side effect: store company details in request session
+            helpers.cache_company_details(
+                session=self.session,
+                company_number=value,
+            )
+        except requests.exceptions.RequestException as error:
+            if error.response.status_code == http.client.NOT_FOUND:
+                raise forms.ValidationError(MESSAGE_COMPANY_NOT_FOUND)
+            else:
+                raise forms.ValidationError(MESSAGE_TRY_AGAIN_LATER)
+        else:
+            company_status = helpers.get_cached_company_status(self.session)
+            # side effect: can raise ValidationError
+            validators.company_active(company_status)
+        return value
 
 
 class CompanyNameForm(AutoFocusFieldMixin, IndentedInvalidFieldsMixin,

@@ -1,7 +1,9 @@
+import http
 from unittest.mock import Mock, patch
 
 from directory_validators import company as shared_company_validators
 from directory_validators import enrolment as shared_enrolment_validators
+from requests.exceptions import RequestException
 
 from django.forms import Form
 from django.forms.fields import CharField, Field
@@ -71,9 +73,9 @@ def test_indent_invalid_mixin_installed():
         assert issubclass(FormClass, forms.IndentedInvalidFieldsMixin)
 
 
-@patch.object(validators, 'company_number', Mock())
+@patch.object(validators, 'company_unique', Mock())
 def test_company_form_rejects_missing_data():
-    form = forms.CompanyForm(data={})
+    form = forms.CompanyForm(data={}, session=Mock())
     assert form.is_valid() is False
     assert form.errors['company_number'] == [REQUIRED_MESSAGE]
 
@@ -86,6 +88,89 @@ def test_company_form_fields():
     assert field.fillchar == '0'
 
 
+def test_company_form_validators():
+    field = forms.CompanyForm(data={}, session=Mock()).fields['company_number']
+    inner_validators = field.validators[0].inner_validators
+    assert shared_enrolment_validators.company_number in inner_validators
+    assert validators.company_unique in inner_validators
+
+
+@patch.object(helpers, 'cache_company_details')
+@patch.object(validators, 'company_active', Mock())
+@patch.object(helpers, 'get_cached_company_status',
+              Mock(return_value='active'))
+def test_company_form_caches_profile(mock_cache_company_details, client):
+    session = client.session
+    data = {'company_number': '01234567'}
+
+    form = forms.CompanyForm(data=data, session=session)
+
+    assert form.is_valid() is True
+
+    mock_cache_company_details.assert_called_once_with(
+        session=session,
+        company_number=data['company_number'],
+    )
+    form.cleaned_data['company_number'] == data['company_number']
+
+
+@patch.object(helpers, 'cache_company_details')
+@patch.object(validators, 'company_active', Mock())
+def test_company_form_handles_api_company_not_found(
+    mock_cache_company_details, client
+):
+    exception = RequestException(
+        response=Mock(status_code=http.client.NOT_FOUND),
+        request=Mock(),
+    )
+    mock_cache_company_details.side_effect = exception
+    session = client.session
+    data = {'company_number': '01234567'}
+
+    form = forms.CompanyForm(data=data, session=session)
+
+    assert form.is_valid() is False
+
+    form.errors['company_number'] == [forms.MESSAGE_COMPANY_NOT_FOUND]
+
+
+@patch.object(helpers, 'cache_company_details')
+@patch.object(validators, 'company_active', Mock())
+def test_company_form_handles_api_error(
+    mock_cache_company_details, client
+):
+    exception = RequestException(
+        response=Mock(status_code=http.client.INTERNAL_SERVER_ERROR),
+        request=Mock(),
+    )
+    mock_cache_company_details.side_effect = exception
+    session = client.session
+    data = {'company_number': '01234567'}
+
+    form = forms.CompanyForm(data=data, session=session)
+
+    assert form.is_valid() is False
+
+    form.errors['company_number'] == [forms.MESSAGE_TRY_AGAIN_LATER]
+
+
+@patch.object(helpers, 'cache_company_details', Mock())
+@patch.object(helpers, 'get_cached_company_status',
+              Mock(return_value='active'))
+@patch.object(validators, 'company_active')
+def test_company_form_handles_company_active_validation(
+    mock_company_active, client
+):
+    session = client.session
+    data = {'company_number': '01234567'}
+
+    form = forms.CompanyForm(data=data, session=session)
+
+    assert form.is_valid() is True
+
+    mock_company_active.assert_called_once_with('active')
+
+
 def test_user_form_fields():
     mobile_number_field = forms.UserForm.base_fields['mobile_number']
     mobile_confirmed_field = forms.UserForm.base_fields['mobile_confirmed']
@@ -96,13 +181,6 @@ def test_user_form_fields():
     # clean_mobile_confirmed fires, meaning different mobile number in
     # mobile_confirmed could show 'invalid number' instead of 'not the same'.
     assert isinstance(mobile_confirmed_field, CharField)
-
-
-def test_company_form_validators():
-    field = forms.CompanyForm.base_fields['company_number']
-    inner_validators = field.validators[0].inner_validators
-    assert shared_enrolment_validators.company_number in inner_validators
-    assert validators.company_number in inner_validators
 
 
 def test_company_email_form_email_validators():
