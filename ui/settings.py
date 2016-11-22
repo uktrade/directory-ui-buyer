@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     "ui",
     "enrolment",
     "user",
+    "directory_constants",
 ]
 
 MIDDLEWARE_CLASSES = [
