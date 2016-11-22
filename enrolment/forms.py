@@ -223,14 +223,15 @@ class PhoneNumberVerificationForm(AutoFocusFieldMixin,
     )
 
     def __init__(self, *args, **kwargs):
-        self.expected_sms_code = kwargs.pop('expected_sms_code')
+        self.encoded_sms_code = str(kwargs.pop('encoded_sms_code'))
         super().__init__(*args, **kwargs)
 
     def clean_sms_code(self):
-        sms_code = self.cleaned_data['sms_code']
-        if sms_code != self.expected_sms_code:
+        provided = self.cleaned_data['sms_code']
+        encoded = self.encoded_sms_code
+        if not helpers.check_encrypted_sms_cookie(provided, encoded):
             raise forms.ValidationError(self.error_messages['different'])
-        return sms_code
+        return provided
 
 
 class InternationalBuyerForm(AutoFocusFieldMixin, IndentedInvalidFieldsMixin,

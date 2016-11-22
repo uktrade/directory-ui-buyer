@@ -1,8 +1,12 @@
-from api_client import api_client
+from django.contrib.auth.hashers import check_password, make_password
+
 from directory_validators.constants import choices
+
+from api_client import api_client
 
 EMPLOYEE_CHOICES = {key: value for key, value in choices.EMPLOYEES}
 SECTOR_CHOICES = {key: value for key, value in choices.COMPANY_CLASSIFICATIONS}
+SMS_CODE_SESSION_KEY = 'sms_code'
 
 
 def get_referrer_from_request(request):
@@ -58,3 +62,22 @@ def get_sectors_labels(sectors_values):
     if not sectors_values:
         return sectors_values
     return [SECTOR_CHOICES.get(value)for value in sectors_values]
+
+
+def set_sms_session_code(session, sms_code):
+    session[SMS_CODE_SESSION_KEY] = encrypt_sms_code(sms_code)
+
+
+def encrypt_sms_code(sms_code):
+    return make_password(str(sms_code))
+
+
+def check_encrypted_sms_cookie(provided_sms_code, encoded_sms_code):
+    return check_password(
+        password=str(provided_sms_code),
+        encoded=encoded_sms_code,
+    )
+
+
+def get_sms_session_code(session):
+    return session.get(SMS_CODE_SESSION_KEY, '')

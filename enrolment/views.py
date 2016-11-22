@@ -95,8 +95,9 @@ class EnrolmentView(SSOLoginRequiredMixin, NamedUrlSessionWizardView):
 
     def get_form_kwargs(self, step):
         if step == self.SMS_VERIFY:
+            sms_code = helpers.get_sms_session_code(self.request.session)
             return {
-                'expected_sms_code': str(self.request.session.get('sms_code')),
+                'encoded_sms_code': sms_code,
             }
         return {}
 
@@ -124,9 +125,10 @@ class EnrolmentView(SSOLoginRequiredMixin, NamedUrlSessionWizardView):
             )
             if not response.ok:
                 response.raise_for_status()
-            # TODO: change session backend to no longer be cookie based
-            # because we're sharing secrets here
-            self.request.session['sms_code'] = response.json()['sms_code']
+            helpers.set_sms_session_code(
+                session=self.request.session,
+                sms_code=response.json()['sms_code']
+            )
         return super().process_step(form)
 
     def done(self, *args, **kwags):

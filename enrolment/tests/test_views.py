@@ -600,6 +600,20 @@ def test_company_description_edit_views_use_correct_template(
         assert response.template_name == [view_class.templates[step_name]]
 
 
+@mock.patch('enrolment.helpers.user_has_verified_company',
+            mock.Mock(return_value=False))
+@mock.patch('sso.middleware.SSOUserMiddleware.process_request',
+            mock_process_request)
+@mock.patch.object(helpers, 'get_sms_session_code',
+                   mock.Mock(return_value=helpers.encrypt_sms_code(123)))
+def test_enrolment_view_passes_sms_code_to_form(client):
+    url = reverse('register', kwargs={'step': EnrolmentView.SMS_VERIFY})
+    response = client.get(url)
+
+    encoded_sms_code = response.context_data['form'].encoded_sms_code
+    assert helpers.check_encrypted_sms_cookie(123, encoded_sms_code)
+
+
 @mock.patch('enrolment.helpers.user_has_verified_company', return_value=True)
 @mock.patch('sso.middleware.SSOUserMiddleware.process_request',
             mock_process_request)
@@ -666,13 +680,14 @@ def test_enrolment_handles_good_response(
 ):
 
     mock_api_call.return_value = api_response_send_verification_sms_200
-
     url = reverse('register', kwargs={'step': EnrolmentView.USER})
     client.get(url)
     response = client.post(url, valid_user_data_step)
 
+    actual = helpers.get_sms_session_code(client.session)
+
     assert response.status_code == http.client.FOUND
-    assert client.session['sms_code'] == '12345'
+    assert helpers.check_encrypted_sms_cookie('12345', actual)
 
 
 @mock.patch('enrolment.helpers.user_has_verified_company',

@@ -8,7 +8,7 @@ from django.forms.fields import CharField, Field
 from django.core.validators import EmailValidator, URLValidator
 from django.core.urlresolvers import reverse
 
-from enrolment import fields, forms, validators, views
+from enrolment import fields, forms, helpers, validators, views
 
 
 REQUIRED_MESSAGE = Field.default_error_messages['required']
@@ -286,18 +286,15 @@ def test_phone_number_verification_form_help_text_links_to_register():
 
 
 def test_phone_number_verification_form_rejects_missing_data():
-    form = forms.PhoneNumberVerificationForm(expected_sms_code=123, data={})
+    form = forms.PhoneNumberVerificationForm(encoded_sms_code=123, data={})
     assert form.is_valid() is False
     assert form.errors['sms_code'] == [REQUIRED_MESSAGE]
 
 
 def test_phone_number_verification_form_accepts_valid_data():
-    expected_sms_code = '123'
-    data = {
-        'sms_code': expected_sms_code,
-    }
+    encoded_sms_code = helpers.encrypt_sms_code('123')
     form = forms.PhoneNumberVerificationForm(
-        expected_sms_code=expected_sms_code, data=data
+        encoded_sms_code=encoded_sms_code, data={'sms_code': '123'}
     )
     assert form.is_valid() is True
 
@@ -306,7 +303,7 @@ def test_phone_number_verification_form_rejects_invalid_data():
     data = {
         'sms_code': 567,
     }
-    form = forms.PhoneNumberVerificationForm(expected_sms_code=123, data=data)
+    form = forms.PhoneNumberVerificationForm(encoded_sms_code=123, data=data)
     expected = forms.PhoneNumberVerificationForm.error_messages['different']
 
     assert form.is_valid() is False
