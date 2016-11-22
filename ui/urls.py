@@ -5,6 +5,7 @@ from enrolment.views import (
     CachableTemplateView,
     CompanyEmailConfirmationView,
     EnrolmentView,
+    EnrolmentInstructionsView,
     UserCompanyDescriptionEditView,
     UserCompanyProfileEditView,
     UserCompanyProfileDetailView,
@@ -26,6 +27,10 @@ urlpatterns = [
     url(r"^international$",
         InternationalLandingView.as_view(),
         name="international"),
+
+    url(r"^register$",
+        EnrolmentInstructionsView.as_view(),
+        name="register-instructions"),
 
     url(r"^register/(?P<step>.+)$",
         EnrolmentView.as_view(url_name='register', done_step_name='finished'),

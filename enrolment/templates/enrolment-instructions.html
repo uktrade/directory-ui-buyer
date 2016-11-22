@@ -1,0 +1,26 @@
+{% extends "enrolment-base.html" %}
+{% block sub_header %}{# prevent the subheader from showing on form pages #}{% endblock %}
+{% block content %}
+<div class="container ed-enrolment">
+    <div class="clearfix"></div>
+    <div class="row-fluid">
+        <div class="span8">
+            <div class="connections-platform-form">
+                <h1>Before you begin</h1>
+                <div>
+                    <p>
+                    You need a valid UK mobile phone number to register. Make sure your phone is charged and has mobile network reception.
+                    </p>
+                    <p>
+                        You will also need your Companies House number and your corporate email address.
+                    </p>
+                <div class="form-wrapper-btn-container btn-container">
+                    <a class="register-btn button" type="submit" href="{% url 'register' step='company' %}">
+                        Begin
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{%endblock content %}

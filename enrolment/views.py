@@ -55,6 +55,16 @@ class InternationalLandingView(FormView):
         return TemplateResponse(self.request, self.success_template)
 
 
+class EnrolmentInstructionsView(TemplateView):
+    template_name = 'enrolment-instructions.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        sso_user = request.sso_user
+        if sso_user and helpers.user_has_verified_company(sso_user.id):
+            return redirect('company-detail')
+        return super().dispatch(request, *args, **kwargs)
+
+
 class EnrolmentView(SSOLoginRequiredMixin, NamedUrlSessionWizardView):
 
     COMPANY = 'company-number'

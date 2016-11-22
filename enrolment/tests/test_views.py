@@ -11,6 +11,7 @@ from enrolment.views import (
     api_client,
     CompanyEmailConfirmationView,
     EnrolmentView,
+    EnrolmentInstructionsView,
     InternationalLandingView,
     UserCompanyDescriptionEditView,
     UserCompanyProfileDetailView,
@@ -62,6 +63,14 @@ def buyer_form_data():
 @pytest.fixture
 def buyer_request(rf, client, buyer_form_data):
     request = rf.post('/', buyer_form_data)
+    request.session = client.session
+    return request
+
+
+@pytest.fixture
+def anon_request(rf, client):
+    request = rf.get('/')
+    request.sso_user = None
     request.session = client.session
     return request
 
@@ -172,6 +181,34 @@ def test_email_confirm_valid_confirmation_code(mock_confirm_email, rf):
     assert mock_confirm_email.called_with(123)
     assert response.status_code == http.client.FOUND
     assert response.get('Location') == reverse('company-detail')
+
+
+def test_enrolment_instructions_view_handles_no_sso_user(anon_request):
+    response = EnrolmentInstructionsView.as_view()(anon_request)
+
+    assert response.template_name == [EnrolmentInstructionsView.template_name]
+    assert response.status_code == http.client.OK
+
+
+@mock.patch.object(helpers, 'user_has_verified_company', return_value=True)
+def test_enrolment_instructions_view_handles_sso_user_with_company(
+    mock_user_has_verified_company, sso_request, sso_user
+):
+    response = EnrolmentInstructionsView.as_view()(sso_request)
+
+    mock_user_has_verified_company.assert_called_once_with(sso_user.id)
+    assert response.status_code == http.client.FOUND
+    assert response.get('Location') == reverse('company-detail')
+
+
+@mock.patch.object(helpers, 'user_has_verified_company', return_value=False)
+def test_enrolment_instructions_view_handles_sso_user_without_company(
+    mock_user_has_verified_company, sso_user, sso_request
+):
+    response = EnrolmentInstructionsView.as_view()(sso_request)
+
+    assert response.template_name == [EnrolmentInstructionsView.template_name]
+    assert response.status_code == http.client.OK
 
 
 @mock.patch('enrolment.helpers.user_has_verified_company',
