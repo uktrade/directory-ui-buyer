@@ -1,7 +1,10 @@
-from django.template.loader import render_to_string
+import os
+from unittest.mock import Mock
 
 from directory_validators.constants import choices
 
+from django.conf import settings
+from django.template.loader import render_to_string
 
 from enrolment import forms
 
@@ -247,3 +250,25 @@ def test_google_tag_manager():
 def test_international_landing_page_renders():
     # confirm the template renders without error
     render_to_string('landing-page-international.html')
+
+
+def test_templates_render_successfully():
+
+    template_list = []
+    template_dirs = [
+        os.path.join(settings.BASE_DIR, 'enrolment/templates'),
+        os.path.join(settings.BASE_DIR, 'user/templates'),
+    ]
+    for template_dir in template_dirs:
+        for dir, dirnames, filenames in os.walk(template_dir):
+            for filename in filenames:
+                path = os.path.join(dir, filename).replace(template_dir, '')
+                template_list.append(path.lstrip('/'))
+
+    default_context = {
+        'user': None,
+        'form': Mock(),
+    }
+    assert template_list
+    for template in template_list:
+        render_to_string(template, default_context)
