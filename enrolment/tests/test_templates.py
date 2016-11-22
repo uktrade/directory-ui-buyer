@@ -242,3 +242,8 @@ def test_google_tag_manager():
     # sanity check
     assert 'www.googletagmanager.com' in expected_head
     assert 'www.googletagmanager.com' in expected_body
+
+
+def test_international_landing_page_renders():
+    # confirm the template renders without error
+    render_to_string('landing-page-international.html')
