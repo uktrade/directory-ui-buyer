@@ -14,6 +14,7 @@ from enrolment.views import (
     InternationalLandingView,
 )
 from user.views import UserProfileDetailView
+from company.views import SupplierCaseStudyView
 from admin.proxy import AdminProxyView
 
 
@@ -93,6 +94,11 @@ urlpatterns = [
         r'^company-profile/description$',
         UserCompanyDescriptionEditView.as_view(),
         name='company-edit-description'
+    ),
+    url(
+        r'^company/case-study/edit/(?P<id>.+)?$',
+        SupplierCaseStudyView.as_view(),
+        name='company-case-study-edit'
     ),
 
 ]

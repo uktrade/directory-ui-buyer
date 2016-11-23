@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     "ui",
     "enrolment",
     "user",
+    "company",
     "directory_constants",
 ]
 
