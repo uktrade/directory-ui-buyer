@@ -13,7 +13,7 @@ from api_client import api_client
 from enrolment.views import UserCompanyBaseView
 
 
-class SupplierCaseStudyView(SessionWizardView):
+class SupplierCaseStudyView(UserCompanyBaseView, SessionWizardView):
 
     BASIC = 'basic'
     RICH_MEDIA = 'rich-media'
@@ -41,16 +41,19 @@ class SupplierCaseStudyView(SessionWizardView):
         return self.form_serializer(self.get_all_cleaned_data())
 
     def done(self, *args, **kwags):
+        data = self.serialize_form_data()
         if self.kwargs['id']:
-            response = api_client.company.create(
-                data=self.serialize_form_data()
+            response = api_client.company.update_supplier_case_study(
+                data=data,
+                case_study_id=self.kwargs['id'],
+                sso_user_id=self.request.sso_user.id,
             )
         else:
-            response = api_client.company.update(
-                data=self.serialize_form_data(),
-                id=self.kwargs['id']
+            response = api_client.company.create_supplier_case_study(
+                sso_user_id=self.request.sso_user.id,
+                data=data,
             )
         if response.ok:
-            return redirect('company-details')
+            return redirect('company-detail')
         else:
             return TemplateResponse(self.request, self.failure_template)

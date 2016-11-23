@@ -1,10 +1,7 @@
 from django import forms
 
-# from directory_validators import enrolment as shared_enrolment_validators
+from directory_validators import company as shared_validators
 from directory_validators.constants import choices
-
-
-PLEASE_SELECT = 'Please select an option'
 
 
 class CaseStudyBasicInfoForm(forms.Form):
@@ -13,39 +10,43 @@ class CaseStudyBasicInfoForm(forms.Form):
     )
     description = forms.CharField(
         max_length=1000,
+        widget=forms.Textarea,
     )
     sector = forms.ChoiceField(
-        choices=['', PLEASE_SELECT] + list(choices.COMPANY_CLASSIFICATIONS),
+        choices=choices.COMPANY_CLASSIFICATIONS,
     )
     website = forms.URLField(
+        max_length=255,
         required=False
     )
-    year = forms.CharField()
-    tags = forms.CharField(
+    year = forms.CharField(max_length=4)
+    keywords = forms.CharField(
         max_length=100,
+        widget=forms.Textarea,
     )
 
 
 class CaseStudyRichMediaForm(forms.Form):
     image_one = forms.FileField(
         required=False,
-        # validators=[shared_enrolment_validators.case_study_image_filesize]
+        validators=[shared_validators.case_study_image_filesize]
     )
     image_two = forms.FileField(
         required=False,
-        # validators=[shared_enrolment_validators.case_study_image_filesize]
+        validators=[shared_validators.case_study_image_filesize]
     )
     image_three = forms.FileField(
         required=False,
-        # validators=[shared_enrolment_validators.case_study_image_filesize]
+        validators=[shared_validators.case_study_image_filesize]
     )
-    video = forms.FileField(
+    video_one = forms.FileField(
         required=False,
-        # validators=[shared_enrolment_validators.case_study_video_filesize]
+        validators=[shared_validators.case_study_video_filesize]
     )
     testimonial = forms.CharField(
         max_length=1000,
         required=False,
+        widget=forms.Textarea,
     )
 
 
@@ -66,10 +67,10 @@ def serialize_supplier_case_study_forms(cleaned_data):
         'sector': cleaned_data['sector'],
         'website': cleaned_data['website'],
         'year': cleaned_data['year'],
-        'tags': cleaned_data['tags'],
+        'keywords': cleaned_data['keywords'],
         'image_one': cleaned_data['image_one'],
         'image_two': cleaned_data['image_two'],
         'image_three': cleaned_data['image_three'],
-        'video': cleaned_data['video'],
+        'video_one': cleaned_data['video_one'],
         'testimonial': cleaned_data['testimonial'],
     }

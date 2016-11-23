@@ -669,7 +669,7 @@ def test_enrolment_logged_out_has_company_redirects(
 
     assert response.status_code == http.client.FOUND
     assert response.get('Location') == (
-         'http://sso.trade.great.dev:8003/accounts/signup/'
+         'http://sso.trade.great.dev:8004/accounts/signup/'
          '?next=http%3A//testserver/register/' + step
     )
     mock_has_verified_company.assert_not_called()
