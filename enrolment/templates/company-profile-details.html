@@ -67,7 +67,10 @@
 			<!-- Company Details -->
 			<div class="span4 company-details">
 				<div class="company-details-subtitle">Company details</div>
-				<div class="company-number">Registration number: {{company.number}}</div>
+				<div class="company-number-content" >Registration number: {{company.number}}</div>
+				{% if company.date_of_creation %}
+					<div>Date incorporated: {{company.date_of_creation}}</div>
+				{% endif %}
 			</div>
 		</div>
 

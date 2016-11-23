@@ -109,6 +109,10 @@ class EnrolmentView(SSOLoginRequiredMixin, NamedUrlSessionWizardView):
             return {
                 'encoded_sms_code': sms_code,
             }
+        elif step == self.COMPANY:
+            return {
+                'session': self.request.session,
+            }
         return {}
 
     def get_template_names(self):
@@ -123,8 +127,7 @@ class EnrolmentView(SSOLoginRequiredMixin, NamedUrlSessionWizardView):
             referrer = self.request.session.get(constants.SESSION_KEY_REFERRER)
             return forms.get_user_form_initial_data(referrer=referrer)
         elif step == self.NAME:
-            cleaned_data = self.get_cleaned_data_for_step('company') or {}
-            name = helpers.get_company_name(cleaned_data.get('company_number'))
+            name = helpers.get_company_name_from_session(self.request.session)
             return forms.get_company_name_form_initial_data(name=name)
 
     def process_step(self, form):
@@ -141,9 +144,17 @@ class EnrolmentView(SSOLoginRequiredMixin, NamedUrlSessionWizardView):
             )
         return super().process_step(form)
 
-    def done(self, *args, **kwags):
+    def serialize_form_data(self):
         data = forms.serialize_enrolment_forms(self.get_all_cleaned_data())
+        date_of_creation = helpers.get_company_date_of_creation_from_session(
+            self.request.session
+        )
         data['sso_id'] = self.request.sso_user.id
+        data['date_of_creation'] = date_of_creation
+        return data
+
+    def done(self, *args, **kwags):
+        data = self.serialize_form_data()
         response = api_client.registration.send_form(data)
         if response.ok:
             template = self.success_template
@@ -187,18 +198,8 @@ class UserCompanyProfileDetailView(UserCompanyBaseView, TemplateView):
         )
         if not response.ok:
             response.raise_for_status()
-        details = response.json()
         return {
-            'company': {
-                'website': details['website'],
-                'description': details['description'],
-                'number': details['number'],
-                'sectors': helpers.get_sectors_labels(details['sectors']),
-                'logo': details['logo'],
-                'name': details['name'],
-                'keywords': details['keywords'],
-                'employees': helpers.get_employees_label(details['employees']),
-            }
+            'company': helpers.inflate_company_profile_from_response(response)
         }
 
 
