@@ -1,6 +1,7 @@
 Django==1.9.10
 django_extensions==1.6.7
 django-formtools==1.0
+django-revproxy==0.9.13
 gunicorn==19.5.0
 raven==5.19.0
 requests==2.10.0
@@ -9,4 +10,4 @@ phonenumberslite==7.7.4
 git+https://github.com/uktrade/directory-validators.git@1.1.1#egg=directory_validators
 git+https://github.com/uktrade/directory-api-client.git@0.5.0#egg=directory_api_client
 git+https://github.com/uktrade/directory-sso-api-client.git@1.0.1#egg=directory_sso_api_client
-git+https://github.com/uktrade/directory-constants.git@1.0.1#egg=directory_constants
+git+https://github.com/uktrade/directory-constants.git@2.0.0#egg=directory_constants

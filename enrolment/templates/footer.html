@@ -1,4 +1,5 @@
 {% load static %}
+{% load external_url from constants_tags %}
 <footer class="group ed-footer" id="footer" role="contentinfo">
     <div class="container">
         <div class="row-fluid grid-row">
@@ -8,7 +9,7 @@
                         <img src="{% static 'images/HM_Government_logo.png' %}" alt="Gov.uk logo" class="footer-img footer-img--top"/>
                     </a>
                     <p class="copyright-text">&copy; Crown Copyright 2016</p>
-                    <a href="{% url 'constants:exporting_is_great' %}" title="Go to the Exporting is Great homepage" class="eig-logo-footer">
+                    <a href="{% external_url 'exporting_is_great' %}" title="Go to the Exporting is Great homepage" class="eig-logo-footer">
                         <img src="{% static 'images/EiG-logo-stacked.png' %}" alt="Exporting is Great logo" class="footer-img footer-img--bottom footer-img--eig">
                     </a>
                 </div>
@@ -18,10 +19,10 @@
                 <div class="footer-section">
                     <h3 class="footer-header">Our services</h3>
                     <ul class="footer-links-container">
-                      <li class="footer-links"><a href="{% url 'constants:export_opportunities' %}" title="Exporting opportunities">Exporting opportunities</a></li>
-                      <li class="footer-links"><a href="{% url 'constants:find_a_buyer' %}" title="Find a buyer">Find a buyer</a></li>
-                      <li class="footer-links"><a href="{% url 'constants:selling_online_overseas' %}" title="Selling online overseas">Selling online overseas</a></li>
-                      <li class="footer-links"><a href="{% url 'constants:events' %}" title="Events">Events</a></li>
+                      <li class="footer-links"><a href="{% external_url 'export_opportunities' %}" title="Exporting opportunities">Exporting opportunities</a></li>
+                      <li class="footer-links"><a href="{% external_url 'find_a_buyer' %}" title="Find a buyer">Find a buyer</a></li>
+                      <li class="footer-links"><a href="{% external_url 'selling_online_overseas' %}" title="Selling online overseas">Selling online overseas</a></li>
+                      <li class="footer-links"><a href="{% external_url 'events' %}" title="Events">Events</a></li>
                     </ul>
                 </div>
             </div>
@@ -30,14 +31,14 @@
                 <div class="footer-section">
                     <h3 class="footer-header">Exporting is GREAT</h3>
                     <ul class="footer-links-container">
-                        <li class="footer-links"><a href="{% url 'constants:new_to_exporting' %}" title="">New to exporting</a></li>
-                        <li class="footer-links"><a href="{% url 'constants:occasional_exporter' %}" title="">Occasional exporter</a></li>
-                        <li class="footer-links"><a href="{% url 'constants:regular_exporter' %}" title="">Regular exporter</a></li>
-                        <li class="footer-links"><a href="{% url 'constants:about' %}" title="">About</a></li>
-                        <li class="footer-links"><a href="{% url 'constants:contact_directory' %}" title="">Contact Us</a></li>
-                        <li class="footer-links"><a href="{% url 'constants:privacy' %}" title="">Privacy &amp; cookies</a></li>
-                        <li class="footer-links"><a href="{% url 'constants:terms' %}" title="">Terms &amp; conditions</a></li>
-                        <li class="footer-links"><a href="{% url 'constants:DIT' %}" title="">Department for International Trade</a></li>
+                        <li class="footer-links"><a href="{% external_url 'new_to_exporting' %}" title="">New to exporting</a></li>
+                        <li class="footer-links"><a href="{% external_url 'occasional_exporter' %}" title="">Occasional exporter</a></li>
+                        <li class="footer-links"><a href="{% external_url 'regular_exporter' %}" title="">Regular exporter</a></li>
+                        <li class="footer-links"><a href="{% external_url 'about' %}" title="">About</a></li>
+                        <li class="footer-links"><a href="{% external_url 'contact_directory' %}" title="">Contact Us</a></li>
+                        <li class="footer-links"><a href="{% external_url 'privacy' %}" title="">Privacy &amp; cookies</a></li>
+                        <li class="footer-links"><a href="{% external_url 'terms' %}" title="">Terms &amp; conditions</a></li>
+                        <li class="footer-links"><a href="{% external_url 'DIT' %}" title="">Department for International Trade</a></li>
                     </ul>
                 </div>
             </div>

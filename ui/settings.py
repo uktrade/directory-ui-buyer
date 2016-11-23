@@ -38,10 +38,12 @@ INSTALLED_APPS = [
     "django_extensions",
     "raven.contrib.django.raven_compat",
     "django.contrib.sessions",
+    "revproxy",
     "formtools",
     "ui",
     "enrolment",
     "user",
+    "directory_constants",
 ]
 
 MIDDLEWARE_CLASSES = [

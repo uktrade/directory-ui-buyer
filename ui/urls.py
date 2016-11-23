@@ -1,4 +1,4 @@
-from django.conf.urls import url, include
+from django.conf.urls import url
 from django.views.decorators.cache import cache_page
 
 from enrolment.views import (
@@ -14,58 +14,85 @@ from enrolment.views import (
     InternationalLandingView,
 )
 from user.views import UserProfileDetailView
+from admin.proxy import AdminProxyView
+
 
 cache_me = cache_page(60 * 1)
 
 
 urlpatterns = [
-    url(r"^", include('directory_constants.urls', namespace='constants')),
-    url(r"^$",
+    url(
+        r"^admin/",
+        AdminProxyView.as_view(),
+        name="admin_proxy"
+    ),
+    url(
+        r"^api-static/admin/",
+        AdminProxyView.as_view(),
+        name="admin_proxy"
+    ),
+    url(
+        r"^$",
         DomesticLandingView.as_view(),
-        name="index"),
-
-    url(r"^international$",
+        name="index"
+    ),
+    url(
+        r"^international$",
         InternationalLandingView.as_view(),
-        name="international"),
+        name="international"
+    ),
 
-    url(r"^register$",
+    url(
+        r"^register$",
         EnrolmentInstructionsView.as_view(),
-        name="register-instructions"),
-
-    url(r"^register/(?P<step>.+)$",
+        name="register-instructions"
+    ),
+    url(
+        r"^register/(?P<step>.+)$",
         EnrolmentView.as_view(url_name='register', done_step_name='finished'),
-        name="register"),
-
-    url(r"^thanks$",
+        name="register"
+    ),
+    url(
+        r"^thanks$",
         cache_me(CachableTemplateView.as_view(template_name="thanks.html")),
-        name="thanks"),
-
-    url(r"^sorry$",
+        name="thanks"
+    ),
+    url(
+        r"^sorry$",
         cache_me(CachableTemplateView.as_view(template_name="sorry.html")),
-        name="problem"),
+        name="problem"
+    ),
 
-    url(r'^confirm-company-email$',
-        CompanyEmailConfirmationView.as_view(),
-        name='confirm-company-email'),
-
-    url(r'^company-profile$',
-        UserCompanyProfileDetailView.as_view(),
-        name='company-detail'),
-
-    url(r'^user-profile$',
+    url(
+        r'^user-profile$',
         UserProfileDetailView.as_view(),
-        name='user-detail'),
+        name='user-detail'
+    ),
+    url(
+        r'^confirm-company-email$',
+        CompanyEmailConfirmationView.as_view(),
+        name='confirm-company-email'
+    ),
 
-    url(r'^company-profile/edit$',
+    url(
+        r'^company-profile$',
+        UserCompanyProfileDetailView.as_view(),
+        name='company-detail'
+    ),
+    url(
+        r'^company-profile/edit$',
         UserCompanyProfileEditView.as_view(),
-        name='company-edit'),
-
-    url(r'^company-profile/logo$',
+        name='company-edit'
+    ),
+    url(
+        r'^company-profile/logo$',
         UserCompanyProfileLogoEditView.as_view(),
-        name='company-edit-logo'),
-
-    url(r'^company-profile/description$',
+        name='company-edit-logo'
+    ),
+    url(
+        r'^company-profile/description$',
         UserCompanyDescriptionEditView.as_view(),
-        name='company-edit-description'),
+        name='company-edit-description'
+    ),
 
 ]
