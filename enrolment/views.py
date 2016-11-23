@@ -182,7 +182,7 @@ class UserCompanyBaseView(SSOLoginRequiredMixin):
             return self.handle_no_permission()
         else:
             if not helpers.user_has_verified_company(self.request.sso_user.id):
-                return redirect('register')
+                return redirect('register-instructions')
             else:
                 return super(UserCompanyBaseView, self).dispatch(
                     request, *args, **kwargs

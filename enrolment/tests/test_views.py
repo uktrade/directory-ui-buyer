@@ -738,3 +738,18 @@ def test_international_landing_view_submit(
     mock_send_form.assert_called_once_with(
         forms.serialize_international_buyer_forms(buyer_form_data)
     )
+
+
+@patch.object(helpers, 'user_has_verified_company', Mock(return_value=False))
+def test_user_company_redirect_non_verified_company(sso_request):
+    view_classes = [
+        UserCompanyProfileDetailView,
+        UserCompanyProfileEditView,
+        UserCompanyProfileLogoEditView,
+        UserCompanyDescriptionEditView,
+    ]
+    for ViewClass in view_classes:
+        response = ViewClass.as_view()(sso_request)
+
+        assert response.status_code == http.client.FOUND
+        assert response.get('Location') == reverse('register-instructions')
