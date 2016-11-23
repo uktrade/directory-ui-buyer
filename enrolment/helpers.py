@@ -25,11 +25,16 @@ logger = logging.getLogger(__name__)
 companies_house_session = requests.Session()
 
 
-def cache_company_details(session, company_number):
+def store_companies_house_profile_in_session(session, company_number):
     response = get_companies_house_profile(number=company_number)
     if not response.ok:
         response.raise_for_status()
-    session[COMPANIES_HOUSE_PROFILE_SESSION_KEY] = response.json()
+    details = response.json()
+    session[COMPANIES_HOUSE_PROFILE_SESSION_KEY] = {
+        'company_name': details['company_name'],
+        'company_status': details['company_status'],
+        'date_of_creation': details['date_of_creation'],
+    }
     session.modified = True
 
 
@@ -53,7 +58,6 @@ def halt_validation_on_failure(*validators):
 
 
 def user_has_verified_company(sso_user_id):
-    # get from cache
     response = api_client.user.retrieve_profile(
         sso_id=sso_user_id
     )
@@ -114,15 +118,15 @@ def get_companies_house_profile(number):
     return companies_house_client(url)
 
 
-def get_cached_company_date_of_creation(session):
+def get_company_date_of_creation_from_session(session):
     return session[COMPANIES_HOUSE_PROFILE_SESSION_KEY]['date_of_creation']
 
 
-def get_cached_company_name(session):
+def get_company_name_from_session(session):
     return session[COMPANIES_HOUSE_PROFILE_SESSION_KEY]['company_name']
 
 
-def get_cached_company_status(session):
+def get_company_status_from_session(session):
     return session[COMPANIES_HOUSE_PROFILE_SESSION_KEY]['company_status']
 
 

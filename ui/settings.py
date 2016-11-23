@@ -143,8 +143,6 @@ VALIDATOR_MAX_LOGO_SIZE_BYTES = int(os.getenv(
     "VALIDATOR_MAX_LOGO_SIZE_BYTES", 2 * 1024 * 1024
 ))
 
-COMPANIES_HOUSE_SEARCH_URL = os.environ["COMPANIES_HOUSE_SEARCH_URL"]
-
 API_CLIENT_CLASSES = {
     'default': 'directory_api_client.client.DirectoryAPIClient',
     'unit-test': 'directory_api_client.dummy_client.DummyDirectoryAPIClient',

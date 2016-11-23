@@ -9,7 +9,7 @@ from django import forms
 from django.conf import settings
 from django.utils.safestring import mark_safe
 
-from enrolment import fields, helpers, validators
+from enrolment import constants, fields, helpers, validators
 
 
 MESSAGE_COMPANY_NOT_FOUND = 'Company not found. Please check the number.'
@@ -39,7 +39,7 @@ class CompanyForm(AutoFocusFieldMixin, IndentedInvalidFieldsMixin, forms.Form):
             'This is the company number on your certificate of '
             'incorporation. Find your company number from '
             '<a href="{url}" target="_blank">Companies House'
-            '</a>.'.format(url=settings.COMPANIES_HOUSE_SEARCH_URL)
+            '</a>.'.format(url=constants.COMPANIES_HOUSE_SEARCH_URL)
         ),
         validators=helpers.halt_validation_on_failure(
             shared_enrolment_validators.company_number,
@@ -55,7 +55,7 @@ class CompanyForm(AutoFocusFieldMixin, IndentedInvalidFieldsMixin, forms.Form):
         # so we know at least the company is correct length and is unique
         try:
             # side effect: store company details in request session
-            helpers.cache_company_details(
+            helpers.store_companies_house_profile_in_session(
                 session=self.session,
                 company_number=value,
             )
@@ -65,7 +65,9 @@ class CompanyForm(AutoFocusFieldMixin, IndentedInvalidFieldsMixin, forms.Form):
             else:
                 raise forms.ValidationError(MESSAGE_TRY_AGAIN_LATER)
         else:
-            company_status = helpers.get_cached_company_status(self.session)
+            company_status = helpers.get_company_status_from_session(
+                self.session
+            )
             # side effect: can raise ValidationError
             validators.company_active(company_status)
         return value

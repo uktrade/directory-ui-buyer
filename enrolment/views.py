@@ -127,7 +127,7 @@ class EnrolmentView(SSOLoginRequiredMixin, NamedUrlSessionWizardView):
             referrer = self.request.session.get(constants.SESSION_KEY_REFERRER)
             return forms.get_user_form_initial_data(referrer=referrer)
         elif step == self.NAME:
-            name = helpers.get_cached_company_name(self.request.session)
+            name = helpers.get_company_name_from_session(self.request.session)
             return forms.get_company_name_form_initial_data(name=name)
 
     def process_step(self, form):
@@ -146,10 +146,11 @@ class EnrolmentView(SSOLoginRequiredMixin, NamedUrlSessionWizardView):
 
     def serialize_form_data(self):
         data = forms.serialize_enrolment_forms(self.get_all_cleaned_data())
-        data['sso_id'] = self.request.sso_user.id
-        data['date_of_creation'] = helpers.get_cached_company_date_of_creation(
+        date_of_creation = helpers.get_company_date_of_creation_from_session(
             self.request.session
         )
+        data['sso_id'] = self.request.sso_user.id
+        data['date_of_creation'] = date_of_creation
         return data
 
     def done(self, *args, **kwags):

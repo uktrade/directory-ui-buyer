@@ -95,11 +95,13 @@ def test_company_form_validators():
     assert validators.company_unique in inner_validators
 
 
-@patch.object(helpers, 'cache_company_details')
+@patch.object(helpers, 'store_companies_house_profile_in_session')
 @patch.object(validators, 'company_active', Mock())
-@patch.object(helpers, 'get_cached_company_status',
+@patch.object(helpers, 'get_company_status_from_session',
               Mock(return_value='active'))
-def test_company_form_caches_profile(mock_cache_company_details, client):
+def test_company_form_caches_profile(
+    mock_store_companies_house_profile_in_session, client
+):
     session = client.session
     data = {'company_number': '01234567'}
 
@@ -107,23 +109,23 @@ def test_company_form_caches_profile(mock_cache_company_details, client):
 
     assert form.is_valid() is True
 
-    mock_cache_company_details.assert_called_once_with(
+    mock_store_companies_house_profile_in_session.assert_called_once_with(
         session=session,
         company_number=data['company_number'],
     )
     form.cleaned_data['company_number'] == data['company_number']
 
 
-@patch.object(helpers, 'cache_company_details')
+@patch.object(helpers, 'store_companies_house_profile_in_session')
 @patch.object(validators, 'company_active', Mock())
 def test_company_form_handles_api_company_not_found(
-    mock_cache_company_details, client
+    mock_store_companies_house_profile_in_session, client
 ):
     exception = RequestException(
         response=Mock(status_code=http.client.NOT_FOUND),
         request=Mock(),
     )
-    mock_cache_company_details.side_effect = exception
+    mock_store_companies_house_profile_in_session.side_effect = exception
     session = client.session
     data = {'company_number': '01234567'}
 
@@ -134,16 +136,16 @@ def test_company_form_handles_api_company_not_found(
     form.errors['company_number'] == [forms.MESSAGE_COMPANY_NOT_FOUND]
 
 
-@patch.object(helpers, 'cache_company_details')
+@patch.object(helpers, 'store_companies_house_profile_in_session')
 @patch.object(validators, 'company_active', Mock())
 def test_company_form_handles_api_error(
-    mock_cache_company_details, client
+    mock_store_companies_house_profile_in_session, client
 ):
     exception = RequestException(
         response=Mock(status_code=http.client.INTERNAL_SERVER_ERROR),
         request=Mock(),
     )
-    mock_cache_company_details.side_effect = exception
+    mock_store_companies_house_profile_in_session.side_effect = exception
     session = client.session
     data = {'company_number': '01234567'}
 
@@ -154,8 +156,8 @@ def test_company_form_handles_api_error(
     form.errors['company_number'] == [forms.MESSAGE_TRY_AGAIN_LATER]
 
 
-@patch.object(helpers, 'cache_company_details', Mock())
-@patch.object(helpers, 'get_cached_company_status',
+@patch.object(helpers, 'store_companies_house_profile_in_session', Mock())
+@patch.object(helpers, 'get_company_status_from_session',
               Mock(return_value='active'))
 @patch.object(validators, 'company_active')
 def test_company_form_handles_company_active_validation(

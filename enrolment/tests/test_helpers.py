@@ -122,7 +122,7 @@ def test_get_sectors_labels_none():
 
 
 @patch.object(helpers, 'get_companies_house_profile')
-def test_cache_company_details_saves_in_session(
+def test_store_companies_house_profile_in_session_saves_in_session(
     mock_get_companies_house_profile, client
 ):
     data = {
@@ -136,7 +136,7 @@ def test_cache_company_details_saves_in_session(
     session = client.session
     mock_get_companies_house_profile.return_value = response
 
-    helpers.cache_company_details(session, '01234567')
+    helpers.store_companies_house_profile_in_session(session, '01234567')
 
     mock_get_companies_house_profile.assert_called_once_with(number='01234567')
     assert session[helpers.COMPANIES_HOUSE_PROFILE_SESSION_KEY] == data
@@ -144,7 +144,7 @@ def test_cache_company_details_saves_in_session(
 
 
 @patch.object(helpers, 'get_companies_house_profile')
-def test_cache_company_details_handles_bad_response(
+def test_store_companies_house_profile_in_session_handles_bad_response(
     mock_get_companies_house_profile, client
 ):
     response = Response()
@@ -154,7 +154,7 @@ def test_cache_company_details_handles_bad_response(
     mock_get_companies_house_profile.return_value = response
 
     with pytest.raises(HTTPError):
-        helpers.cache_company_details(session, '01234567')
+        helpers.store_companies_house_profile_in_session(session, '01234567')
 
 
 def test_companies_house_client_consumes_auth(settings):
@@ -190,25 +190,27 @@ def test_get_companies_house_profile():
     assert response.json() == profile
 
 
-def test_get_cached_company_date_of_creation(client):
+def test_get_company_date_of_creation_from_session(client):
     session = client.session
     key = helpers.COMPANIES_HOUSE_PROFILE_SESSION_KEY
     session[key] = {'date_of_creation': '2000-10-10'}
 
-    assert helpers.get_cached_company_date_of_creation(session) == '2000-10-10'
+    actual = helpers.get_company_date_of_creation_from_session(session)
+
+    assert actual == '2000-10-10'
 
 
-def test_get_cached_company_name(client):
+def test_get_company_name_from_session(client):
     session = client.session
     key = helpers.COMPANIES_HOUSE_PROFILE_SESSION_KEY
     session[key] = {'company_name': 'Example corp'}
 
-    assert helpers.get_cached_company_name(session) == 'Example corp'
+    assert helpers.get_company_name_from_session(session) == 'Example corp'
 
 
-def test_get_cached_company_status(client):
+def test_get_company_status_from_session(client):
     session = client.session
     key = helpers.COMPANIES_HOUSE_PROFILE_SESSION_KEY
     session[key] = {'company_status': 'active'}
 
-    assert helpers.get_cached_company_status(session) == 'active'
+    assert helpers.get_company_status_from_session(session) == 'active'

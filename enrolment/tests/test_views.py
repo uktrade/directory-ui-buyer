@@ -585,7 +585,7 @@ def test_company_description_edit_handles_bad_api_response(
         view(company_request)
 
 
-@patch.object(helpers, 'get_cached_company_name',
+@patch.object(helpers, 'get_company_name_from_session',
               Mock(return_value='Example corp'))
 @patch('enrolment.helpers.user_has_verified_company', Mock(return_value=False))
 @patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
