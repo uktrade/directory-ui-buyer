@@ -9,7 +9,7 @@ test_requirements:
 
 API_CLIENT_ENV_VARS := API_CLIENT_KEY=debug API_CLIENT_BASE_URL=http://debug
 FLAKE8 := flake8 . --exclude=migrations
-PYTEST := pytest . --cov=. --cov-config=.coveragerc --cov-report=html --capture=no $(pytest_args)
+PYTEST := pytest . --cov=. --cov-config=.coveragerc --capture=no $(pytest_args)
 COLLECT_STATIC := python manage.py collectstatic --noinput
 
 test:
@@ -100,7 +100,7 @@ debug_pytest:
 	$(DEBUG_SET_ENV_VARS) && $(PYTEST)
 
 debug_test:
-	$(DEBUG_SET_ENV_VARS) && $(FLAKE8) && $(PYTEST)
+	$(DEBUG_SET_ENV_VARS) && $(COLLECT_STATIC) && $(FLAKE8) && $(PYTEST) --cov-report=html
 
 debug: test_requirements debug_test
 
