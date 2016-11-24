@@ -14,7 +14,7 @@ class BaseProxyView(ProxyView):
 
     def __init__(self, *args, **kwargs):
         if self.upstream.endswith('/'):
-            self.upstream = self.upstream[:1]
+            self.upstream = self.upstream[:-1]
 
         super(BaseProxyView, self).__init__(*args, **kwargs)
 
