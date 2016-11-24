@@ -248,6 +248,16 @@ def test_user_form_accepts_valid_data():
 
 
 @patch('enrolment.validators.api_client', Mock())
+def test_user_form_accepts_valid_data_space_in_mobile_num():
+    form = forms.UserForm(data={
+        'mobile_number': '07506 674 933',
+        'mobile_confirmed': '07506 674 933',
+        'terms_agreed': 1,
+    })
+    assert form.is_valid()
+
+
+@patch('enrolment.validators.api_client', Mock())
 def test_user_form_validators():
     field = forms.UserForm.base_fields['mobile_number']
     inner_validators = field.validators[0].inner_validators

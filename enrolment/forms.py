@@ -193,7 +193,7 @@ class UserForm(AutoFocusFieldMixin, IndentedInvalidFieldsMixin, forms.Form):
             validators.mobile_number,
         )
     )
-    mobile_confirmed = forms.CharField(
+    mobile_confirmed = fields.MobilePhoneNumberField(
         label='Please confirm your mobile phone number:'
     )
     terms_agreed = forms.BooleanField(
@@ -208,8 +208,10 @@ class UserForm(AutoFocusFieldMixin, IndentedInvalidFieldsMixin, forms.Form):
     def clean_mobile_confirmed(self):
         mobile = self.cleaned_data.get('mobile_number')
         confirmed = self.cleaned_data.get('mobile_confirmed')
-        if (mobile and confirmed and mobile != confirmed):
+
+        if (mobile and confirmed) and (mobile != confirmed):
             raise forms.ValidationError(self.error_messages['different'])
+
         return confirmed
 
 
