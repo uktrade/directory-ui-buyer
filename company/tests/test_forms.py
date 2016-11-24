@@ -12,7 +12,6 @@ def test_serialize_supplier_case_study_forms():
         'image_one': '1.png',
         'image_two': '2.png',
         'image_three': '3.png',
-        'video_one': '1.wav',
         'testimonial': 'very nice',
     }
     expected = {
@@ -25,7 +24,6 @@ def test_serialize_supplier_case_study_forms():
         'image_one': '1.png',
         'image_two': '2.png',
         'image_three': '3.png',
-        'video_one': '1.wav',
         'testimonial': 'very nice',
     }
 

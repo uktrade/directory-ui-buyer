@@ -8,13 +8,12 @@ from enrolment.views import (
     EnrolmentInstructionsView,
     UserCompanyDescriptionEditView,
     UserCompanyProfileEditView,
-    UserCompanyProfileDetailView,
     UserCompanyProfileLogoEditView,
     DomesticLandingView,
     InternationalLandingView,
 )
 from user.views import UserProfileDetailView
-from company.views import SupplierCaseStudyView
+from company.views import SupplierCaseStudyView, UserCompanyProfileDetailView
 from admin.proxy import AdminProxyView
 
 

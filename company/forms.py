@@ -39,10 +39,6 @@ class CaseStudyRichMediaForm(forms.Form):
         required=False,
         validators=[shared_validators.case_study_image_filesize]
     )
-    video_one = forms.FileField(
-        required=False,
-        validators=[shared_validators.case_study_video_filesize]
-    )
     testimonial = forms.CharField(
         max_length=1000,
         required=False,
@@ -71,6 +67,5 @@ def serialize_supplier_case_study_forms(cleaned_data):
         'image_one': cleaned_data['image_one'],
         'image_two': cleaned_data['image_two'],
         'image_three': cleaned_data['image_three'],
-        'video_one': cleaned_data['video_one'],
         'testimonial': cleaned_data['testimonial'],
     }

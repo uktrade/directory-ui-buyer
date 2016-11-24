@@ -14,7 +14,6 @@ from enrolment.views import (
     EnrolmentInstructionsView,
     InternationalLandingView,
     UserCompanyDescriptionEditView,
-    UserCompanyProfileDetailView,
     UserCompanyProfileEditView,
     UserCompanyProfileLogoEditView
 )
@@ -370,102 +369,6 @@ def test_company_profile_edit_handles_bad_api_response(
 
 
 @patch('enrolment.helpers.user_has_verified_company', Mock(return_value=True))
-@patch.object(api_client.company, 'retrieve_profile')
-def test_company_profile_details_calls_api(mock_retrieve_profile,
-                                           company_request,
-                                           api_response_company_profile_200):
-
-    mock_retrieve_profile.return_value = api_response_company_profile_200
-    view = UserCompanyProfileDetailView.as_view()
-
-    view(company_request)
-
-    assert mock_retrieve_profile.called_once_with(1)
-
-
-@patch('enrolment.helpers.user_has_verified_company', Mock(return_value=True))
-@patch.object(api_client.company, 'retrieve_profile')
-def test_company_profile_details_exposes_context(
-    mock_retrieve_profile, company_request, api_response_company_profile_200
-):
-    mock_retrieve_profile.return_value = api_response_company_profile_200
-    view = UserCompanyProfileDetailView.as_view()
-    response = view(company_request)
-    assert response.status_code == http.client.OK
-    assert response.template_name == [
-        UserCompanyProfileDetailView.template_name
-    ]
-    expected = helpers.inflate_company_profile_from_response(
-        api_response_company_profile_200
-    )
-    assert response.context_data['company'] == expected
-
-
-@patch('enrolment.helpers.user_has_verified_company', Mock(return_value=True))
-@patch.object(api_client.company, 'retrieve_profile')
-def test_company_profile_details_exposes_context_no_sectors(
-    mock_retrieve_profile, company_request,
-    api_response_company_profile_no_sectors_200
-):
-    mock_retrieve_profile.return_value = (
-        api_response_company_profile_no_sectors_200
-    )
-    view = UserCompanyProfileDetailView.as_view()
-    response = view(company_request)
-    assert response.status_code == http.client.OK
-    assert response.template_name == [
-        UserCompanyProfileDetailView.template_name
-    ]
-    expected = helpers.inflate_company_profile_from_response(
-        api_response_company_profile_no_sectors_200
-    )
-    assert response.context_data['company'] == expected
-
-
-@patch('enrolment.helpers.user_has_verified_company', Mock(return_value=True))
-@patch.object(api_client.company, 'retrieve_profile')
-def test_company_profile_details_exposes_context_no_date_of_creation(
-    mock_retrieve_profile, company_request,
-    api_response_company_profile_no_date_of_creation_200
-):
-    mock_retrieve_profile.return_value = (
-        api_response_company_profile_no_date_of_creation_200
-    )
-    view = UserCompanyProfileDetailView.as_view()
-    response = view(company_request)
-    assert response.status_code == http.client.OK
-    assert response.template_name == [
-        UserCompanyProfileDetailView.template_name
-    ]
-    expected = helpers.inflate_company_profile_from_response(
-        api_response_company_profile_no_date_of_creation_200
-    )
-    assert response.context_data['company'] == expected
-
-
-@patch('enrolment.helpers.user_has_verified_company', Mock(return_value=True))
-@patch.object(api_client.company, 'retrieve_profile')
-def test_company_profile_details_handles_bad_status(
-    mock_retrieve_profile, company_request, api_response_400
-):
-    mock_retrieve_profile.return_value = api_response_400
-    view = UserCompanyProfileDetailView.as_view()
-
-    with pytest.raises(requests.exceptions.HTTPError):
-        view(company_request)
-
-
-def test_company_profile_details_logs_missing_sso_user(client, rf):
-    view = UserCompanyProfileDetailView.as_view()
-    request = rf.get(reverse('company-detail'))
-    request.sso_user = None
-
-    response = view(request)
-    # Redirects to SSO login
-    assert response.status_code == http.client.FOUND
-
-
-@patch('enrolment.helpers.user_has_verified_company', Mock(return_value=True))
 @patch.object(UserCompanyProfileLogoEditView, 'serialize_form_data',
               Mock(return_value={'field': 'value'}))
 @patch.object(api_client.company, 'update_profile')
@@ -743,7 +646,6 @@ def test_international_landing_view_submit(
 @patch.object(helpers, 'user_has_verified_company', Mock(return_value=False))
 def test_user_company_redirect_non_verified_company(sso_request):
     view_classes = [
-        UserCompanyProfileDetailView,
         UserCompanyProfileEditView,
         UserCompanyProfileLogoEditView,
         UserCompanyDescriptionEditView,
