@@ -26,7 +26,7 @@ def get_employees_label(employees_value):
 def get_sectors_labels(sectors_values):
     if not sectors_values:
         return sectors_values
-    return [SECTOR_CHOICES.get(value)for value in sectors_values]
+    return [SECTOR_CHOICES.get(value) for value in sectors_values]
 
 
 def inflate_company_profile_from_response(response):
