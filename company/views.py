@@ -61,7 +61,7 @@ class SupplierCaseStudyView(UserCompanyBaseView, SessionWizardView):
 
 
 class UserCompanyProfileDetailView(UserCompanyBaseView, TemplateView):
-    template_name = 'company-profile-details.html'
+    template_name = 'company-profile-detail.html'
 
     def get_context_data(self, **kwargs):
         response = api_client.company.retrieve_profile(
@@ -70,5 +70,36 @@ class UserCompanyProfileDetailView(UserCompanyBaseView, TemplateView):
         if not response.ok:
             response.raise_for_status()
         return {
-            'company': helpers.inflate_company_profile_from_response(response)
+            'company': helpers.get_company_profile_from_response(response),
+            'show_edit_links': True,
+        }
+
+
+class PublicProfileListView(TemplateView):
+    template_name = 'company-public-profile-list.html'
+
+    def get_context_data(self, **kwargs):
+        response = api_client.company.list_public_profiles()
+        if not response.ok:
+            response.raise_for_status()
+        return {
+            'companies': helpers.get_company_list_from_response(response)
+        }
+
+
+class PublicProfileDetailView(TemplateView):
+    template_name = 'company-profile-detail.html'
+
+    def get_context_data(self, **kwargs):
+        api_call = (
+            api_client.company.
+            retrieve_public_profile_by_companies_house_number
+        )
+        response = api_call(number=self.kwargs['company_number'])
+        if not response.ok:
+            response.raise_for_status()
+        company = helpers.get_public_company_profile_from_response(response)
+        return {
+            'company': company,
+            'show_edit_links': False,
         }

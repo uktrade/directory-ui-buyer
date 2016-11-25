@@ -20,7 +20,7 @@
 						<span class="url pull-left">{{company.website}}</span>
 						<span class="a11y pull-left">(Opens in a new window)</span>
 					</a>
-					{% else %}
+					{% elif show_edit_links %}
 					<a href="{% url 'company-edit' %}" target="_self">
 						Edit your company's website address
 					</a>
@@ -38,13 +38,15 @@
 							<img src="{{company.logo}}" />
 						</div>
 						{% endif %}
-						<a href="{% url 'company-edit-logo' %}" target="_self">
-						{% if company.logo %}
-							Change logo
-						{% else %}
-							Set logo
+						{% if show_edit_links %}
+							<a href="{% url 'company-edit-logo' %}" target="_self">
+							{% if company.logo %}
+								Change logo
+							{% else %}
+								Set logo
+							{% endif %}
+							</a>
 						{% endif %}
-						</a>
 					</div>
 				</div>
 			</div>
@@ -58,9 +60,11 @@
 						Number of employees: {{company.employees}}
 					</div>
 				{% endif %}
+				{% if show_edit_links %}
 					<a href="{% url 'company-edit' %}" target="_self">
 						Edit your company's key facts.
 					</a>
+				{% endif %}
 				</div>
 			</div>
 
@@ -85,9 +89,11 @@
 				{% if company.description %}
 				<div class="description-content">{{company.description}}</div>
 				{% endif %}
-				<a href="{% url 'company-edit-description' %}" target="_self">
-					Edit your company's description.
-				</a>
+				{% if show_edit_links %}
+					<a href="{% url 'company-edit-description' %}" target="_self">
+						Edit your company's description.
+					</a>
+				{% endif %}
 			</div>
 		</div>
 
@@ -119,9 +125,11 @@
 					</div>
 				{% endfor %}
 				<div class="clearfix" style="margin-bottom: 20px;"></div>
+				{% if show_edit_links %}
 				<a href="{% url 'company-case-study-edit' %}" target="_self">
 					Add a case study.
 				</a>
+				{% endif %}
 			</div>
 		</div>
 
@@ -140,9 +148,11 @@
 					{% if company.sectors %}
 					<div class="description-content"></div>
 					{% endif %}
-					<a href="{% url 'company-edit' %}" target="_self">
-						Edit your company's sectors.
-					</a>
+					{% if show_edit_links %}
+						<a href="{% url 'company-edit' %}" target="_self">
+							Edit your company's sectors.
+						</a>
+					{% endif %}
 				</div>
 			</div>
 
@@ -155,9 +165,11 @@
 					{% if company.keywords %}
 					<div class="description-content">{{company.keywords}}</div>
 					{% endif %}
-					<a href="{% url 'company-edit' %}" target="_self">
-						Edit your company's keywords.
-					</a>
+					{% if show_edit_links %}
+						<a href="{% url 'company-edit' %}" target="_self">
+							Edit your company's keywords.
+						</a>
+					{% endif %}
 				</div>
 			</div>
 		</div>

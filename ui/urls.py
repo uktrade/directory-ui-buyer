@@ -13,7 +13,12 @@ from enrolment.views import (
     InternationalLandingView,
 )
 from user.views import UserProfileDetailView
-from company.views import SupplierCaseStudyView, UserCompanyProfileDetailView
+from company.views import (
+    PublicProfileDetailView,
+    PublicProfileListView,
+    SupplierCaseStudyView,
+    UserCompanyProfileDetailView,
+)
 from admin.proxy import AdminProxyView
 
 
@@ -98,6 +103,16 @@ urlpatterns = [
         r'^company/case-study/edit/(?P<id>.+)?$',
         SupplierCaseStudyView.as_view(),
         name='company-case-study-edit'
+    ),
+    url(
+        r'^suppliers$',
+        PublicProfileListView.as_view(),
+        name='public-company-profiles-list'
+    ),
+    url(
+        r'^suppliers/(?P<company_number>.+)$',
+        PublicProfileDetailView.as_view(),
+        name='public-company-profiles-detail'
     ),
 
 ]

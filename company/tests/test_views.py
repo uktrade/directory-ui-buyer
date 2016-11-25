@@ -190,11 +190,11 @@ def test_case_study_update_api_failure(
 
 @patch('enrolment.helpers.user_has_verified_company', Mock(return_value=True))
 @patch.object(views.api_client.company, 'retrieve_profile', Mock)
-@patch.object(helpers, 'inflate_company_profile_from_response')
+@patch.object(helpers, 'get_company_profile_from_response')
 def test_company_profile_details_exposes_context(
-    mock_inflate_company_profile_from_response, sso_request
+    mock_get_company_profile_from_response, sso_request
 ):
-    mock_inflate_company_profile_from_response.return_value = {}
+    mock_get_company_profile_from_response.return_value = {}
     view = views.UserCompanyProfileDetailView.as_view()
     response = view(sso_request)
     assert response.status_code == http.client.OK
@@ -203,16 +203,17 @@ def test_company_profile_details_exposes_context(
     ]
 
     assert response.context_data['company'] == {}
+    assert response.context_data['show_edit_links'] is True
 
 
 @patch('enrolment.helpers.user_has_verified_company', Mock(return_value=True))
-@patch.object(helpers, 'inflate_company_profile_from_response')
+@patch.object(helpers, 'get_company_profile_from_response')
 @patch.object(views.api_client.company, 'retrieve_profile')
 def test_company_profile_details_calls_api(
-    mock_retrieve_profile, mock_inflate_company_profile_from_response,
+    mock_retrieve_profile, mock_get_company_profile_from_response,
     sso_request
 ):
-    mock_inflate_company_profile_from_response.return_value = {}
+    mock_get_company_profile_from_response.return_value = {}
     view = views.UserCompanyProfileDetailView.as_view()
 
     view(sso_request)
@@ -221,15 +222,111 @@ def test_company_profile_details_calls_api(
 
 
 @patch('enrolment.helpers.user_has_verified_company', Mock(return_value=True))
-@patch.object(helpers, 'inflate_company_profile_from_response')
+@patch.object(helpers, 'get_company_profile_from_response')
 @patch.object(views.api_client.company, 'retrieve_profile')
 def test_company_profile_details_handles_bad_status(
-    mock_retrieve_profile, mock_inflate_company_profile_from_response,
+    mock_retrieve_profile, mock_get_company_profile_from_response,
     sso_request
 ):
     mock_retrieve_profile.return_value = api_response_400()
-    mock_inflate_company_profile_from_response.return_value = {}
+    mock_get_company_profile_from_response.return_value = {}
     view = views.UserCompanyProfileDetailView.as_view()
 
     with pytest.raises(requests.exceptions.HTTPError):
         view(sso_request)
+
+
+@patch('enrolment.helpers.user_has_verified_company', Mock(return_value=True))
+@patch.object(views.api_client.company,
+              'retrieve_public_profile_by_companies_house_number', Mock)
+@patch.object(helpers, 'get_public_company_profile_from_response')
+def test_public_company_profile_details_exposes_context(
+    mock_get_public_company_profile_from_response, client
+):
+    mock_get_public_company_profile_from_response.return_value = {}
+    url = reverse(
+        'public-company-profiles-detail', kwargs={'company_number': '01234567'}
+    )
+    response = client.get(url)
+    assert response.status_code == http.client.OK
+    assert response.template_name == [
+        views.PublicProfileDetailView.template_name
+    ]
+    assert response.context_data['company'] == {}
+    assert response.context_data['show_edit_links'] is False
+
+
+@patch('enrolment.helpers.user_has_verified_company', Mock(return_value=True))
+@patch.object(helpers, 'get_public_company_profile_from_response')
+@patch.object(views.api_client.company,
+              'retrieve_public_profile_by_companies_house_number')
+def test_public_company_profile_details_calls_api(
+    mock_retrieve_public_profile,
+    mock_get_public_company_profile_from_response, client
+):
+    mock_get_public_company_profile_from_response.return_value = {}
+    url = reverse(
+        'public-company-profiles-detail', kwargs={'company_number': '01234567'}
+    )
+    client.get(url)
+
+    assert mock_retrieve_public_profile.called_once_with(1)
+
+
+@patch('enrolment.helpers.user_has_verified_company', Mock(return_value=True))
+@patch.object(helpers, 'get_public_company_profile_from_response')
+@patch.object(views.api_client.company,
+              'retrieve_public_profile_by_companies_house_number')
+def test_public_company_profile_details_handles_bad_status(
+    mock_retrieve_public_profile,
+    mock_get_public_company_profile_from_response, client
+):
+    mock_retrieve_public_profile.return_value = api_response_400()
+    url = reverse(
+        'public-company-profiles-detail', kwargs={'company_number': '01234567'}
+    )
+
+    with pytest.raises(requests.exceptions.HTTPError):
+        client.get(url)
+
+
+@patch('enrolment.helpers.user_has_verified_company', Mock(return_value=True))
+@patch.object(views.api_client.company, 'list_public_profiles', Mock)
+@patch.object(helpers, 'get_company_list_from_response')
+def test_company_profile_list_exposes_context(
+    mock_get_company_list_from_response, client
+):
+    mock_get_company_list_from_response.return_value = {}
+    url = reverse('public-company-profiles-list')
+    response = client.get(url)
+    assert response.status_code == http.client.OK
+    assert response.template_name == [
+        views.PublicProfileListView.template_name
+    ]
+    assert response.context_data['companies'] == {}
+
+
+@patch('enrolment.helpers.user_has_verified_company', Mock(return_value=True))
+@patch.object(helpers, 'get_company_list_from_response')
+@patch.object(views.api_client.company, 'list_public_profiles')
+def test_company_profile_list_calls_api(
+    mock_list_public_profiles, mock_get_company_list_from_response, client
+):
+    mock_get_company_list_from_response.return_value = {}
+    url = reverse('public-company-profiles-list')
+    client.get(url)
+
+    assert mock_list_public_profiles.called_once()
+
+
+@patch('enrolment.helpers.user_has_verified_company', Mock(return_value=True))
+@patch.object(helpers, 'get_company_list_from_response')
+@patch.object(views.api_client.company, 'list_public_profiles')
+def test_company_profile_list_handles_bad_status(
+    mock_retrieve_public_profile, mock_get_company_list_from_response, client
+):
+    mock_retrieve_public_profile.return_value = api_response_400()
+    url = reverse('public-company-profiles-list')
+
+    with pytest.raises(requests.exceptions.HTTPError):
+        client.get(url)
