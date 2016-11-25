@@ -29,8 +29,22 @@ def get_sectors_labels(sectors_values):
     return [SECTOR_CHOICES.get(value) for value in sectors_values]
 
 
-def inflate_company_profile_from_response(response):
-    details = response.json()
+def get_public_company_profile_from_response(response):
+    return format_company_details(response.json())
+
+
+def get_company_profile_from_response(response):
+    return format_company_details(response.json())
+
+
+def get_company_list_from_response(response):
+    parsed = response.json()
+    if parsed['results']:
+        parsed['results'] = map(format_company_details, parsed['results'])
+    return parsed
+
+
+def format_company_details(details):
     date_of_creation = format_date_of_creation(details.get('date_of_creation'))
     return {
         'website': details['website'],

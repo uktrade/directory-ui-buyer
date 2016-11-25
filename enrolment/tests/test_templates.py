@@ -8,30 +8,12 @@ from django.template.loader import render_to_string
 
 from enrolment import forms
 
-company_context = {
-    'company': {
-        'sectors': [
-            'sector 1',
-            'sector 2'
-        ],
-        'number': '123456',
-        'name': 'UK exporting co ltd.',
-        'description': 'Exporters of UK wares.',
-        'website': 'www.ukexportersnow.co.uk',
-        'logo': 'www.ukexportersnow.co.uk/logo.png',
-        'keywords': 'word1 word2',
-        'date_of_creation': '2 Mar 2015',
-    }
-}
-
 user_context = {
     'user': {
         'mobile': '00000000011',
         'email': 'email@example.com',
     }
 }
-
-DATE_CREATED_LABEL = 'Date incorporated'
 
 
 def test_company_description_form_cancel_button():
@@ -42,78 +24,6 @@ def test_company_description_form_cancel_button():
 def test_company_logo_form_cancel_button():
     html = render_to_string('company-profile-logo-form.html', {})
     assert 'Cancel' in html
-
-
-def test_company_profile_details_renders_sectors():
-    html = render_to_string('company-profile-details.html', company_context)
-    assert 'sector 1' in html
-    assert 'sector 2' in html
-
-
-def test_company_profile_details_renders_date_created():
-    html = render_to_string('company-profile-details.html', company_context)
-    assert '2 Mar 2015' in html
-    assert DATE_CREATED_LABEL in html
-
-
-def test_company_profile_details_handles_no_date_created():
-    html = render_to_string('company-profile-details.html')
-    assert DATE_CREATED_LABEL not in html
-
-
-def test_company_profile_details_handles_no_sectors():
-    html = render_to_string('company-profile-details.html', {})
-    assert "Edit your company's sectors." in html
-
-
-def test_company_profile_details_renders_company_number():
-    html = render_to_string('company-profile-details.html', company_context)
-    assert '123456' in html
-
-
-def test_company_profile_details_renders_company_name():
-    html = render_to_string('company-profile-details.html', company_context)
-    assert 'UK exporting co ltd.' in html
-
-
-def test_company_profile_details_renders_description():
-    html = render_to_string('company-profile-details.html', company_context)
-    assert 'Exporters of UK wares.' in html
-
-
-def test_company_profile_details_renders_keywords():
-    html = render_to_string('company-profile-details.html', company_context)
-    assert "word1 word2" in html
-
-
-def test_company_profile_details_handles_no_keywords():
-    html = render_to_string('company-profile-details.html', {})
-    assert "Edit your company's keywords." in html
-
-
-def test_company_profile_details_renders_website():
-    html = render_to_string('company-profile-details.html', company_context)
-    assert 'www.ukexportersnow.co.uk' in html
-
-
-def test_company_profile_details_handles_no_website():
-    html = render_to_string('company-profile-details.html', {})
-    assert "Edit your company's website address" in html
-
-
-def test_company_profile_details_renders_logo():
-    html = render_to_string('company-profile-details.html', company_context)
-    assert 'www.ukexportersnow.co.uk/logo.png' in html
-
-
-def test_company_profile_details_renders_change_logo_button():
-    html = render_to_string('company-profile-details.html', company_context)
-    assert 'Change logo' in html
-
-
-def test_company_profile_details_renders_set_logo_button():
-    html = render_to_string('company-profile-details.html', {})
-    assert 'Set logo' in html
 
 
 def test_form_wrapper_next_button():

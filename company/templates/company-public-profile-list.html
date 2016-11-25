@@ -1,0 +1,72 @@
+{% extends 'govuk_layout.html' %}
+{% load staticfiles %}
+{% block css %}
+	<link href="{% static 'company-profile-details.css' %}" media="all" rel="stylesheet" />
+{% endblock %}
+{% block hero_title %}Find a Supplier{% endblock %}
+{% block content %}
+<div class="clearfix"></div>
+<div class="container">
+	<div class="company-profile-details-body">
+		{% for company in companies.results %}
+		<div>
+			<!-- Company name, contact details & URLS -->
+			<div class="row-fluid">
+				<div class="span12 great-blue-bar">
+					<a href="{% url 'public-company-profiles-detail' company_number=company.number %}">
+						<h1 class="element-within company-name-title">
+							<span class="dont-break-out">{{company.name}}</span>
+						</h1>
+					</a>
+					<div class="web-address element-within">
+						{% if company.website %}
+						<a href="{{company.website}}" class="arrow-link external-link-white dont-break-out" target="_blank">
+							<span class="url pull-left">{{company.website}}</span>
+							<span class="a11y pull-left">(Opens in a new window)</span>
+						</a>
+						{% endif %}
+					</div>
+				</div>
+			</div>
+			<div class="row-fluid company-profile-box company-hero">
+				<!-- Company Logo area -->
+				<div class="span3 company-logo">
+					<div class="logo-container">
+						<div class="logo">
+							{% if company.logo %}
+							<div class="description-content">
+								<img src="{{company.logo}}" />
+							</div>
+							{% endif %}
+							<a href="{% url 'company-edit-logo' %}" target="_self">
+							</a>
+						</div>
+					</div>
+				</div>
+
+				<!-- Key Facts -->
+				<div class="span4 key-facts">
+					<div class="company-details-subtitle">Key facts</div>
+					<div class="number-of-employees">
+					{% if company.employees %}
+						<div class="description-content">
+							Number of employees: {{company.employees}}
+						</div>
+					{% endif %}
+					</div>
+				</div>
+
+				<!-- Company Details -->
+				<div class="span4 company-details">
+					<div class="company-details-subtitle">Company details</div>
+					<div class="company-number-content" >Registration number: {{company.number}}</div>
+					{% if company.date_of_creation %}
+						<div>Date incorporated: {{company.date_of_creation}}</div>
+					{% endif %}
+				</div>
+			</div>
+		</div>
+		{% endfor %}
+	</div>
+</div>
+{% endblock %}
