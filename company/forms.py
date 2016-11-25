@@ -21,8 +21,17 @@ class CaseStudyBasicInfoForm(forms.Form):
     )
     year = forms.CharField(max_length=4)
     keywords = forms.CharField(
-        max_length=100,
+        label=(
+            'Enter up to 10 keywords that describe your case study '
+            '(separated by commas):'
+        ),
+        help_text=(
+            'These keywords will be used to help potential overseas buyers '
+            'find your case study.'
+        ),
+        max_length=1000,
         widget=forms.Textarea,
+        validators=[shared_validators.keywords_word_limit]
     )
 
 
