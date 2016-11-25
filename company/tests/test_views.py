@@ -9,7 +9,7 @@ from django.core.urlresolvers import reverse
 
 from sso.utils import SSOUser
 from company.views import SupplierCaseStudyView
-from company import views
+from company import helpers, views
 
 
 default_sector = choices.COMPANY_CLASSIFICATIONS[1][0]
@@ -31,6 +31,22 @@ def process_request(self, request):
     request.sso_user = sso_user()
 
 
+@pytest.fixture
+def sso_user():
+    return SSOUser(
+        id=1,
+        email='jim@example.com',
+    )
+
+
+@pytest.fixture
+def sso_request(rf, client, sso_user):
+    request = rf.get('/')
+    request.sso_user = sso_user
+    request.session = client.session
+    return request
+
+
 @pytest.fixture(scope='session')
 def image_one(tmpdir_factory):
     return tmpdir_factory.mktemp('media').join('image_one.png').write('1')
@@ -46,13 +62,8 @@ def image_three(tmpdir_factory):
     return tmpdir_factory.mktemp('media').join('image_three.png').write('3')
 
 
-@pytest.fixture(scope='session')
-def video(tmpdir_factory):
-    return tmpdir_factory.mktemp('media').join('video.wav').write('video')
-
-
 @pytest.fixture
-def all_case_study_data(video, image_three, image_two, image_one):
+def all_case_study_data(image_three, image_two, image_one):
     return {
         'title': 'Example',
         'description': 'Great',
@@ -64,7 +75,6 @@ def all_case_study_data(video, image_three, image_two, image_one):
         'image_one': image_one,
         'image_two': image_two,
         'image_three': image_three,
-        'video_one': video,
     }
 
 
@@ -82,24 +92,15 @@ def supplier_case_study_basic_data():
 
 
 @pytest.fixture
-def supplier_case_study_rich_data(video, image_three, image_two, image_one):
+def supplier_case_study_rich_data(image_three, image_two, image_one):
     step = SupplierCaseStudyView.RICH_MEDIA
     return {
         'supplier_case_study_view-current_step': step,
         SupplierCaseStudyView.RICH_MEDIA + '-image_one': image_one,
         SupplierCaseStudyView.RICH_MEDIA + '-image_two': image_two,
         SupplierCaseStudyView.RICH_MEDIA + '-image_three': image_three,
-        SupplierCaseStudyView.RICH_MEDIA + '-video_one': video,
         SupplierCaseStudyView.RICH_MEDIA + '-testimonial': 'Great',
     }
-
-
-@pytest.fixture
-def sso_user():
-    return SSOUser(
-        id=1,
-        email='jim@example.com',
-    )
 
 
 @pytest.fixture
@@ -185,3 +186,50 @@ def test_case_study_update_api_failure(
 
     assert response.status_code == http.client.OK
     assert response.template_name == SupplierCaseStudyView.failure_template
+
+
+@patch('enrolment.helpers.user_has_verified_company', Mock(return_value=True))
+@patch.object(views.api_client.company, 'retrieve_profile', Mock)
+@patch.object(helpers, 'inflate_company_profile_from_response')
+def test_company_profile_details_exposes_context(
+    mock_inflate_company_profile_from_response, sso_request
+):
+    mock_inflate_company_profile_from_response.return_value = {}
+    view = views.UserCompanyProfileDetailView.as_view()
+    response = view(sso_request)
+    assert response.status_code == http.client.OK
+    assert response.template_name == [
+        views.UserCompanyProfileDetailView.template_name
+    ]
+
+    assert response.context_data['company'] == {}
+
+
+@patch('enrolment.helpers.user_has_verified_company', Mock(return_value=True))
+@patch.object(helpers, 'inflate_company_profile_from_response')
+@patch.object(views.api_client.company, 'retrieve_profile')
+def test_company_profile_details_calls_api(
+    mock_retrieve_profile, mock_inflate_company_profile_from_response,
+    sso_request
+):
+    mock_inflate_company_profile_from_response.return_value = {}
+    view = views.UserCompanyProfileDetailView.as_view()
+
+    view(sso_request)
+
+    assert mock_retrieve_profile.called_once_with(1)
+
+
+@patch('enrolment.helpers.user_has_verified_company', Mock(return_value=True))
+@patch.object(helpers, 'inflate_company_profile_from_response')
+@patch.object(views.api_client.company, 'retrieve_profile')
+def test_company_profile_details_handles_bad_status(
+    mock_retrieve_profile, mock_inflate_company_profile_from_response,
+    sso_request
+):
+    mock_retrieve_profile.return_value = api_response_400()
+    mock_inflate_company_profile_from_response.return_value = {}
+    view = views.UserCompanyProfileDetailView.as_view()
+
+    with pytest.raises(requests.exceptions.HTTPError):
+        view(sso_request)

@@ -1,4 +1,4 @@
-{% extends './govuk_layout.html' %}
+{% extends 'govuk_layout.html' %}
 {% load staticfiles %}
 {% block css %}
 	<link href="{% static 'company-profile-details.css' %}" media="all" rel="stylesheet" />
@@ -87,6 +87,40 @@
 				{% endif %}
 				<a href="{% url 'company-edit-description' %}" target="_self">
 					Edit your company's description.
+				</a>
+			</div>
+		</div>
+
+		<!-- Company description area -->
+		<div class="row-fluid">
+			<div class="span12 mid-blue-bar">
+				 <h2 class="element-within company-sub-title">Showcase</h2>
+			</div>
+		</div>
+		<div class="row-fluid company-profile-box">
+			<div class="span12">
+				{% for case_study in company.supplier_case_studies %}
+					<div class="span4">
+						<div class="supplier-case-study-title">{{ case_study.title }}</div>
+						<div class="supplier-case-study-images">
+							{% if case_study.image_one %}
+							<img src="{{ case_study.image_one }}" />
+							{% endif %}
+							{% if case_study.image_two %}
+							<img src="{{ case_study.image_two }}" />
+							{% endif %}
+							{% if case_study.image_three %}
+							<img src="{{ case_study.image_three }}" />
+							{% endif %}
+						</div>
+						<div class="supplier-case-study-description">
+							{{ case_study.description }}
+						</div>
+					</div>
+				{% endfor %}
+				<div class="clearfix" style="margin-bottom: 20px;"></div>
+				<a href="{% url 'company-case-study-edit' %}" target="_self">
+					Add a case study.
 				</a>
 			</div>
 		</div>

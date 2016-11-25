@@ -189,20 +189,6 @@ class UserCompanyBaseView(SSOLoginRequiredMixin):
                 )
 
 
-class UserCompanyProfileDetailView(UserCompanyBaseView, TemplateView):
-    template_name = 'company-profile-details.html'
-
-    def get_context_data(self, **kwargs):
-        response = api_client.company.retrieve_profile(
-            sso_user_id=self.request.sso_user.id
-        )
-        if not response.ok:
-            response.raise_for_status()
-        return {
-            'company': helpers.inflate_company_profile_from_response(response)
-        }
-
-
 class UpdateCompanyProfileOnFormWizardDoneMixin:
 
     def serialize_form_data(self):

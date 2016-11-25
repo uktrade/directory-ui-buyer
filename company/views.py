@@ -6,8 +6,9 @@ from django.conf import settings
 from django.core.files.storage import FileSystemStorage
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
+from django.views.generic import TemplateView
 
-from company import forms
+from company import forms, helpers
 
 from api_client import api_client
 from enrolment.views import UserCompanyBaseView
@@ -57,3 +58,17 @@ class SupplierCaseStudyView(UserCompanyBaseView, SessionWizardView):
             return redirect('company-detail')
         else:
             return TemplateResponse(self.request, self.failure_template)
+
+
+class UserCompanyProfileDetailView(UserCompanyBaseView, TemplateView):
+    template_name = 'company-profile-details.html'
+
+    def get_context_data(self, **kwargs):
+        response = api_client.company.retrieve_profile(
+            sso_user_id=self.request.sso_user.id
+        )
+        if not response.ok:
+            response.raise_for_status()
+        return {
+            'company': helpers.inflate_company_profile_from_response(response)
+        }

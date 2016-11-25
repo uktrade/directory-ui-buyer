@@ -21,8 +21,17 @@ class CaseStudyBasicInfoForm(forms.Form):
     )
     year = forms.CharField(max_length=4)
     keywords = forms.CharField(
-        max_length=100,
+        label=(
+            'Enter up to 10 keywords that describe your case study '
+            '(separated by commas):'
+        ),
+        help_text=(
+            'These keywords will be used to help potential overseas buyers '
+            'find your case study.'
+        ),
+        max_length=1000,
         widget=forms.Textarea,
+        validators=[shared_validators.keywords_word_limit]
     )
 
 
@@ -38,10 +47,6 @@ class CaseStudyRichMediaForm(forms.Form):
     image_three = forms.FileField(
         required=False,
         validators=[shared_validators.case_study_image_filesize]
-    )
-    video_one = forms.FileField(
-        required=False,
-        validators=[shared_validators.case_study_video_filesize]
     )
     testimonial = forms.CharField(
         max_length=1000,
@@ -71,6 +76,5 @@ def serialize_supplier_case_study_forms(cleaned_data):
         'image_one': cleaned_data['image_one'],
         'image_two': cleaned_data['image_two'],
         'image_three': cleaned_data['image_three'],
-        'video_one': cleaned_data['video_one'],
         'testimonial': cleaned_data['testimonial'],
     }

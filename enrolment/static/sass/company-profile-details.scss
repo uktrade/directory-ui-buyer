@@ -238,3 +238,18 @@
     position: relative;
   }
 }
+
+.supplier-case-study-title {
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.supplier-case-study-images {
+  margin-bottom: 20px;
+  height: 110px;
+  img {
+    max-height: 100px;
+    width: 30%;
+    vertical-align: top;
+  }
+}

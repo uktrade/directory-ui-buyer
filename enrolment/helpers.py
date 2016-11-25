@@ -1,8 +1,6 @@
 import http
 import logging
-import datetime
 
-from directory_validators.constants import choices
 import requests
 
 from django.conf import settings
@@ -11,8 +9,6 @@ from django.contrib.auth.hashers import check_password, make_password
 from api_client import api_client
 
 
-EMPLOYEE_CHOICES = {key: value for key, value in choices.EMPLOYEES}
-SECTOR_CHOICES = {key: value for key, value in choices.COMPANY_CLASSIFICATIONS}
 SMS_CODE_SESSION_KEY = 'sms_code'
 COMPANIES_HOUSE_PROFILE_SESSION_KEY = 'ch_profile'
 MESSAGE_AUTH_FAILED = 'Auth failed with Companies House'
@@ -74,18 +70,6 @@ def user_has_verified_company(sso_user_id):
     return has_company
 
 
-def get_employees_label(employees_value):
-    if not employees_value:
-        return employees_value
-    return EMPLOYEE_CHOICES.get(employees_value)
-
-
-def get_sectors_labels(sectors_values):
-    if not sectors_values:
-        return sectors_values
-    return [SECTOR_CHOICES.get(value)for value in sectors_values]
-
-
 def set_sms_session_code(session, sms_code):
     session[SMS_CODE_SESSION_KEY] = encrypt_sms_code(sms_code)
 
@@ -128,29 +112,3 @@ def get_company_name_from_session(session):
 
 def get_company_status_from_session(session):
     return session[COMPANIES_HOUSE_PROFILE_SESSION_KEY]['company_status']
-
-
-def format_date_of_creation(raw_date_of_creation):
-    if not raw_date_of_creation:
-        return raw_date_of_creation
-    date_of_creation = datetime.datetime.strptime(
-        raw_date_of_creation,
-        '%Y-%m-%d'
-    )
-    return date_of_creation.strftime('%d %b %Y')
-
-
-def inflate_company_profile_from_response(response):
-    details = response.json()
-    date_of_creation = format_date_of_creation(details.get('date_of_creation'))
-    return {
-        'website': details['website'],
-        'description': details['description'],
-        'number': details['number'],
-        'date_of_creation': date_of_creation,
-        'sectors': get_sectors_labels(details['sectors']),
-        'logo': details['logo'],
-        'name': details['name'],
-        'keywords': details['keywords'],
-        'employees': get_employees_label(details['employees']),
-    }
