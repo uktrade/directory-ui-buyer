@@ -45,7 +45,8 @@ DOCKER_SET_DEBUG_ENV_VARS := \
 	export DIRECTORY_UI_PORT=8001; \
 	export DIRECTORY_UI_SECRET_KEY=debug; \
 	export DIRECTORY_UI_DEBUG=true; \
-	export DIRECTORY_UI_COMPANIES_HOUSE_API_KEY=debug
+	export DIRECTORY_UI_COMPANIES_HOUSE_API_KEY=debug; \
+	export DIRECTORY_UI_FEATURE_PUBLIC_PROFILES=true
 
 DOCKER_REMOVE_ALL := \
 	docker ps -a | \
@@ -90,7 +91,8 @@ DEBUG_SET_ENV_VARS := \
 	export SSO_REDIRECT_FIELD_NAME=next; \
 	export SSO_SESSION_COOKIE=debug_sso_session_cookie; \
 	export SESSION_COOKIE_SECURE=false; \
-	export COMPANIES_HOUSE_API_KEY=debug
+	export COMPANIES_HOUSE_API_KEY=debug; \
+	export FEATURE_PUBLIC_PROFILES=true
 
 debug_webserver:
 	$(DEBUG_SET_ENV_VARS) && $(DJANGO_WEBSERVER)
