@@ -1,3 +1,4 @@
+from django.core.urlresolvers import reverse
 from django.template.loader import render_to_string
 
 
@@ -166,3 +167,20 @@ def test_company_profile_details_renders_set_logo_button_hide_edit_links():
     }
     html = render_to_string('company-profile-detail.html', context)
     assert SET_LOGO_MESSAGE not in html
+
+
+def test_company_public_profile_list_link_to_profle():
+    context = {
+        'companies': {
+            'results': [
+                default_context['company']
+            ]
+        }
+    }
+    url = reverse(
+        'public-company-profiles-detail',
+        kwargs={'company_number': default_context['company']['number']}
+    )
+    html = render_to_string('company-public-profile-list.html', context)
+
+    assert 'href="{url}"'.format(url=url) in html

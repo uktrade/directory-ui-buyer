@@ -19,12 +19,9 @@
 						</h1>
 					</a>
 					<div class="web-address element-within">
-						{% if company.website %}
-						<a href="{{company.website}}" class="arrow-link external-link-white dont-break-out" target="_blank">
-							<span class="url pull-left">{{company.website}}</span>
-							<span class="a11y pull-left">(Opens in a new window)</span>
+						<a href="{% url 'public-company-profiles-detail' company_number=company.number %}" class=" dont-break-out" target="_blank">
+							<span class="url pull-right">View profile</span>
 						</a>
-						{% endif %}
 					</div>
 				</div>
 			</div>
