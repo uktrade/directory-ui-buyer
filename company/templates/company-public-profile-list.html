@@ -31,9 +31,9 @@
 					<div class="logo-container">
 						<div class="logo">
 							{% if company.logo %}
-							<div class="description-content">
+							<a class="no-focus-highlight" href="{% url 'public-company-profiles-detail' company_number=company.number %}" target="_blank">
 								<img src="{{company.logo}}" />
-							</div>
+							</a>
 							{% endif %}
 							<a href="{% url 'company-edit-logo' %}" target="_self">
 							</a>
@@ -41,25 +41,19 @@
 					</div>
 				</div>
 
-				<!-- Key Facts -->
-				<div class="span4 key-facts">
-					<div class="company-details-subtitle">Key facts</div>
+				<!-- At a glance -->
+				<div class="span8 key-facts">
+					<div class="company-details-subtitle">At a glance</div>
 					<div class="number-of-employees">
 					{% if company.employees %}
 						<div class="description-content">
 							Number of employees: {{company.employees}}
 						</div>
 					{% endif %}
-					</div>
-				</div>
-
-				<!-- Company Details -->
-				<div class="span4 company-details">
-					<div class="company-details-subtitle">Company details</div>
-					<div class="company-number-content" >Registration number: {{company.number}}</div>
 					{% if company.date_of_creation %}
 						<div>Date incorporated: {{company.date_of_creation}}</div>
 					{% endif %}
+					</div>
 				</div>
 			</div>
 		</div>
