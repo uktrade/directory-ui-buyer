@@ -24,6 +24,7 @@ EDIT_WEBSITE_LABEL = "Edit your company's website address"
 DATE_CREATED_LABEL = 'Date incorporated'
 CHANGE_LOGO_LABEL = 'Change logo'
 SET_LOGO_MESSAGE = 'Set logo'
+NO_RESULTS_FOUND_LABEL = 'No companies found'
 
 
 def test_company_profile_details_renders_sectors():
@@ -184,3 +185,29 @@ def test_company_public_profile_list_link_to_profle():
     html = render_to_string('company-public-profile-list.html', context)
 
     assert 'href="{url}"'.format(url=url) in html
+
+
+def test_company_public_profile_no_results_label():
+    context = {
+        'companies': {
+            'results': []
+        }
+    }
+    html = render_to_string('company-public-profile-list.html', context)
+
+    assert NO_RESULTS_FOUND_LABEL in html
+
+
+def test_company_public_profile_results_label():
+    context = {
+        'companies': {
+            'count': 10,
+            'results': [
+                default_context['company']
+            ]
+        }
+    }
+    html = render_to_string('company-public-profile-list.html', context)
+
+    assert 'Showing 1 of 10 companies' in html
+    assert NO_RESULTS_FOUND_LABEL not in html

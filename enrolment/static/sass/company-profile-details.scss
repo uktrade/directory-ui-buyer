@@ -253,3 +253,33 @@
     vertical-align: top;
   }
 }
+
+.public-company-profiles-search-form {
+  border: 1px solid #1E1348;
+  margin-bottom: 20px;
+  background: #fafafa;
+  .great-blue-bar {
+    margin-bottom: 20px;
+  }
+  form {
+    padding-top: 0;
+    margin-left: 20px;
+    margin-right: 20px;
+    margin-bottom: 20px;
+  }
+  .form-wrapper-btn-container {
+    margin: 0;
+    margin-bottom: 20px;
+  }
+  .input-field-container {
+    margin-bottom: 20px;
+    li {
+      list-style: none;
+    }
+  }
+}
+
+.public-company-profiles-result-item {
+  margin-bottom: 20px;
+  border: 1px solid #1E1348;
+}

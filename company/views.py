@@ -7,6 +7,7 @@ from django.core.files.storage import FileSystemStorage
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.views.generic import TemplateView
+from django.views.generic.edit import FormView
 
 from company import forms, helpers
 
@@ -84,16 +85,30 @@ class UserCompanyProfileDetailView(UserCompanyBaseView, TemplateView):
         }
 
 
-class PublicProfileListView(TemplateView):
-    template_name = 'company-public-profile-list.html'
+class SubmitFormOnGetMixin:
 
-    def get_context_data(self, **kwargs):
-        response = api_client.company.list_public_profiles()
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['data'] = self.request.GET or None
+        return kwargs
+
+    def get(self, request, *args, **kwargs):
+        return super().post(request, *args, **kwargs)
+
+
+class PublicProfileListView(SubmitFormOnGetMixin, FormView):
+    template_name = 'company-public-profile-list.html'
+    form_class = forms.PublicProfileSearchForm
+
+    def form_valid(self, form):
+        response = api_client.company.list_public_profiles(
+            sectors=form.cleaned_data['sectors']
+        )
         if not response.ok:
             response.raise_for_status()
-        return {
-            'companies': helpers.get_company_list_from_response(response)
-        }
+        context = self.get_context_data()
+        context['companies'] = helpers.get_company_list_from_response(response)
+        return TemplateResponse(self.request, self.template_name, context)
 
 
 class PublicProfileDetailView(TemplateView):

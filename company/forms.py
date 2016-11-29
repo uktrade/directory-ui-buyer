@@ -6,6 +6,13 @@ from directory_validators.constants import choices
 from enrolment.forms import IndentedInvalidFieldsMixin, AutoFocusFieldMixin
 
 
+class PublicProfileSearchForm(IndentedInvalidFieldsMixin, AutoFocusFieldMixin,
+                              forms.Form):
+    sectors = forms.ChoiceField(
+        choices=choices.COMPANY_CLASSIFICATIONS,
+    )
+
+
 class CaseStudyBasicInfoForm(IndentedInvalidFieldsMixin, AutoFocusFieldMixin,
                              forms.Form):
     title = forms.CharField(

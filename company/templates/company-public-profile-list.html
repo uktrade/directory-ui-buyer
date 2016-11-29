@@ -3,13 +3,35 @@
 {% block css %}
 	<link href="{% static 'company-profile-details.css' %}" media="all" rel="stylesheet" />
 {% endblock %}
-{% block hero_title %}Find a Supplier{% endblock %}
+{% block hero_title %}{% endblock %}
 {% block content %}
 <div class="clearfix"></div>
 <div class="container">
 	<div class="company-profile-details-body">
+		<div class="public-company-profiles-search-form row-fluid">
+			<div class="span12 great-blue-bar">
+				<h1 class="element-within company-name-title">
+					<span class="dont-break-out">Find a supplier</span>
+				</h1>
+			</div>
+			<div class="clearfix"></div>
+			<form action="" method="get">
+				<div class="input-field-container">
+					{{ form.as_ul }}
+				</div>
+				<div class="form-wrapper-btn-container btn-container">
+					<input class="register-btn button" type="submit" value="Search">
+				</div>
+				</div>
+			</form>
+		</div>
+		{% if companies.results %}
+			<h2>Showing {{ companies.results|length }} of {{ companies.count }} companies</h2>
+		{% else %}
+			<h2>No companies found</h2>
+		{% endif %}
 		{% for company in companies.results %}
-		<div>
+		<div class="public-company-profiles-result-item">
 			<!-- Company name, contact details & URLS -->
 			<div class="row-fluid">
 				<div class="span12 great-blue-bar">
