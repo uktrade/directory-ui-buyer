@@ -110,7 +110,6 @@ def test_get_company_list_from_response(public_companies):
         ]
     }
     actual = helpers.get_company_list_from_response(response)
-    actual['results'] = list(actual['results'])
     assert actual == expected
 
 

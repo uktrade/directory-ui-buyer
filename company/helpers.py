@@ -40,7 +40,8 @@ def get_company_profile_from_response(response):
 def get_company_list_from_response(response):
     parsed = response.json()
     if parsed['results']:
-        parsed['results'] = map(format_company_details, parsed['results'])
+        results = map(format_company_details, parsed['results'])
+        parsed['results'] = list(results)
     return parsed
 
 

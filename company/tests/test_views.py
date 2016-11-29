@@ -345,11 +345,11 @@ def test_company_profile_list_exposes_context(
 ):
     mock_get_company_list_from_response.return_value = {}
     url = reverse('public-company-profiles-list')
-    response = client.get(url)
+    params = {'sectors': choices.COMPANY_CLASSIFICATIONS[1][0]}
+    response = client.get(url, params)
+
     assert response.status_code == http.client.OK
-    assert response.template_name == [
-        views.PublicProfileListView.template_name
-    ]
+    assert response.template_name == views.PublicProfileListView.template_name
     assert response.context_data['companies'] == {}
 
 
@@ -361,9 +361,12 @@ def test_company_profile_list_calls_api(
 ):
     mock_get_company_list_from_response.return_value = {}
     url = reverse('public-company-profiles-list')
-    client.get(url)
+    params = {'sectors': choices.COMPANY_CLASSIFICATIONS[1][0]}
+    client.get(url, params)
 
-    assert mock_list_public_profiles.called_once()
+    assert mock_list_public_profiles.called_once_with(
+        sectors=choices.COMPANY_CLASSIFICATIONS[1][0],
+    )
 
 
 @patch('enrolment.helpers.user_has_verified_company', Mock(return_value=True))
@@ -374,6 +377,14 @@ def test_company_profile_list_handles_bad_status(
 ):
     mock_retrieve_public_profile.return_value = api_response_400()
     url = reverse('public-company-profiles-list')
-
+    params = {'sectors': choices.COMPANY_CLASSIFICATIONS[1][0]}
     with pytest.raises(requests.exceptions.HTTPError):
-        client.get(url)
+        client.get(url, params)
+
+
+@patch('enrolment.helpers.user_has_verified_company', Mock(return_value=True))
+def test_company_profile_list_no_form_data(client):
+    url = reverse('public-company-profiles-list')
+    response = client.get(url, {})
+
+    assert response.context_data['form'].errors == {}
