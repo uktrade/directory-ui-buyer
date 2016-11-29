@@ -5,6 +5,9 @@ from directory_validators.constants import choices
 
 from company import forms
 
+from enrolment.forms import AutoFocusFieldMixin, IndentedInvalidFieldsMixin
+
+
 REQUIRED_MESSAGE = Field.default_error_messages['required']
 
 
@@ -68,3 +71,21 @@ def test_case_study_form_all_fields():
 
     assert form.is_valid() is True
     assert form.cleaned_data == data
+
+
+def test_auto_focus_mixin_installed():
+    FormClasses = [
+        forms.CaseStudyBasicInfoForm,
+        forms.CaseStudyRichMediaForm,
+    ]
+    for FormClass in FormClasses:
+        assert issubclass(FormClass, AutoFocusFieldMixin)
+
+
+def test_indent_invalid_mixin_installed():
+    FormClasses = [
+        forms.CaseStudyBasicInfoForm,
+        forms.CaseStudyRichMediaForm,
+    ]
+    for FormClass in FormClasses:
+        assert issubclass(FormClass, IndentedInvalidFieldsMixin)

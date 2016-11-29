@@ -3,8 +3,11 @@ from django import forms
 from directory_validators import company as shared_validators
 from directory_validators.constants import choices
 
+from enrolment.forms import IndentedInvalidFieldsMixin, AutoFocusFieldMixin
 
-class CaseStudyBasicInfoForm(forms.Form):
+
+class CaseStudyBasicInfoForm(IndentedInvalidFieldsMixin, AutoFocusFieldMixin,
+                             forms.Form):
     title = forms.CharField(
         max_length=100,
     )
@@ -35,7 +38,8 @@ class CaseStudyBasicInfoForm(forms.Form):
     )
 
 
-class CaseStudyRichMediaForm(forms.Form):
+class CaseStudyRichMediaForm(IndentedInvalidFieldsMixin, AutoFocusFieldMixin,
+                             forms.Form):
     image_one = forms.FileField(
         required=False,
         validators=[shared_validators.case_study_image_filesize]
