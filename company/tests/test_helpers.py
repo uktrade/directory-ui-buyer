@@ -38,18 +38,27 @@ def test_get_employees_label():
     assert helpers.get_employees_label('1001-10000') == '1,001-10,000'
 
 
-def test_get_sectors_labels():
+def test_pair_sector_values_with_label():
     values = ['AGRICULTURE_HORTICULTURE_AND_FISHERIES', 'AEROSPACE']
-    expected = ['Agriculture, horticulture and fisheries', 'Aerospace']
-    assert helpers.get_sectors_labels(values) == expected
+    expected = [
+        {
+            'label': 'Agriculture, horticulture and fisheries',
+            'value': 'AGRICULTURE_HORTICULTURE_AND_FISHERIES',
+        },
+        {
+            'label': 'Aerospace',
+            'value': 'AEROSPACE',
+        }
+    ]
+    assert helpers.pair_sector_values_with_label(values) == expected
 
 
 def test_get_employees_label_none():
     assert helpers.get_employees_label('') == ''
 
 
-def test_get_sectors_labels_none():
-    assert helpers.get_sectors_labels([]) == []
+def test_pair_sector_values_with_label_none():
+    assert helpers.pair_sector_values_with_label([]) == []
 
 
 def test_get_company_profile_from_response(profile_data):
@@ -60,7 +69,12 @@ def test_get_company_profile_from_response(profile_data):
         'description': 'bloody good',
         'number': '01234567',
         'date_of_creation': '10 Oct 2010',
-        'sectors': ['Agriculture, horticulture and fisheries'],
+        'sectors': [
+            {
+                'label': 'Agriculture, horticulture and fisheries',
+                'value': 'AGRICULTURE_HORTICULTURE_AND_FISHERIES',
+            }
+        ],
         'logo': 'nice.png',
         'name': 'Great corp',
         'keywords': 'hello, hi',
@@ -79,7 +93,12 @@ def test_get_public_company_profile_from_response(profile_data):
         'description': 'bloody good',
         'number': '01234567',
         'date_of_creation': '10 Oct 2010',
-        'sectors': ['Agriculture, horticulture and fisheries'],
+        'sectors': [
+            {
+                'label': 'Agriculture, horticulture and fisheries',
+                'value': 'AGRICULTURE_HORTICULTURE_AND_FISHERIES',
+            }
+        ],
         'logo': 'nice.png',
         'name': 'Great corp',
         'keywords': 'hello, hi',
@@ -100,7 +119,12 @@ def test_get_company_list_from_response(public_companies):
                 'description': 'bloody good',
                 'number': '01234567',
                 'date_of_creation': '10 Oct 2010',
-                'sectors': ['Agriculture, horticulture and fisheries'],
+                'sectors': [
+                    {
+                        'label': 'Agriculture, horticulture and fisheries',
+                        'value': 'AGRICULTURE_HORTICULTURE_AND_FISHERIES',
+                    }
+                ],
                 'logo': 'nice.png',
                 'name': 'Great corp',
                 'keywords': 'hello, hi',

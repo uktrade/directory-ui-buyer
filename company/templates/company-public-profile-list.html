@@ -26,13 +26,12 @@
 			</form>
 		</div>
 		{% if companies.results %}
-			<h2>Showing {{ companies.results|length }} of {{ companies.count }} companies</h2>
+			<h2>Displaying {{ companies.results|length }} '{{ selected_sector_label }}' {{companies.results|length|pluralize:'company,companies'}}</h2>
 		{% else %}
 			<h2>No companies found</h2>
 		{% endif %}
 		{% for company in companies.results %}
 		<div class="public-company-profiles-result-item">
-			<!-- Company name, contact details & URLS -->
 			<div class="row-fluid">
 				<div class="span12 great-blue-bar">
 					<a href="{% url 'public-company-profiles-detail' company_number=company.number %}">
@@ -67,14 +66,14 @@
 				<div class="span8 key-facts">
 					<div class="company-details-subtitle">At a glance</div>
 					<div class="number-of-employees">
-					{% if company.employees %}
-						<div class="description-content">
-							Number of employees: {{company.employees}}
-						</div>
-					{% endif %}
-					{% if company.date_of_creation %}
-						<div>Date incorporated: {{company.date_of_creation}}</div>
-					{% endif %}
+						{% if company.employees %}
+							<div class="description-content">
+								Number of employees: {{company.employees}}
+							</div>
+						{% endif %}
+						{% if company.date_of_creation %}
+							<div>Date incorporated: {{company.date_of_creation}}</div>
+						{% endif %}
 					</div>
 				</div>
 			</div>
