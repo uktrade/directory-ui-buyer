@@ -38,6 +38,15 @@ class SupplierCaseStudyView(UserCompanyBaseView, SessionWizardView):
     def get_template_names(self):
         return [self.templates[self.steps.current]]
 
+    def get_form_initial(self, step):
+        response = api_client.company.retrieve_supplier_case_study(
+            sso_user_id=self.request.sso_user.id,
+            case_study_id=self.kwargs['id'],
+        )
+        if not response.ok:
+            response.raise_for_status()
+        return response.json()
+
     def serialize_form_data(self):
         return self.form_serializer(self.get_all_cleaned_data())
 

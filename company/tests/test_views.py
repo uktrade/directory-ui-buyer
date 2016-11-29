@@ -27,6 +27,12 @@ def api_response_400():
     return response
 
 
+def retrieve_supplier_case_study_200():
+    response = api_response_200()
+    response.json = lambda: {'field': 'value'}
+    return response
+
+
 def process_request(self, request):
     request.sso_user = sso_user()
 
@@ -119,6 +125,47 @@ def supplier_case_study_end_to_end(
             response = client.post(url, data)
         return response
     return inner
+
+
+@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
+@patch('enrolment.helpers.user_has_verified_company', Mock(return_value=True))
+@patch('api_client.api_client.company.retrieve_supplier_case_study')
+def test_case_study_edit_retrieves_data(
+    mock_retrieve_supplier_case_study, client
+):
+    url = reverse('company-case-study-edit', kwargs={'id': '2'})
+    client.get(url)
+
+    mock_retrieve_supplier_case_study.assert_called_once_with(
+        case_study_id='2', sso_user_id=1,
+    )
+
+
+@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
+@patch('enrolment.helpers.user_has_verified_company', Mock(return_value=True))
+@patch('api_client.api_client.company.retrieve_supplier_case_study')
+def test_case_study_edit_exposes_api_response_data(
+    mock_retrieve_case_study, client
+):
+    mock_retrieve_case_study.return_value = retrieve_supplier_case_study_200()
+
+    url = reverse('company-case-study-edit', kwargs={'id': '2'})
+    response = client.get(url)
+
+    assert response.context['form'].initial == {'field': 'value'}
+
+
+@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
+@patch('enrolment.helpers.user_has_verified_company', Mock(return_value=True))
+@patch('api_client.api_client.company.retrieve_supplier_case_study')
+def test_case_study_edit_handles_api_error(
+    mock_retrieve_case_study, client
+):
+    mock_retrieve_case_study.return_value = api_response_400()
+
+    url = reverse('company-case-study-edit', kwargs={'id': '2'})
+    with pytest.raises(requests.exceptions.HTTPError):
+        client.get(url)
 
 
 @patch('sso.middleware.SSOUserMiddleware.process_request', process_request)

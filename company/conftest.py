@@ -14,9 +14,9 @@ def api_response_200():
 
 
 @pytest.fixture(autouse=True)
-def company_unique_api_response(api_response_200):
+def retrieve_supplier_case_study_response(api_response_200):
     stub = patch(
-        'api_client.api_client.company.validate_company_number',
+        'api_client.api_client.company.retrieve_supplier_case_study',
         return_value=api_response_200,
     )
     stub.start()
