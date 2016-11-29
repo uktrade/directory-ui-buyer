@@ -68,6 +68,7 @@ TEMPLATES = [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'sso.context_processors.sso_user_processor',
+                'ui.context_processors.feature_flags',
             ],
         },
     },

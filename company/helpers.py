@@ -23,10 +23,17 @@ def get_employees_label(employees_value):
     return EMPLOYEE_CHOICES.get(employees_value)
 
 
-def get_sectors_labels(sectors_values):
-    if not sectors_values:
-        return sectors_values
-    return [SECTOR_CHOICES.get(value) for value in sectors_values]
+def pair_sector_values_with_label(sectors_values):
+    return [
+        {'value': value, 'label': get_sectors_label(value)}
+        for value in sectors_values
+    ]
+
+
+def get_sectors_label(sectors_value):
+    if not sectors_value:
+        return sectors_value
+    return SECTOR_CHOICES.get(sectors_value)
 
 
 def get_public_company_profile_from_response(response):
@@ -52,7 +59,7 @@ def format_company_details(details):
         'description': details['description'],
         'number': details['number'],
         'date_of_creation': date_of_creation,
-        'sectors': get_sectors_labels(details['sectors']),
+        'sectors': pair_sector_values_with_label(details['sectors']),
         'logo': details['logo'],
         'name': details['name'],
         'keywords': details['keywords'],

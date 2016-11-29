@@ -5,8 +5,8 @@ from django.template.loader import render_to_string
 default_context = {
     'company': {
         'sectors': [
-            'sector 1',
-            'sector 2'
+            {'value': 'SECTOR1', 'label': 'sector 1'},
+            {'value': 'SECTOR2', 'label': 'sector 2'},
         ],
         'number': '123456',
         'name': 'UK exporting co ltd.',
@@ -25,6 +25,44 @@ DATE_CREATED_LABEL = 'Date incorporated'
 CHANGE_LOGO_LABEL = 'Change logo'
 SET_LOGO_MESSAGE = 'Set logo'
 NO_RESULTS_FOUND_LABEL = 'No companies found'
+
+
+def test_company_profile_details_feature_flag_public_profile_on():
+    context = {
+        'company': {
+            'sectors': [
+                {'value': 'THING', 'label': 'thing'},
+                {'value': 'OTHER_THING', 'label': 'other_thing'},
+            ]
+        },
+        'features': {
+            'FEATURE_PUBLIC_PROFILES': True
+        }
+    }
+    url = reverse('public-company-profiles-list')
+    html = render_to_string('company-profile-detail.html', context)
+
+    assert 'href="{url}?sectors=THING"'.format(url=url) in html
+    assert 'href="{url}?sectors=OTHER_THING"'.format(url=url) in html
+
+
+def test_company_profile_details_feature_flag_public_profile_off():
+    context = {
+        'company': {
+            'sectors': [
+                {'value': 'THING', 'label': 'thing'},
+                {'value': 'OTHER_THING', 'label': 'other_thing'},
+            ]
+        },
+        'features': {
+            'FEATURE_PUBLIC_PROFILES': False
+        }
+    }
+    url = reverse('public-company-profiles-list')
+    html = render_to_string('company-profile-detail.html', context)
+
+    assert 'href="{url}?sectors=THING"'.format(url=url) not in html
+    assert 'href="{url}?sectors=OTHER_THING"'.format(url=url) not in html
 
 
 def test_company_profile_details_renders_sectors():
@@ -200,8 +238,8 @@ def test_company_public_profile_no_results_label():
 
 def test_company_public_profile_results_label():
     context = {
+        'selected_sector_label': 'thing',
         'companies': {
-            'count': 10,
             'results': [
                 default_context['company']
             ]
@@ -209,5 +247,21 @@ def test_company_public_profile_results_label():
     }
     html = render_to_string('company-public-profile-list.html', context)
 
-    assert 'Showing 1 of 10 companies' in html
+    assert "Displaying 1 'thing' company" in html
+    assert NO_RESULTS_FOUND_LABEL not in html
+
+
+def test_company_public_profile_results_label_plural():
+    context = {
+        'selected_sector_label': 'thing',
+        'companies': {
+            'results': [
+                default_context['company'],
+                default_context['company'],
+            ]
+        }
+    }
+    html = render_to_string('company-public-profile-list.html', context)
+
+    assert "Displaying 2 'thing' companies" in html
     assert NO_RESULTS_FOUND_LABEL not in html

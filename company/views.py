@@ -100,6 +100,15 @@ class PublicProfileListView(SubmitFormOnGetMixin, FormView):
     template_name = 'company-public-profile-list.html'
     form_class = forms.PublicProfileSearchForm
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        form = context['form']
+        if form.is_valid():
+            context['selected_sector_label'] = helpers.get_sectors_label(
+                form.cleaned_data['sectors']
+            )
+        return context
+
     def form_valid(self, form):
         response = api_client.company.list_public_profiles(
             sectors=form.cleaned_data['sectors']

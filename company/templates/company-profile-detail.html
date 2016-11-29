@@ -143,7 +143,15 @@
 				</div>
 				<div class="company-profile-box">
 					{% for sector in company.sectors %}
-						<span class="label stone-label">{{ sector }}</span>
+						{% if features.FEATURE_PUBLIC_PROFILES %}
+							<a href="{% url 'public-company-profiles-list' %}?sectors={{sector.value}}" class="label stone-label" target="_blank">
+								{{ sector.label }}
+							</a>
+						{% else %}
+							<span class="label stone-label">
+								{{ sector.label }}
+							</span>
+						{% endif %}
 					{% endfor %}
 					{% if company.sectors %}
 					<div class="description-content"></div>

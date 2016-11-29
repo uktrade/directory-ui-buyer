@@ -354,6 +354,18 @@ def test_company_profile_list_exposes_context(
 
 
 @patch('enrolment.helpers.user_has_verified_company', Mock(return_value=True))
+@patch.object(helpers, 'get_company_list_from_response', Mock(return_value={}))
+@patch.object(views.api_client.company, 'list_public_profiles', Mock)
+def test_company_profile_list_exposes_selected_sector_label(client):
+    url = reverse('public-company-profiles-list')
+    params = {'sectors': choices.COMPANY_CLASSIFICATIONS[1][0]}
+    response = client.get(url, params)
+
+    expected_label = choices.COMPANY_CLASSIFICATIONS[1][1]
+    assert response.context_data['selected_sector_label'] == expected_label
+
+
+@patch('enrolment.helpers.user_has_verified_company', Mock(return_value=True))
 @patch.object(helpers, 'get_company_list_from_response')
 @patch.object(views.api_client.company, 'list_public_profiles')
 def test_company_profile_list_calls_api(
