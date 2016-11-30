@@ -27,6 +27,12 @@ def api_response_400():
     return response
 
 
+def api_response_404():
+    response = requests.Response()
+    response.status_code = http.client.NOT_FOUND
+    return response
+
+
 def retrieve_supplier_case_study_200():
     response = api_response_200()
     response.json = lambda: {'field': 'value'}
@@ -338,24 +344,24 @@ def test_public_company_profile_details_handles_bad_status(
 
 
 @patch('enrolment.helpers.user_has_verified_company', Mock(return_value=True))
-@patch.object(views.api_client.company, 'list_public_profiles', Mock)
-@patch.object(helpers, 'get_company_list_from_response')
 def test_company_profile_list_exposes_context(
-    mock_get_company_list_from_response, client
+    client, api_response_list_public_profile_200
 ):
-    mock_get_company_list_from_response.return_value = {}
     url = reverse('public-company-profiles-list')
     params = {'sectors': choices.COMPANY_CLASSIFICATIONS[1][0]}
+    expected_companies = helpers.get_company_list_from_response(
+        api_response_list_public_profile_200
+    )['results']
+
     response = client.get(url, params)
 
     assert response.status_code == http.client.OK
     assert response.template_name == views.PublicProfileListView.template_name
-    assert response.context_data['companies'] == {}
+    assert response.context_data['companies'] == expected_companies
+    assert response.context_data['pagination'].paginator.count == 20
 
 
 @patch('enrolment.helpers.user_has_verified_company', Mock(return_value=True))
-@patch.object(helpers, 'get_company_list_from_response', Mock(return_value={}))
-@patch.object(views.api_client.company, 'list_public_profiles', Mock)
 def test_company_profile_list_exposes_selected_sector_label(client):
     url = reverse('public-company-profiles-list')
     params = {'sectors': choices.COMPANY_CLASSIFICATIONS[1][0]}
@@ -366,12 +372,10 @@ def test_company_profile_list_exposes_selected_sector_label(client):
 
 
 @patch('enrolment.helpers.user_has_verified_company', Mock(return_value=True))
-@patch.object(helpers, 'get_company_list_from_response')
 @patch.object(views.api_client.company, 'list_public_profiles')
 def test_company_profile_list_calls_api(
-    mock_list_public_profiles, mock_get_company_list_from_response, client
+    mock_list_public_profiles, client
 ):
-    mock_get_company_list_from_response.return_value = {}
     url = reverse('public-company-profiles-list')
     params = {'sectors': choices.COMPANY_CLASSIFICATIONS[1][0]}
     client.get(url, params)
@@ -382,10 +386,9 @@ def test_company_profile_list_calls_api(
 
 
 @patch('enrolment.helpers.user_has_verified_company', Mock(return_value=True))
-@patch.object(helpers, 'get_company_list_from_response')
 @patch.object(views.api_client.company, 'list_public_profiles')
 def test_company_profile_list_handles_bad_status(
-    mock_retrieve_public_profile, mock_get_company_list_from_response, client
+    mock_retrieve_public_profile, client
 ):
     mock_retrieve_public_profile.return_value = api_response_400()
     url = reverse('public-company-profiles-list')
@@ -395,8 +398,19 @@ def test_company_profile_list_handles_bad_status(
 
 
 @patch('enrolment.helpers.user_has_verified_company', Mock(return_value=True))
-def test_company_profile_list_no_form_data(client):
+def test_company_profile_list_handles_no_form_data(client):
     url = reverse('public-company-profiles-list')
     response = client.get(url, {})
 
     assert response.context_data['form'].errors == {}
+
+
+@patch('enrolment.helpers.user_has_verified_company', Mock(return_value=True))
+@patch.object(views.api_client.company, 'list_public_profiles')
+def test_company_profile_list_handles_empty_page(mock_list_profiles, client):
+    mock_list_profiles.return_value = api_response_404()
+    url = reverse('public-company-profiles-list')
+    response = client.get(url, {'sectors': 'WATER', 'page': 10})
+
+    assert response.status_code == http.client.FOUND
+    assert response.get('Location') == '{url}?sectors=WATER'.format(url=url)

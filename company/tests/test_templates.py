@@ -1,5 +1,8 @@
 from django.core.urlresolvers import reverse
+from django.core.paginator import Paginator
 from django.template.loader import render_to_string
+
+from company import forms
 
 
 default_context = {
@@ -210,11 +213,9 @@ def test_company_profile_details_renders_set_logo_button_hide_edit_links():
 
 def test_company_public_profile_list_link_to_profle():
     context = {
-        'companies': {
-            'results': [
-                default_context['company']
-            ]
-        }
+        'companies': [
+            default_context['company']
+        ]
     }
     url = reverse(
         'public-company-profiles-detail',
@@ -226,10 +227,11 @@ def test_company_public_profile_list_link_to_profle():
 
 
 def test_company_public_profile_no_results_label():
+    form = forms.PublicProfileSearchForm(data={'sectors': 'WATER'})
+    assert form.is_valid()
     context = {
-        'companies': {
-            'results': []
-        }
+        'companies': [],
+        'form': form,
     }
     html = render_to_string('company-public-profile-list.html', context)
 
@@ -237,31 +239,67 @@ def test_company_public_profile_no_results_label():
 
 
 def test_company_public_profile_results_label():
+    form = forms.PublicProfileSearchForm(data={'sectors': 'WATER'})
+    assert form.is_valid()
+    paginator = Paginator([{}], 10)
     context = {
         'selected_sector_label': 'thing',
-        'companies': {
-            'results': [
-                default_context['company']
-            ]
-        }
+        'companies':  [
+            default_context['company']
+        ],
+        'pagination': paginator.page(1),
+        'form': form,
     }
     html = render_to_string('company-public-profile-list.html', context)
-
-    assert "Displaying 1 'thing' company" in html
+    assert "Displaying 1 of 1 \'thing\' company" in html
     assert NO_RESULTS_FOUND_LABEL not in html
 
 
 def test_company_public_profile_results_label_plural():
+    form = forms.PublicProfileSearchForm(data={'sectors': 'WATER'})
+    assert form.is_valid()
+    paginator = Paginator(range(10), 10)
     context = {
         'selected_sector_label': 'thing',
-        'companies': {
-            'results': [
-                default_context['company'],
-                default_context['company'],
-            ]
-        }
+        'companies': [
+            default_context['company'],
+            default_context['company'],
+        ],
+        'pagination': paginator.page(1),
+        'form': form,
     }
     html = render_to_string('company-public-profile-list.html', context)
-
-    assert "Displaying 2 'thing' companies" in html
+    assert "Displaying 2 of 10 \'thing\' companies" in html
     assert NO_RESULTS_FOUND_LABEL not in html
+
+
+def test_company_public_profile_list_paginate_next():
+    form = forms.PublicProfileSearchForm(data={'sectors': 'WATER'})
+    assert form.is_valid()
+
+    paginator = Paginator(range(100), 10)
+    context = {
+        'pagination': paginator.page(1),
+        'form': form,
+        'companies': [{'number': '01234567A'}]
+    }
+
+    html = render_to_string('company-public-profile-list.html', context)
+
+    assert 'href="?sectors=WATER&page=2"' in html
+
+
+def test_company_public_profile_list_paginate_prev():
+    form = forms.PublicProfileSearchForm(data={'sectors': 'WATER'})
+    assert form.is_valid()
+
+    paginator = Paginator(range(100), 10)
+    context = {
+        'pagination': paginator.page(2),
+        'form': form,
+        'companies': [{'number': '01234567A'}]
+    }
+
+    html = render_to_string('company-public-profile-list.html', context)
+
+    assert 'href="?sectors=WATER&page=1"' in html

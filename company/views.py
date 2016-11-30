@@ -1,9 +1,13 @@
+import http
 import os
 
 from formtools.wizard.views import SessionWizardView
+import requests
 
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
+from django.core.paginator import Paginator
+from django.core.urlresolvers import reverse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.views.generic import TemplateView
@@ -104,20 +108,42 @@ class PublicProfileListView(SubmitFormOnGetMixin, FormView):
         context = super().get_context_data(**kwargs)
         form = context['form']
         if form.is_valid():
-            context['selected_sector_label'] = helpers.get_sectors_label(
-                form.cleaned_data['sectors']
-            )
+            sector = helpers.get_sectors_label(form.cleaned_data['sectors'])
+            context['selected_sector_label'] = sector
         return context
 
-    def form_valid(self, form):
+    def get_results_and_count(self, form):
         response = api_client.company.list_public_profiles(
-            sectors=form.cleaned_data['sectors']
+            sectors=form.cleaned_data['sectors'],
+            page=form.cleaned_data['page']
         )
         if not response.ok:
             response.raise_for_status()
-        context = self.get_context_data()
-        context['companies'] = helpers.get_company_list_from_response(response)
-        return TemplateResponse(self.request, self.template_name, context)
+        formatted = helpers.get_company_list_from_response(response)
+        return formatted['results'], formatted['count']
+
+    def handle_empty_page(self, form):
+        url = '{url}?sectors={sector}'.format(
+            url=reverse('public-company-profiles-list'),
+            sector=form.cleaned_data['sectors']
+        )
+        return redirect(url)
+
+    def form_valid(self, form):
+        try:
+            results, count = self.get_results_and_count(form)
+        except requests.exceptions.HTTPError as error:
+            if error.response.status_code == http.client.NOT_FOUND:
+                # user entered a page number returning no results, so
+                # redirect them back to the first page
+                return self.handle_empty_page(form)
+            raise
+        else:
+            context = self.get_context_data()
+            paginator = Paginator(range(count), 10)
+            context['pagination'] = paginator.page(form.cleaned_data['page'])
+            context['companies'] = results
+            return TemplateResponse(self.request, self.template_name, context)
 
 
 class PublicProfileDetailView(TemplateView):
