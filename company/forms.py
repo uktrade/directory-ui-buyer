@@ -11,6 +11,14 @@ class PublicProfileSearchForm(IndentedInvalidFieldsMixin, AutoFocusFieldMixin,
     sectors = forms.ChoiceField(
         choices=choices.COMPANY_CLASSIFICATIONS,
     )
+    page = forms.IntegerField(
+        required=False,
+        widget=forms.HiddenInput,
+        initial=1,
+    )
+
+    def clean_page(self):
+        return self.cleaned_data['page'] or self.fields['page'].initial
 
 
 class CaseStudyBasicInfoForm(IndentedInvalidFieldsMixin, AutoFocusFieldMixin,

@@ -25,12 +25,14 @@
 				</div>
 			</form>
 		</div>
-		{% if companies.results %}
-			<h2>Displaying {{ companies.results|length }} '{{ selected_sector_label }}' {{companies.results|length|pluralize:'company,companies'}}</h2>
-		{% else %}
-			<h2>No companies found</h2>
+		{% if form.is_bound %}
+			{% if companies %}
+				<h2>Displaying {{ companies|length }} of {{ pagination.paginator.count }} '{{ selected_sector_label }}' {{companies|length|pluralize:'company,companies'}}</h2>
+			{% else %}
+				<h2>No companies found</h2>
+			{% endif %}
 		{% endif %}
-		{% for company in companies.results %}
+		{% for company in companies %}
 		<div class="public-company-profiles-result-item">
 			<div class="row-fluid">
 				<div class="span12 great-blue-bar">
@@ -79,6 +81,24 @@
 			</div>
 		</div>
 		{% endfor %}
+		{% if companies %}
+			<div class="pagination">
+				<span class="step-links">
+					{% if pagination.has_previous %}
+						<a href="?sectors={{ form.cleaned_data.sectors }}&page={{ pagination.previous_page_number }}">Previous page</a>
+					{% endif %}
+
+					<span class="current">
+						Page {{ pagination.number }} of {{ pagination.paginator.num_pages }}.
+					</span>
+
+					{% if pagination.has_next %}
+						<a href="?sectors={{ form.cleaned_data.sectors }}&page={{ pagination.next_page_number }}">Next page</a>
+					{% endif %}
+				</span>
+			</div>
+		{% endif %}
 	</div>
+
 </div>
 {% endblock %}

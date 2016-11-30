@@ -24,6 +24,8 @@ def get_employees_label(employees_value):
 
 
 def pair_sector_values_with_label(sectors_values):
+    if not sectors_values:
+        return []
     return [
         {'value': value, 'label': get_sectors_label(value)}
         for value in sectors_values

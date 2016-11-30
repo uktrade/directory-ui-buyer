@@ -23,6 +23,7 @@ def profile_data():
 @pytest.fixture
 def public_companies(profile_data):
     return {
+        'count': 100,
         'results': [profile_data]
     }
 
@@ -30,6 +31,7 @@ def public_companies(profile_data):
 @pytest.fixture
 def public_companies_empty():
     return {
+        'count': 0,
         'results': []
     }
 
@@ -57,8 +59,9 @@ def test_get_employees_label_none():
     assert helpers.get_employees_label('') == ''
 
 
-def test_pair_sector_values_with_label_none():
-    assert helpers.pair_sector_values_with_label([]) == []
+def test_pair_sector_values_with_label_empty():
+    for value in [None, []]:
+        assert helpers.pair_sector_values_with_label(value) == []
 
 
 def test_get_company_profile_from_response(profile_data):
@@ -113,6 +116,7 @@ def test_get_company_list_from_response(public_companies):
     response = requests.Response()
     response.json = lambda: public_companies
     expected = {
+        'count': 100,
         'results': [
             {
                 'website': 'http://www.example.com',
@@ -141,7 +145,8 @@ def test_get_company_list_from_response_empty(public_companies_empty):
     response = requests.Response()
     response.json = lambda: public_companies_empty
     expected = {
-        'results': []
+        'count': 0,
+        'results': [],
     }
     actual = helpers.get_company_list_from_response(response)
     assert actual == expected
