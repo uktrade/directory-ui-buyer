@@ -17,8 +17,9 @@ from supplier.views import SupplierProfileDetailView
 from company.views import (
     PublicProfileDetailView,
     PublicProfileListView,
-    SupplierCaseStudyView,
     SupplierCompanyProfileDetailView,
+    SupplierCaseStudyWizardView,
+    SupplierCaseStudyDetailView,
 )
 from admin.proxy import AdminProxyView
 
@@ -102,12 +103,17 @@ urlpatterns = [
     ),
     url(
         r'^company/case-study/edit/(?P<id>.+)?$',
-        SupplierCaseStudyView.as_view(),
+        SupplierCaseStudyWizardView.as_view(),
         name='company-case-study-edit'
+    ),
+    url(
+        r'^company/case-study/view/(?P<id>.+)$',
+        SupplierCaseStudyDetailView.as_view(),
+        name='company-case-study-view'
     ),
 ]
 
-if settings.FEATURE_PUBLIC_PROFILES:
+if settings.FEATURE_PUBLIC_PROFILES_ENABLED:
     urlpatterns += [
         url(
             r'^suppliers$',

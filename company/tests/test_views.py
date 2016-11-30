@@ -8,7 +8,7 @@ import requests
 from django.core.urlresolvers import reverse
 
 from sso.utils import SSOUser
-from company.views import SupplierCaseStudyView
+from company.views import SupplierCaseStudyWizardView
 from company import helpers, views
 
 
@@ -92,26 +92,27 @@ def all_case_study_data(image_three, image_two, image_one):
 
 @pytest.fixture
 def supplier_case_study_basic_data():
+    view = SupplierCaseStudyWizardView
     return {
-        'supplier_case_study_view-current_step': SupplierCaseStudyView.BASIC,
-        SupplierCaseStudyView.BASIC + '-title': 'Example',
-        SupplierCaseStudyView.BASIC + '-description': 'Great',
-        SupplierCaseStudyView.BASIC + '-sector': default_sector,
-        SupplierCaseStudyView.BASIC + '-website': 'http://www.example.com',
-        SupplierCaseStudyView.BASIC + '-year': '2000',
-        SupplierCaseStudyView.BASIC + '-keywords': 'good, great'
+        'supplier_case_study_wizard_view-current_step': view.BASIC,
+        view.BASIC + '-title': 'Example',
+        view.BASIC + '-description': 'Great',
+        view.BASIC + '-sector': default_sector,
+        view.BASIC + '-website': 'http://www.example.com',
+        view.BASIC + '-year': '2000',
+        view.BASIC + '-keywords': 'good, great'
     }
 
 
 @pytest.fixture
 def supplier_case_study_rich_data(image_three, image_two, image_one):
-    step = SupplierCaseStudyView.RICH_MEDIA
+    view = SupplierCaseStudyWizardView
     return {
-        'supplier_case_study_view-current_step': step,
-        SupplierCaseStudyView.RICH_MEDIA + '-image_one': image_one,
-        SupplierCaseStudyView.RICH_MEDIA + '-image_two': image_two,
-        SupplierCaseStudyView.RICH_MEDIA + '-image_three': image_three,
-        SupplierCaseStudyView.RICH_MEDIA + '-testimonial': 'Great',
+        'supplier_case_study_wizard_view-current_step': view.RICH_MEDIA,
+        view.RICH_MEDIA + '-image_one': image_one,
+        view.RICH_MEDIA + '-image_two': image_two,
+        view.RICH_MEDIA + '-image_three': image_three,
+        view.RICH_MEDIA + '-testimonial': 'Great',
     }
 
 
@@ -120,9 +121,10 @@ def supplier_case_study_end_to_end(
     client, supplier_case_study_basic_data, supplier_case_study_rich_data
 ):
     # loop over each step in the supplier case study wizard and post valid data
+    view = SupplierCaseStudyWizardView
     data_step_pairs = [
-        [SupplierCaseStudyView.BASIC, supplier_case_study_basic_data],
-        [SupplierCaseStudyView.RICH_MEDIA, supplier_case_study_rich_data],
+        [view.BASIC, supplier_case_study_basic_data],
+        [view.RICH_MEDIA, supplier_case_study_rich_data],
     ]
 
     def inner(case_study_id=''):
@@ -203,8 +205,9 @@ def test_case_study_create_api_failure(
 
     response = supplier_case_study_end_to_end()
 
+    view = SupplierCaseStudyWizardView
     assert response.status_code == http.client.OK
-    assert response.template_name == SupplierCaseStudyView.failure_template
+    assert response.template_name == view.failure_template
 
 
 @patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
@@ -237,8 +240,9 @@ def test_case_study_update_api_failure(
 
     response = supplier_case_study_end_to_end(case_study_id='1')
 
+    view = SupplierCaseStudyWizardView
     assert response.status_code == http.client.OK
-    assert response.template_name == SupplierCaseStudyView.failure_template
+    assert response.template_name == view.failure_template
 
 
 @patch('enrolment.helpers.has_verified_company', Mock(return_value=True))
@@ -414,3 +418,55 @@ def test_company_profile_list_handles_empty_page(mock_list_profiles, client):
 
     assert response.status_code == http.client.FOUND
     assert response.get('Location') == '{url}?sectors=WATER'.format(url=url)
+
+
+@patch('enrolment.helpers.has_verified_company', Mock(return_value=True))
+@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
+@patch.object(views.api_client.company, 'retrieve_supplier_case_study')
+def test_supplier_case_study_exposes_context(
+    mock_retrieve_supplier_case_study, client,
+    api_response_retrieve_supplier_case_study_200
+):
+    mock_retrieve_supplier_case_study.return_value = (
+        api_response_retrieve_supplier_case_study_200
+    )
+    expected_case_study = helpers.get_case_study_details_from_response(
+        api_response_retrieve_supplier_case_study_200
+    )
+    url = reverse('company-case-study-view', kwargs={'id': '2'})
+    response = client.get(url)
+
+    assert response.status_code == http.client.OK
+    assert response.template_name == [
+        views.SupplierCaseStudyDetailView.template_name
+    ]
+    assert response.context_data['case_study'] == expected_case_study
+
+
+@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
+@patch('enrolment.helpers.has_verified_company', Mock(return_value=True))
+@patch.object(views.api_client.company, 'retrieve_supplier_case_study')
+def test_supplier_case_study_calls_api(
+    mock_retrieve_supplier_case_study, client,
+    api_response_retrieve_supplier_case_study_200
+):
+    mock_retrieve_supplier_case_study.return_value = (
+        api_response_retrieve_supplier_case_study_200
+    )
+    url = reverse('company-case-study-view', kwargs={'id': '2'})
+    client.get(url)
+
+    assert mock_retrieve_supplier_case_study.called_once_with(pk='2')
+
+
+@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
+@patch('enrolment.helpers.has_verified_company', Mock(return_value=True))
+@patch.object(views.api_client.company, 'retrieve_supplier_case_study')
+def test_supplier_case_study_handles_bad_status(
+    mock_retrieve_supplier_case_study, client
+):
+    mock_retrieve_supplier_case_study.return_value = api_response_400()
+    url = reverse('company-case-study-view', kwargs={'id': '2'})
+
+    with pytest.raises(requests.exceptions.HTTPError):
+        client.get(url)

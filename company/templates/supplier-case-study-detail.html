@@ -1,0 +1,73 @@
+{% extends 'govuk_layout.html' %}
+{% load staticfiles %}
+{% block css %}
+	<link href="{% static 'company-profile-details.css' %}" media="all" rel="stylesheet" />
+{% endblock %}
+{% block head_title %}Supplier case study {% endblock %}
+{% block hero_title %}{{ case_study.title }}{% endblock %}
+{% block content %}
+<div class="container supplier-case-study-container">
+	<div class="company-profile-details-body">
+
+		<div class="row-fluid">
+			<div class="span8 great-blue-bar">
+				<h1 class="element-within company-name-title">
+					<span class="dont-break-out">{{ case_study.company.name }}</span>
+				</h1>
+			</div>
+			<div class="span4 great-blue-bar">
+				<h1 class="element-within company-name-title">
+					<span class="dont-break-out">Info</span>
+				</h1>
+			</div>
+		</div>
+
+		<div class="row-fluid">
+			<div class="span8 company-profile-box">
+				<div class="span12 company-logo">
+					<div class="logo-container">
+						<div class="logo">
+							{% if case_study.image_one %}
+							<div class="">
+								<img src="{{ case_study.image_one }}" />
+							</div>
+							{% endif %}
+							<div class="supplier-case-study-description">
+								{{ case_study.description }}
+							</div>
+							{% if case_study.image_two %}
+							<div class="">
+								<img src="{{ case_study.image_two }}" />
+							</div>
+							{% endif %}
+							{% if case_study.image_three %}
+							<div class="">
+								<img src="{{ case_study.image_three }}" />
+							</div>
+							{% endif %}
+							{% if features.FEATURE_PUBLIC_PROFILES_ENABLED %}
+								<div class="supplier-case-study-view-profile-container">
+									<a href="{% url 'public-company-profiles-detail' company_number=case_study.company.number %}">View full profile</a>
+								</div>
+							{% endif %}
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="span4 company-profile-box">
+				<div>Incorporated: {{ case_study.company.date_of_creation }}</div>
+				<div>Sector: {{ case_study.sector.label }}</div>
+				<div>Case study year: {{ case_study.year }}</div>
+				<div class="supplier-case-study-testimonail-container">
+					<div>Testimonial: "{{ case_study.testimonial }}"</div>
+				</div>
+				{% if features.FEATURE_PUBLIC_PROFILES_ENABLED %}
+					<div>
+						<a href="{% url 'public-company-profiles-detail' company_number=case_study.company.number %}">View full profile</a>
+					</div>
+				{% endif %}
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}

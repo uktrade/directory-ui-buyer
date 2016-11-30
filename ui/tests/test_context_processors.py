@@ -12,5 +12,9 @@ def test_feature_returns_expected_features(rf, settings):
     actual = context_processors.feature_flags(request)
 
     assert actual == {
-        'FEATURE_PUBLIC_PROFILES': settings.FEATURE_PUBLIC_PROFILES
+        'features': {
+            'FEATURE_PUBLIC_PROFILES_ENABLED': (
+                settings.FEATURE_PUBLIC_PROFILES_ENABLED
+            )
+        }
     }
