@@ -8,8 +8,8 @@ from django.template.loader import render_to_string
 
 from enrolment import forms
 
-user_context = {
-    'user': {
+supplier_context = {
+    'supplier': {
         'mobile': '00000000011',
         'email': 'email@example.com',
     }
@@ -76,8 +76,8 @@ def test_company_profile_form_supports_file_upload():
     assert 'enctype="multipart/form-data"' in html
 
 
-def test_user_form_renders_title():
-    html = render_to_string('user-form.html', {})
+def test_supplier_form_renders_title():
+    html = render_to_string('supplier-form.html', {})
     assert 'Your details' in html
 
 
@@ -186,7 +186,7 @@ def test_templates_render_successfully():
     template_list = []
     template_dirs = [
         os.path.join(settings.BASE_DIR, 'enrolment/templates'),
-        os.path.join(settings.BASE_DIR, 'user/templates'),
+        os.path.join(settings.BASE_DIR, 'supplier/templates'),
     ]
     for template_dir in template_dirs:
         for dir, dirnames, filenames in os.walk(template_dir):
@@ -195,7 +195,7 @@ def test_templates_render_successfully():
                 template_list.append(path.lstrip('/'))
 
     default_context = {
-        'user': None,
+        'supplier': None,
         'form': Mock(),
     }
     assert template_list

@@ -16,10 +16,10 @@ from django.views.generic.edit import FormView
 from company import forms, helpers
 
 from api_client import api_client
-from enrolment.views import UserCompanyBaseView
+from enrolment.views import SupplierCompanyBaseView
 
 
-class SupplierCaseStudyView(UserCompanyBaseView, SessionWizardView):
+class SupplierCaseStudyView(SupplierCompanyBaseView, SessionWizardView):
 
     BASIC = 'basic'
     RICH_MEDIA = 'rich-media'
@@ -74,7 +74,7 @@ class SupplierCaseStudyView(UserCompanyBaseView, SessionWizardView):
             return TemplateResponse(self.request, self.failure_template)
 
 
-class UserCompanyProfileDetailView(UserCompanyBaseView, TemplateView):
+class SupplierCompanyProfileDetailView(SupplierCompanyBaseView, TemplateView):
     template_name = 'company-profile-detail.html'
 
     def get_context_data(self, **kwargs):
@@ -134,7 +134,7 @@ class PublicProfileListView(SubmitFormOnGetMixin, FormView):
             results, count = self.get_results_and_count(form)
         except requests.exceptions.HTTPError as error:
             if error.response.status_code == http.client.NOT_FOUND:
-                # user entered a page number returning no results, so
+                # supplier entered a page number returning no results, so
                 # redirect them back to the first page
                 return self.handle_empty_page(form)
             raise

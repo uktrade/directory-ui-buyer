@@ -1,0 +1,64 @@
+{% extends './govuk_layout.html' %}
+{% load staticfiles %}
+{% block css %}
+	<link href="{% static 'supplier-profile-details.css' %}" media="all" rel="stylesheet" />
+{% endblock %}
+{% block content %}
+<div class="container">
+	<div class="supplier-profile-details-container">
+		<div class="row-fluid">
+			<div class="span12">
+				<h1>My account</h1>
+			</div>
+		</div>
+
+		<div class="row-fluid">
+			<div class="span12 detail-container">
+				<div class="description-text span3">
+					Mobile number:
+				</div>
+				<div class="data-text span9">
+					{{ supplier.mobile_number }}
+				</div>
+			</div>
+		</div>
+
+		<div class="row-fluid">
+			<div class="span12 detail-container">
+				<div class="description-text span3">
+					Registered email:
+				</div>
+				<div class="data-text span9">
+					{{ supplier.company_email }}
+				</div>
+			</div>
+		</div>
+
+		<div class="row-fluid">
+			<div class="span12 detail-container">
+				<div class="description-text span3">
+					Company ID:
+				</div>
+				<div class="data-text span9">
+					<a href="">{{ supplier.company_id }}</a>
+				</div>
+			</div>
+		</div>
+
+		<div class="row-fluid">
+			<div class="span12 detail-container">
+				<div class="description-text span3">
+					Password
+				</div>
+				<div class="data-text span9">
+					<div class="btn-container">
+						<a class="register-btn button" href="">Reset password</a>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+	</div>
+</div>
+{% endblock %}

@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     "formtools",
     "ui",
     "enrolment",
-    "user",
+    "supplier",
     "company",
     "directory_constants",
 ]

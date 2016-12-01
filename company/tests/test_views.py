@@ -134,7 +134,7 @@ def supplier_case_study_end_to_end(
 
 
 @patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
-@patch('enrolment.helpers.user_has_verified_company', Mock(return_value=True))
+@patch('enrolment.helpers.has_verified_company', Mock(return_value=True))
 @patch('api_client.api_client.company.retrieve_supplier_case_study')
 def test_case_study_edit_retrieves_data(
     mock_retrieve_supplier_case_study, client
@@ -148,7 +148,7 @@ def test_case_study_edit_retrieves_data(
 
 
 @patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
-@patch('enrolment.helpers.user_has_verified_company', Mock(return_value=True))
+@patch('enrolment.helpers.has_verified_company', Mock(return_value=True))
 @patch('api_client.api_client.company.retrieve_supplier_case_study')
 def test_case_study_edit_exposes_api_response_data(
     mock_retrieve_case_study, client
@@ -162,7 +162,7 @@ def test_case_study_edit_exposes_api_response_data(
 
 
 @patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
-@patch('enrolment.helpers.user_has_verified_company', Mock(return_value=True))
+@patch('enrolment.helpers.has_verified_company', Mock(return_value=True))
 @patch('api_client.api_client.company.retrieve_supplier_case_study')
 def test_case_study_edit_handles_api_error(
     mock_retrieve_case_study, client
@@ -175,7 +175,7 @@ def test_case_study_edit_handles_api_error(
 
 
 @patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
-@patch('enrolment.helpers.user_has_verified_company', Mock(return_value=True))
+@patch('enrolment.helpers.has_verified_company', Mock(return_value=True))
 @patch.object(views.api_client.company, 'create_supplier_case_study')
 def test_case_study_create_api_success(
     mock_create_case_study, supplier_case_study_end_to_end, sso_user,
@@ -194,7 +194,7 @@ def test_case_study_create_api_success(
 
 
 @patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
-@patch('enrolment.helpers.user_has_verified_company', Mock(return_value=True))
+@patch('enrolment.helpers.has_verified_company', Mock(return_value=True))
 @patch.object(views.api_client.company, 'create_supplier_case_study')
 def test_case_study_create_api_failure(
     mock_create_case_study, supplier_case_study_end_to_end
@@ -208,7 +208,7 @@ def test_case_study_create_api_failure(
 
 
 @patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
-@patch('enrolment.helpers.user_has_verified_company', Mock(return_value=True))
+@patch('enrolment.helpers.has_verified_company', Mock(return_value=True))
 @patch.object(views.api_client.company, 'update_supplier_case_study')
 def test_case_study_update_api_success(
     mock_update_case_study, supplier_case_study_end_to_end, sso_user,
@@ -228,7 +228,7 @@ def test_case_study_update_api_success(
 
 
 @patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
-@patch('enrolment.helpers.user_has_verified_company', Mock(return_value=True))
+@patch('enrolment.helpers.has_verified_company', Mock(return_value=True))
 @patch.object(views.api_client.company, 'update_supplier_case_study')
 def test_case_study_update_api_failure(
     mock_update_case_study, supplier_case_study_end_to_end
@@ -241,25 +241,25 @@ def test_case_study_update_api_failure(
     assert response.template_name == SupplierCaseStudyView.failure_template
 
 
-@patch('enrolment.helpers.user_has_verified_company', Mock(return_value=True))
+@patch('enrolment.helpers.has_verified_company', Mock(return_value=True))
 @patch.object(views.api_client.company, 'retrieve_profile', Mock)
 @patch.object(helpers, 'get_company_profile_from_response')
 def test_company_profile_details_exposes_context(
     mock_get_company_profile_from_response, sso_request
 ):
     mock_get_company_profile_from_response.return_value = {}
-    view = views.UserCompanyProfileDetailView.as_view()
+    view = views.SupplierCompanyProfileDetailView.as_view()
     response = view(sso_request)
     assert response.status_code == http.client.OK
     assert response.template_name == [
-        views.UserCompanyProfileDetailView.template_name
+        views.SupplierCompanyProfileDetailView.template_name
     ]
 
     assert response.context_data['company'] == {}
     assert response.context_data['show_edit_links'] is True
 
 
-@patch('enrolment.helpers.user_has_verified_company', Mock(return_value=True))
+@patch('enrolment.helpers.has_verified_company', Mock(return_value=True))
 @patch.object(helpers, 'get_company_profile_from_response')
 @patch.object(views.api_client.company, 'retrieve_profile')
 def test_company_profile_details_calls_api(
@@ -267,14 +267,14 @@ def test_company_profile_details_calls_api(
     sso_request
 ):
     mock_get_company_profile_from_response.return_value = {}
-    view = views.UserCompanyProfileDetailView.as_view()
+    view = views.SupplierCompanyProfileDetailView.as_view()
 
     view(sso_request)
 
     assert mock_retrieve_profile.called_once_with(1)
 
 
-@patch('enrolment.helpers.user_has_verified_company', Mock(return_value=True))
+@patch('enrolment.helpers.has_verified_company', Mock(return_value=True))
 @patch.object(helpers, 'get_company_profile_from_response')
 @patch.object(views.api_client.company, 'retrieve_profile')
 def test_company_profile_details_handles_bad_status(
@@ -283,13 +283,13 @@ def test_company_profile_details_handles_bad_status(
 ):
     mock_retrieve_profile.return_value = api_response_400()
     mock_get_company_profile_from_response.return_value = {}
-    view = views.UserCompanyProfileDetailView.as_view()
+    view = views.SupplierCompanyProfileDetailView.as_view()
 
     with pytest.raises(requests.exceptions.HTTPError):
         view(sso_request)
 
 
-@patch('enrolment.helpers.user_has_verified_company', Mock(return_value=True))
+@patch('enrolment.helpers.has_verified_company', Mock(return_value=True))
 @patch.object(views.api_client.company,
               'retrieve_public_profile_by_companies_house_number', Mock)
 @patch.object(helpers, 'get_public_company_profile_from_response')
@@ -309,7 +309,7 @@ def test_public_company_profile_details_exposes_context(
     assert response.context_data['show_edit_links'] is False
 
 
-@patch('enrolment.helpers.user_has_verified_company', Mock(return_value=True))
+@patch('enrolment.helpers.has_verified_company', Mock(return_value=True))
 @patch.object(helpers, 'get_public_company_profile_from_response')
 @patch.object(views.api_client.company,
               'retrieve_public_profile_by_companies_house_number')
@@ -326,7 +326,7 @@ def test_public_company_profile_details_calls_api(
     assert mock_retrieve_public_profile.called_once_with(1)
 
 
-@patch('enrolment.helpers.user_has_verified_company', Mock(return_value=True))
+@patch('enrolment.helpers.has_verified_company', Mock(return_value=True))
 @patch.object(helpers, 'get_public_company_profile_from_response')
 @patch.object(views.api_client.company,
               'retrieve_public_profile_by_companies_house_number')
@@ -343,7 +343,7 @@ def test_public_company_profile_details_handles_bad_status(
         client.get(url)
 
 
-@patch('enrolment.helpers.user_has_verified_company', Mock(return_value=True))
+@patch('enrolment.helpers.has_verified_company', Mock(return_value=True))
 def test_company_profile_list_exposes_context(
     client, api_response_list_public_profile_200
 ):
@@ -361,7 +361,7 @@ def test_company_profile_list_exposes_context(
     assert response.context_data['pagination'].paginator.count == 20
 
 
-@patch('enrolment.helpers.user_has_verified_company', Mock(return_value=True))
+@patch('enrolment.helpers.has_verified_company', Mock(return_value=True))
 def test_company_profile_list_exposes_selected_sector_label(client):
     url = reverse('public-company-profiles-list')
     params = {'sectors': choices.COMPANY_CLASSIFICATIONS[1][0]}
@@ -371,7 +371,7 @@ def test_company_profile_list_exposes_selected_sector_label(client):
     assert response.context_data['selected_sector_label'] == expected_label
 
 
-@patch('enrolment.helpers.user_has_verified_company', Mock(return_value=True))
+@patch('enrolment.helpers.has_verified_company', Mock(return_value=True))
 @patch.object(views.api_client.company, 'list_public_profiles')
 def test_company_profile_list_calls_api(
     mock_list_public_profiles, client
@@ -385,7 +385,7 @@ def test_company_profile_list_calls_api(
     )
 
 
-@patch('enrolment.helpers.user_has_verified_company', Mock(return_value=True))
+@patch('enrolment.helpers.has_verified_company', Mock(return_value=True))
 @patch.object(views.api_client.company, 'list_public_profiles')
 def test_company_profile_list_handles_bad_status(
     mock_retrieve_public_profile, client
@@ -397,7 +397,7 @@ def test_company_profile_list_handles_bad_status(
         client.get(url, params)
 
 
-@patch('enrolment.helpers.user_has_verified_company', Mock(return_value=True))
+@patch('enrolment.helpers.has_verified_company', Mock(return_value=True))
 def test_company_profile_list_handles_no_form_data(client):
     url = reverse('public-company-profiles-list')
     response = client.get(url, {})
@@ -405,7 +405,7 @@ def test_company_profile_list_handles_no_form_data(client):
     assert response.context_data['form'].errors == {}
 
 
-@patch('enrolment.helpers.user_has_verified_company', Mock(return_value=True))
+@patch('enrolment.helpers.has_verified_company', Mock(return_value=True))
 @patch.object(views.api_client.company, 'list_public_profiles')
 def test_company_profile_list_handles_empty_page(mock_list_profiles, client):
     mock_list_profiles.return_value = api_response_404()
