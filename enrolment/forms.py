@@ -1,12 +1,10 @@
 import http
-from directory_validators import enrolment as shared_enrolment_validators
-from directory_validators import company as shared_company_validators
+from directory_validators import enrolment as shared_validators
 from directory_validators.constants import choices
 
 import requests
 
 from django import forms
-from django.conf import settings
 from django.utils.safestring import mark_safe
 
 from enrolment import constants, fields, helpers, validators
@@ -42,7 +40,7 @@ class CompanyForm(AutoFocusFieldMixin, IndentedInvalidFieldsMixin, forms.Form):
             '</a>.'.format(url=constants.COMPANIES_HOUSE_SEARCH_URL)
         ),
         validators=helpers.halt_validation_on_failure(
-            shared_enrolment_validators.company_number,
+            shared_validators.company_number,
             validators.company_unique,
         ),
         max_length=8,
@@ -92,62 +90,7 @@ class CompanyExportStatusForm(AutoFocusFieldMixin, IndentedInvalidFieldsMixin,
             'Has your company sold products or services to overseas customers?'
         ),
         choices=choices.EXPORT_STATUSES,
-        validators=[shared_enrolment_validators.export_status_intention]
-    )
-
-
-class CompanyBasicInfoForm(AutoFocusFieldMixin, IndentedInvalidFieldsMixin,
-                           forms.Form):
-    name = forms.CharField(
-        label='Change your company name',
-        help_text=(
-            'Enter your preferred business name'
-        ),
-        max_length=255,
-    )
-    website = forms.URLField(
-        max_length=255,
-        help_text=(
-            'The website address must start with either http:// or '
-            'https://'
-        )
-    )
-    keywords = forms.CharField(
-        label=(
-            'Enter up to 10 keywords that describe your company '
-            '(separated by commas):'
-        ),
-        help_text=(
-            'These keywords will be used to help potential overseas buyers '
-            'find your company.'
-        ),
-        widget=forms.Textarea,
-        max_length=1000,
-        validators=[shared_company_validators.keywords_word_limit]
-    )
-
-
-class CompanyDescriptionForm(AutoFocusFieldMixin, IndentedInvalidFieldsMixin,
-                             forms.Form):
-    description = forms.CharField(
-        widget=forms.Textarea,
-        label='Describe your business to overseas buyers:',
-        help_text='Maximum 1,000 characters.',
-        max_length=1000,
-    )
-
-
-class CompanyLogoForm(AutoFocusFieldMixin, IndentedInvalidFieldsMixin,
-                      forms.Form):
-    logo = forms.FileField(
-        help_text=(
-            'For best results this should be a transparent PNG file of 600 x '
-            '600 pixels and no more than {0}MB'.format(
-                int(settings.VALIDATOR_MAX_LOGO_SIZE_BYTES / 1024 / 1014)
-            )
-        ),
-        required=True,
-        validators=[shared_enrolment_validators.logo_filesize]
+        validators=[shared_validators.export_status_intention]
     )
 
 
@@ -163,8 +106,8 @@ class CompanyEmailAddressForm(AutoFocusFieldMixin, IndentedInvalidFieldsMixin,
             'email address.'
         ),
         validators=helpers.halt_validation_on_failure(
-            shared_enrolment_validators.email_domain_free,
-            shared_enrolment_validators.email_domain_disposable,
+            shared_validators.email_domain_free,
+            shared_validators.email_domain_disposable,
             validators.email_address,
         )
     )
@@ -215,31 +158,6 @@ class SupplierForm(
             raise forms.ValidationError(self.error_messages['different'])
 
         return confirmed
-
-
-class CompanySizeForm(AutoFocusFieldMixin, IndentedInvalidFieldsMixin,
-                      forms.Form):
-    employees = forms.ChoiceField(
-        choices=choices.EMPLOYEES,
-        label='How many employees are in your company?',
-        help_text=(
-            'Tell international buyers more about your business to ensure '
-            'the right buyers can find you.'
-        )
-    )
-
-
-class CompanyClassificationForm(AutoFocusFieldMixin,
-                                IndentedInvalidFieldsMixin, forms.Form):
-    sectors = forms.MultipleChoiceField(
-        label=(
-            'What sectors is your company interested in working in? '
-            'Choose no more than 10 sectors.'
-        ),
-        choices=choices.COMPANY_CLASSIFICATIONS,
-        widget=forms.CheckboxSelectMultiple(),
-        validators=[shared_company_validators.sector_choice_limit]
-    )
 
 
 class PhoneNumberVerificationForm(AutoFocusFieldMixin,
@@ -317,54 +235,6 @@ def serialize_enrolment_forms(cleaned_data):
         'mobile_number': cleaned_data['mobile_number'],
         'referrer': cleaned_data['referrer'],
         'export_status': cleaned_data['export_status'],
-    }
-
-
-def serialize_company_profile_forms(cleaned_data):
-    """
-    Return the shape directory-api-client expects for company profile edit.
-
-    @param {dict} cleaned_data - All the fields in `CompanyBasicInfoForm`
-                                 `CompanySizeForm`, `CompanyLogoForm`, and
-                                 `CompanyClassificationForm`
-    @returns dict
-
-    """
-
-    return {
-        'name': cleaned_data['name'],
-        'website': cleaned_data['website'],
-        'keywords': cleaned_data['keywords'],
-        'employees': cleaned_data['employees'],
-        'sectors': cleaned_data['sectors'],
-    }
-
-
-def serialize_company_logo_forms(cleaned_data):
-    """
-    Return the shape directory-api-client expects for changing logo.
-
-    @param {dict} cleaned_data - All the fields in `CompanyLogoForm`
-    @returns dict
-
-    """
-
-    return {
-        'logo': cleaned_data['logo'],
-    }
-
-
-def serialize_company_description_forms(cleaned_data):
-    """
-    Return the shape directory-api-client expects for changing description.
-
-    @param {dict} cleaned_data - All the fields in `CompanyDescriptionForm`
-    @returns dict
-
-    """
-
-    return {
-        'description': cleaned_data['description'],
     }
 
 

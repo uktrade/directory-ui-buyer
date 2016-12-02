@@ -1,6 +1,8 @@
 from django import forms
+from django.conf import settings
 
 from directory_validators import company as shared_validators
+from directory_validators import enrolment as shared_enrolment_validators
 from directory_validators.constants import choices
 
 from enrolment.forms import IndentedInvalidFieldsMixin, AutoFocusFieldMixin
@@ -74,6 +76,86 @@ class CaseStudyRichMediaForm(IndentedInvalidFieldsMixin, AutoFocusFieldMixin,
     )
 
 
+class CompanyBasicInfoForm(AutoFocusFieldMixin, IndentedInvalidFieldsMixin,
+                           forms.Form):
+    name = forms.CharField(
+        label='Change your company name',
+        help_text=(
+            'Enter your preferred business name'
+        ),
+        max_length=255,
+    )
+    website = forms.URLField(
+        max_length=255,
+        help_text=(
+            'The website address must start with either http:// or '
+            'https://'
+        )
+    )
+    keywords = forms.CharField(
+        label=(
+            'Enter up to 10 keywords that describe your company '
+            '(separated by commas):'
+        ),
+        help_text=(
+            'These keywords will be used to help potential overseas buyers '
+            'find your company.'
+        ),
+        widget=forms.Textarea,
+        max_length=1000,
+        validators=[shared_validators.keywords_word_limit]
+    )
+
+
+class CompanyDescriptionForm(AutoFocusFieldMixin, IndentedInvalidFieldsMixin,
+                             forms.Form):
+    description = forms.CharField(
+        widget=forms.Textarea,
+        label='Describe your business to overseas buyers:',
+        help_text='Maximum 1,000 characters.',
+        max_length=1000,
+    )
+
+
+class CompanyLogoForm(AutoFocusFieldMixin, IndentedInvalidFieldsMixin,
+                      forms.Form):
+    logo = forms.FileField(
+        help_text=(
+            'For best results this should be a transparent PNG file of 600 x '
+            '600 pixels and no more than {0}MB'.format(
+                int(settings.VALIDATOR_MAX_LOGO_SIZE_BYTES / 1024 / 1014)
+            )
+        ),
+        required=True,
+        validators=[shared_enrolment_validators.logo_filesize]
+    )
+
+
+class CompanySizeForm(AutoFocusFieldMixin, IndentedInvalidFieldsMixin,
+                      forms.Form):
+    employees = forms.ChoiceField(
+        choices=choices.EMPLOYEES,
+        label='How many employees are in your company?',
+        help_text=(
+            'Tell international buyers more about your business to ensure '
+            'the right buyers can find you.'
+        )
+    )
+
+
+class CompanyClassificationForm(AutoFocusFieldMixin,
+                                IndentedInvalidFieldsMixin, forms.Form):
+    sectors = forms.MultipleChoiceField(
+        label=(
+            'What sectors is your company interested in working in? '
+            'Choose no more than 10 sectors.'
+        ),
+        choices=choices.COMPANY_CLASSIFICATIONS,
+        widget=forms.CheckboxSelectMultiple(),
+        validators=[shared_validators.sector_choice_limit]
+    )
+
+
 def serialize_supplier_case_study_forms(cleaned_data):
     """
     Return the shape directory-api-client expects for creating and updating
@@ -96,4 +178,52 @@ def serialize_supplier_case_study_forms(cleaned_data):
         'image_two': cleaned_data['image_two'],
         'image_three': cleaned_data['image_three'],
         'testimonial': cleaned_data['testimonial'],
+    }
+
+
+def serialize_company_profile_forms(cleaned_data):
+    """
+    Return the shape directory-api-client expects for company profile edit.
+
+    @param {dict} cleaned_data - All the fields in `CompanyBasicInfoForm`
+                                 `CompanySizeForm`, `CompanyLogoForm`, and
+                                 `CompanyClassificationForm`
+    @returns dict
+
+    """
+
+    return {
+        'name': cleaned_data['name'],
+        'website': cleaned_data['website'],
+        'keywords': cleaned_data['keywords'],
+        'employees': cleaned_data['employees'],
+        'sectors': cleaned_data['sectors'],
+    }
+
+
+def serialize_company_logo_forms(cleaned_data):
+    """
+    Return the shape directory-api-client expects for changing logo.
+
+    @param {dict} cleaned_data - All the fields in `CompanyLogoForm`
+    @returns dict
+
+    """
+
+    return {
+        'logo': cleaned_data['logo'],
+    }
+
+
+def serialize_company_description_forms(cleaned_data):
+    """
+    Return the shape directory-api-client expects for changing description.
+
+    @param {dict} cleaned_data - All the fields in `CompanyDescriptionForm`
+    @returns dict
+
+    """
+
+    return {
+        'description': cleaned_data['description'],
     }

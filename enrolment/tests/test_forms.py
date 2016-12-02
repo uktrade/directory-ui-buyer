@@ -1,13 +1,13 @@
 import http
 from unittest.mock import Mock, patch
 
-from directory_validators import company as shared_company_validators
-from directory_validators import enrolment as shared_enrolment_validators
+from directory_validators import enrolment as shared_validators
 from requests.exceptions import RequestException
 
 from django.forms import Form
+
 from django.forms.fields import CharField, Field
-from django.core.validators import EmailValidator, URLValidator
+from django.core.validators import EmailValidator
 from django.core.urlresolvers import reverse
 
 from enrolment import fields, forms, helpers, validators, views
@@ -15,7 +15,6 @@ from enrolment import fields, forms, helpers, validators, views
 
 REQUIRED_MESSAGE = Field.default_error_messages['required']
 EMAIL_FORMAT_MESSAGE = EmailValidator.message
-URL_FORMAT_MESSAGE = URLValidator.message
 TERMS_CONDITIONS_MESSAGE = \
     forms.InternationalBuyerForm.TERMS_CONDITIONS_MESSAGE
 
@@ -23,10 +22,6 @@ TERMS_CONDITIONS_MESSAGE = \
 class FormWithAutoFocusFieldMixin(forms.AutoFocusFieldMixin, Form):
     field1 = CharField()
     field1 = CharField()
-
-
-def create_mock_file():
-    return Mock(size=1)
 
 
 def auto_focus_field_autofocus():
@@ -40,13 +35,8 @@ def test_auto_focus_mixin_installed():
         forms.CompanyNameForm,
         forms.CompanyForm,
         forms.CompanyExportStatusForm,
-        forms.CompanyBasicInfoForm,
-        forms.CompanyDescriptionForm,
-        forms.CompanyLogoForm,
         forms.CompanyEmailAddressForm,
         forms.SupplierForm,
-        forms.CompanySizeForm,
-        forms.CompanyClassificationForm,
         forms.PhoneNumberVerificationForm,
         forms.InternationalBuyerForm,
     ]
@@ -59,13 +49,8 @@ def test_indent_invalid_mixin_installed():
         forms.CompanyNameForm,
         forms.CompanyForm,
         forms.CompanyExportStatusForm,
-        forms.CompanyBasicInfoForm,
-        forms.CompanyDescriptionForm,
-        forms.CompanyLogoForm,
         forms.CompanyEmailAddressForm,
         forms.SupplierForm,
-        forms.CompanySizeForm,
-        forms.CompanyClassificationForm,
         forms.PhoneNumberVerificationForm,
         forms.InternationalBuyerForm,
     ]
@@ -91,7 +76,7 @@ def test_company_form_fields():
 def test_company_form_validators():
     field = forms.CompanyForm(data={}, session=Mock()).fields['company_number']
     inner_validators = field.validators[0].inner_validators
-    assert shared_enrolment_validators.company_number in inner_validators
+    assert shared_validators.company_number in inner_validators
     assert validators.company_unique in inner_validators
 
 
@@ -188,8 +173,8 @@ def test_supplier_form_fields():
 def test_company_email_form_email_validators():
     field = forms.CompanyEmailAddressForm.base_fields['company_email']
     inner = field.validators[1].inner_validators
-    assert shared_enrolment_validators.email_domain_free in inner
-    assert shared_enrolment_validators.email_domain_disposable in inner
+    assert shared_validators.email_domain_free in inner
+    assert shared_validators.email_domain_disposable in inner
     assert validators.email_address in inner
 
 
@@ -284,88 +269,10 @@ def test_international_form_accepts_valid_data():
     assert form.is_valid()
 
 
-def test_company_profile_form_required_fields():
-    form = forms.CompanyBasicInfoForm(data={})
-
-    valid = form.is_valid()
-
-    assert valid is False
-    assert form.errors['name'] == [REQUIRED_MESSAGE]
-    assert form.errors['website'] == [REQUIRED_MESSAGE]
-    assert form.errors['keywords'] == [REQUIRED_MESSAGE]
-
-
-def test_company_profile_form_keywords_validator():
-    field = forms.CompanyBasicInfoForm.base_fields['keywords']
-    assert shared_company_validators.keywords_word_limit in field.validators
-
-
-def test_company_profile_form_url_validator():
-    field = forms.CompanyBasicInfoForm.base_fields['website']
-    assert isinstance(field.validators[0], URLValidator)
-
-
-def test_company_profile_form_accepts_valid_data():
-    data = {'name': 'Amazon UK',
-            'website': 'http://amazon.co.uk',
-            'keywords': 'Ecommerce'}
-    form = forms.CompanyBasicInfoForm(data=data)
-
-    valid = form.is_valid()
-
-    assert valid is True
-    assert form.cleaned_data == {
-        'name': 'Amazon UK',
-        'website': 'http://amazon.co.uk',
-        'keywords': 'Ecommerce',
-    }
-
-
-def test_company_logo_form_accepts_valid_data():
-    logo = create_mock_file()
-    form = forms.CompanyLogoForm(files={'logo': logo})
-
-    valid = form.is_valid()
-
-    assert valid is True
-    assert form.cleaned_data == {
-        'logo': logo,
-    }
-
-
-def test_company_logo_form_logo_is_required():
-    form = forms.CompanyLogoForm(files={'logo': None})
-
-    valid = form.is_valid()
-
-    assert valid is False
-    assert 'logo' in form.errors
-    assert 'This field is required.' in form.errors['logo']
-
-
-def test_company_profile_logo_validator():
-    field = forms.CompanyLogoForm.base_fields['logo']
-    assert shared_enrolment_validators.logo_filesize in field.validators
-
-
 def test_company_export_status_form_validars():
     field = forms.CompanyExportStatusForm.base_fields['export_status']
-    validator = shared_enrolment_validators.export_status_intention
+    validator = shared_validators.export_status_intention
     assert validator in field.validators
-
-
-def test_company_description_form_accepts_valid_data():
-    form = forms.CompanyDescriptionForm(data={
-        'description': 'thing'
-    })
-    assert form.is_valid() is True
-    assert form.cleaned_data['description'] == 'thing'
-
-
-def test_company_description_form_rejects_invalid_data():
-    form = forms.CompanyDescriptionForm(data={})
-    assert form.is_valid() is False
-    assert form.errors['description'] == [REQUIRED_MESSAGE]
 
 
 def test_phone_number_verification_form_help_text_links_to_register():
@@ -402,11 +309,6 @@ def test_phone_number_verification_form_rejects_invalid_data():
     assert form.errors['sms_code'] == [expected]
 
 
-def test_company_classification_form_sectors_validator():
-    field = forms.CompanyClassificationForm.base_fields['sectors']
-    assert shared_company_validators.sector_choice_limit in field.validators
-
-
 def test_serialize_enrolment_forms():
     actual = forms.serialize_enrolment_forms({
         'name': 'Extreme Corp',
@@ -423,45 +325,6 @@ def test_serialize_enrolment_forms():
         'company_email': 'contact@example.com',
         'export_status': 'YES',
         'referrer': 'google'
-    }
-    assert actual == expected
-
-
-def test_serialize_company_profile_forms():
-    actual = forms.serialize_company_profile_forms({
-        'name': 'Example ltd.',
-        'keywords': 'Jolly good exporter.',
-        'employees': '1-10',
-        'sectors': ['1', '2'],
-        'website': 'http://example.com',
-    })
-    expected = {
-        'keywords': 'Jolly good exporter.',
-        'employees': '1-10',
-        'name': 'Example ltd.',
-        'sectors': ['1', '2'],
-        'website': 'http://example.com',
-    }
-    assert actual == expected
-
-
-def test_serialize_company_logo_forms():
-    logo = create_mock_file()
-    actual = forms.serialize_company_logo_forms({
-        'logo': logo,
-    })
-    expected = {
-        'logo': logo,
-    }
-    assert actual == expected
-
-
-def test_serialize_company_description_forms():
-    actual = forms.serialize_company_description_forms({
-        'description': 'Jolly good exporter.',
-    })
-    expected = {
-        'description': 'Jolly good exporter.',
     }
     assert actual == expected
 
