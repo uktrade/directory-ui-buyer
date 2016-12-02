@@ -308,7 +308,7 @@ def test_company_contact_details_rejects_invalid():
 
 def test_company_contact_details_accepts_valid():
     data = {
-        'email_address': 'Jeremy@example.com',
+        'email_address': 'Jeremy@exmaple.com',
         'email_full_name': 'Jeremy',
     }
     form = forms.CompanyContactDetailsForm(data=data)
