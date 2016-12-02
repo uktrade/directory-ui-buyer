@@ -219,14 +219,23 @@ class SupplierCompanyProfileEditView(
         UpdateCompanyProfileOnFormWizardDoneMixin,
         SessionWizardView):
 
+    ADDRESS = 'address'
+    BASIC = 'basic'
+    CLASSIFICATION = 'classification'
+    CONTACT = 'contact'
+
     form_list = (
-        ('basic', forms.CompanyBasicInfoForm),
-        ('classification', forms.CompanyClassificationForm),
+        (BASIC, forms.CompanyBasicInfoForm),
+        (CLASSIFICATION, forms.CompanyClassificationForm),
+        (CONTACT, forms.CompanyContactDetailsForm),
+        (ADDRESS, forms.CompanyAddressVerificationForm)
     )
     failure_template = 'company-profile-update-error.html'
     templates = {
-        'basic': 'company-profile-form.html',
-        'classification': 'company-profile-form-classification.html',
+        BASIC: 'company-profile-form.html',
+        CLASSIFICATION: 'company-profile-form-classification.html',
+        CONTACT: 'company-profile-form-contact.html',
+        ADDRESS: 'company-profile-form-address.html',
     }
     form_serializer = staticmethod(forms.serialize_company_profile_forms)
 

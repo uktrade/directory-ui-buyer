@@ -114,3 +114,16 @@ def retrieve_supplier_case_study(
     stub.start()
     yield
     stub.stop()
+
+
+@pytest.fixture(autouse=True)
+def retrieve_profile(
+    api_response_200
+):
+    stub = patch(
+        'api_client.api_client.company.retrieve_profile',
+        return_value=api_response_200,
+    )
+    stub.start()
+    yield
+    stub.stop()

@@ -152,6 +152,42 @@ class CompanyClassificationForm(AutoFocusFieldMixin,
     )
 
 
+class CompanyContactDetailsForm(AutoFocusFieldMixin,
+                                IndentedInvalidFieldsMixin,
+                                forms.Form):
+    email_address = forms.EmailField(
+        help_text=(
+            'This is the email address that international buyers should use'
+            ' when contacting your company.'
+        ),
+    )
+    email_full_name = forms.CharField(
+        label='Full name:',
+        max_length=200,
+        help_text=(
+            'This is the full name that international buyers should use'
+            ' when contacting your company.'
+        ),
+    )
+
+
+class CompanyAddressVerificationForm(AutoFocusFieldMixin,
+                                     IndentedInvalidFieldsMixin,
+                                     forms.Form):
+    postal_full_name = forms.CharField(
+        label='Full name:',
+        max_length=255,
+        help_text='This is the full name that letters will be addressed to.',
+        required=False,
+    )
+    address_line_1 = forms.CharField(max_length=255)
+    address_line_2 = forms.CharField(max_length=255, required=False)
+    locality = forms.CharField(label='City:', max_length=255, required=False)
+    country = forms.CharField(max_length=255, required=False)
+    postal_code = forms.CharField(max_length=255)
+    po_box = forms.CharField(max_length=255, required=False)
+
+
 def serialize_supplier_case_study_forms(cleaned_data):
     """
     Return the shape directory-api-client expects for creating and updating
@@ -182,8 +218,10 @@ def serialize_company_profile_forms(cleaned_data):
     Return the shape directory-api-client expects for company profile edit.
 
     @param {dict} cleaned_data - All the fields in `CompanyBasicInfoForm`
-                                 `CompanyLogoForm`, and
-                                 `CompanyClassificationForm`
+                                 `CompanyLogoForm`,
+                                 `CompanyClassificationForm`,
+                                 `CompanyContactDetailsForm`, and
+                                 `CompanyAddressVerificationForm`.
     @returns dict
 
     """
@@ -194,6 +232,17 @@ def serialize_company_profile_forms(cleaned_data):
         'keywords': cleaned_data['keywords'],
         'employees': cleaned_data['employees'],
         'sectors': cleaned_data['sectors'],
+        'contact_details': {
+            'address_line_1': cleaned_data['address_line_1'],
+            'address_line_2': cleaned_data['address_line_2'],
+            'country': cleaned_data['country'],
+            'email_address': cleaned_data['email_address'],
+            'email_full_name': cleaned_data['email_full_name'],
+            'locality': cleaned_data['locality'],
+            'po_box': cleaned_data['po_box'],
+            'postal_code': cleaned_data['postal_code'],
+            'postal_full_name': cleaned_data['postal_full_name'],
+        }
     }
 
 
