@@ -9,6 +9,35 @@ from directory_validators.constants import choices
 from enrolment.forms import IndentedInvalidFieldsMixin, AutoFocusFieldMixin
 
 
+class PreventTamperMixin(forms.Form):
+
+    NO_TAMPER_MESSAGE = 'Form tamper detected.'
+
+    signature = forms.CharField(
+        widget=forms.HiddenInput
+    )
+
+    def __init__(self, initial=None, *args, **kwargs):
+        assert self.tamper_proof_fields
+        initial = initial or {}
+        initial['signature'] = self.create_signature(initial)
+        super().__init__(initial=initial, *args, **kwargs)
+
+    def create_signature(self, values):
+        value = [values.get(field, '') for field in self.tamper_proof_fields]
+        return Signer().sign(','.join(value))
+
+    def is_form_tampered(self):
+        data = self.cleaned_data
+        return data.get('signature') != self.create_signature(data)
+
+    def clean(self):
+        data = super().clean()
+        if self.is_form_tampered():
+            raise forms.ValidationError(self.NO_TAMPER_MESSAGE)
+        return data
+
+
 class PublicProfileSearchForm(IndentedInvalidFieldsMixin, AutoFocusFieldMixin,
                               forms.Form):
     sectors = forms.ChoiceField(
@@ -172,35 +201,6 @@ class CompanyContactDetailsForm(AutoFocusFieldMixin,
     )
 
 
-class PreventTamperMixin(forms.Form):
-
-    NO_TAMPER_MESSAGE = 'Form tamper detected.'
-
-    signature = forms.CharField(
-        widget=forms.HiddenInput
-    )
-
-    def __init__(self, initial=None, *args, **kwargs):
-        assert self.tamper_proof_fields
-        initial = initial or {}
-        initial['signature'] = self.create_signature(initial)
-        super().__init__(initial=initial, *args, **kwargs)
-
-    def create_signature(self, values):
-        value = [values.get(field, '') for field in self.tamper_proof_fields]
-        return Signer().sign(','.join(value))
-
-    def is_form_tampered(self):
-        data = self.cleaned_data
-        return data.get('signature') != self.create_signature(data)
-
-    def clean(self):
-        data = super().clean()
-        if self.is_form_tampered():
-            raise forms.ValidationError(self.NO_TAMPER_MESSAGE)
-        return data
-
-
 class CompanyAddressVerificationForm(PreventTamperMixin,
                                      AutoFocusFieldMixin,
                                      IndentedInvalidFieldsMixin,
@@ -250,6 +250,23 @@ class CompanyAddressVerificationForm(PreventTamperMixin,
         required=False,
         widget=forms.TextInput(attrs={'readonly': 'readonly'}),
     )
+
+
+class CompanyAddressVerificationForm(AutoFocusFieldMixin,
+                                     IndentedInvalidFieldsMixin,
+                                     forms.Form):
+    postal_full_name = forms.CharField(
+        label='Full name:',
+        max_length=200,
+        help_text='This is the full name that letters will be addressed to.',
+        required=False,
+    )
+    address_line_1 = forms.CharField(max_length=200)
+    address_line_2 = forms.CharField(max_length=200, required=False)
+    locality = forms.CharField(label='City:', max_length=200, required=False)
+    country = forms.CharField(max_length=200, required=False)
+    postal_code = forms.CharField(max_length=200)
+    po_box = forms.CharField(max_length=200, required=False)
 
 
 def serialize_supplier_case_study_forms(cleaned_data):
