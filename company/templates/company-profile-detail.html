@@ -107,7 +107,11 @@
 			<div class="span12">
 				{% for case_study in company.supplier_case_studies %}
 					<div class="span4">
-						<div class="supplier-case-study-title">{{ case_study.title }}</div>
+						<div class="supplier-case-study-title">
+							<a href="{% url 'company-case-study-view' id=case_study.pk %}">
+								{{ case_study.title }}
+							</a>
+						</div>
 						<div class="supplier-case-study-images">
 							{% if case_study.image_one %}
 							<img src="{{ case_study.image_one }}" />
@@ -121,6 +125,9 @@
 						</div>
 						<div class="supplier-case-study-description">
 							{{ case_study.description }}
+						</div>
+						<div class="supplier-case-study-read-more-cta">
+							<a href="{% url 'company-case-study-view' id=case_study.pk %}">Read more</a>
 						</div>
 					</div>
 				{% endfor %}
@@ -143,7 +150,7 @@
 				</div>
 				<div class="company-profile-box">
 					{% for sector in company.sectors %}
-						{% if features.FEATURE_PUBLIC_PROFILES %}
+						{% if features.FEATURE_PUBLIC_PROFILES_ENABLED %}
 							<a href="{% url 'public-company-profiles-list' %}?sectors={{sector.value}}" class="label stone-label" target="_blank">
 								{{ sector.label }}
 							</a>

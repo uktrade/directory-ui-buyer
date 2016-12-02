@@ -39,7 +39,7 @@ def test_company_profile_details_feature_flag_public_profile_on():
             ]
         },
         'features': {
-            'FEATURE_PUBLIC_PROFILES': True
+            'FEATURE_PUBLIC_PROFILES_ENABLED': True
         }
     }
     url = reverse('public-company-profiles-list')
@@ -47,6 +47,35 @@ def test_company_profile_details_feature_flag_public_profile_on():
 
     assert 'href="{url}?sectors=THING"'.format(url=url) in html
     assert 'href="{url}?sectors=OTHER_THING"'.format(url=url) in html
+
+
+def test_company_profile_details_links_to_case_studies():
+    context = {
+        'features': {
+            'FEATURE_PUBLIC_PROFILES_ENABLED': True
+        },
+        'case_studies': [
+            {
+                "pk": 3,
+                "company": 1,
+                "description": "great",
+                "image_one": "https://image_one.jpg",
+                "image_three": None,
+                "image_two": "https://image_two.jpg",
+                "keywords": "nice",
+                "sector": "AEROSPACE",
+                "testimonial": "hello",
+                "title": "three",
+                "video_one": None,
+                "website": "http://www.example.com",
+                "year": "2000"
+            },
+        ]
+    }
+    url = reverse('company-case-study-view', kwargs={'id': '3'})
+    html = render_to_string('company-profile-detail.html', context)
+
+    assert 'href="{url}"'.format(url=url) not in html
 
 
 def test_company_profile_details_feature_flag_public_profile_off():
@@ -57,9 +86,6 @@ def test_company_profile_details_feature_flag_public_profile_off():
                 {'value': 'OTHER_THING', 'label': 'other_thing'},
             ]
         },
-        'features': {
-            'FEATURE_PUBLIC_PROFILES': False
-        }
     }
     url = reverse('public-company-profiles-list')
     html = render_to_string('company-profile-detail.html', context)
@@ -303,3 +329,77 @@ def test_company_public_profile_list_paginate_prev():
     html = render_to_string('company-public-profile-list.html', context)
 
     assert 'href="?sectors=WATER&page=1"' in html
+
+
+def test_supplier_case_study_details_renders_company_details():
+    context = {
+        'case_study': {
+            'company': {
+                'date_of_creation': '1 Jan 2015',
+                'name': 'Example corp',
+            }
+        }
+    }
+    html = render_to_string('supplier-case-study-detail.html', context)
+
+    assert context['case_study']['company']['name'] in html
+    assert context['case_study']['company']['date_of_creation'] in html
+
+
+def test_supplier_case_study_details_renders_case_study_details():
+    context = {
+        'case_study': {
+            'sector': {
+                'label': 'Water'
+            },
+            'year': '2000',
+            'testimonial': 'Good.',
+            'title': 'Very good thing',
+            'image_one': 'image_one.png',
+            'image_two': 'image_two.png',
+            'image_three': 'image_three.png',
+        }
+    }
+    html = render_to_string('supplier-case-study-detail.html', context)
+
+    assert context['case_study']['sector']['label'] in html
+    assert context['case_study']['year'] in html
+    assert context['case_study']['testimonial'] in html
+    assert context['case_study']['title'] in html
+    assert context['case_study']['image_one'] in html
+    assert context['case_study']['image_two'] in html
+    assert context['case_study']['image_three'] in html
+
+
+def test_supplier_case_study_details_renders_case_study_feature_flag_on():
+    context = {
+        'case_study': {
+            'company': {"number": 3}
+        },
+        'features': {
+            'FEATURE_PUBLIC_PROFILES_ENABLED': True
+        },
+    }
+    url = reverse(
+        'public-company-profiles-detail', kwargs={'company_number': '3'}
+    )
+    html = render_to_string('supplier-case-study-detail.html', context)
+
+    assert url in html
+
+
+def test_supplier_case_study_details_renders_case_study_feature_flag_off():
+    context = {
+        'case_study': {
+            'company': {"number": 3}
+        },
+        'features': {
+            'FEATURE_PUBLIC_PROFILES_ENABLED': False
+        },
+    }
+    url = reverse(
+        'public-company-profiles-detail', kwargs={'company_number': '3'}
+    )
+    html = render_to_string('supplier-case-study-detail.html', context)
+
+    assert url not in html
