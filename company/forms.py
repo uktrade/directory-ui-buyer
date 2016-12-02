@@ -105,6 +105,14 @@ class CompanyBasicInfoForm(AutoFocusFieldMixin, IndentedInvalidFieldsMixin,
         max_length=1000,
         validators=[shared_validators.keywords_word_limit]
     )
+    employees = forms.ChoiceField(
+        choices=choices.EMPLOYEES,
+        label='How many employees are in your company?',
+        help_text=(
+            'Tell international buyers more about your business to ensure '
+            'the right buyers can find you.'
+        )
+    )
 
 
 class CompanyDescriptionForm(AutoFocusFieldMixin, IndentedInvalidFieldsMixin,
@@ -128,18 +136,6 @@ class CompanyLogoForm(AutoFocusFieldMixin, IndentedInvalidFieldsMixin,
         ),
         required=True,
         validators=[shared_enrolment_validators.logo_filesize]
-    )
-
-
-class CompanySizeForm(AutoFocusFieldMixin, IndentedInvalidFieldsMixin,
-                      forms.Form):
-    employees = forms.ChoiceField(
-        choices=choices.EMPLOYEES,
-        label='How many employees are in your company?',
-        help_text=(
-            'Tell international buyers more about your business to ensure '
-            'the right buyers can find you.'
-        )
     )
 
 
@@ -186,7 +182,7 @@ def serialize_company_profile_forms(cleaned_data):
     Return the shape directory-api-client expects for company profile edit.
 
     @param {dict} cleaned_data - All the fields in `CompanyBasicInfoForm`
-                                 `CompanySizeForm`, `CompanyLogoForm`, and
+                                 `CompanyLogoForm`, and
                                  `CompanyClassificationForm`
     @returns dict
 

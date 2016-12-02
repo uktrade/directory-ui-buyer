@@ -221,13 +221,11 @@ class SupplierCompanyProfileEditView(
 
     form_list = (
         ('basic', forms.CompanyBasicInfoForm),
-        ('size', forms.CompanySizeForm),
         ('classification', forms.CompanyClassificationForm),
     )
     failure_template = 'company-profile-update-error.html'
     templates = {
         'basic': 'company-profile-form.html',
-        'size': 'company-profile-size-form.html',
         'classification': 'company-profile-form-classification.html',
     }
     form_serializer = staticmethod(forms.serialize_company_profile_forms)

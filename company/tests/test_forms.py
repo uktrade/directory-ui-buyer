@@ -89,7 +89,6 @@ def test_auto_focus_mixin_installed():
         forms.CompanyClassificationForm,
         forms.CompanyDescriptionForm,
         forms.CompanyLogoForm,
-        forms.CompanySizeForm,
         forms.PublicProfileSearchForm,
     ]
     for FormClass in FormClasses:
@@ -104,7 +103,6 @@ def test_indent_invalid_mixin_installed():
         forms.CompanyClassificationForm,
         forms.CompanyDescriptionForm,
         forms.CompanyLogoForm,
-        forms.CompanySizeForm,
         forms.PublicProfileSearchForm,
     ]
     for FormClass in FormClasses:
@@ -217,9 +215,12 @@ def test_company_classification_form_sectors_validator():
 
 
 def test_company_profile_form_accepts_valid_data():
-    data = {'name': 'Amazon UK',
-            'website': 'http://amazon.co.uk',
-            'keywords': 'Ecommerce'}
+    data = {
+        'name': 'Amazon UK',
+        'website': 'http://amazon.co.uk',
+        'keywords': 'Ecommerce',
+        'employees': '1-10',
+    }
     form = forms.CompanyBasicInfoForm(data=data)
 
     valid = form.is_valid()
@@ -229,6 +230,7 @@ def test_company_profile_form_accepts_valid_data():
         'name': 'Amazon UK',
         'website': 'http://amazon.co.uk',
         'keywords': 'Ecommerce',
+        'employees': '1-10',
     }
 
 
