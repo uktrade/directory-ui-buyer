@@ -16,10 +16,10 @@ deployment:
   dev:
     branch: master
     commands:
-      - docker login --email=$HEROKU_EMAIL --username=$HEROKU_EMAIL --password=$HEROKU_API_KEY registry.heroku.com
+      - docker login --email=$HEROKU_EMAIL --suppliername=$HEROKU_EMAIL --password=$HEROKU_API_KEY registry.heroku.com
       - make heroku_deploy_dev
   demo:
     branch: demo
     commands:
-      - docker login --email=$HEROKU_EMAIL --username=$HEROKU_EMAIL --password=$HEROKU_API_KEY registry.heroku.com
+      - docker login --email=$HEROKU_EMAIL --suppliername=$HEROKU_EMAIL --password=$HEROKU_API_KEY registry.heroku.com
       - make heroku_deploy_demo

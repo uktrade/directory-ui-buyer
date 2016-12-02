@@ -59,48 +59,48 @@ def test_halt_validation_on_failure_raises_first():
     assert 'error two' not in form.errors['field']
 
 
-@patch.object(helpers.api_client.user, 'retrieve_profile')
-def test_user_has_verified_company_no_company(mock_retrieve_user_profile):
+@patch.object(helpers.api_client.supplier, 'retrieve_profile')
+def test_has_verified_company_no_company(mock_retrieve_supplier_profile):
     mock_response = Response()
     mock_response.status_code = http.client.OK
     mock_response.json = lambda: {
         'company': '',
         'company_email_confirmed': False,
     }
-    mock_retrieve_user_profile.return_value = mock_response
+    mock_retrieve_supplier_profile.return_value = mock_response
 
-    assert helpers.user_has_verified_company(sso_user_id=1) is False
+    assert helpers.has_verified_company(sso_user_id=1) is False
 
 
-@patch.object(helpers.api_client.user, 'retrieve_profile')
-def test_user_has_verified_company_unconfirmed(mock_retrieve_user_profile):
+@patch.object(helpers.api_client.supplier, 'retrieve_profile')
+def test_has_verified_company_unconfirmed(mock_retrieve_supplier_profile):
     mock_response = Response()
     mock_response.status_code = http.client.OK
     mock_response.json = lambda: {
         'company': 'Extreme Corp',
         'company_email_confirmed': False,
     }
-    mock_retrieve_user_profile.return_value = mock_response
+    mock_retrieve_supplier_profile.return_value = mock_response
 
-    assert helpers.user_has_verified_company(sso_user_id=1) is False
+    assert helpers.has_verified_company(sso_user_id=1) is False
 
 
-@patch.object(helpers.api_client.user, 'retrieve_profile')
-def test_user_has_verified_company(mock_retrieve_user_profile):
+@patch.object(helpers.api_client.supplier, 'retrieve_profile')
+def test_has_verified_company(mock_retrieve_supplier_profile):
     mock_response = Response()
     mock_response.status_code = http.client.OK
     mock_response.json = lambda: {
         'company': 'Extreme Corp',
         'company_email_confirmed': True,
     }
-    mock_retrieve_user_profile.return_value = mock_response
+    mock_retrieve_supplier_profile.return_value = mock_response
 
-    assert helpers.user_has_verified_company(sso_user_id=1) is True
+    assert helpers.has_verified_company(sso_user_id=1) is True
 
 
-@patch.object(helpers.api_client.user, 'retrieve_profile', profile_api_404)
-def test_user_has_verified_company_404():
-    assert helpers.user_has_verified_company(sso_user_id=1) is False
+@patch.object(helpers.api_client.supplier, 'retrieve_profile', profile_api_404)
+def test_has_verified_company_404():
+    assert helpers.has_verified_company(sso_user_id=1) is False
 
 
 @patch.object(helpers, 'get_companies_house_profile')

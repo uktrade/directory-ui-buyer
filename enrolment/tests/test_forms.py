@@ -44,7 +44,7 @@ def test_auto_focus_mixin_installed():
         forms.CompanyDescriptionForm,
         forms.CompanyLogoForm,
         forms.CompanyEmailAddressForm,
-        forms.UserForm,
+        forms.SupplierForm,
         forms.CompanySizeForm,
         forms.CompanyClassificationForm,
         forms.PhoneNumberVerificationForm,
@@ -63,7 +63,7 @@ def test_indent_invalid_mixin_installed():
         forms.CompanyDescriptionForm,
         forms.CompanyLogoForm,
         forms.CompanyEmailAddressForm,
-        forms.UserForm,
+        forms.SupplierForm,
         forms.CompanySizeForm,
         forms.CompanyClassificationForm,
         forms.PhoneNumberVerificationForm,
@@ -173,9 +173,9 @@ def test_company_form_handles_company_active_validation(
     mock_company_active.assert_called_once_with('active')
 
 
-def test_user_form_fields():
-    mobile_number_field = forms.UserForm.base_fields['mobile_number']
-    mobile_confirmed_field = forms.UserForm.base_fields['mobile_confirmed']
+def test_supplier_form_fields():
+    mobile_number_field = forms.SupplierForm.base_fields['mobile_number']
+    mobile_confirmed_field = forms.SupplierForm.base_fields['mobile_confirmed']
 
     assert isinstance(mobile_number_field, fields.MobilePhoneNumberField)
     # we dont want both fields to be MobilePhoneNumberField - that would
@@ -216,20 +216,20 @@ def test_test_company_email_form_rejects_different_email_addresses():
 
 
 @patch('enrolment.validators.api_client', Mock())
-def test_test_user_form_rejects_different_mobile_numbers():
-    form = forms.UserForm(data={
+def test_test_supplier_form_rejects_different_mobile_numbers():
+    form = forms.SupplierForm(data={
         'mobile_number': '07507605443',
         'mobile_confirmed': '07507605444',
     })
-    expected = forms.UserForm.error_messages['different']
+    expected = forms.SupplierForm.error_messages['different']
 
     assert form.is_valid() is False
     assert form.errors['mobile_confirmed'] == [expected]
 
 
 @patch('enrolment.validators.api_client', Mock())
-def test_user_form_rejects_missing_data():
-    form = forms.UserForm(data={})
+def test_supplier_form_rejects_missing_data():
+    form = forms.SupplierForm(data={})
 
     assert form.is_valid() is False
     assert form.errors['mobile_number'] == [REQUIRED_MESSAGE]
@@ -238,8 +238,8 @@ def test_user_form_rejects_missing_data():
 
 
 @patch('enrolment.validators.api_client', Mock())
-def test_user_form_accepts_valid_data():
-    form = forms.UserForm(data={
+def test_supplier_form_accepts_valid_data():
+    form = forms.SupplierForm(data={
         'mobile_number': '07506674933',
         'mobile_confirmed': '07506674933',
         'terms_agreed': 1,
@@ -248,8 +248,8 @@ def test_user_form_accepts_valid_data():
 
 
 @patch('enrolment.validators.api_client', Mock())
-def test_user_form_accepts_valid_data_space_in_mobile_num():
-    form = forms.UserForm(data={
+def test_supplier_form_accepts_valid_data_space_in_mobile_num():
+    form = forms.SupplierForm(data={
         'mobile_number': '07506 674 933',
         'mobile_confirmed': '07506 674 933',
         'terms_agreed': 1,
@@ -258,8 +258,8 @@ def test_user_form_accepts_valid_data_space_in_mobile_num():
 
 
 @patch('enrolment.validators.api_client', Mock())
-def test_user_form_validators():
-    field = forms.UserForm.base_fields['mobile_number']
+def test_supplier_form_validators():
+    field = forms.SupplierForm.base_fields['mobile_number']
     inner_validators = field.validators[0].inner_validators
     assert validators.mobile_number in inner_validators
 
@@ -370,7 +370,9 @@ def test_company_description_form_rejects_invalid_data():
 
 def test_phone_number_verification_form_help_text_links_to_register():
     field = forms.PhoneNumberVerificationForm.base_fields['sms_code']
-    expected = reverse('register', kwargs={'step': views.EnrolmentView.USER})
+    expected = reverse(
+        'register', kwargs={'step': views.EnrolmentView.SUPPLIER}
+    )
 
     assert expected in field.help_text
 
@@ -488,8 +490,8 @@ def test_get_company_name_form_initial_data():
     assert actual == expected
 
 
-def test_get_user_form_initial_data():
-    actual = forms.get_user_form_initial_data(
+def test_get_supplier_form_initial_data():
+    actual = forms.get_supplier_form_initial_data(
         referrer='google'
     )
     expected = {

@@ -60,7 +60,7 @@ class EnrolmentInstructionsView(TemplateView):
 
     def dispatch(self, request, *args, **kwargs):
         sso_user = request.sso_user
-        if sso_user and helpers.user_has_verified_company(sso_user.id):
+        if sso_user and helpers.has_verified_company(sso_user.id):
             return redirect('company-detail')
         return super().dispatch(request, *args, **kwargs)
 
@@ -71,7 +71,7 @@ class EnrolmentView(SSOLoginRequiredMixin, NamedUrlSessionWizardView):
     NAME = 'company-name'
     STATUS = 'exports'
     EMAIL = 'email'
-    USER = 'mobile'
+    SUPPLIER = 'mobile'
     SMS_VERIFY = 'mobile-verify'
 
     success_template = 'registered.html'
@@ -81,7 +81,7 @@ class EnrolmentView(SSOLoginRequiredMixin, NamedUrlSessionWizardView):
         (NAME, forms.CompanyNameForm),
         (STATUS, forms.CompanyExportStatusForm),
         (EMAIL, forms.CompanyEmailAddressForm),
-        (USER, forms.UserForm),
+        (SUPPLIER, forms.SupplierForm),
         (SMS_VERIFY, forms.PhoneNumberVerificationForm),
     )
     templates = {
@@ -89,14 +89,14 @@ class EnrolmentView(SSOLoginRequiredMixin, NamedUrlSessionWizardView):
         NAME: 'company-form-name.html',
         STATUS: 'export-status-form.html',
         EMAIL: 'email-form.html',
-        USER: 'user-form.html',
+        SUPPLIER: 'supplier-form.html',
         SMS_VERIFY: 'sms-verify-form.html',
     }
 
     def dispatch(self, request, *args, **kwargs):
         if request.sso_user is None:
             return self.handle_no_permission()
-        elif helpers.user_has_verified_company(request.sso_user.id):
+        elif helpers.has_verified_company(request.sso_user.id):
             return redirect('company-detail')
         else:
             return super(EnrolmentView, self).dispatch(
@@ -123,16 +123,16 @@ class EnrolmentView(SSOLoginRequiredMixin, NamedUrlSessionWizardView):
             return forms.get_email_form_initial_data(
                 email=self.request.sso_user.email
             )
-        elif step == self.USER:
+        elif step == self.SUPPLIER:
             referrer = self.request.session.get(constants.SESSION_KEY_REFERRER)
-            return forms.get_user_form_initial_data(referrer=referrer)
+            return forms.get_supplier_form_initial_data(referrer=referrer)
         elif step == self.NAME:
             name = helpers.get_company_name_from_session(self.request.session)
             return forms.get_company_name_form_initial_data(name=name)
 
     def process_step(self, form):
         step = self.storage.current_step
-        if step == self.USER:
+        if step == self.SUPPLIER:
             response = api_client.registration.send_verification_sms(
                 phone_number=form.cleaned_data['mobile_number']
             )
@@ -175,16 +175,16 @@ class CompanyEmailConfirmationView(View):
         return TemplateResponse(request, template)
 
 
-class UserCompanyBaseView(SSOLoginRequiredMixin):
+class SupplierCompanyBaseView(SSOLoginRequiredMixin):
 
     def dispatch(self, request, *args, **kwargs):
         if request.sso_user is None:
             return self.handle_no_permission()
         else:
-            if not helpers.user_has_verified_company(self.request.sso_user.id):
+            if not helpers.has_verified_company(self.request.sso_user.id):
                 return redirect('register-instructions')
             else:
-                return super(UserCompanyBaseView, self).dispatch(
+                return super(SupplierCompanyBaseView, self).dispatch(
                     request, *args, **kwargs
                 )
 
@@ -206,8 +206,8 @@ class UpdateCompanyProfileOnFormWizardDoneMixin:
         return response
 
 
-class UserCompanyProfileEditView(
-        UserCompanyBaseView,
+class SupplierCompanyProfileEditView(
+        SupplierCompanyBaseView,
         UpdateCompanyProfileOnFormWizardDoneMixin,
         SessionWizardView):
 
@@ -235,8 +235,8 @@ class UserCompanyProfileEditView(
         return [self.templates[self.steps.current]]
 
 
-class UserCompanyProfileLogoEditView(
-        UserCompanyBaseView,
+class SupplierCompanyProfileLogoEditView(
+        SupplierCompanyBaseView,
         UpdateCompanyProfileOnFormWizardDoneMixin,
         SessionWizardView):
 
@@ -256,8 +256,8 @@ class UserCompanyProfileLogoEditView(
         return [self.templates[self.steps.current]]
 
 
-class UserCompanyDescriptionEditView(
-        UserCompanyBaseView,
+class SupplierCompanyDescriptionEditView(
+        SupplierCompanyBaseView,
         UpdateCompanyProfileOnFormWizardDoneMixin,
         SessionWizardView):
 

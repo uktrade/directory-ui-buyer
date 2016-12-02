@@ -7,18 +7,18 @@ from enrolment.views import (
     CompanyEmailConfirmationView,
     EnrolmentView,
     EnrolmentInstructionsView,
-    UserCompanyDescriptionEditView,
-    UserCompanyProfileEditView,
-    UserCompanyProfileLogoEditView,
+    SupplierCompanyDescriptionEditView,
+    SupplierCompanyProfileEditView,
+    SupplierCompanyProfileLogoEditView,
     DomesticLandingView,
     InternationalLandingView,
 )
-from user.views import UserProfileDetailView
+from supplier.views import SupplierProfileDetailView
 from company.views import (
     PublicProfileDetailView,
     PublicProfileListView,
     SupplierCaseStudyView,
-    UserCompanyProfileDetailView,
+    SupplierCompanyProfileDetailView,
 )
 from admin.proxy import AdminProxyView
 
@@ -70,9 +70,9 @@ urlpatterns = [
     ),
 
     url(
-        r'^user-profile$',
-        UserProfileDetailView.as_view(),
-        name='user-detail'
+        r'^supplier-profile$',
+        SupplierProfileDetailView.as_view(),
+        name='supplier-detail'
     ),
     url(
         r'^confirm-company-email$',
@@ -82,22 +82,22 @@ urlpatterns = [
 
     url(
         r'^company-profile$',
-        UserCompanyProfileDetailView.as_view(),
+        SupplierCompanyProfileDetailView.as_view(),
         name='company-detail'
     ),
     url(
         r'^company-profile/edit$',
-        UserCompanyProfileEditView.as_view(),
+        SupplierCompanyProfileEditView.as_view(),
         name='company-edit'
     ),
     url(
         r'^company-profile/logo$',
-        UserCompanyProfileLogoEditView.as_view(),
+        SupplierCompanyProfileLogoEditView.as_view(),
         name='company-edit-logo'
     ),
     url(
         r'^company-profile/description$',
-        UserCompanyDescriptionEditView.as_view(),
+        SupplierCompanyDescriptionEditView.as_view(),
         name='company-edit-description'
     ),
     url(

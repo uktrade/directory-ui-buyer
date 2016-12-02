@@ -35,7 +35,7 @@ def store_companies_house_profile_in_session(session, company_number):
 
 
 def get_referrer_from_request(request):
-    # TODO: determine what source led the user to the export directory
+    # TODO: determine what source led the supplier to the export directory
     # if navigating internally then return None (ticket ED-138)
     return 'aaa'
 
@@ -53,8 +53,8 @@ def halt_validation_on_failure(*validators):
     return [inner]
 
 
-def user_has_verified_company(sso_user_id):
-    response = api_client.user.retrieve_profile(
+def has_verified_company(sso_user_id):
+    response = api_client.supplier.retrieve_profile(
         sso_id=sso_user_id
     )
 

@@ -180,7 +180,9 @@ class CompanyEmailAddressForm(AutoFocusFieldMixin, IndentedInvalidFieldsMixin,
         return confirmed
 
 
-class UserForm(AutoFocusFieldMixin, IndentedInvalidFieldsMixin, forms.Form):
+class SupplierForm(
+        AutoFocusFieldMixin, IndentedInvalidFieldsMixin, forms.Form
+):
     error_messages = {
         'different': 'Your phone numbers do not match.'
     }
@@ -298,10 +300,12 @@ def serialize_enrolment_forms(cleaned_data):
     """
     Return the shape directory-api-client expects for enrolment.
 
-    @param {dict} cleaned_data - All the fields in `CompanyForm`, `UserForm`,
-                                 `CorporateEmailAddressForm`,
-                                 `CompanyNameForm`, and
-                                 `CompanyExportStatusForm`
+    @param {dict} cleaned_data - All the fields in
+        `CompanyForm`,
+        `SupplierForm`,
+        `CorporateEmailAddressForm`,
+        `CompanyNameForm`, and
+        `CompanyExportStatusForm`
     @returns dict
 
     """
@@ -395,9 +399,9 @@ def get_company_name_form_initial_data(name):
     }
 
 
-def get_user_form_initial_data(referrer):
+def get_supplier_form_initial_data(referrer):
     """
-    Returns the shape of initial data that UserForm expects.
+    Returns the shape of initial data that SupplierForm expects.
 
     @param {str} referrer
     @returns dict
