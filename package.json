@@ -5,8 +5,6 @@
   "main": "index.js",
   "private": true,
   "scripts": {
-    "sass-watch": "./scripts/sass.sh watch",
-    "sass-dev": "./scripts/sass.sh dev",
     "sass-prod": "./scripts/sass.sh prod",
     "test": "mocha enrolment/tests/javascript"
   },

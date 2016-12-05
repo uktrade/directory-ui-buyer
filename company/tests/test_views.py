@@ -8,39 +8,67 @@ import requests
 from django.core.urlresolvers import reverse
 
 from sso.utils import SSOUser
-from company.views import SupplierCaseStudyWizardView
 from company import helpers, views
-
 
 default_sector = choices.COMPANY_CLASSIFICATIONS[1][0]
 
 
+@pytest.fixture
+def api_response_company_profile_200(api_response_200):
+    response = api_response_200
+    payload = {
+        'website': 'http://example.com',
+        'description': 'Ecommerce website',
+        'number': 123456,
+        'sectors': ['SECURITY'],
+        'logo': 'nice.jpg',
+        'name': 'Great company',
+        'keywords': 'word1 word2',
+        'employees': '501-1000',
+        'date_of_creation': '2015-03-02',
+    }
+    response.json = lambda: payload
+    return response
+
+
+@pytest.fixture
 def api_response_200():
     response = requests.Response()
     response.status_code = http.client.OK
     return response
 
 
+@pytest.fixture
 def api_response_400():
     response = requests.Response()
     response.status_code = http.client.BAD_REQUEST
     return response
 
 
-def api_response_404():
+@pytest.fixture
+def api_response_404(*args, **kwargs):
     response = requests.Response()
     response.status_code = http.client.NOT_FOUND
     return response
 
 
-def retrieve_supplier_case_study_200():
-    response = api_response_200()
+@pytest.fixture
+def retrieve_supplier_case_study_200(api_response_200):
+    response = api_response_200
     response.json = lambda: {'field': 'value'}
     return response
 
 
 def process_request(self, request):
     request.sso_user = sso_user()
+
+
+@pytest.fixture
+def company_request(rf, client, sso_user):
+    request = rf.get('/')
+    request.sso_user = sso_user
+    request.session = client.session
+    return request
 
 
 @pytest.fixture
@@ -92,7 +120,7 @@ def all_case_study_data(image_three, image_two, image_one):
 
 @pytest.fixture
 def supplier_case_study_basic_data():
-    view = SupplierCaseStudyWizardView
+    view = views.SupplierCaseStudyWizardView
     return {
         'supplier_case_study_wizard_view-current_step': view.BASIC,
         view.BASIC + '-title': 'Example',
@@ -106,7 +134,7 @@ def supplier_case_study_basic_data():
 
 @pytest.fixture
 def supplier_case_study_rich_data(image_three, image_two, image_one):
-    view = SupplierCaseStudyWizardView
+    view = views.SupplierCaseStudyWizardView
     return {
         'supplier_case_study_wizard_view-current_step': view.RICH_MEDIA,
         view.RICH_MEDIA + '-image_one': image_one,
@@ -121,7 +149,7 @@ def supplier_case_study_end_to_end(
     client, supplier_case_study_basic_data, supplier_case_study_rich_data
 ):
     # loop over each step in the supplier case study wizard and post valid data
-    view = SupplierCaseStudyWizardView
+    view = views.SupplierCaseStudyWizardView
     data_step_pairs = [
         [view.BASIC, supplier_case_study_basic_data],
         [view.RICH_MEDIA, supplier_case_study_rich_data],
@@ -136,7 +164,7 @@ def supplier_case_study_end_to_end(
 
 
 @patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
-@patch('enrolment.helpers.has_verified_company', Mock(return_value=True))
+@patch.object(views, 'has_verified_company', Mock(return_value=True))
 @patch('api_client.api_client.company.retrieve_supplier_case_study')
 def test_case_study_edit_retrieves_data(
     mock_retrieve_supplier_case_study, client
@@ -150,12 +178,12 @@ def test_case_study_edit_retrieves_data(
 
 
 @patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
-@patch('enrolment.helpers.has_verified_company', Mock(return_value=True))
+@patch.object(views, 'has_verified_company', Mock(return_value=True))
 @patch('api_client.api_client.company.retrieve_supplier_case_study')
 def test_case_study_edit_exposes_api_response_data(
-    mock_retrieve_case_study, client
+    mock_retrieve_case_study, client, retrieve_supplier_case_study_200
 ):
-    mock_retrieve_case_study.return_value = retrieve_supplier_case_study_200()
+    mock_retrieve_case_study.return_value = retrieve_supplier_case_study_200
 
     url = reverse('company-case-study-edit', kwargs={'id': '2'})
     response = client.get(url)
@@ -164,12 +192,12 @@ def test_case_study_edit_exposes_api_response_data(
 
 
 @patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
-@patch('enrolment.helpers.has_verified_company', Mock(return_value=True))
+@patch.object(views, 'has_verified_company', Mock(return_value=True))
 @patch('api_client.api_client.company.retrieve_supplier_case_study')
 def test_case_study_edit_handles_api_error(
-    mock_retrieve_case_study, client
+    mock_retrieve_case_study, client, api_response_400
 ):
-    mock_retrieve_case_study.return_value = api_response_400()
+    mock_retrieve_case_study.return_value = api_response_400
 
     url = reverse('company-case-study-edit', kwargs={'id': '2'})
     with pytest.raises(requests.exceptions.HTTPError):
@@ -177,13 +205,13 @@ def test_case_study_edit_handles_api_error(
 
 
 @patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
-@patch('enrolment.helpers.has_verified_company', Mock(return_value=True))
+@patch.object(views, 'has_verified_company', Mock(return_value=True))
 @patch.object(views.api_client.company, 'create_supplier_case_study')
 def test_case_study_create_api_success(
     mock_create_case_study, supplier_case_study_end_to_end, sso_user,
-    all_case_study_data
+    all_case_study_data, api_response_200
 ):
-    mock_create_case_study.return_value = api_response_200()
+    mock_create_case_study.return_value = api_response_200
 
     response = supplier_case_study_end_to_end()
 
@@ -196,28 +224,28 @@ def test_case_study_create_api_success(
 
 
 @patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
-@patch('enrolment.helpers.has_verified_company', Mock(return_value=True))
+@patch.object(views, 'has_verified_company', Mock(return_value=True))
 @patch.object(views.api_client.company, 'create_supplier_case_study')
 def test_case_study_create_api_failure(
-    mock_create_case_study, supplier_case_study_end_to_end
+    mock_create_case_study, supplier_case_study_end_to_end, api_response_400
 ):
-    mock_create_case_study.return_value = api_response_400()
+    mock_create_case_study.return_value = api_response_400
 
     response = supplier_case_study_end_to_end()
 
-    view = SupplierCaseStudyWizardView
+    view = views.SupplierCaseStudyWizardView
     assert response.status_code == http.client.OK
     assert response.template_name == view.failure_template
 
 
 @patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
-@patch('enrolment.helpers.has_verified_company', Mock(return_value=True))
+@patch.object(views, 'has_verified_company', Mock(return_value=True))
 @patch.object(views.api_client.company, 'update_supplier_case_study')
 def test_case_study_update_api_success(
     mock_update_case_study, supplier_case_study_end_to_end, sso_user,
-    all_case_study_data,
+    all_case_study_data, api_response_200
 ):
-    mock_update_case_study.return_value = api_response_200()
+    mock_update_case_study.return_value = api_response_200
 
     response = supplier_case_study_end_to_end(case_study_id='1')
 
@@ -231,21 +259,21 @@ def test_case_study_update_api_success(
 
 
 @patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
-@patch('enrolment.helpers.has_verified_company', Mock(return_value=True))
+@patch.object(views, 'has_verified_company', Mock(return_value=True))
 @patch.object(views.api_client.company, 'update_supplier_case_study')
 def test_case_study_update_api_failure(
-    mock_update_case_study, supplier_case_study_end_to_end
+    mock_update_case_study, supplier_case_study_end_to_end, api_response_400
 ):
-    mock_update_case_study.return_value = api_response_400()
+    mock_update_case_study.return_value = api_response_400
 
     response = supplier_case_study_end_to_end(case_study_id='1')
 
-    view = SupplierCaseStudyWizardView
+    view = views.SupplierCaseStudyWizardView
     assert response.status_code == http.client.OK
     assert response.template_name == view.failure_template
 
 
-@patch('enrolment.helpers.has_verified_company', Mock(return_value=True))
+@patch.object(views, 'has_verified_company', Mock(return_value=True))
 @patch.object(views.api_client.company, 'retrieve_profile', Mock)
 @patch.object(helpers, 'get_company_profile_from_response')
 def test_company_profile_details_exposes_context(
@@ -263,7 +291,7 @@ def test_company_profile_details_exposes_context(
     assert response.context_data['show_edit_links'] is True
 
 
-@patch('enrolment.helpers.has_verified_company', Mock(return_value=True))
+@patch.object(views, 'has_verified_company', Mock(return_value=True))
 @patch.object(helpers, 'get_company_profile_from_response')
 @patch.object(views.api_client.company, 'retrieve_profile')
 def test_company_profile_details_calls_api(
@@ -278,14 +306,14 @@ def test_company_profile_details_calls_api(
     assert mock_retrieve_profile.called_once_with(1)
 
 
-@patch('enrolment.helpers.has_verified_company', Mock(return_value=True))
+@patch.object(views, 'has_verified_company', Mock(return_value=True))
 @patch.object(helpers, 'get_company_profile_from_response')
 @patch.object(views.api_client.company, 'retrieve_profile')
 def test_company_profile_details_handles_bad_status(
     mock_retrieve_profile, mock_get_company_profile_from_response,
-    sso_request
+    sso_request, api_response_400
 ):
-    mock_retrieve_profile.return_value = api_response_400()
+    mock_retrieve_profile.return_value = api_response_400
     mock_get_company_profile_from_response.return_value = {}
     view = views.SupplierCompanyProfileDetailView.as_view()
 
@@ -293,7 +321,7 @@ def test_company_profile_details_handles_bad_status(
         view(sso_request)
 
 
-@patch('enrolment.helpers.has_verified_company', Mock(return_value=True))
+@patch.object(views, 'has_verified_company', Mock(return_value=True))
 @patch.object(views.api_client.company,
               'retrieve_public_profile_by_companies_house_number', Mock)
 @patch.object(helpers, 'get_public_company_profile_from_response')
@@ -313,7 +341,7 @@ def test_public_company_profile_details_exposes_context(
     assert response.context_data['show_edit_links'] is False
 
 
-@patch('enrolment.helpers.has_verified_company', Mock(return_value=True))
+@patch.object(views, 'has_verified_company', Mock(return_value=True))
 @patch.object(helpers, 'get_public_company_profile_from_response')
 @patch.object(views.api_client.company,
               'retrieve_public_profile_by_companies_house_number')
@@ -330,15 +358,15 @@ def test_public_company_profile_details_calls_api(
     assert mock_retrieve_public_profile.called_once_with(1)
 
 
-@patch('enrolment.helpers.has_verified_company', Mock(return_value=True))
+@patch.object(views, 'has_verified_company', Mock(return_value=True))
 @patch.object(helpers, 'get_public_company_profile_from_response')
 @patch.object(views.api_client.company,
               'retrieve_public_profile_by_companies_house_number')
 def test_public_company_profile_details_handles_bad_status(
     mock_retrieve_public_profile,
-    mock_get_public_company_profile_from_response, client
+    mock_get_public_company_profile_from_response, client, api_response_400
 ):
-    mock_retrieve_public_profile.return_value = api_response_400()
+    mock_retrieve_public_profile.return_value = api_response_400
     url = reverse(
         'public-company-profiles-detail', kwargs={'company_number': '01234567'}
     )
@@ -347,7 +375,7 @@ def test_public_company_profile_details_handles_bad_status(
         client.get(url)
 
 
-@patch('enrolment.helpers.has_verified_company', Mock(return_value=True))
+@patch.object(views, 'has_verified_company', Mock(return_value=True))
 def test_company_profile_list_exposes_context(
     client, api_response_list_public_profile_200
 ):
@@ -365,7 +393,7 @@ def test_company_profile_list_exposes_context(
     assert response.context_data['pagination'].paginator.count == 20
 
 
-@patch('enrolment.helpers.has_verified_company', Mock(return_value=True))
+@patch.object(views, 'has_verified_company', Mock(return_value=True))
 def test_company_profile_list_exposes_selected_sector_label(client):
     url = reverse('public-company-profiles-list')
     params = {'sectors': choices.COMPANY_CLASSIFICATIONS[1][0]}
@@ -375,7 +403,7 @@ def test_company_profile_list_exposes_selected_sector_label(client):
     assert response.context_data['selected_sector_label'] == expected_label
 
 
-@patch('enrolment.helpers.has_verified_company', Mock(return_value=True))
+@patch.object(views, 'has_verified_company', Mock(return_value=True))
 @patch.object(views.api_client.company, 'list_public_profiles')
 def test_company_profile_list_calls_api(
     mock_list_public_profiles, client
@@ -389,19 +417,19 @@ def test_company_profile_list_calls_api(
     )
 
 
-@patch('enrolment.helpers.has_verified_company', Mock(return_value=True))
+@patch.object(views, 'has_verified_company', Mock(return_value=True))
 @patch.object(views.api_client.company, 'list_public_profiles')
 def test_company_profile_list_handles_bad_status(
-    mock_retrieve_public_profile, client
+    mock_retrieve_public_profile, client, api_response_400
 ):
-    mock_retrieve_public_profile.return_value = api_response_400()
+    mock_retrieve_public_profile.return_value = api_response_400
     url = reverse('public-company-profiles-list')
     params = {'sectors': choices.COMPANY_CLASSIFICATIONS[1][0]}
     with pytest.raises(requests.exceptions.HTTPError):
         client.get(url, params)
 
 
-@patch('enrolment.helpers.has_verified_company', Mock(return_value=True))
+@patch.object(views, 'has_verified_company', Mock(return_value=True))
 def test_company_profile_list_handles_no_form_data(client):
     url = reverse('public-company-profiles-list')
     response = client.get(url, {})
@@ -409,7 +437,7 @@ def test_company_profile_list_handles_no_form_data(client):
     assert response.context_data['form'].errors == {}
 
 
-@patch('enrolment.helpers.has_verified_company', Mock(return_value=True))
+@patch.object(views, 'has_verified_company', Mock(return_value=True))
 @patch.object(views.api_client.company, 'list_public_profiles')
 def test_company_profile_list_handles_empty_page(mock_list_profiles, client):
     mock_list_profiles.return_value = api_response_404()
@@ -420,7 +448,7 @@ def test_company_profile_list_handles_empty_page(mock_list_profiles, client):
     assert response.get('Location') == '{url}?sectors=WATER'.format(url=url)
 
 
-@patch('enrolment.helpers.has_verified_company', Mock(return_value=True))
+@patch.object(views, 'has_verified_company', Mock(return_value=True))
 @patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
 @patch.object(views.api_client.company, 'retrieve_supplier_case_study')
 def test_supplier_case_study_exposes_context(
@@ -444,7 +472,7 @@ def test_supplier_case_study_exposes_context(
 
 
 @patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
-@patch('enrolment.helpers.has_verified_company', Mock(return_value=True))
+@patch.object(views, 'has_verified_company', Mock(return_value=True))
 @patch.object(views.api_client.company, 'retrieve_supplier_case_study')
 def test_supplier_case_study_calls_api(
     mock_retrieve_supplier_case_study, client,
@@ -460,13 +488,287 @@ def test_supplier_case_study_calls_api(
 
 
 @patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
-@patch('enrolment.helpers.has_verified_company', Mock(return_value=True))
+@patch.object(views, 'has_verified_company', Mock(return_value=True))
 @patch.object(views.api_client.company, 'retrieve_supplier_case_study')
 def test_supplier_case_study_handles_bad_status(
-    mock_retrieve_supplier_case_study, client
+    mock_retrieve_supplier_case_study, client, api_response_400
 ):
-    mock_retrieve_supplier_case_study.return_value = api_response_400()
+    mock_retrieve_supplier_case_study.return_value = api_response_400
     url = reverse('company-case-study-view', kwargs={'id': '2'})
 
     with pytest.raises(requests.exceptions.HTTPError):
         client.get(url)
+
+
+@patch.object(views, 'has_verified_company', Mock(return_value=True))
+@patch.object(views.SupplierCompanyDescriptionEditView, 'serialize_form_data',
+              Mock(return_value={'field': 'value'}))
+@patch.object(views.api_client.company, 'update_profile')
+def test_company_profile_description_api_client_call(mock_update_profile,
+                                                     company_request):
+
+    view = views.SupplierCompanyDescriptionEditView()
+    view.request = company_request
+    view.done()
+    mock_update_profile.assert_called_once_with(
+        sso_user_id=1, data={'field': 'value'}
+    )
+
+
+@patch.object(views, 'has_verified_company', Mock(return_value=True))
+@patch.object(views.SupplierCompanyDescriptionEditView, 'serialize_form_data',
+              Mock(return_value={}))
+@patch.object(views.api_client.company, 'update_profile')
+def test_company_profile_description_api_client_success(
+    mock_update_profile, company_request, api_response_200
+):
+    mock_update_profile.return_value = api_response_200
+
+    view = views.SupplierCompanyDescriptionEditView()
+    view.request = company_request
+    response = view.done()
+    assert response.status_code == http.client.FOUND
+
+
+@patch.object(views, 'has_verified_company', Mock(return_value=True))
+@patch.object(views.SupplierCompanyDescriptionEditView, 'serialize_form_data',
+              Mock(return_value={}))
+@patch.object(views.api_client.company, 'update_profile')
+def test_company_profile_description_api_client_failure(
+    mock_update_profile, company_request, api_response_400
+):
+    mock_update_profile.return_value = api_response_400
+
+    view = views.SupplierCompanyDescriptionEditView()
+    view.request = company_request
+    response = view.done()
+    assert response.status_code == http.client.OK
+    expected_template_name = (
+        views.SupplierCompanyDescriptionEditView.failure_template
+    )
+    assert response.template_name == expected_template_name
+
+
+@patch.object(views, 'has_verified_company', Mock(return_value=True))
+@patch.object(views.api_client.company, 'retrieve_profile')
+def test_company_description_edit_calls_api(
+    mock_retrieve_profile, company_request, api_response_company_profile_200
+):
+    mock_retrieve_profile.return_value = api_response_company_profile_200
+    view = views.SupplierCompanyDescriptionEditView.as_view()
+
+    view(company_request)
+
+    assert mock_retrieve_profile.called_once_with(1)
+
+
+@patch.object(views, 'has_verified_company', Mock(return_value=True))
+@patch.object(views.api_client.company, 'retrieve_profile')
+def test_company_profile_description_exposes_api_result_to_form(
+    mock_retrieve_profile, company_request, api_response_company_profile_200
+):
+    mock_retrieve_profile.return_value = api_response_company_profile_200
+    view = views.SupplierCompanyDescriptionEditView.as_view()
+    expected = api_response_company_profile_200.json()
+
+    response = view(company_request)
+
+    assert response.context_data['form'].initial == expected
+
+
+@patch.object(views, 'has_verified_company', Mock(return_value=True))
+@patch.object(views.api_client.company, 'retrieve_profile')
+def test_company_description_edit_handles_bad_api_response(
+    mock_retrieve_profile, company_request, api_response_400
+):
+
+    mock_retrieve_profile.return_value = api_response_400
+    view = views.SupplierCompanyDescriptionEditView.as_view()
+
+    with pytest.raises(requests.exceptions.HTTPError):
+        view(company_request)
+
+
+@patch.object(views, 'has_verified_company', Mock(return_value=True))
+@patch.object(views.api_client.company, 'retrieve_profile',
+              Mock(return_value=Mock(json=lambda: {})))
+def test_company_description_edit_views_use_correct_template(
+        client, rf, sso_user):
+    request = rf.get(reverse('company-edit-description'))
+    request.sso_user = sso_user
+    request.session = client.session
+    view_class = views.SupplierCompanyDescriptionEditView
+    assert view_class.form_list
+    for form_pair in view_class.form_list:
+        step_name = form_pair[0]
+        view = view_class.as_view(form_list=(form_pair,))
+        response = view(request)
+
+        assert response.template_name == [view_class.templates[step_name]]
+
+
+@patch.object(views, 'has_verified_company', Mock(return_value=True))
+@patch.object(views.SupplierCompanyProfileEditView, 'serialize_form_data',
+              Mock(return_value={'field': 'value'}))
+@patch.object(views.api_client.company, 'update_profile')
+def test_company_profile_edit_api_client_call(
+    mock_update_profile, company_request
+):
+    view = views.SupplierCompanyProfileEditView()
+    view.request = company_request
+    view.done()
+    mock_update_profile.assert_called_once_with(
+        sso_user_id=1, data={'field': 'value'}
+    )
+
+
+@patch.object(views, 'has_verified_company', Mock(return_value=True))
+@patch.object(views.SupplierCompanyProfileEditView, 'serialize_form_data',
+              Mock(return_value={}))
+@patch.object(views.api_client.company, 'update_profile')
+def test_company_profile_edit_api_client_success(
+    mock_update_profile, company_request, api_response_200
+):
+    mock_update_profile.return_value = api_response_200
+
+    view = views.SupplierCompanyProfileEditView()
+    view.request = company_request
+    response = view.done()
+    assert response.status_code == http.client.FOUND
+
+
+@patch.object(views, 'has_verified_company', Mock(return_value=True))
+@patch.object(views.SupplierCompanyProfileEditView, 'serialize_form_data',
+              Mock(return_value={}))
+@patch.object(views.api_client.company, 'update_profile')
+def test_company_profile_edit_api_client_failure(
+    mock_update_profile, company_request, api_response_400
+):
+    mock_update_profile.return_value = api_response_400
+
+    view = views.SupplierCompanyProfileEditView()
+    view.request = company_request
+    response = view.done()
+    assert response.status_code == http.client.OK
+    assert response.template_name == (
+        views.SupplierCompanyProfileEditView.failure_template
+    )
+
+
+@patch.object(views, 'has_verified_company', Mock(return_value=True))
+@patch.object(views.api_client.company, 'retrieve_profile')
+def test_company_profile_edit_calls_api(
+    mock_retrieve_profile, company_request, api_response_company_profile_200
+):
+
+    mock_retrieve_profile.return_value = api_response_company_profile_200
+    view = views.SupplierCompanyProfileEditView.as_view()
+
+    view(company_request)
+
+    assert mock_retrieve_profile.called_once_with(1)
+
+
+@patch.object(views, 'has_verified_company', Mock(return_value=True))
+@patch.object(views.api_client.company, 'retrieve_profile')
+def test_company_profile_edit_exposes_api_result_to_form(
+    mock_retrieve_profile, company_request, api_response_company_profile_200
+):
+    mock_retrieve_profile.return_value = api_response_company_profile_200
+    view = views.SupplierCompanyProfileEditView.as_view()
+    expected = api_response_company_profile_200.json()
+
+    response = view(company_request)
+
+    assert response.context_data['form'].initial == expected
+
+
+@patch.object(views, 'has_verified_company', Mock(return_value=True))
+@patch.object(views.api_client.company, 'retrieve_profile')
+def test_company_profile_edit_handles_bad_api_response(
+    mock_retrieve_profile, company_request, api_response_400
+):
+    mock_retrieve_profile.return_value = api_response_400
+    view = views.SupplierCompanyProfileEditView.as_view()
+
+    with pytest.raises(requests.exceptions.HTTPError):
+        view(company_request)
+
+
+@patch.object(views, 'has_verified_company', Mock(return_value=False))
+def test_supplier_company_redirect_non_verified_company(sso_request):
+    view_classes = [
+        views.SupplierCompanyProfileEditView,
+        views.SupplierCompanyProfileLogoEditView,
+        views.SupplierCompanyDescriptionEditView,
+    ]
+    for ViewClass in view_classes:
+        response = ViewClass.as_view()(sso_request)
+
+        assert response.status_code == http.client.FOUND
+        assert response.get('Location') == reverse('register-instructions')
+
+
+@patch.object(views, 'has_verified_company', Mock(return_value=True))
+@patch.object(views.api_client.company, 'retrieve_profile',
+              Mock(return_value=Mock(json=lambda: {})))
+def test_company_edit_views_use_correct_template(client, rf, sso_user):
+    request = rf.get(reverse('company-edit'))
+    request.sso_user = sso_user
+    request.session = client.session
+    view_class = views.SupplierCompanyProfileEditView
+    assert view_class.form_list
+    for form_pair in view_class.form_list:
+        step_name = form_pair[0]
+        view = view_class.as_view(form_list=(form_pair,))
+        response = view(request)
+
+        assert response.template_name == [view_class.templates[step_name]]
+
+
+@patch.object(views, 'has_verified_company', Mock(return_value=True))
+@patch.object(views.SupplierCompanyProfileLogoEditView, 'serialize_form_data',
+              Mock(return_value={'field': 'value'}))
+@patch.object(views.api_client.company, 'update_profile')
+def test_company_profile_logo_api_client_call(mock_update_profile,
+                                              company_request):
+    view = views.SupplierCompanyProfileLogoEditView()
+    view.request = company_request
+    view.done()
+    mock_update_profile.assert_called_once_with(
+        sso_user_id=1, data={'field': 'value'}
+    )
+
+
+@patch.object(views, 'has_verified_company', Mock(return_value=True))
+@patch.object(views.SupplierCompanyProfileLogoEditView, 'serialize_form_data',
+              Mock(return_value={}))
+@patch.object(views.api_client.company, 'update_profile')
+def test_company_profile_logo_api_client_success(
+    mock_update_profile, company_request, api_response_200
+):
+    mock_update_profile.return_value = api_response_200
+
+    view = views.SupplierCompanyProfileLogoEditView()
+    view.request = company_request
+    response = view.done()
+    assert response.status_code == http.client.FOUND
+
+
+@patch.object(views, 'has_verified_company', Mock(return_value=True))
+@patch.object(views.SupplierCompanyProfileLogoEditView, 'serialize_form_data',
+              Mock(return_value={}))
+@patch.object(views.api_client.company, 'update_profile')
+def test_company_profile_logo_api_client_failure(
+    mock_update_profile, company_request, api_response_400
+):
+    mock_update_profile.return_value = api_response_400
+
+    view = views.SupplierCompanyProfileLogoEditView()
+    view.request = company_request
+    response = view.done()
+    assert response.status_code == http.client.OK
+    expected_template_name = (
+        views.SupplierCompanyProfileLogoEditView.failure_template
+    )
+    assert response.template_name == expected_template_name

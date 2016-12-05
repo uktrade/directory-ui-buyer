@@ -5,21 +5,21 @@ from django.views.decorators.cache import cache_page
 from enrolment.views import (
     CachableTemplateView,
     CompanyEmailConfirmationView,
-    EnrolmentView,
-    EnrolmentInstructionsView,
-    SupplierCompanyDescriptionEditView,
-    SupplierCompanyProfileEditView,
-    SupplierCompanyProfileLogoEditView,
     DomesticLandingView,
+    EnrolmentInstructionsView,
+    EnrolmentView,
     InternationalLandingView,
 )
 from supplier.views import SupplierProfileDetailView
 from company.views import (
     PublicProfileDetailView,
     PublicProfileListView,
-    SupplierCompanyProfileDetailView,
-    SupplierCaseStudyWizardView,
     SupplierCaseStudyDetailView,
+    SupplierCaseStudyWizardView,
+    SupplierCompanyDescriptionEditView,
+    SupplierCompanyProfileDetailView,
+    SupplierCompanyProfileEditView,
+    SupplierCompanyProfileLogoEditView,
 )
 from admin.proxy import AdminProxyView
 
