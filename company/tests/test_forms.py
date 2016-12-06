@@ -85,11 +85,12 @@ def test_auto_focus_mixin_installed():
     FormClasses = [
         forms.CaseStudyBasicInfoForm,
         forms.CaseStudyRichMediaForm,
+        forms.CompanyAddressVerificationForm,
         forms.CompanyBasicInfoForm,
         forms.CompanyClassificationForm,
+        forms.CompanyContactDetailsForm,
         forms.CompanyDescriptionForm,
         forms.CompanyLogoForm,
-        forms.CompanySizeForm,
         forms.PublicProfileSearchForm,
     ]
     for FormClass in FormClasses:
@@ -100,11 +101,12 @@ def test_indent_invalid_mixin_installed():
     FormClasses = [
         forms.CaseStudyBasicInfoForm,
         forms.CaseStudyRichMediaForm,
+        forms.CompanyAddressVerificationForm,
         forms.CompanyBasicInfoForm,
         forms.CompanyClassificationForm,
+        forms.CompanyContactDetailsForm,
         forms.CompanyDescriptionForm,
         forms.CompanyLogoForm,
-        forms.CompanySizeForm,
         forms.PublicProfileSearchForm,
     ]
     for FormClass in FormClasses:
@@ -217,9 +219,12 @@ def test_company_classification_form_sectors_validator():
 
 
 def test_company_profile_form_accepts_valid_data():
-    data = {'name': 'Amazon UK',
-            'website': 'http://amazon.co.uk',
-            'keywords': 'Ecommerce'}
+    data = {
+        'name': 'Amazon UK',
+        'website': 'http://amazon.co.uk',
+        'keywords': 'Ecommerce',
+        'employees': '1-10',
+    }
     form = forms.CompanyBasicInfoForm(data=data)
 
     valid = form.is_valid()
@@ -229,14 +234,25 @@ def test_company_profile_form_accepts_valid_data():
         'name': 'Amazon UK',
         'website': 'http://amazon.co.uk',
         'keywords': 'Ecommerce',
+        'employees': '1-10',
     }
 
 
 def test_serialize_company_profile_forms():
+
     actual = forms.serialize_company_profile_forms({
-        'name': 'Example ltd.',
-        'keywords': 'Jolly good exporter.',
+        'address_line_1': '123 Fake Street',
+        'address_line_2': 'Fakeville',
+        'country': 'GB',
+        'email_address': 'Jeremy@example.com',
+        'email_full_name': 'Jeremy email',
         'employees': '1-10',
+        'keywords': 'Jolly good exporter.',
+        'locality': 'London',
+        'name': 'Example ltd.',
+        'po_box': '124',
+        'postal_code': 'E14 9IX',
+        'postal_full_name': 'Jeremy postal',
         'sectors': ['1', '2'],
         'website': 'http://example.com',
     })
@@ -246,6 +262,17 @@ def test_serialize_company_profile_forms():
         'name': 'Example ltd.',
         'sectors': ['1', '2'],
         'website': 'http://example.com',
+        'contact_details': {
+            'address_line_1': '123 Fake Street',
+            'address_line_2': 'Fakeville',
+            'country': 'GB',
+            'email_address': 'Jeremy@example.com',
+            'email_full_name': 'Jeremy email',
+            'locality': 'London',
+            'po_box': '124',
+            'postal_code': 'E14 9IX',
+            'postal_full_name': 'Jeremy postal',
+        }
     }
     assert actual == expected
 
@@ -269,3 +296,52 @@ def test_serialize_company_description_forms():
         'description': 'Jolly good exporter.',
     }
     assert actual == expected
+
+
+def test_company_contact_details_rejects_invalid():
+    form = forms.CompanyContactDetailsForm(data={})
+
+    assert form.is_valid() is False
+    assert form.errors['email_address'] == [REQUIRED_MESSAGE]
+    assert form.errors['email_full_name'] == [REQUIRED_MESSAGE]
+
+
+def test_company_contact_details_accepts_valid():
+    data = {
+        'email_address': 'Jeremy@example.com',
+        'email_full_name': 'Jeremy',
+    }
+    form = forms.CompanyContactDetailsForm(data=data)
+
+    assert form.is_valid() is True
+    assert form.cleaned_data == data
+
+
+def test_company_address_verification_rejects_invalid():
+    form = forms.CompanyAddressVerificationForm(data={})
+
+    assert form.is_valid() is False
+    assert form.errors['address_line_1'] == [REQUIRED_MESSAGE]
+    assert form.errors['postal_code'] == [REQUIRED_MESSAGE]
+
+    assert 'postal_full_name' not in form.errors
+    assert 'address_line_2' not in form.errors
+    assert 'locality' not in form.errors
+    assert 'po_box' not in form.errors
+    assert 'country' not in form.errors
+
+
+def test_company_address_verification_accepts_valid():
+    data = {
+        'postal_full_name': 'Peter',
+        'address_line_1': '123 Fake Street',
+        'address_line_2': 'Fakeville',
+        'locality': 'London',
+        'postal_code': 'E14 8UX',
+        'po_box': '123',
+        'country': 'GB',
+    }
+    form = forms.CompanyAddressVerificationForm(data=data)
+
+    assert form.is_valid() is True
+    assert form.cleaned_data == data

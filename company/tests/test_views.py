@@ -145,6 +145,78 @@ def supplier_case_study_rich_data(image_three, image_two, image_one):
 
 
 @pytest.fixture
+def all_company_profile_data():
+    return {
+        'name': 'Example Corp.',
+        'website': 'http://www.example.com',
+        'keywords': 'Nice, Great',
+        'employees': choices.EMPLOYEES[1][0],
+        'sectors': [choices.COMPANY_CLASSIFICATIONS[1][0]],
+        'contact_details': {
+            'email_full_name': 'Jeremy',
+            'email_address': 'test@example.com',
+            'postal_full_name': 'Jeremy',
+            'address_line_1': '123 Fake Street',
+            'address_line_2': 'Fakeville',
+            'locality': 'London',
+            'postal_code': 'E14 6XK',
+            'po_box': 'abc',
+            'country': 'GB',
+        },
+    }
+
+
+@pytest.fixture
+def company_profile_address_data(all_company_profile_data):
+    view = views.SupplierCompanyProfileEditView
+    data = all_company_profile_data['contact_details']
+    return {
+        'supplier_company_profile_edit_view-current_step': view.ADDRESS,
+        view.ADDRESS + '-postal_full_name': data['postal_full_name'],
+        view.ADDRESS + '-address_line_1': data['address_line_1'],
+        view.ADDRESS + '-address_line_2': data['address_line_2'],
+        view.ADDRESS + '-locality': data['locality'],
+        view.ADDRESS + '-postal_code': data['postal_code'],
+        view.ADDRESS + '-po_box': data['po_box'],
+        view.ADDRESS + '-country': data['country'],
+    }
+
+
+@pytest.fixture
+def company_profile_basic_data(all_company_profile_data):
+    view = views.SupplierCompanyProfileEditView
+    data = all_company_profile_data
+    return {
+        'supplier_company_profile_edit_view-current_step': view.BASIC,
+        view.BASIC + '-name': data['name'],
+        view.BASIC + '-website': data['website'],
+        view.BASIC + '-keywords': data['keywords'],
+        view.BASIC + '-employees': data['employees'],
+    }
+
+
+@pytest.fixture
+def company_profile_classification_data(all_company_profile_data):
+    view = views.SupplierCompanyProfileEditView
+    data = all_company_profile_data
+    return {
+        'supplier_company_profile_edit_view-current_step': view.CLASSIFICATION,
+        view.CLASSIFICATION + '-sectors': data['sectors'],
+    }
+
+
+@pytest.fixture
+def company_profile_contact_data(all_company_profile_data):
+    view = views.SupplierCompanyProfileEditView
+    data = all_company_profile_data['contact_details']
+    return {
+        'supplier_company_profile_edit_view-current_step': view.CONTACT,
+        view.CONTACT + '-email_address': data['email_address'],
+        view.CONTACT + '-email_full_name': data['email_full_name'],
+    }
+
+
+@pytest.fixture
 def supplier_case_study_end_to_end(
     client, supplier_case_study_basic_data, supplier_case_study_rich_data
 ):
@@ -157,6 +229,29 @@ def supplier_case_study_end_to_end(
 
     def inner(case_study_id=''):
         url = reverse('company-case-study-edit', kwargs={'id': case_study_id})
+        for key, data in data_step_pairs:
+            response = client.post(url, data)
+        return response
+    return inner
+
+
+@pytest.fixture
+def company_profile_edit_end_to_end(
+    client, company_profile_address_data,
+    company_profile_basic_data, company_profile_classification_data,
+    company_profile_contact_data, api_response_200
+):
+    # loop over each step in the supplier case study wizard and post valid data
+    view = views.SupplierCompanyProfileEditView
+    data_step_pairs = [
+        [view.BASIC, company_profile_basic_data],
+        [view.CLASSIFICATION, company_profile_classification_data],
+        [view.CONTACT, company_profile_contact_data],
+        [view.ADDRESS, company_profile_address_data],
+    ]
+
+    def inner(case_study_id=''):
+        url = reverse('company-edit')
         for key, data in data_step_pairs:
             response = client.post(url, data)
         return response
@@ -772,3 +867,37 @@ def test_company_profile_logo_api_client_failure(
         views.SupplierCompanyProfileLogoEditView.failure_template
     )
     assert response.template_name == expected_template_name
+
+
+@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
+@patch.object(views, 'has_verified_company', Mock(return_value=True))
+@patch.object(views.api_client.company, 'update_profile')
+def test_supplier_company_profile_edit_create_api_success(
+    mock_update_profile, company_profile_edit_end_to_end, sso_user,
+    all_company_profile_data, api_response_200
+):
+    mock_update_profile.return_value = api_response_200
+
+    response = company_profile_edit_end_to_end()
+
+    assert response.status_code == http.client.FOUND
+    assert response.get('Location') == reverse('company-detail')
+    mock_update_profile.assert_called_once_with(
+        data=all_company_profile_data,
+        sso_user_id=sso_user.id,
+    )
+
+
+@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
+@patch.object(views, 'has_verified_company', Mock(return_value=True))
+@patch.object(views.api_client.company, 'update_profile')
+def test_supplier_company_profile_edit_create_api_failure(
+    mock_create_case_study, company_profile_edit_end_to_end, api_response_400
+):
+    mock_create_case_study.return_value = api_response_400
+
+    response = company_profile_edit_end_to_end()
+
+    view = views.SupplierCompanyProfileEditView
+    assert response.status_code == http.client.OK
+    assert response.template_name == view.failure_template

@@ -105,6 +105,14 @@ class CompanyBasicInfoForm(AutoFocusFieldMixin, IndentedInvalidFieldsMixin,
         max_length=1000,
         validators=[shared_validators.keywords_word_limit]
     )
+    employees = forms.ChoiceField(
+        choices=choices.EMPLOYEES,
+        label='How many employees are in your company?',
+        help_text=(
+            'Tell international buyers more about your business to ensure '
+            'the right buyers can find you.'
+        )
+    )
 
 
 class CompanyDescriptionForm(AutoFocusFieldMixin, IndentedInvalidFieldsMixin,
@@ -131,18 +139,6 @@ class CompanyLogoForm(AutoFocusFieldMixin, IndentedInvalidFieldsMixin,
     )
 
 
-class CompanySizeForm(AutoFocusFieldMixin, IndentedInvalidFieldsMixin,
-                      forms.Form):
-    employees = forms.ChoiceField(
-        choices=choices.EMPLOYEES,
-        label='How many employees are in your company?',
-        help_text=(
-            'Tell international buyers more about your business to ensure '
-            'the right buyers can find you.'
-        )
-    )
-
-
 class CompanyClassificationForm(AutoFocusFieldMixin,
                                 IndentedInvalidFieldsMixin, forms.Form):
     sectors = forms.MultipleChoiceField(
@@ -154,6 +150,42 @@ class CompanyClassificationForm(AutoFocusFieldMixin,
         widget=forms.CheckboxSelectMultiple(),
         validators=[shared_validators.sector_choice_limit]
     )
+
+
+class CompanyContactDetailsForm(AutoFocusFieldMixin,
+                                IndentedInvalidFieldsMixin,
+                                forms.Form):
+    email_address = forms.EmailField(
+        help_text=(
+            'This is the email address that international buyers should use'
+            ' when contacting your company.'
+        ),
+    )
+    email_full_name = forms.CharField(
+        label='Full name:',
+        max_length=200,
+        help_text=(
+            'This is the full name that international buyers should use'
+            ' when contacting your company.'
+        ),
+    )
+
+
+class CompanyAddressVerificationForm(AutoFocusFieldMixin,
+                                     IndentedInvalidFieldsMixin,
+                                     forms.Form):
+    postal_full_name = forms.CharField(
+        label='Full name:',
+        max_length=255,
+        help_text='This is the full name that letters will be addressed to.',
+        required=False,
+    )
+    address_line_1 = forms.CharField(max_length=255)
+    address_line_2 = forms.CharField(max_length=255, required=False)
+    locality = forms.CharField(label='City:', max_length=255, required=False)
+    country = forms.CharField(max_length=255, required=False)
+    postal_code = forms.CharField(max_length=255)
+    po_box = forms.CharField(max_length=255, required=False)
 
 
 def serialize_supplier_case_study_forms(cleaned_data):
@@ -186,8 +218,10 @@ def serialize_company_profile_forms(cleaned_data):
     Return the shape directory-api-client expects for company profile edit.
 
     @param {dict} cleaned_data - All the fields in `CompanyBasicInfoForm`
-                                 `CompanySizeForm`, `CompanyLogoForm`, and
-                                 `CompanyClassificationForm`
+                                 `CompanyLogoForm`,
+                                 `CompanyClassificationForm`,
+                                 `CompanyContactDetailsForm`, and
+                                 `CompanyAddressVerificationForm`.
     @returns dict
 
     """
@@ -198,6 +232,17 @@ def serialize_company_profile_forms(cleaned_data):
         'keywords': cleaned_data['keywords'],
         'employees': cleaned_data['employees'],
         'sectors': cleaned_data['sectors'],
+        'contact_details': {
+            'address_line_1': cleaned_data['address_line_1'],
+            'address_line_2': cleaned_data['address_line_2'],
+            'country': cleaned_data['country'],
+            'email_address': cleaned_data['email_address'],
+            'email_full_name': cleaned_data['email_full_name'],
+            'locality': cleaned_data['locality'],
+            'po_box': cleaned_data['po_box'],
+            'postal_code': cleaned_data['postal_code'],
+            'postal_full_name': cleaned_data['postal_full_name'],
+        }
     }
 
 
