@@ -252,21 +252,55 @@ class CompanyAddressVerificationForm(PreventTamperMixin,
     )
 
 
-class CompanyAddressVerificationForm(AutoFocusFieldMixin,
+class CompanyAddressVerificationForm(PreventTamperMixin,
+                                     AutoFocusFieldMixin,
                                      IndentedInvalidFieldsMixin,
                                      forms.Form):
+
+    tamper_proof_fields = {
+        'address_line_1',
+        'address_line_2',
+        'locality',
+        'country',
+        'postal_code',
+        'po_box',
+    }
+
     postal_full_name = forms.CharField(
         label='Full name:',
         max_length=200,
         help_text='This is the full name that letters will be addressed to.',
         required=False,
     )
-    address_line_1 = forms.CharField(max_length=200)
-    address_line_2 = forms.CharField(max_length=200, required=False)
-    locality = forms.CharField(label='City:', max_length=200, required=False)
-    country = forms.CharField(max_length=200, required=False)
-    postal_code = forms.CharField(max_length=200)
-    po_box = forms.CharField(max_length=200, required=False)
+    address_line_1 = forms.CharField(
+        max_length=200,
+        widget=forms.TextInput(attrs={'readonly': 'readonly'}),
+    )
+    address_line_2 = forms.CharField(
+        max_length=200,
+        required=False,
+        widget=forms.TextInput(attrs={'readonly': 'readonly'}),
+    )
+    locality = forms.CharField(
+        label='City:',
+        max_length=200,
+        required=False,
+        widget=forms.TextInput(attrs={'readonly': 'readonly'}),
+    )
+    country = forms.CharField(
+        max_length=200,
+        required=False,
+        widget=forms.TextInput(attrs={'readonly': 'readonly'}),
+    )
+    postal_code = forms.CharField(
+        max_length=200,
+        widget=forms.TextInput(attrs={'readonly': 'readonly'}),
+    )
+    po_box = forms.CharField(
+        max_length=200,
+        required=False,
+        widget=forms.TextInput(attrs={'readonly': 'readonly'}),
+    )
 
 
 def serialize_supplier_case_study_forms(cleaned_data):
