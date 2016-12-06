@@ -172,6 +172,19 @@ def test_get_companies_house_profile():
     assert response.json() == profile
 
 
+def test_get_companies_house_contact_details():
+    contact_details = {'address': '111!'}
+    with requests_mock.mock() as mock:
+        mock.get(
+            ('https://api.companieshouse.gov.uk/company/01234567/'
+             'registered-office-address'),
+            status_code=http.client.OK,
+            json=contact_details
+        )
+        response = helpers.get_companies_house_office_address('01234567')
+    assert response.json() == contact_details
+
+
 def test_get_company_date_of_creation_from_session(client):
     session = client.session
     key = helpers.COMPANIES_HOUSE_PROFILE_SESSION_KEY

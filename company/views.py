@@ -16,7 +16,10 @@ from django.views.generic.edit import FormView
 from company import forms, helpers
 
 from api_client import api_client
-from enrolment.helpers import has_verified_company
+from enrolment.helpers import (
+    get_companies_house_office_address,
+    has_verified_company,
+)
 from sso.utils import SSOLoginRequiredMixin
 
 
@@ -240,11 +243,28 @@ class SupplierCompanyProfileEditView(
     form_serializer = staticmethod(forms.serialize_company_profile_forms)
 
     def get_form_initial(self, step):
+        if step in [self.ADDRESS, self.CONTACT]:
+            return self.get_contact_details()
+        return self.get_company_profile()
+
+    def get_company_profile(self):
         sso_user_id = self.request.sso_user.id
         response = api_client.company.retrieve_profile(sso_user_id)
         if not response.ok:
             response.raise_for_status()
         return response.json()
+
+    def get_contact_details_from_companies_house(self, number):
+        response = get_companies_house_office_address(number)
+        if not response.ok:
+            response.raise_for_status()
+        return response.json()
+
+    def get_contact_details(self):
+        profile = self.get_company_profile()
+        if profile.get('contact_details'):
+            return profile['contact_details']
+        return self.get_contact_details_from_companies_house(profile['number'])
 
     def get_template_names(self):
         return [self.templates[self.steps.current]]

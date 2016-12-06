@@ -15,6 +15,11 @@ MESSAGE_AUTH_FAILED = 'Auth failed with Companies House'
 MESSAGE_NETWORK_ERROR = 'A network error occurred'
 COMPANIES_HOUSE_DATE_FORMAT = '%Y-%m-%d'
 COMPANY_PROFILE_URL = 'https://api.companieshouse.gov.uk/company/{number}'
+COMPANY_OFFICE_URL = (
+    'https://api.companieshouse.gov.uk/company/{number}/'
+    'registered-office-address'
+)
+
 
 logger = logging.getLogger(__name__)
 
@@ -99,6 +104,11 @@ def companies_house_client(url):
 
 def get_companies_house_profile(number):
     url = COMPANY_PROFILE_URL.format(number=number)
+    return companies_house_client(url)
+
+
+def get_companies_house_office_address(number):
+    url = COMPANY_OFFICE_URL.format(number=number)
     return companies_house_client(url)
 
 
