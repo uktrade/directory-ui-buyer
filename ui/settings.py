@@ -53,7 +53,6 @@ MIDDLEWARE_CLASSES = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'sso.middleware.SSOUserMiddleware',
-    'enrolment.middleware.ReferrerMiddleware',
 ]
 
 ROOT_URLCONF = 'ui.urls'

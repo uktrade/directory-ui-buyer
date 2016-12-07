@@ -6,7 +6,7 @@ import pytest
 
 from django.core.urlresolvers import reverse
 
-from enrolment import forms, helpers, validators
+from enrolment import forms, helpers
 from enrolment.views import (
     api_client,
     CompanyEmailConfirmationView,
@@ -15,19 +15,6 @@ from enrolment.views import (
     InternationalLandingView,
 )
 from sso.utils import SSOUser
-
-
-valid_supplier_data_step = {
-    'enrolment_view-current_step': EnrolmentView.SUPPLIER,
-    EnrolmentView.SUPPLIER + '-mobile_number': '07507405138',
-    EnrolmentView.SUPPLIER + '-mobile_confirmed': '07507405138',
-    EnrolmentView.SUPPLIER + '-terms_agreed': True,
-}
-
-valid_sms_verify_step = {
-    'enrolment_view-current_step': EnrolmentView.SMS_VERIFY,
-    EnrolmentView.SMS_VERIFY + '-sms_code': '123456',
-}
 
 
 @pytest.fixture
@@ -97,13 +84,6 @@ def api_response_200(*args, **kwargs):
 def api_response_400(*args, **kwargs):
     response = requests.Response()
     response.status_code = http.client.BAD_REQUEST
-    return response
-
-
-@pytest.fixture
-def api_response_send_verification_sms_200(api_response_200):
-    response = api_response_200
-    response.json = lambda: {'sms_code': '12345'}
     return response
 
 
@@ -208,30 +188,6 @@ def test_enrolment_instructions_view_handles_sso_user_without_company(
     assert response.status_code == http.client.OK
 
 
-@patch('enrolment.helpers.has_verified_company', Mock(return_value=False))
-@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
-@patch.object(forms, 'get_supplier_form_initial_data',
-              Mock(return_value={'referrer': 'google'}))
-def test_enrolment_view_includes_referrer(client):
-    url = reverse('register', kwargs={'step': EnrolmentView.SUPPLIER})
-
-    response = client.get(url)
-
-    assert response.context_data['form'].initial['referrer'] == 'google'
-
-
-@patch('enrolment.helpers.has_verified_company', Mock(return_value=False))
-@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
-def test_enrolment_email_view_includes_email(client):
-    url = reverse('register', kwargs={'step': EnrolmentView.EMAIL})
-
-    response = client.get(url)
-
-    email = response._request.sso_user.email
-    expected = forms.get_email_form_initial_data(email)
-    assert response.context_data['form'].initial == expected
-
-
 @patch('enrolment.helpers.has_verified_company', Mock(return_value=True))
 @patch.object(EnrolmentView, 'get_all_cleaned_data', return_value={})
 @patch.object(forms, 'serialize_enrolment_forms')
@@ -278,18 +234,6 @@ def test_enrolment_views_use_correct_template(client):
         assert response.template_name == [view_class.templates[step_name]]
 
 
-@patch('enrolment.helpers.has_verified_company', Mock(return_value=False))
-@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
-@patch.object(helpers, 'get_sms_session_code',
-              Mock(return_value=helpers.encrypt_sms_code(123)))
-def test_enrolment_view_passes_sms_code_to_form(client):
-    url = reverse('register', kwargs={'step': EnrolmentView.SMS_VERIFY})
-    response = client.get(url)
-
-    encoded_sms_code = response.context_data['form'].encoded_sms_code
-    assert helpers.check_encrypted_sms_cookie(123, encoded_sms_code)
-
-
 @patch('enrolment.helpers.has_verified_company', return_value=True)
 @patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
 def test_enrolment_logged_in_has_company_redirects(
@@ -319,59 +263,6 @@ def test_enrolment_logged_out_has_company_redirects(
          '?next=http%3A//testserver/register/' + step
     )
     mock_has_verified_company.assert_not_called()
-
-
-@patch('enrolment.helpers.has_verified_company', Mock(return_value=False))
-@patch.object(validators.api_client.supplier, 'validate_mobile_number', Mock())
-@patch.object(api_client.registration, 'send_verification_sms')
-@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
-def test_enrolment_calls_api(
-    mock_api_call, client, api_response_send_verification_sms_200
-):
-    mock_api_call.return_value = api_response_send_verification_sms_200
-    step = EnrolmentView.SUPPLIER
-    url = reverse('register', kwargs={'step': step})
-    client.get(url)
-    response = client.post(url, valid_supplier_data_step)
-
-    assert response.status_code == http.client.FOUND
-    mock_api_call.assert_called_once_with(
-        phone_number=valid_supplier_data_step[step + '-mobile_number']
-    )
-
-
-@patch('enrolment.helpers.has_verified_company', Mock(return_value=False))
-@patch.object(validators.api_client.supplier, 'validate_mobile_number', Mock())
-@patch.object(api_client.registration, 'send_verification_sms')
-@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
-def test_enrolment_handles_good_response(
-    mock_api_call, api_response_send_verification_sms_200, client
-):
-
-    mock_api_call.return_value = api_response_send_verification_sms_200
-    url = reverse('register', kwargs={'step': EnrolmentView.SUPPLIER})
-    client.get(url)
-    response = client.post(url, valid_supplier_data_step)
-
-    actual = helpers.get_sms_session_code(client.session)
-
-    assert response.status_code == http.client.FOUND
-    assert helpers.check_encrypted_sms_cookie('12345', actual)
-
-
-@patch('enrolment.helpers.has_verified_company', Mock(return_value=False))
-@patch.object(validators.api_client.supplier, 'validate_mobile_number', Mock())
-@patch.object(api_client.registration, 'send_verification_sms',
-              api_response_400)
-@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
-def test_enrolment_handles_bad_response(client):
-    step = EnrolmentView.SUPPLIER
-    with pytest.raises(requests.exceptions.HTTPError):
-        url = reverse('register', kwargs={'step': step})
-        client.get(url)
-        response = client.post(url, valid_supplier_data_step)
-
-        assert response.status_code == http.client.INTERNAL_SERVER_ERROR
 
 
 @patch.object(api_client.buyer, 'send_form')

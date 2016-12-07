@@ -76,11 +76,6 @@ def test_company_profile_form_supports_file_upload():
     assert 'enctype="multipart/form-data"' in html
 
 
-def test_supplier_form_renders_title():
-    html = render_to_string('supplier-form.html', {})
-    assert 'Your details' in html
-
-
 def test_aims_form_renders_title():
     html = render_to_string('aims-form.html', {})
     assert 'Your exporting aims' in html

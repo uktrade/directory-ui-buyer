@@ -7,6 +7,7 @@ from directory_validators import enrolment as shared_enrolment_validators
 from directory_validators.constants import choices
 
 from enrolment.forms import IndentedInvalidFieldsMixin, AutoFocusFieldMixin
+from enrolment.fields import MobilePhoneNumberField
 
 
 class PublicProfileSearchForm(IndentedInvalidFieldsMixin, AutoFocusFieldMixin,
@@ -156,18 +157,29 @@ class CompanyClassificationForm(AutoFocusFieldMixin,
 class CompanyContactDetailsForm(AutoFocusFieldMixin,
                                 IndentedInvalidFieldsMixin,
                                 forms.Form):
-    email_address = forms.EmailField(
-        help_text=(
-            'This is the email address that international buyers should use'
-            ' when contacting your company.'
-        ),
-    )
+
+    error_messages = {
+        'different': 'Your emails do not match.'
+    }
+
     email_full_name = forms.CharField(
         label='Full name:',
         max_length=200,
         help_text=(
             'This is the full name that international buyers should use'
             ' when contacting your company.'
+        ),
+    )
+    email_address = forms.EmailField(
+        help_text=(
+            'This is the email address that international buyers should use'
+            ' when contacting your company.'
+        ),
+    )
+    mobile_number = MobilePhoneNumberField(
+        label='Your mobile phone number:',
+        help_text=(
+            'We will send a verification code to this mobile phone number.'
         ),
     )
 
@@ -306,6 +318,7 @@ def serialize_company_profile_forms(cleaned_data):
             'po_box': cleaned_data['po_box'],
             'postal_code': cleaned_data['postal_code'],
             'postal_full_name': cleaned_data['postal_full_name'],
+            'mobile_number': cleaned_data['mobile_number'],
         }
     }
 

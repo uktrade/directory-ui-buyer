@@ -47,6 +47,14 @@ class CompanyForm(AutoFocusFieldMixin, IndentedInvalidFieldsMixin, forms.Form):
         fillchar='0',
     )
 
+    terms_agreed = forms.BooleanField(
+        label=mark_safe(
+            'Tick this box to accept the '
+            '<a href="/terms_and_conditions" target="_blank">terms and '
+            'conditions</a> of the Find a Buyer service.'
+        )
+    )
+
     def clean_company_number(self):
         value = self.cleaned_data['company_number']
         # by this point the number passed `company_number.validarors`,
@@ -94,102 +102,6 @@ class CompanyExportStatusForm(AutoFocusFieldMixin, IndentedInvalidFieldsMixin,
     )
 
 
-class CompanyEmailAddressForm(AutoFocusFieldMixin, IndentedInvalidFieldsMixin,
-                              forms.Form):
-    error_messages = {
-        'different': 'Your emails do not match.'
-    }
-    company_email = forms.EmailField(
-        label='Email address:',
-        help_text=(
-            'Please enter a company email address rather than a personal '
-            'email address.'
-        ),
-        validators=helpers.halt_validation_on_failure(
-            shared_validators.email_domain_free,
-            shared_validators.email_domain_disposable,
-            validators.email_address,
-        )
-    )
-    email_confirmed = forms.EmailField(
-        label='Please confirm your email address:',
-    )
-
-    def clean_email_confirmed(self):
-        email = self.cleaned_data.get('company_email')
-        confirmed = self.cleaned_data.get('email_confirmed')
-        if (email and confirmed and email != confirmed):
-            raise forms.ValidationError(self.error_messages['different'])
-        return confirmed
-
-
-class SupplierForm(
-        AutoFocusFieldMixin, IndentedInvalidFieldsMixin, forms.Form
-):
-    error_messages = {
-        'different': 'Your phone numbers do not match.'
-    }
-    mobile_number = fields.MobilePhoneNumberField(
-        label='Your mobile phone number:',
-        help_text=(
-            'We will send a verification code to this mobile phone number.'
-        ),
-        validators=helpers.halt_validation_on_failure(
-            validators.mobile_number,
-        )
-    )
-    mobile_confirmed = fields.MobilePhoneNumberField(
-        label='Please confirm your mobile phone number:'
-    )
-    terms_agreed = forms.BooleanField(
-        label=mark_safe(
-            'Tick this box to accept the '
-            '<a href="/terms_and_conditions" target="_blank">terms and '
-            'conditions</a> of the Find a Buyer service.'
-        )
-    )
-    referrer = forms.CharField(required=False, widget=forms.HiddenInput())
-
-    def clean_mobile_confirmed(self):
-        mobile = self.cleaned_data.get('mobile_number')
-        confirmed = self.cleaned_data.get('mobile_confirmed')
-
-        if (mobile and confirmed) and (mobile != confirmed):
-            raise forms.ValidationError(self.error_messages['different'])
-
-        return confirmed
-
-
-class PhoneNumberVerificationForm(AutoFocusFieldMixin,
-                                  IndentedInvalidFieldsMixin, forms.Form):
-
-    error_messages = {
-        'different': 'Incorrect code.'
-    }
-
-    sms_code = forms.CharField(
-        label='Enter the verification code from the text message we sent you:',
-        help_text=mark_safe(
-            'We sent you a text message containing a six digit code. Continue '
-            'creating your Find a Buyer profile by entering this code. '
-            '<a href="/register/mobile" target="_self">'
-            'Create a new code</a> if you do not receive the text message in '
-            '10 minutes.'
-        ),
-    )
-
-    def __init__(self, *args, **kwargs):
-        self.encoded_sms_code = str(kwargs.pop('encoded_sms_code'))
-        super().__init__(*args, **kwargs)
-
-    def clean_sms_code(self):
-        provided = self.cleaned_data['sms_code']
-        encoded = self.encoded_sms_code
-        if not helpers.check_encrypted_sms_cookie(provided, encoded):
-            raise forms.ValidationError(self.error_messages['different'])
-        return provided
-
-
 class InternationalBuyerForm(AutoFocusFieldMixin, IndentedInvalidFieldsMixin,
                              forms.Form):
     PLEASE_SELECT_LABEL = 'Please select a sector'
@@ -220,8 +132,6 @@ def serialize_enrolment_forms(cleaned_data):
 
     @param {dict} cleaned_data - All the fields in
         `CompanyForm`,
-        `SupplierForm`,
-        `CorporateEmailAddressForm`,
         `CompanyNameForm`, and
         `CompanyExportStatusForm`
     @returns dict
@@ -229,11 +139,8 @@ def serialize_enrolment_forms(cleaned_data):
     """
 
     return {
-        'company_email': cleaned_data['company_email'],
         'company_name': cleaned_data['name'],
         'company_number': cleaned_data['company_number'],
-        'mobile_number': cleaned_data['mobile_number'],
-        'referrer': cleaned_data['referrer'],
         'export_status': cleaned_data['export_status'],
     }
 
@@ -266,33 +173,4 @@ def get_company_name_form_initial_data(name):
 
     return {
         'name': name,
-    }
-
-
-def get_supplier_form_initial_data(referrer):
-    """
-    Returns the shape of initial data that SupplierForm expects.
-
-    @param {str} referrer
-    @returns dict
-
-    """
-
-    return {
-        'referrer': referrer,
-    }
-
-
-def get_email_form_initial_data(email):
-    """
-    Returns the shape of initial data that CompanyEmailAddressForm expects.
-
-    @param {str} email
-    @returns dict
-
-    """
-
-    return {
-        'company_email': email,
-        'email_confirmed': email,
     }
