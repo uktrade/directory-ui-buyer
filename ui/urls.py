@@ -20,6 +20,7 @@ from company.views import (
     SupplierCompanyProfileDetailView,
     SupplierCompanyProfileEditView,
     SupplierCompanyProfileLogoEditView,
+    SupplierCompanyAddressVerificationView,
 )
 from admin.proxy import AdminProxyView
 
@@ -80,7 +81,11 @@ urlpatterns = [
         CompanyEmailConfirmationView.as_view(),
         name='confirm-company-email'
     ),
-
+    url(
+        r'^confirm-company-address$',
+        SupplierCompanyAddressVerificationView.as_view(),
+        name='confirm-company-address'
+    ),
     url(
         r'^company-profile$',
         SupplierCompanyProfileDetailView.as_view(),

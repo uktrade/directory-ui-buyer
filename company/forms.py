@@ -1,10 +1,11 @@
-from django import forms
-from django.conf import settings
-from django.core.signing import Signer
-
 from directory_validators import company as shared_validators
 from directory_validators import enrolment as shared_enrolment_validators
 from directory_validators.constants import choices
+
+from django import forms
+from django.conf import settings
+from django.core.signing import Signer
+from django.utils.safestring import mark_safe
 
 from enrolment.forms import IndentedInvalidFieldsMixin, AutoFocusFieldMixin
 from enrolment.fields import MobilePhoneNumberField
@@ -262,6 +263,31 @@ class CompanyAddressVerificationForm(PreventTamperMixin,
         required=False,
         widget=forms.TextInput(attrs={'readonly': 'readonly'}),
     )
+
+
+class AddressVerificationForm(AutoFocusFieldMixin, IndentedInvalidFieldsMixin,
+                              forms.Form):
+
+    error_messages = {
+        'different': 'Incorrect code.'
+    }
+
+    code = forms.CharField(
+        label='Enter the verification code from the letter we sent you:',
+        help_text=mark_safe(
+            'We sent you a letter through the mail containing a six digit '
+            'code.'
+        ),
+    )
+
+    def __init__(self, *args, **kwargs):
+        self.expected_code = str(kwargs.pop('expected_code'))
+        super().__init__(*args, **kwargs)
+
+    def clean_sms_code(self):
+        if self.cleaned_data['code'] != self.expected_code:
+            raise forms.ValidationError(self.error_messages['different'])
+        return self.cleaned_data['code']
 
 
 def serialize_supplier_case_study_forms(cleaned_data):

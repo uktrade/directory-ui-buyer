@@ -291,6 +291,22 @@ class SupplierCompanyProfileLogoEditView(
         return [self.templates[self.steps.current]]
 
 
+class SupplierCompanyAddressVerificationView(SupplierCompanyBaseView,
+                                             SessionWizardView):
+    ADDRESS = 'address'
+    form_list = (
+        (ADDRESS, forms.AddressVerificationForm),
+    )
+    failure_template = 'company-profile-update-error.html'
+    templates = {
+        ADDRESS: 'company-profile-address-verification-form.html',
+    }
+    form_serializer = staticmethod(forms.serialize_company_logo_forms)
+
+    def get_template_names(self):
+        return [self.templates[self.steps.current]]
+
+
 class SupplierCompanyDescriptionEditView(
         SupplierCompanyBaseView,
         UpdateCompanyProfileOnFormWizardDoneMixin,
