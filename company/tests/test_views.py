@@ -8,7 +8,8 @@ import requests
 from django.core.urlresolvers import reverse
 
 from sso.utils import SSOUser
-from company import helpers, views
+from company import helpers, views, validators
+
 
 default_sector = choices.COMPANY_CLASSIFICATIONS[1][0]
 
@@ -207,6 +208,24 @@ def company_profile_contact_data(all_company_profile_data):
 
 
 @pytest.fixture
+def all_address_verification_data():
+    return {
+        'code': 'x'*12
+    }
+
+
+@pytest.fixture
+def address_verification_address_data(all_address_verification_data):
+    view = views.SupplierCompanyAddressVerificationView
+    data = all_address_verification_data
+    step = view.ADDRESS
+    return {
+        'supplier_company_address_verification_view-current_step': step,
+        step + '-code': data['code'],
+    }
+
+
+@pytest.fixture
 def supplier_case_study_end_to_end(
     client, supplier_case_study_basic_data, supplier_case_study_rich_data
 ):
@@ -219,6 +238,21 @@ def supplier_case_study_end_to_end(
 
     def inner(case_study_id=''):
         url = reverse('company-case-study-edit', kwargs={'id': case_study_id})
+        for key, data in data_step_pairs:
+            response = client.post(url, data)
+        return response
+    return inner
+
+
+@pytest.fixture
+def address_verification_end_to_end(client, address_verification_address_data):
+    view = views.SupplierCompanyAddressVerificationView
+    data_step_pairs = [
+        [view.ADDRESS, address_verification_address_data],
+    ]
+
+    def inner(case_study_id=''):
+        url = reverse('confirm-company-address')
         for key, data in data_step_pairs:
             response = client.post(url, data)
         return response
@@ -1016,3 +1050,40 @@ def test_supplier_company_profile_initial_data_classification(
     )
 
     assert response.context_data['form'].initial == retrieve_profile_data
+
+
+@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
+@patch('company.forms.CompanyAddressVerificationForm.is_form_tampered',
+       Mock(return_value=False))
+@patch.object(views, 'has_verified_company', Mock(return_value=True))
+@patch.object(validators.api_client.company, 'verify_with_code')
+def test_company_address_validation_api_success(
+    mock_verify_with_code, address_verification_end_to_end, sso_user,
+    all_address_verification_data, api_response_200
+):
+    mock_verify_with_code.return_value = api_response_200
+
+    response = address_verification_end_to_end()
+    assert response.status_code == http.client.FOUND
+    assert response.get('Location') == reverse('company-detail')
+    mock_verify_with_code.assert_called_with(
+        code=all_address_verification_data['code'],
+        sso_user_id=sso_user.id,
+    )
+
+
+@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
+@patch('company.forms.CompanyAddressVerificationForm.is_form_tampered',
+       Mock(return_value=False))
+@patch.object(views, 'has_verified_company', Mock(return_value=True))
+@patch.object(views.api_client.company, 'verify_with_code')
+def test_company_address_validation_api_failure(
+    mock_verify_with_code, address_verification_end_to_end, api_response_400
+):
+    mock_verify_with_code.return_value = api_response_400
+
+    response = address_verification_end_to_end()
+    expected = [validators.MESSAGE_INVALID_CODE]
+
+    assert response.status_code == http.client.OK
+    assert response.context_data['form'].errors['code'] == expected

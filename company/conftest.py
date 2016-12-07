@@ -18,6 +18,7 @@ def retrieve_profile_data():
         'keywords': 'word1 word2',
         'employees': '501-1000',
         'date_of_creation': '2015-03-02',
+        'verified_with_code': True,
         'contact_details': {
             'email_full_name': 'Jeremy',
             'email_address': 'test@example.com',
@@ -47,6 +48,8 @@ def list_public_profiles_data():
                 'date_of_creation': '2015-03-01',
                 'employees': '1001-10000',
                 'supplier_case_studies': [],
+                'verified_with_code': True,
+                'contact_details': {},
             }
         ],
         'count': 20
@@ -72,7 +75,9 @@ def supplier_case_study_data():
             'supplier_case_studies': [],
             'keywords': 'Web development',
             'sectors': ['SOFTWARE_AND_COMPUTER_SERVICES'],
-            'number': '09466004'
+            'number': '09466004',
+            'verified_with_code': True,
+            'contact_details': {},
         },
         'image_one': 'https://image_one.jpg',
         'testimonial': 'I found it most pleasing.',

@@ -45,7 +45,7 @@
 								<img src="{{ case_study.image_three }}" />
 							</div>
 							{% endif %}
-							{% if features.FEATURE_PUBLIC_PROFILES_ENABLED %}
+							{% if case_study.company.is_published and features.FEATURE_PUBLIC_PROFILES_ENABLED %}
 								<div class="supplier-case-study-view-profile-container">
 									<a href="{% url 'public-company-profiles-detail' company_number=case_study.company.number %}">View full profile</a>
 								</div>
@@ -61,7 +61,7 @@
 				<div class="supplier-case-study-testimonail-container">
 					<div>Testimonial: "{{ case_study.testimonial }}"</div>
 				</div>
-				{% if features.FEATURE_PUBLIC_PROFILES_ENABLED %}
+				{% if case_study.company.is_published and features.FEATURE_PUBLIC_PROFILES_ENABLED %}
 					<div>
 						<a href="{% url 'public-company-profiles-detail' company_number=case_study.company.number %}">View full profile</a>
 					</div>

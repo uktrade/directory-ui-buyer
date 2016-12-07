@@ -371,13 +371,16 @@ def test_supplier_case_study_details_renders_case_study_details():
     assert context['case_study']['image_three'] in html
 
 
-def test_supplier_case_study_details_renders_case_study_feature_flag_on():
+def test_supplier_case_study_detail_render_profile_link_flag_on_published():
     context = {
         'case_study': {
-            'company': {"number": 3}
+            'company': {
+                'number': 3,
+                'is_published': True,
+            },
         },
         'features': {
-            'FEATURE_PUBLIC_PROFILES_ENABLED': True
+            'FEATURE_PUBLIC_PROFILES_ENABLED': True,
         },
     }
     url = reverse(
@@ -388,10 +391,53 @@ def test_supplier_case_study_details_renders_case_study_feature_flag_on():
     assert url in html
 
 
-def test_supplier_case_study_details_renders_case_study_feature_flag_off():
+def test_supplier_case_study_detail_render_profile_link_flag_on_unpublished():
     context = {
         'case_study': {
-            'company': {"number": 3}
+            'company': {
+                'number': 3,
+                'is_published': False,
+            },
+        },
+        'features': {
+            'FEATURE_PUBLIC_PROFILES_ENABLED': True,
+        },
+    }
+    url = reverse(
+        'public-company-profiles-detail', kwargs={'company_number': '3'}
+    )
+    html = render_to_string('supplier-case-study-detail.html', context)
+
+    assert url not in html
+
+
+def test_supplier_case_study_details_renders_case_study_flag_off_published():
+    context = {
+        'case_study': {
+            'company': {
+                'number': 3,
+                'is_published': True,
+            },
+        },
+        'features': {
+            'FEATURE_PUBLIC_PROFILES_ENABLED': False
+        },
+    }
+    url = reverse(
+        'public-company-profiles-detail', kwargs={'company_number': '3'}
+    )
+    html = render_to_string('supplier-case-study-detail.html', context)
+
+    assert url not in html
+
+
+def test_supplier_case_study_details_renders_case_study_flag_off_unpublished():
+    context = {
+        'case_study': {
+            'company': {
+                'number': 3,
+                'is_published': False,
+            },
         },
         'features': {
             'FEATURE_PUBLIC_PROFILES_ENABLED': False

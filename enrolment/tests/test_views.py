@@ -9,7 +9,6 @@ from django.core.urlresolvers import reverse
 from enrolment import forms, helpers
 from enrolment.views import (
     api_client,
-    CompanyEmailConfirmationView,
     EnrolmentView,
     EnrolmentInstructionsView,
     InternationalLandingView,
@@ -121,43 +120,6 @@ def api_response_company_profile_no_date_of_creation_200(api_response_200):
     }
     response.json = lambda: payload
     return response
-
-
-def test_email_confirm_missing_confirmation_code(rf, sso_user):
-    view = CompanyEmailConfirmationView.as_view()
-    request = rf.get(reverse('confirm-company-email'))
-    request.sso_user = sso_user
-    response = view(request)
-    assert response.status_code == http.client.OK
-    assert response.template_name == (
-        CompanyEmailConfirmationView.failure_template
-    )
-
-
-@patch.object(api_client.registration, 'confirm_email', return_value=False)
-def test_email_confirm_invalid_confirmation_code(mock_confirm_email, rf):
-    view = CompanyEmailConfirmationView.as_view()
-    request = rf.get(reverse(
-        'confirm-company-email'), {'code': 123}
-    )
-    response = view(request)
-    assert mock_confirm_email.called_with(123)
-    assert response.status_code == http.client.OK
-    assert response.template_name == (
-        CompanyEmailConfirmationView.failure_template
-    )
-
-
-@patch.object(api_client.registration, 'confirm_email', return_value=True)
-def test_email_confirm_valid_confirmation_code(mock_confirm_email, rf):
-    view = CompanyEmailConfirmationView.as_view()
-    request = rf.get(reverse(
-        'confirm-company-email'), {'code': 123}
-    )
-    response = view(request)
-    assert mock_confirm_email.called_with(123)
-    assert response.status_code == http.client.FOUND
-    assert response.get('Location') == reverse('company-detail')
 
 
 def test_enrolment_instructions_view_handles_no_sso_user(anon_request):

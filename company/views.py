@@ -90,6 +90,8 @@ class SupplierCaseStudyWizardView(SupplierCompanyBaseView, SessionWizardView):
         return [self.templates[self.steps.current]]
 
     def get_form_initial(self, step):
+        if not self.kwargs['id']:
+            return {}
         response = api_client.company.retrieve_supplier_case_study(
             sso_user_id=self.request.sso_user.id,
             case_study_id=self.kwargs['id'],
@@ -295,9 +297,9 @@ class SupplierCompanyAddressVerificationView(SupplierCompanyBaseView,
                                              SessionWizardView):
     ADDRESS = 'address'
     form_list = (
-        (ADDRESS, forms.AddressVerificationForm),
+        (ADDRESS, forms.CompanyCodeVerificationForm),
     )
-    failure_template = 'company-profile-update-error.html'
+    failure_template = 'company-profile-address-verification-error.html'
     templates = {
         ADDRESS: 'company-profile-address-verification-form.html',
     }
@@ -305,6 +307,14 @@ class SupplierCompanyAddressVerificationView(SupplierCompanyBaseView,
 
     def get_template_names(self):
         return [self.templates[self.steps.current]]
+
+    def get_form_kwargs(self, *args, **kwargs):
+        kwargs = super().get_form_kwargs(*args, **kwargs)
+        kwargs['sso_id'] = self.request.sso_user.id
+        return kwargs
+
+    def done(self, *args, **kwargs):
+        return redirect('company-detail')
 
 
 class SupplierCompanyDescriptionEditView(

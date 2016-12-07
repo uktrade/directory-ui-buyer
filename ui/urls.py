@@ -4,7 +4,6 @@ from django.views.decorators.cache import cache_page
 
 from enrolment.views import (
     CachableTemplateView,
-    CompanyEmailConfirmationView,
     DomesticLandingView,
     EnrolmentInstructionsView,
     EnrolmentView,
@@ -75,11 +74,6 @@ urlpatterns = [
         r'^supplier-profile$',
         SupplierProfileDetailView.as_view(),
         name='supplier-detail'
-    ),
-    url(
-        r'^confirm-company-email$',
-        CompanyEmailConfirmationView.as_view(),
-        name='confirm-company-email'
     ),
     url(
         r'^confirm-company-address$',
