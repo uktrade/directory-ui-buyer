@@ -13,22 +13,9 @@ from company import helpers, views
 default_sector = choices.COMPANY_CLASSIFICATIONS[1][0]
 
 
-@pytest.fixture
-def api_response_company_profile_200(api_response_200):
-    response = api_response_200
-    payload = {
-        'website': 'http://example.com',
-        'description': 'Ecommerce website',
-        'number': 123456,
-        'sectors': ['SECURITY'],
-        'logo': 'nice.jpg',
-        'name': 'Great company',
-        'keywords': 'word1 word2',
-        'employees': '501-1000',
-        'date_of_creation': '2015-03-02',
-    }
-    response.json = lambda: payload
-    return response
+class Wildcard:
+    def __eq__(*args, **kwargs):
+        return True
 
 
 @pytest.fixture
@@ -179,6 +166,7 @@ def company_profile_address_data(all_company_profile_data):
         view.ADDRESS + '-postal_code': data['postal_code'],
         view.ADDRESS + '-po_box': data['po_box'],
         view.ADDRESS + '-country': data['country'],
+        view.ADDRESS + '-signature': None,
     }
 
 
@@ -250,10 +238,41 @@ def company_profile_edit_end_to_end(
         [view.ADDRESS, company_profile_address_data],
     ]
 
-    def inner(case_study_id=''):
+    def inner():
         url = reverse('company-edit')
         for key, data in data_step_pairs:
             response = client.post(url, data)
+        return response
+    return inner
+
+
+@pytest.fixture
+def company_profile_edit_goto_step(
+    client, company_profile_address_data,
+    company_profile_basic_data, company_profile_classification_data,
+    company_profile_contact_data, api_response_200
+):
+    # loop over each step in the supplier case study wizard and post valid data
+    view = views.SupplierCompanyProfileEditView
+    data_step_pairs = [
+        [view.BASIC, company_profile_basic_data],
+        [view.CLASSIFICATION, company_profile_classification_data],
+        [view.CONTACT, company_profile_contact_data],
+        [view.ADDRESS, company_profile_address_data],
+    ]
+
+    def inner(step=view.ADDRESS):
+        index = next(
+            data_step_pairs.index(item)
+            for item in data_step_pairs
+            if item[0] == step
+        )
+        url = reverse('company-edit')
+        if index == 0:
+            response = client.get(url)
+        else:
+            for key, data in data_step_pairs[:index]:
+                response = client.post(url, data, follow=True)
         return response
     return inner
 
@@ -369,7 +388,6 @@ def test_case_study_update_api_failure(
 
 
 @patch.object(views, 'has_verified_company', Mock(return_value=True))
-@patch.object(views.api_client.company, 'retrieve_profile', Mock)
 @patch.object(helpers, 'get_company_profile_from_response')
 def test_company_profile_details_exposes_context(
     mock_get_company_profile_from_response, sso_request
@@ -685,8 +703,6 @@ def test_company_description_edit_handles_bad_api_response(
 
 
 @patch.object(views, 'has_verified_company', Mock(return_value=True))
-@patch.object(views.api_client.company, 'retrieve_profile',
-              Mock(return_value=Mock(json=lambda: {})))
 def test_company_description_edit_views_use_correct_template(
         client, rf, sso_user):
     request = rf.get(reverse('company-edit-description'))
@@ -805,8 +821,6 @@ def test_supplier_company_redirect_non_verified_company(sso_request):
 
 
 @patch.object(views, 'has_verified_company', Mock(return_value=True))
-@patch.object(views.api_client.company, 'retrieve_profile',
-              Mock(return_value=Mock(json=lambda: {})))
 def test_company_edit_views_use_correct_template(client, rf, sso_user):
     request = rf.get(reverse('company-edit'))
     request.sso_user = sso_user
@@ -870,6 +884,8 @@ def test_company_profile_logo_api_client_failure(
 
 
 @patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
+@patch('company.forms.CompanyAddressVerificationForm.is_form_tampered',
+       Mock(return_value=False))
 @patch.object(views, 'has_verified_company', Mock(return_value=True))
 @patch.object(views.api_client.company, 'update_profile')
 def test_supplier_company_profile_edit_create_api_success(
@@ -889,6 +905,8 @@ def test_supplier_company_profile_edit_create_api_success(
 
 
 @patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
+@patch('company.forms.CompanyAddressVerificationForm.is_form_tampered',
+       Mock(return_value=False))
 @patch.object(views, 'has_verified_company', Mock(return_value=True))
 @patch.object(views.api_client.company, 'update_profile')
 def test_supplier_company_profile_edit_create_api_failure(
@@ -901,3 +919,99 @@ def test_supplier_company_profile_edit_create_api_failure(
     view = views.SupplierCompanyProfileEditView
     assert response.status_code == http.client.OK
     assert response.template_name == view.failure_template
+
+
+@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
+@patch.object(views, 'has_verified_company', Mock(return_value=True))
+def test_supplier_company_profile_initial_address_from_profile(
+    company_profile_edit_goto_step, retrieve_profile_data
+):
+    expected = retrieve_profile_data['contact_details'].copy()
+    expected['signature'] = Wildcard()
+
+    response = company_profile_edit_goto_step(
+        step=views.SupplierCompanyProfileEditView.ADDRESS
+    )
+
+    assert response.context_data['form'].initial == expected
+
+
+@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
+@patch.object(views, 'has_verified_company', Mock(return_value=True))
+@patch('api_client.api_client.company.retrieve_profile')
+def test_supplier_company_profile_initial_address_from_companies_house(
+    mock_retrieve_profile, company_profile_edit_goto_step,
+    company_profile_companies_house_data,
+    api_response_company_profile_no_contact_details
+):
+    mock_retrieve_profile.return_value = (
+        api_response_company_profile_no_contact_details
+    )
+
+    expected = company_profile_companies_house_data.copy()
+    expected['signature'] = Wildcard()
+
+    response = company_profile_edit_goto_step(
+        step=views.SupplierCompanyProfileEditView.ADDRESS
+    )
+
+    assert response.context_data['form'].initial == expected
+
+
+@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
+@patch.object(views, 'has_verified_company', Mock(return_value=True))
+def test_supplier_company_profile_initial_data_contact_from_profile(
+    company_profile_edit_goto_step, retrieve_profile_data
+):
+    expected = retrieve_profile_data['contact_details']
+
+    response = company_profile_edit_goto_step(
+        step=views.SupplierCompanyProfileEditView.CONTACT
+    )
+
+    assert response.context_data['form'].initial == expected
+
+
+@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
+@patch.object(views, 'has_verified_company', Mock(return_value=True))
+@patch('api_client.api_client.company.retrieve_profile')
+def test_supplier_company_profile_initial_contact_from_companies_house(
+    mock_retrieve_profile, company_profile_edit_goto_step,
+    company_profile_companies_house_data,
+    api_response_company_profile_no_contact_details
+):
+    mock_retrieve_profile.return_value = (
+        api_response_company_profile_no_contact_details
+    )
+
+    expected = company_profile_companies_house_data
+
+    response = company_profile_edit_goto_step(
+        step=views.SupplierCompanyProfileEditView.CONTACT
+    )
+
+    assert response.context_data['form'].initial == expected
+
+
+@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
+@patch.object(views, 'has_verified_company', Mock(return_value=True))
+def test_supplier_company_profile_initial_data_basic(
+    company_profile_edit_goto_step, retrieve_profile_data
+):
+    response = company_profile_edit_goto_step(
+        step=views.SupplierCompanyProfileEditView.BASIC
+    )
+
+    assert response.context_data['form'].initial == retrieve_profile_data
+
+
+@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
+@patch.object(views, 'has_verified_company', Mock(return_value=True))
+def test_supplier_company_profile_initial_data_classification(
+    company_profile_edit_goto_step, retrieve_profile_data
+):
+    response = company_profile_edit_goto_step(
+        step=views.SupplierCompanyProfileEditView.CLASSIFICATION
+    )
+
+    assert response.context_data['form'].initial == retrieve_profile_data

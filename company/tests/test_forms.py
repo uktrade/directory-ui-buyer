@@ -1,6 +1,7 @@
-from unittest.mock import Mock
+from unittest.mock import Mock, patch
 
 from django.forms.fields import Field
+from django.forms import CharField, Form
 
 from company.forms import shared_enrolment_validators, shared_validators
 from directory_validators.constants import choices
@@ -308,13 +309,27 @@ def test_company_contact_details_rejects_invalid():
 
 def test_company_contact_details_accepts_valid():
     data = {
-        'email_address': 'Jeremy@example.com',
+        'email_address': 'Jeremy@exmaple.com',
         'email_full_name': 'Jeremy',
     }
     form = forms.CompanyContactDetailsForm(data=data)
 
     assert form.is_valid() is True
     assert form.cleaned_data == data
+
+
+def test_company_address_verification_detects_tamper():
+    assert issubclass(
+        forms.CompanyAddressVerificationForm, forms.PreventTamperMixin
+    )
+    assert forms.CompanyAddressVerificationForm.tamper_proof_fields == {
+        'address_line_1',
+        'address_line_2',
+        'locality',
+        'country',
+        'postal_code',
+        'po_box',
+    }
 
 
 def test_company_address_verification_rejects_invalid():
@@ -331,6 +346,8 @@ def test_company_address_verification_rejects_invalid():
     assert 'country' not in form.errors
 
 
+@patch('company.forms.CompanyAddressVerificationForm.is_form_tampered',
+       Mock(return_value=False))
 def test_company_address_verification_accepts_valid():
     data = {
         'postal_full_name': 'Peter',
@@ -340,8 +357,74 @@ def test_company_address_verification_accepts_valid():
         'postal_code': 'E14 8UX',
         'po_box': '123',
         'country': 'GB',
+        'signature': '124',
     }
     form = forms.CompanyAddressVerificationForm(data=data)
 
     assert form.is_valid() is True
     assert form.cleaned_data == data
+
+
+class PreventTamperForm(forms.PreventTamperMixin, Form):
+    tamper_proof_fields = ['field1', 'field2']
+
+    field1 = CharField()
+    field2 = CharField()
+    field3 = CharField()
+
+
+def test_prevent_tamper_rejects_change():
+    initial = {
+        'field1': '123',
+        'field2': '456',
+    }
+    initial_form = PreventTamperForm(initial=initial)
+    data = {
+        'field1': '123',
+        'field2': '456A',
+        'field3': 'thing',
+        'signature': initial_form.initial['signature']
+    }
+
+    form = PreventTamperForm(data=data)
+    expected = [forms.PreventTamperMixin.NO_TAMPER_MESSAGE]
+
+    assert form.is_valid() is False
+    assert form.errors['__all__'] == expected
+
+
+def test_prevent_tamper_detects_accepts_unchanged():
+    initial = {
+        'field1': '123',
+        'field2': '456',
+    }
+    initial_form = PreventTamperForm(initial=initial)
+    data = {
+        'field1': '123',
+        'field2': '456',
+        'field3': 'thing',
+        'signature': initial_form.initial['signature']
+    }
+
+    form = PreventTamperForm(data=data)
+
+    assert form.is_valid() is True
+
+
+def test_prevent_tamper_detects_accepts_changed_other_field():
+    initial = {
+        'field1': '123',
+        'field2': '456',
+        'field3': 'thing1',
+    }
+    initial_form = PreventTamperForm(initial=initial)
+    data = {
+        'field1': '123',
+        'field2': '456',
+        'field3': 'thing2',
+        'signature': initial_form.initial['signature']
+    }
+
+    form = PreventTamperForm(data=data)
+
+    assert form.is_valid() is True
