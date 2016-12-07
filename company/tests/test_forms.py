@@ -1,16 +1,15 @@
 from unittest.mock import Mock, patch
 
-from django.forms.fields import Field
-from django.forms import CharField, Form
-
-from company.forms import shared_enrolment_validators, shared_validators
 from directory_validators.constants import choices
 
-from company import forms
+from django.forms.fields import Field
+from django.forms import CharField, Form
+from django.core.validators import URLValidator
 
+from company import forms
+from company.forms import shared_enrolment_validators, shared_validators
 from enrolment.forms import AutoFocusFieldMixin, IndentedInvalidFieldsMixin
 
-from django.core.validators import URLValidator
 
 URL_FORMAT_MESSAGE = URLValidator.message
 REQUIRED_MESSAGE = Field.default_error_messages['required']
@@ -256,6 +255,7 @@ def test_serialize_company_profile_forms():
         'postal_full_name': 'Jeremy postal',
         'sectors': ['1', '2'],
         'website': 'http://example.com',
+        'mobile_number': '07555555555',
     })
     expected = {
         'keywords': 'Jolly good exporter.',
@@ -273,6 +273,7 @@ def test_serialize_company_profile_forms():
             'po_box': '124',
             'postal_code': 'E14 9IX',
             'postal_full_name': 'Jeremy postal',
+            'mobile_number': '07555555555',
         }
     }
     assert actual == expected
@@ -311,6 +312,7 @@ def test_company_contact_details_accepts_valid():
     data = {
         'email_address': 'Jeremy@exmaple.com',
         'email_full_name': 'Jeremy',
+        'mobile_number': '07555555555',
     }
     form = forms.CompanyContactDetailsForm(data=data)
 

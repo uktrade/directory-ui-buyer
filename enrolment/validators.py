@@ -27,10 +27,3 @@ def email_address(value):
     response = api_client.supplier.validate_email_address(value)
     if response.status_code == http.client.BAD_REQUEST:
         raise ValidationError(response.json()['company_email'][0])
-
-
-def mobile_number(value):
-    # checks "is phone number already registered?"
-    response = api_client.supplier.validate_mobile_number(value)
-    if response.status_code == http.client.BAD_REQUEST:
-        raise ValidationError(response.json()['mobile_number'][0])

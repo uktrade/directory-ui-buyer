@@ -7,35 +7,7 @@ from directory_validators import enrolment as shared_enrolment_validators
 from directory_validators.constants import choices
 
 from enrolment.forms import IndentedInvalidFieldsMixin, AutoFocusFieldMixin
-
-
-class PreventTamperMixin(forms.Form):
-
-    NO_TAMPER_MESSAGE = 'Form tamper detected.'
-
-    signature = forms.CharField(
-        widget=forms.HiddenInput
-    )
-
-    def __init__(self, initial=None, *args, **kwargs):
-        assert self.tamper_proof_fields
-        initial = initial or {}
-        initial['signature'] = self.create_signature(initial)
-        super().__init__(initial=initial, *args, **kwargs)
-
-    def create_signature(self, values):
-        value = [values.get(field, '') for field in self.tamper_proof_fields]
-        return Signer().sign(','.join(value))
-
-    def is_form_tampered(self):
-        data = self.cleaned_data
-        return data.get('signature') != self.create_signature(data)
-
-    def clean(self):
-        data = super().clean()
-        if self.is_form_tampered():
-            raise forms.ValidationError(self.NO_TAMPER_MESSAGE)
-        return data
+from enrolment.fields import MobilePhoneNumberField
 
 
 class PublicProfileSearchForm(IndentedInvalidFieldsMixin, AutoFocusFieldMixin,
@@ -185,12 +157,11 @@ class CompanyClassificationForm(AutoFocusFieldMixin,
 class CompanyContactDetailsForm(AutoFocusFieldMixin,
                                 IndentedInvalidFieldsMixin,
                                 forms.Form):
-    email_address = forms.EmailField(
-        help_text=(
-            'This is the email address that international buyers should use'
-            ' when contacting your company.'
-        ),
-    )
+
+    error_messages = {
+        'different': 'Your emails do not match.'
+    }
+
     email_full_name = forms.CharField(
         label='Full name:',
         max_length=200,
@@ -199,6 +170,47 @@ class CompanyContactDetailsForm(AutoFocusFieldMixin,
             ' when contacting your company.'
         ),
     )
+    email_address = forms.EmailField(
+        help_text=(
+            'This is the email address that international buyers should use'
+            ' when contacting your company.'
+        ),
+    )
+    mobile_number = MobilePhoneNumberField(
+        label='Your mobile phone number:',
+        help_text=(
+            'We will send a verification code to this mobile phone number.'
+        ),
+    )
+
+
+class PreventTamperMixin(forms.Form):
+
+    NO_TAMPER_MESSAGE = 'Form tamper detected.'
+
+    signature = forms.CharField(
+        widget=forms.HiddenInput
+    )
+
+    def __init__(self, initial=None, *args, **kwargs):
+        assert self.tamper_proof_fields
+        initial = initial or {}
+        initial['signature'] = self.create_signature(initial)
+        super().__init__(initial=initial, *args, **kwargs)
+
+    def create_signature(self, values):
+        value = [values.get(field, '') for field in self.tamper_proof_fields]
+        return Signer().sign(','.join(value))
+
+    def is_form_tampered(self):
+        data = self.cleaned_data
+        return data.get('signature') != self.create_signature(data)
+
+    def clean(self):
+        data = super().clean()
+        if self.is_form_tampered():
+            raise forms.ValidationError(self.NO_TAMPER_MESSAGE)
+        return data
 
 
 class CompanyAddressVerificationForm(PreventTamperMixin,
@@ -218,57 +230,6 @@ class CompanyAddressVerificationForm(PreventTamperMixin,
     postal_full_name = forms.CharField(
         label='Full name:',
         max_length=255,
-        help_text='This is the full name that letters will be addressed to.',
-        required=False,
-    )
-    address_line_1 = forms.CharField(
-        max_length=200,
-        widget=forms.TextInput(attrs={'readonly': 'readonly'}),
-    )
-    address_line_2 = forms.CharField(
-        max_length=200,
-        required=False,
-        widget=forms.TextInput(attrs={'readonly': 'readonly'}),
-    )
-    locality = forms.CharField(
-        label='City:',
-        max_length=200,
-        required=False,
-        widget=forms.TextInput(attrs={'readonly': 'readonly'}),
-    )
-    country = forms.CharField(
-        max_length=200,
-        required=False,
-        widget=forms.TextInput(attrs={'readonly': 'readonly'}),
-    )
-    postal_code = forms.CharField(
-        max_length=200,
-        widget=forms.TextInput(attrs={'readonly': 'readonly'}),
-    )
-    po_box = forms.CharField(
-        max_length=200,
-        required=False,
-        widget=forms.TextInput(attrs={'readonly': 'readonly'}),
-    )
-
-
-class CompanyAddressVerificationForm(PreventTamperMixin,
-                                     AutoFocusFieldMixin,
-                                     IndentedInvalidFieldsMixin,
-                                     forms.Form):
-
-    tamper_proof_fields = {
-        'address_line_1',
-        'address_line_2',
-        'locality',
-        'country',
-        'postal_code',
-        'po_box',
-    }
-
-    postal_full_name = forms.CharField(
-        label='Full name:',
-        max_length=200,
         help_text='This is the full name that letters will be addressed to.',
         required=False,
     )
@@ -357,6 +318,7 @@ def serialize_company_profile_forms(cleaned_data):
             'po_box': cleaned_data['po_box'],
             'postal_code': cleaned_data['postal_code'],
             'postal_full_name': cleaned_data['postal_full_name'],
+            'mobile_number': cleaned_data['mobile_number'],
         }
     }
 

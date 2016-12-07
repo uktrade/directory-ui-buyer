@@ -4,12 +4,10 @@ import logging
 import requests
 
 from django.conf import settings
-from django.contrib.auth.hashers import check_password, make_password
 
 from api_client import api_client
 
 
-SMS_CODE_SESSION_KEY = 'sms_code'
 COMPANIES_HOUSE_PROFILE_SESSION_KEY = 'ch_profile'
 MESSAGE_AUTH_FAILED = 'Auth failed with Companies House'
 MESSAGE_NETWORK_ERROR = 'A network error occurred'
@@ -37,12 +35,6 @@ def store_companies_house_profile_in_session(session, company_number):
         'date_of_creation': details['date_of_creation'],
     }
     session.modified = True
-
-
-def get_referrer_from_request(request):
-    # TODO: determine what source led the supplier to the export directory
-    # if navigating internally then return None (ticket ED-138)
-    return 'aaa'
 
 
 def halt_validation_on_failure(*validators):
@@ -73,25 +65,6 @@ def has_verified_company(sso_user_id):
         has_company = False
 
     return has_company
-
-
-def set_sms_session_code(session, sms_code):
-    session[SMS_CODE_SESSION_KEY] = encrypt_sms_code(sms_code)
-
-
-def encrypt_sms_code(sms_code):
-    return make_password(str(sms_code))
-
-
-def check_encrypted_sms_cookie(provided_sms_code, encoded_sms_code):
-    return check_password(
-        password=str(provided_sms_code),
-        encoded=encoded_sms_code,
-    )
-
-
-def get_sms_session_code(session):
-    return session.get(SMS_CODE_SESSION_KEY, '')
 
 
 def companies_house_client(url):
