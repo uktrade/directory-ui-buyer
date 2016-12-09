@@ -7,7 +7,6 @@ from django.template.response import TemplateResponse
 from django.utils.cache import patch_response_headers
 from django.views.generic import TemplateView
 from django.views.generic.edit import FormView
-from django.views.generic.base import View
 
 from api_client import api_client
 from enrolment import forms, helpers
@@ -123,15 +122,3 @@ class EnrolmentView(SSOLoginRequiredMixin, NamedUrlSessionWizardView):
         else:
             template = self.failure_template
         return TemplateResponse(self.request, template)
-
-
-class CompanyEmailConfirmationView(View):
-    failure_template = 'confirm-company-email-error.html'
-
-    def get(self, request):
-        code = request.GET.get('code')
-        if code and api_client.registration.confirm_email(code):
-            return redirect('company-detail')
-        else:
-            template = self.failure_template
-        return TemplateResponse(request, template)

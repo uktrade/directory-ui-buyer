@@ -1,13 +1,16 @@
-from django import forms
-from django.conf import settings
-from django.core.signing import Signer
-
 from directory_validators import company as shared_validators
 from directory_validators import enrolment as shared_enrolment_validators
 from directory_validators.constants import choices
 
+from django import forms
+from django.conf import settings
+from django.core.signing import Signer
+from django.utils.safestring import mark_safe
+
+from company import validators
 from enrolment.forms import IndentedInvalidFieldsMixin, AutoFocusFieldMixin
 from enrolment.fields import MobilePhoneNumberField
+from enrolment.helpers import halt_validation_on_failure
 
 
 class PublicProfileSearchForm(IndentedInvalidFieldsMixin, AutoFocusFieldMixin,
@@ -262,6 +265,33 @@ class CompanyAddressVerificationForm(PreventTamperMixin,
         required=False,
         widget=forms.TextInput(attrs={'readonly': 'readonly'}),
     )
+
+
+class CompanyCodeVerificationForm(AutoFocusFieldMixin,
+                                  IndentedInvalidFieldsMixin,
+                                  forms.Form):
+
+    error_messages = {
+        'different': 'Incorrect code.'
+    }
+
+    code = forms.CharField(
+        label='Enter the verification code from the letter we sent you:',
+        help_text=mark_safe(
+            'We sent you a letter through the mail containing a twelve digit '
+            'code.'
+        ),
+        max_length=12,
+        min_length=12,
+    )
+
+    def __init__(self, *args, **kwargs):
+        sso_id = kwargs.pop('sso_id')
+        super().__init__(*args, **kwargs)
+        self.fields['code'].validators = halt_validation_on_failure(
+            validators.verify_with_code(sso_id=sso_id),
+            *self.fields['code'].validators
+        )
 
 
 def serialize_supplier_case_study_forms(cleaned_data):

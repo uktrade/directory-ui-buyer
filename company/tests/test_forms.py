@@ -6,7 +6,7 @@ from django.forms.fields import Field
 from django.forms import CharField, Form
 from django.core.validators import URLValidator
 
-from company import forms
+from company import forms, validators
 from company.forms import shared_enrolment_validators, shared_validators
 from enrolment.forms import AutoFocusFieldMixin, IndentedInvalidFieldsMixin
 
@@ -430,3 +430,56 @@ def test_prevent_tamper_detects_accepts_changed_other_field():
     form = PreventTamperForm(data=data)
 
     assert form.is_valid() is True
+
+
+@patch('company.validators.api_client.company.verify_with_code')
+def test_company_address_verification_valid_code(mock_verify_with_code):
+    mock_verify_with_code.return_value = Mock(ok=False)
+
+    form = forms.CompanyCodeVerificationForm(
+        sso_id=1,
+        data={'code': 'x'*12}
+    )
+
+    assert form.is_valid() is False
+    assert form.errors['code'] == [validators.MESSAGE_INVALID_CODE]
+
+
+@patch('company.validators.api_client.company.verify_with_code')
+def test_company_address_verification_invalid_code(mock_verify_with_code):
+    mock_verify_with_code.return_value = Mock(ok=True)
+
+    form = forms.CompanyCodeVerificationForm(
+        sso_id=1,
+        data={'code': 'x'*12}
+    )
+
+    assert form.is_valid() is True
+
+
+@patch('company.validators.api_client.company.verify_with_code')
+def test_company_address_verification_too_long(mock_verify_with_code):
+    mock_verify_with_code.return_value = Mock(ok=True)
+
+    form = forms.CompanyCodeVerificationForm(
+        sso_id=1,
+        data={'code': 'x'*13}
+    )
+    expected = 'Ensure this value has at most 12 characters (it has 13).'
+
+    assert form.is_valid() is False
+    assert form.errors['code'] == [expected]
+
+
+@patch('company.validators.api_client.company.verify_with_code')
+def test_company_address_verification_too_short(mock_verify_with_code):
+    mock_verify_with_code.return_value = Mock(ok=True)
+
+    form = forms.CompanyCodeVerificationForm(
+        sso_id=1,
+        data={'code': 'x'*11}
+    )
+    expected = 'Ensure this value has at least 12 characters (it has 11).'
+
+    assert form.is_valid() is False
+    assert form.errors['code'] == [expected]

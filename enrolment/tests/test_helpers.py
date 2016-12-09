@@ -65,37 +65,10 @@ def test_has_verified_company_no_company(mock_retrieve_supplier_profile):
     mock_response.status_code = http.client.OK
     mock_response.json = lambda: {
         'company': '',
-        'company_email_confirmed': False,
     }
     mock_retrieve_supplier_profile.return_value = mock_response
 
     assert helpers.has_verified_company(sso_user_id=1) is False
-
-
-@patch.object(helpers.api_client.supplier, 'retrieve_profile')
-def test_has_verified_company_unconfirmed(mock_retrieve_supplier_profile):
-    mock_response = Response()
-    mock_response.status_code = http.client.OK
-    mock_response.json = lambda: {
-        'company': 'Extreme Corp',
-        'company_email_confirmed': False,
-    }
-    mock_retrieve_supplier_profile.return_value = mock_response
-
-    assert helpers.has_verified_company(sso_user_id=1) is False
-
-
-@patch.object(helpers.api_client.supplier, 'retrieve_profile')
-def test_has_verified_company(mock_retrieve_supplier_profile):
-    mock_response = Response()
-    mock_response.status_code = http.client.OK
-    mock_response.json = lambda: {
-        'company': 'Extreme Corp',
-        'company_email_confirmed': True,
-    }
-    mock_retrieve_supplier_profile.return_value = mock_response
-
-    assert helpers.has_verified_company(sso_user_id=1) is True
 
 
 @patch.object(helpers.api_client.supplier, 'retrieve_profile', profile_api_404)

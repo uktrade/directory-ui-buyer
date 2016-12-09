@@ -4,7 +4,6 @@ from django.views.decorators.cache import cache_page
 
 from enrolment.views import (
     CachableTemplateView,
-    CompanyEmailConfirmationView,
     DomesticLandingView,
     EnrolmentInstructionsView,
     EnrolmentView,
@@ -20,6 +19,7 @@ from company.views import (
     SupplierCompanyProfileDetailView,
     SupplierCompanyProfileEditView,
     SupplierCompanyProfileLogoEditView,
+    SupplierCompanyAddressVerificationView,
 )
 from admin.proxy import AdminProxyView
 
@@ -76,11 +76,10 @@ urlpatterns = [
         name='supplier-detail'
     ),
     url(
-        r'^confirm-company-email$',
-        CompanyEmailConfirmationView.as_view(),
-        name='confirm-company-email'
+        r'^confirm-company-address$',
+        SupplierCompanyAddressVerificationView.as_view(),
+        name='confirm-company-address'
     ),
-
     url(
         r'^company-profile$',
         SupplierCompanyProfileDetailView.as_view(),
