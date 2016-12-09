@@ -4,7 +4,6 @@ from django.views.decorators.cache import cache_page
 
 from enrolment.views import (
     CachableTemplateView,
-    CompanyEmailConfirmationView,
     DomesticLandingView,
     EnrolmentInstructionsView,
     EnrolmentView,
@@ -14,12 +13,17 @@ from supplier.views import SupplierProfileDetailView
 from company.views import (
     PublicProfileDetailView,
     PublicProfileListView,
+    SupplierAddressEditView,
+    SupplierBasicInfoEditView,
     SupplierCaseStudyDetailView,
     SupplierCaseStudyWizardView,
+    SupplierClassificationEditView,
+    SupplierCompanyAddressVerificationView,
     SupplierCompanyDescriptionEditView,
     SupplierCompanyProfileDetailView,
     SupplierCompanyProfileEditView,
     SupplierCompanyProfileLogoEditView,
+    SupplierContactEditView,
 )
 from admin.proxy import AdminProxyView
 
@@ -76,11 +80,10 @@ urlpatterns = [
         name='supplier-detail'
     ),
     url(
-        r'^confirm-company-email$',
-        CompanyEmailConfirmationView.as_view(),
-        name='confirm-company-email'
+        r'^confirm-company-address$',
+        SupplierCompanyAddressVerificationView.as_view(),
+        name='confirm-company-address'
     ),
-
     url(
         r'^company-profile$',
         SupplierCompanyProfileDetailView.as_view(),
@@ -92,14 +95,36 @@ urlpatterns = [
         name='company-edit'
     ),
     url(
-        r'^company-profile/logo$',
+        r'^company-profile/edit/logo$',
         SupplierCompanyProfileLogoEditView.as_view(),
         name='company-edit-logo'
     ),
     url(
-        r'^company-profile/description$',
+        r'^company-profile/edit/description$',
         SupplierCompanyDescriptionEditView.as_view(),
         name='company-edit-description'
+    ),
+
+
+    url(
+        r'^company-profile/edit/key-facts$',
+        SupplierBasicInfoEditView.as_view(),
+        name='company-edit-key-facts'
+    ),
+    url(
+        r'^company-profile/edit/sectors$',
+        SupplierClassificationEditView.as_view(),
+        name='company-edit-sectors'
+    ),
+    url(
+        r'^company-profile/edit/contact$',
+        SupplierContactEditView.as_view(),
+        name='company-edit-contact'
+    ),
+    url(
+        r'^company-profile/edit/address$',
+        SupplierAddressEditView.as_view(),
+        name='company-edit-address'
     ),
     url(
         r'^company/case-study/edit/(?P<id>.+)?$',

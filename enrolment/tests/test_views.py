@@ -9,7 +9,6 @@ from django.core.urlresolvers import reverse
 from enrolment import forms, helpers
 from enrolment.views import (
     api_client,
-    CompanyEmailConfirmationView,
     EnrolmentView,
     EnrolmentInstructionsView,
     InternationalLandingView,
@@ -123,43 +122,6 @@ def api_response_company_profile_no_date_of_creation_200(api_response_200):
     return response
 
 
-def test_email_confirm_missing_confirmation_code(rf, sso_user):
-    view = CompanyEmailConfirmationView.as_view()
-    request = rf.get(reverse('confirm-company-email'))
-    request.sso_user = sso_user
-    response = view(request)
-    assert response.status_code == http.client.OK
-    assert response.template_name == (
-        CompanyEmailConfirmationView.failure_template
-    )
-
-
-@patch.object(api_client.registration, 'confirm_email', return_value=False)
-def test_email_confirm_invalid_confirmation_code(mock_confirm_email, rf):
-    view = CompanyEmailConfirmationView.as_view()
-    request = rf.get(reverse(
-        'confirm-company-email'), {'code': 123}
-    )
-    response = view(request)
-    assert mock_confirm_email.called_with(123)
-    assert response.status_code == http.client.OK
-    assert response.template_name == (
-        CompanyEmailConfirmationView.failure_template
-    )
-
-
-@patch.object(api_client.registration, 'confirm_email', return_value=True)
-def test_email_confirm_valid_confirmation_code(mock_confirm_email, rf):
-    view = CompanyEmailConfirmationView.as_view()
-    request = rf.get(reverse(
-        'confirm-company-email'), {'code': 123}
-    )
-    response = view(request)
-    assert mock_confirm_email.called_with(123)
-    assert response.status_code == http.client.FOUND
-    assert response.get('Location') == reverse('company-detail')
-
-
 def test_enrolment_instructions_view_handles_no_sso_user(anon_request):
     response = EnrolmentInstructionsView.as_view()(anon_request)
 
@@ -167,20 +129,20 @@ def test_enrolment_instructions_view_handles_no_sso_user(anon_request):
     assert response.status_code == http.client.OK
 
 
-@patch('enrolment.helpers.has_verified_company', return_value=True)
+@patch('enrolment.helpers.has_company', return_value=True)
 def test_enrolment_instructions_view_handles_sso_user_with_company(
-    mock_has_verified_company, sso_request, sso_user
+    mock_has_company, sso_request, sso_user
 ):
     response = EnrolmentInstructionsView.as_view()(sso_request)
 
-    mock_has_verified_company.assert_called_once_with(sso_user.id)
+    mock_has_company.assert_called_once_with(sso_user.id)
     assert response.status_code == http.client.FOUND
     assert response.get('Location') == reverse('company-detail')
 
 
-@patch.object(helpers, 'has_verified_company', return_value=False)
+@patch.object(helpers, 'has_company', return_value=False)
 def test_enrolment_instructions_view_handles_sso_user_without_company(
-    mock_has_verified_company, sso_user, sso_request
+    mock_has_company, sso_user, sso_request
 ):
     response = EnrolmentInstructionsView.as_view()(sso_request)
 
@@ -188,7 +150,7 @@ def test_enrolment_instructions_view_handles_sso_user_without_company(
     assert response.status_code == http.client.OK
 
 
-@patch('enrolment.helpers.has_verified_company', Mock(return_value=True))
+@patch('enrolment.helpers.has_company', Mock(return_value=True))
 @patch.object(EnrolmentView, 'get_all_cleaned_data', return_value={})
 @patch.object(forms, 'serialize_enrolment_forms')
 @patch.object(api_client.registration, 'send_form')
@@ -202,7 +164,7 @@ def test_enrolment_form_complete_api_client_call(mock_send_form,
     mock_send_form.assert_called_once_with(data)
 
 
-@patch('enrolment.helpers.has_verified_company', Mock(return_value=True))
+@patch('enrolment.helpers.has_company', Mock(return_value=True))
 @patch.object(EnrolmentView, 'serialize_form_data', Mock(return_value={}))
 @patch.object(api_client.registration, 'send_form', api_response_200)
 def test_enrolment_form_complete_api_client_success(sso_request):
@@ -212,7 +174,7 @@ def test_enrolment_form_complete_api_client_success(sso_request):
     assert response.template_name == EnrolmentView.success_template
 
 
-@patch('enrolment.helpers.has_verified_company', Mock(return_value=True))
+@patch('enrolment.helpers.has_company', Mock(return_value=True))
 @patch.object(EnrolmentView, 'serialize_form_data', Mock(return_value={}))
 @patch.object(api_client.registration, 'send_form', api_response_400)
 def test_enrolment_form_complete_api_client_fail(company_request):
@@ -224,7 +186,7 @@ def test_enrolment_form_complete_api_client_fail(company_request):
 
 @patch.object(helpers, 'get_company_name_from_session',
               Mock(return_value='Example corp'))
-@patch('enrolment.helpers.has_verified_company', Mock(return_value=False))
+@patch('enrolment.helpers.has_company', Mock(return_value=False))
 @patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
 def test_enrolment_views_use_correct_template(client):
     view_class = EnrolmentView
@@ -234,24 +196,24 @@ def test_enrolment_views_use_correct_template(client):
         assert response.template_name == [view_class.templates[step_name]]
 
 
-@patch('enrolment.helpers.has_verified_company', return_value=True)
+@patch('enrolment.helpers.has_company', return_value=True)
 @patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
 def test_enrolment_logged_in_has_company_redirects(
-    mock_has_verified_company, client, sso_user
+    mock_has_company, client, sso_user
 ):
     url = reverse('register', kwargs={'step': EnrolmentView.COMPANY})
     response = client.get(url)
 
     assert response.status_code == http.client.FOUND
     assert response.get('Location') == reverse('company-detail')
-    mock_has_verified_company.assert_called_once_with(sso_user.id)
+    mock_has_company.assert_called_once_with(sso_user.id)
 
 
-@patch('enrolment.helpers.has_verified_company', return_value=False)
+@patch('enrolment.helpers.has_company', return_value=False)
 @patch('sso.middleware.SSOUserMiddleware.process_request',
        process_request_anon)
 def test_enrolment_logged_out_has_company_redirects(
-    mock_has_verified_company, client
+    mock_has_company, client
 ):
     step = EnrolmentView.COMPANY
     url = reverse('register', kwargs={'step': step})
@@ -262,7 +224,7 @@ def test_enrolment_logged_out_has_company_redirects(
          'http://sso.trade.great.dev:8004/accounts/signup/'
          '?next=http%3A//testserver/register/' + step
     )
-    mock_has_verified_company.assert_not_called()
+    mock_has_company.assert_not_called()
 
 
 @patch.object(api_client.buyer, 'send_form')

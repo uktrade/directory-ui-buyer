@@ -39,7 +39,9 @@
 				{% if wizard.steps.prev %}
 					<button name="wizard_goto_step" class="button-hyperlink" type="submit" value="{{ wizard.steps.prev }}">Previous</button>
 				{% endif %}
+				{% if wizard.steps.count > 1 %}
 				<span class="pull-right">Step {{ wizard.steps.step1 }} of {{ wizard.steps.count }}</span>
+				{% endif %}
 			</div>
 		</div>
 		<div class="clearfix"></div>

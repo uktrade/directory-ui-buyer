@@ -18,6 +18,7 @@ def retrieve_profile_data():
         'keywords': 'word1 word2',
         'employees': '501-1000',
         'date_of_creation': '2015-03-02',
+        'verified_with_code': True,
         'contact_details': {
             'email_full_name': 'Jeremy',
             'email_address': 'test@example.com',
@@ -48,6 +49,8 @@ def list_public_profiles_data():
                 'employees': '1001-10000',
                 'supplier_case_studies': [],
                 'modified': '2016-11-23T11:21:10.977518Z',
+                'verified_with_code': True,
+                'contact_details': {},
             }
         ],
         'count': 20
@@ -75,6 +78,8 @@ def supplier_case_study_data():
             'sectors': ['SOFTWARE_AND_COMPUTER_SERVICES'],
             'number': '09466004',
             'modified': '2016-11-23T11:21:10.977518Z',
+            'verified_with_code': True,
+            'contact_details': {},
         },
         'image_one': 'https://image_one.jpg',
         'testimonial': 'I found it most pleasing.',
@@ -203,7 +208,7 @@ def get_companies_house_office_address(
     api_response_company_profile_companies_house_200
 ):
     stub = patch(
-        'company.views.get_companies_house_office_address',
+        'company.helpers.get_companies_house_office_address',
         return_value=api_response_company_profile_companies_house_200,
     )
     stub.start()

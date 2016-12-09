@@ -20,6 +20,8 @@ def profile_data():
         'employees': '1001-10000',
         'supplier_case_studies': [],
         'modified': '2016-11-23T11:21:10.977518Z',
+        'verified_with_code': True,
+        'contact_details': {},
     }
 
 
@@ -87,6 +89,8 @@ def test_get_company_profile_from_response(profile_data):
         'employees': '1,001-10,000',
         'supplier_case_studies': [],
         'modified': datetime(2016, 11, 23, 11, 21, 10, 977518),
+        'verified_with_code': True,
+        'is_address_set': False
     }
     actual = helpers.get_company_profile_from_response(response)
     assert actual == expected
@@ -112,6 +116,8 @@ def test_get_public_company_profile_from_response(profile_data):
         'employees': '1,001-10,000',
         'supplier_case_studies': [],
         'modified': datetime(2016, 11, 23, 11, 21, 10, 977518),
+        'verified_with_code': True,
+        'is_address_set': False
     }
     actual = helpers.get_public_company_profile_from_response(response)
     assert actual == expected
@@ -140,6 +146,8 @@ def test_get_company_list_from_response(public_companies):
                 'employees': '1,001-10,000',
                 'supplier_case_studies': [],
                 'modified': datetime(2016, 11, 23, 11, 21, 10, 977518),
+                'verified_with_code': True,
+                'is_address_set': False
             }
         ]
     }
@@ -187,6 +195,8 @@ def test_get_case_study_details_from_response(supplier_case_study_data):
             }],
             'number': '09466004',
             'modified': datetime(2016, 11, 23, 11, 21, 10, 977518),
+            'verified_with_code': True,
+            'is_address_set': False
         },
         'image_one': 'https://image_one.jpg',
         'testimonial': 'I found it most pleasing.',
@@ -207,3 +217,17 @@ def test_get_company_profile_from_response_without_date(profile_data):
     ]
     for provided, expected in pairs:
         assert helpers.format_date_of_creation(provided) == expected
+
+
+def test_format_company_details_address_set(profile_data):
+    profile_data['contact_details'] = {'key': 'value'}
+    actual = helpers.format_company_details(profile_data)
+
+    assert actual['is_address_set'] is True
+
+
+def test_format_company_details_address_not_set(profile_data):
+    profile_data['contact_details'] = {}
+    actual = helpers.format_company_details(profile_data)
+
+    assert actual['is_address_set'] is False

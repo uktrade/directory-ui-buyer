@@ -50,17 +50,13 @@ def halt_validation_on_failure(*validators):
     return [inner]
 
 
-def has_verified_company(sso_user_id):
+def has_company(sso_user_id):
     response = api_client.supplier.retrieve_profile(
         sso_id=sso_user_id
     )
-
     if response.ok:
         profile = response.json()
-        has_company = bool(
-            profile['company'] and
-            profile['company_email_confirmed']
-        )
+        has_company = bool(profile['company'])
     else:
         has_company = False
 
