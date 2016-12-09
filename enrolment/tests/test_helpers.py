@@ -60,7 +60,7 @@ def test_halt_validation_on_failure_raises_first():
 
 
 @patch.object(helpers.api_client.supplier, 'retrieve_profile')
-def test_has_verified_company_no_company(mock_retrieve_supplier_profile):
+def test_has_company_no_company(mock_retrieve_supplier_profile):
     mock_response = Response()
     mock_response.status_code = http.client.OK
     mock_response.json = lambda: {
@@ -68,12 +68,12 @@ def test_has_verified_company_no_company(mock_retrieve_supplier_profile):
     }
     mock_retrieve_supplier_profile.return_value = mock_response
 
-    assert helpers.has_verified_company(sso_user_id=1) is False
+    assert helpers.has_company(sso_user_id=1) is False
 
 
 @patch.object(helpers.api_client.supplier, 'retrieve_profile', profile_api_404)
-def test_has_verified_company_404():
-    assert helpers.has_verified_company(sso_user_id=1) is False
+def test_has_company_404():
+    assert helpers.has_company(sso_user_id=1) is False
 
 
 @patch.object(helpers, 'get_companies_house_profile')
