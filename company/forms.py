@@ -353,7 +353,7 @@ def serialize_company_profile_forms(cleaned_data):
     }
 
 
-def serialize_company_logo_forms(cleaned_data):
+def serialize_company_logo_form(cleaned_data):
     """
     Return the shape directory-api-client expects for changing logo.
 
@@ -367,7 +367,7 @@ def serialize_company_logo_forms(cleaned_data):
     }
 
 
-def serialize_company_description_forms(cleaned_data):
+def serialize_company_description_form(cleaned_data):
     """
     Return the shape directory-api-client expects for changing description.
 
@@ -378,4 +378,76 @@ def serialize_company_description_forms(cleaned_data):
 
     return {
         'description': cleaned_data['description'],
+    }
+
+
+def serialize_company_basic_info_form(cleaned_data):
+    """
+    Return the shape directory-api-client expects for updating basic info.
+
+    @param {dict} cleaned_data - All the fields in `CompanyBasicInfoForm`
+    @returns dict
+
+    """
+
+    return {
+        'name': cleaned_data['name'],
+        'website': cleaned_data['website'],
+        'keywords': cleaned_data['keywords'],
+        'employees': cleaned_data['employees'],
+    }
+
+
+def serialize_company_sectors_form(cleaned_data):
+    """
+    Return the shape directory-api-client expects for updating classifications.
+
+    @param {dict} cleaned_data - All the fields in `CompanyClassificationForm`
+    @returns dict
+
+    """
+
+    return {
+        'sectors': cleaned_data['sectors'],
+    }
+
+
+def serialize_company_contact_form(cleaned_data):
+    """
+    Return the shape directory-api-client expects for updating contact details.
+
+    @param {dict} cleaned_data - All the fields in `CompanyContactDetailsForm`
+    @returns dict
+
+    """
+
+    return {
+        'contact_details': {
+            'email_full_name': cleaned_data['email_full_name'],
+            'email_address': cleaned_data['email_address'],
+            'mobile_number': cleaned_data['mobile_number'],
+        }
+    }
+
+
+def serialize_company_address_form(cleaned_data):
+    """
+    Return the shape directory-api-client expects for updating address.
+
+    @param {dict} cleaned_data - All the fields in
+                                 `CompanyAddressVerificationForm`
+    @returns dict
+
+    """
+
+    return {
+        'contact_details': {
+            'address_line_1': cleaned_data['address_line_1'],
+            'address_line_2': cleaned_data['address_line_2'],
+            'country': cleaned_data['country'],
+            'locality': cleaned_data['locality'],
+            'po_box': cleaned_data['po_box'],
+            'postal_code': cleaned_data['postal_code'],
+            'postal_full_name': cleaned_data['postal_full_name'],
+        }
     }
