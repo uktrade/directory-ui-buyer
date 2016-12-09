@@ -55,7 +55,7 @@ class EnrolmentInstructionsView(TemplateView):
 
     def dispatch(self, request, *args, **kwargs):
         sso_user = request.sso_user
-        if sso_user and helpers.has_verified_company(sso_user.id):
+        if sso_user and helpers.has_company(sso_user.id):
             return redirect('company-detail')
         return super().dispatch(request, *args, **kwargs)
 
@@ -82,7 +82,7 @@ class EnrolmentView(SSOLoginRequiredMixin, NamedUrlSessionWizardView):
     def dispatch(self, request, *args, **kwargs):
         if request.sso_user is None:
             return self.handle_no_permission()
-        elif helpers.has_verified_company(request.sso_user.id):
+        elif helpers.has_company(request.sso_user.id):
             return redirect('company-detail')
         else:
             return super(EnrolmentView, self).dispatch(

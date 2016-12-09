@@ -18,7 +18,7 @@ from company import forms, helpers
 from api_client import api_client
 from enrolment.helpers import (
     get_companies_house_office_address,
-    has_verified_company,
+    has_company,
 )
 from sso.utils import SSOLoginRequiredMixin
 
@@ -29,7 +29,7 @@ class SupplierCompanyBaseView(SSOLoginRequiredMixin):
         if request.sso_user is None:
             return self.handle_no_permission()
         else:
-            if not has_verified_company(self.request.sso_user.id):
+            if not has_company(self.request.sso_user.id):
                 return redirect('register-instructions')
             else:
                 return super(SupplierCompanyBaseView, self).dispatch(

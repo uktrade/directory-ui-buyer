@@ -314,7 +314,7 @@ def company_profile_edit_goto_step(
 
 
 @patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
-@patch.object(views, 'has_verified_company', Mock(return_value=True))
+@patch.object(views, 'has_company', Mock(return_value=True))
 @patch('api_client.api_client.company.retrieve_supplier_case_study')
 def test_case_study_edit_retrieves_data(
     mock_retrieve_supplier_case_study, client
@@ -328,7 +328,7 @@ def test_case_study_edit_retrieves_data(
 
 
 @patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
-@patch.object(views, 'has_verified_company', Mock(return_value=True))
+@patch.object(views, 'has_company', Mock(return_value=True))
 @patch('api_client.api_client.company.retrieve_supplier_case_study')
 def test_case_study_edit_exposes_api_response_data(
     mock_retrieve_case_study, client, retrieve_supplier_case_study_200
@@ -342,7 +342,7 @@ def test_case_study_edit_exposes_api_response_data(
 
 
 @patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
-@patch.object(views, 'has_verified_company', Mock(return_value=True))
+@patch.object(views, 'has_company', Mock(return_value=True))
 @patch('api_client.api_client.company.retrieve_supplier_case_study')
 def test_case_study_edit_handles_api_error(
     mock_retrieve_case_study, client, api_response_400
@@ -355,7 +355,7 @@ def test_case_study_edit_handles_api_error(
 
 
 @patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
-@patch.object(views, 'has_verified_company', Mock(return_value=True))
+@patch.object(views, 'has_company', Mock(return_value=True))
 @patch.object(views.api_client.company, 'create_supplier_case_study')
 def test_case_study_create_api_success(
     mock_create_case_study, supplier_case_study_end_to_end, sso_user,
@@ -374,7 +374,7 @@ def test_case_study_create_api_success(
 
 
 @patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
-@patch.object(views, 'has_verified_company', Mock(return_value=True))
+@patch.object(views, 'has_company', Mock(return_value=True))
 @patch.object(views.api_client.company, 'create_supplier_case_study')
 def test_case_study_create_api_failure(
     mock_create_case_study, supplier_case_study_end_to_end, api_response_400
@@ -389,7 +389,7 @@ def test_case_study_create_api_failure(
 
 
 @patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
-@patch.object(views, 'has_verified_company', Mock(return_value=True))
+@patch.object(views, 'has_company', Mock(return_value=True))
 @patch.object(views.api_client.company, 'update_supplier_case_study')
 def test_case_study_update_api_success(
     mock_update_case_study, supplier_case_study_end_to_end, sso_user,
@@ -409,7 +409,7 @@ def test_case_study_update_api_success(
 
 
 @patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
-@patch.object(views, 'has_verified_company', Mock(return_value=True))
+@patch.object(views, 'has_company', Mock(return_value=True))
 @patch.object(views.api_client.company, 'update_supplier_case_study')
 def test_case_study_update_api_failure(
     mock_update_case_study, supplier_case_study_end_to_end, api_response_400
@@ -423,7 +423,7 @@ def test_case_study_update_api_failure(
     assert response.template_name == view.failure_template
 
 
-@patch.object(views, 'has_verified_company', Mock(return_value=True))
+@patch.object(views, 'has_company', Mock(return_value=True))
 @patch.object(helpers, 'get_company_profile_from_response')
 def test_company_profile_details_exposes_context(
     mock_get_company_profile_from_response, sso_request
@@ -440,7 +440,7 @@ def test_company_profile_details_exposes_context(
     assert response.context_data['show_edit_links'] is True
 
 
-@patch.object(views, 'has_verified_company', Mock(return_value=True))
+@patch.object(views, 'has_company', Mock(return_value=True))
 @patch.object(helpers, 'get_company_profile_from_response')
 @patch.object(views.api_client.company, 'retrieve_profile')
 def test_company_profile_details_calls_api(
@@ -455,7 +455,7 @@ def test_company_profile_details_calls_api(
     assert mock_retrieve_profile.called_once_with(1)
 
 
-@patch.object(views, 'has_verified_company', Mock(return_value=True))
+@patch.object(views, 'has_company', Mock(return_value=True))
 @patch.object(helpers, 'get_company_profile_from_response')
 @patch.object(views.api_client.company, 'retrieve_profile')
 def test_company_profile_details_handles_bad_status(
@@ -470,7 +470,7 @@ def test_company_profile_details_handles_bad_status(
         view(sso_request)
 
 
-@patch.object(views, 'has_verified_company', Mock(return_value=True))
+@patch.object(views, 'has_company', Mock(return_value=True))
 @patch.object(views.api_client.company,
               'retrieve_public_profile_by_companies_house_number', Mock)
 @patch.object(helpers, 'get_public_company_profile_from_response')
@@ -490,7 +490,7 @@ def test_public_company_profile_details_exposes_context(
     assert response.context_data['show_edit_links'] is False
 
 
-@patch.object(views, 'has_verified_company', Mock(return_value=True))
+@patch.object(views, 'has_company', Mock(return_value=True))
 @patch.object(helpers, 'get_public_company_profile_from_response')
 @patch.object(views.api_client.company,
               'retrieve_public_profile_by_companies_house_number')
@@ -507,7 +507,7 @@ def test_public_company_profile_details_calls_api(
     assert mock_retrieve_public_profile.called_once_with(1)
 
 
-@patch.object(views, 'has_verified_company', Mock(return_value=True))
+@patch.object(views, 'has_company', Mock(return_value=True))
 @patch.object(helpers, 'get_public_company_profile_from_response')
 @patch.object(views.api_client.company,
               'retrieve_public_profile_by_companies_house_number')
@@ -524,7 +524,7 @@ def test_public_company_profile_details_handles_bad_status(
         client.get(url)
 
 
-@patch.object(views, 'has_verified_company', Mock(return_value=True))
+@patch.object(views, 'has_company', Mock(return_value=True))
 def test_company_profile_list_exposes_context(
     client, api_response_list_public_profile_200
 ):
@@ -542,7 +542,7 @@ def test_company_profile_list_exposes_context(
     assert response.context_data['pagination'].paginator.count == 20
 
 
-@patch.object(views, 'has_verified_company', Mock(return_value=True))
+@patch.object(views, 'has_company', Mock(return_value=True))
 def test_company_profile_list_exposes_selected_sector_label(client):
     url = reverse('public-company-profiles-list')
     params = {'sectors': choices.COMPANY_CLASSIFICATIONS[1][0]}
@@ -552,7 +552,7 @@ def test_company_profile_list_exposes_selected_sector_label(client):
     assert response.context_data['selected_sector_label'] == expected_label
 
 
-@patch.object(views, 'has_verified_company', Mock(return_value=True))
+@patch.object(views, 'has_company', Mock(return_value=True))
 @patch.object(views.api_client.company, 'list_public_profiles')
 def test_company_profile_list_calls_api(
     mock_list_public_profiles, client
@@ -566,7 +566,7 @@ def test_company_profile_list_calls_api(
     )
 
 
-@patch.object(views, 'has_verified_company', Mock(return_value=True))
+@patch.object(views, 'has_company', Mock(return_value=True))
 @patch.object(views.api_client.company, 'list_public_profiles')
 def test_company_profile_list_handles_bad_status(
     mock_retrieve_public_profile, client, api_response_400
@@ -578,7 +578,7 @@ def test_company_profile_list_handles_bad_status(
         client.get(url, params)
 
 
-@patch.object(views, 'has_verified_company', Mock(return_value=True))
+@patch.object(views, 'has_company', Mock(return_value=True))
 def test_company_profile_list_handles_no_form_data(client):
     url = reverse('public-company-profiles-list')
     response = client.get(url, {})
@@ -586,7 +586,7 @@ def test_company_profile_list_handles_no_form_data(client):
     assert response.context_data['form'].errors == {}
 
 
-@patch.object(views, 'has_verified_company', Mock(return_value=True))
+@patch.object(views, 'has_company', Mock(return_value=True))
 @patch.object(views.api_client.company, 'list_public_profiles')
 def test_company_profile_list_handles_empty_page(mock_list_profiles, client):
     mock_list_profiles.return_value = api_response_404()
@@ -597,7 +597,7 @@ def test_company_profile_list_handles_empty_page(mock_list_profiles, client):
     assert response.get('Location') == '{url}?sectors=WATER'.format(url=url)
 
 
-@patch.object(views, 'has_verified_company', Mock(return_value=True))
+@patch.object(views, 'has_company', Mock(return_value=True))
 @patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
 @patch.object(views.api_client.company, 'retrieve_supplier_case_study')
 def test_supplier_case_study_exposes_context(
@@ -621,7 +621,7 @@ def test_supplier_case_study_exposes_context(
 
 
 @patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
-@patch.object(views, 'has_verified_company', Mock(return_value=True))
+@patch.object(views, 'has_company', Mock(return_value=True))
 @patch.object(views.api_client.company, 'retrieve_supplier_case_study')
 def test_supplier_case_study_calls_api(
     mock_retrieve_supplier_case_study, client,
@@ -637,7 +637,7 @@ def test_supplier_case_study_calls_api(
 
 
 @patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
-@patch.object(views, 'has_verified_company', Mock(return_value=True))
+@patch.object(views, 'has_company', Mock(return_value=True))
 @patch.object(views.api_client.company, 'retrieve_supplier_case_study')
 def test_supplier_case_study_handles_bad_status(
     mock_retrieve_supplier_case_study, client, api_response_400
@@ -649,7 +649,7 @@ def test_supplier_case_study_handles_bad_status(
         client.get(url)
 
 
-@patch.object(views, 'has_verified_company', Mock(return_value=True))
+@patch.object(views, 'has_company', Mock(return_value=True))
 @patch.object(views.SupplierCompanyDescriptionEditView, 'serialize_form_data',
               Mock(return_value={'field': 'value'}))
 @patch.object(views.api_client.company, 'update_profile')
@@ -664,7 +664,7 @@ def test_company_profile_description_api_client_call(mock_update_profile,
     )
 
 
-@patch.object(views, 'has_verified_company', Mock(return_value=True))
+@patch.object(views, 'has_company', Mock(return_value=True))
 @patch.object(views.SupplierCompanyDescriptionEditView, 'serialize_form_data',
               Mock(return_value={}))
 @patch.object(views.api_client.company, 'update_profile')
@@ -679,7 +679,7 @@ def test_company_profile_description_api_client_success(
     assert response.status_code == http.client.FOUND
 
 
-@patch.object(views, 'has_verified_company', Mock(return_value=True))
+@patch.object(views, 'has_company', Mock(return_value=True))
 @patch.object(views.SupplierCompanyDescriptionEditView, 'serialize_form_data',
               Mock(return_value={}))
 @patch.object(views.api_client.company, 'update_profile')
@@ -698,7 +698,7 @@ def test_company_profile_description_api_client_failure(
     assert response.template_name == expected_template_name
 
 
-@patch.object(views, 'has_verified_company', Mock(return_value=True))
+@patch.object(views, 'has_company', Mock(return_value=True))
 @patch.object(views.api_client.company, 'retrieve_profile')
 def test_company_description_edit_calls_api(
     mock_retrieve_profile, company_request, api_response_company_profile_200
@@ -711,7 +711,7 @@ def test_company_description_edit_calls_api(
     assert mock_retrieve_profile.called_once_with(1)
 
 
-@patch.object(views, 'has_verified_company', Mock(return_value=True))
+@patch.object(views, 'has_company', Mock(return_value=True))
 @patch.object(views.api_client.company, 'retrieve_profile')
 def test_company_profile_description_exposes_api_result_to_form(
     mock_retrieve_profile, company_request, api_response_company_profile_200
@@ -725,7 +725,7 @@ def test_company_profile_description_exposes_api_result_to_form(
     assert response.context_data['form'].initial == expected
 
 
-@patch.object(views, 'has_verified_company', Mock(return_value=True))
+@patch.object(views, 'has_company', Mock(return_value=True))
 @patch.object(views.api_client.company, 'retrieve_profile')
 def test_company_description_edit_handles_bad_api_response(
     mock_retrieve_profile, company_request, api_response_400
@@ -738,7 +738,7 @@ def test_company_description_edit_handles_bad_api_response(
         view(company_request)
 
 
-@patch.object(views, 'has_verified_company', Mock(return_value=True))
+@patch.object(views, 'has_company', Mock(return_value=True))
 def test_company_description_edit_views_use_correct_template(
         client, rf, sso_user):
     request = rf.get(reverse('company-edit-description'))
@@ -754,7 +754,7 @@ def test_company_description_edit_views_use_correct_template(
         assert response.template_name == [view_class.templates[step_name]]
 
 
-@patch.object(views, 'has_verified_company', Mock(return_value=True))
+@patch.object(views, 'has_company', Mock(return_value=True))
 @patch.object(views.SupplierCompanyProfileEditView, 'serialize_form_data',
               Mock(return_value={'field': 'value'}))
 @patch.object(views.api_client.company, 'update_profile')
@@ -769,7 +769,7 @@ def test_company_profile_edit_api_client_call(
     )
 
 
-@patch.object(views, 'has_verified_company', Mock(return_value=True))
+@patch.object(views, 'has_company', Mock(return_value=True))
 @patch.object(views.SupplierCompanyProfileEditView, 'serialize_form_data',
               Mock(return_value={}))
 @patch.object(views.api_client.company, 'update_profile')
@@ -784,7 +784,7 @@ def test_company_profile_edit_api_client_success(
     assert response.status_code == http.client.FOUND
 
 
-@patch.object(views, 'has_verified_company', Mock(return_value=True))
+@patch.object(views, 'has_company', Mock(return_value=True))
 @patch.object(views.SupplierCompanyProfileEditView, 'serialize_form_data',
               Mock(return_value={}))
 @patch.object(views.api_client.company, 'update_profile')
@@ -802,7 +802,7 @@ def test_company_profile_edit_api_client_failure(
     )
 
 
-@patch.object(views, 'has_verified_company', Mock(return_value=True))
+@patch.object(views, 'has_company', Mock(return_value=True))
 @patch.object(views.api_client.company, 'retrieve_profile')
 def test_company_profile_edit_calls_api(
     mock_retrieve_profile, company_request, api_response_company_profile_200
@@ -816,7 +816,7 @@ def test_company_profile_edit_calls_api(
     assert mock_retrieve_profile.called_once_with(1)
 
 
-@patch.object(views, 'has_verified_company', Mock(return_value=True))
+@patch.object(views, 'has_company', Mock(return_value=True))
 @patch.object(views.api_client.company, 'retrieve_profile')
 def test_company_profile_edit_exposes_api_result_to_form(
     mock_retrieve_profile, company_request, api_response_company_profile_200
@@ -830,7 +830,7 @@ def test_company_profile_edit_exposes_api_result_to_form(
     assert response.context_data['form'].initial == expected
 
 
-@patch.object(views, 'has_verified_company', Mock(return_value=True))
+@patch.object(views, 'has_company', Mock(return_value=True))
 @patch.object(views.api_client.company, 'retrieve_profile')
 def test_company_profile_edit_handles_bad_api_response(
     mock_retrieve_profile, company_request, api_response_400
@@ -842,7 +842,7 @@ def test_company_profile_edit_handles_bad_api_response(
         view(company_request)
 
 
-@patch.object(views, 'has_verified_company', Mock(return_value=False))
+@patch.object(views, 'has_company', Mock(return_value=False))
 def test_supplier_company_redirect_non_verified_company(sso_request):
     view_classes = [
         views.SupplierCompanyProfileEditView,
@@ -856,7 +856,7 @@ def test_supplier_company_redirect_non_verified_company(sso_request):
         assert response.get('Location') == reverse('register-instructions')
 
 
-@patch.object(views, 'has_verified_company', Mock(return_value=True))
+@patch.object(views, 'has_company', Mock(return_value=True))
 def test_company_edit_views_use_correct_template(client, rf, sso_user):
     request = rf.get(reverse('company-edit'))
     request.sso_user = sso_user
@@ -871,7 +871,7 @@ def test_company_edit_views_use_correct_template(client, rf, sso_user):
         assert response.template_name == [view_class.templates[step_name]]
 
 
-@patch.object(views, 'has_verified_company', Mock(return_value=True))
+@patch.object(views, 'has_company', Mock(return_value=True))
 @patch.object(views.SupplierCompanyProfileLogoEditView, 'serialize_form_data',
               Mock(return_value={'field': 'value'}))
 @patch.object(views.api_client.company, 'update_profile')
@@ -885,7 +885,7 @@ def test_company_profile_logo_api_client_call(mock_update_profile,
     )
 
 
-@patch.object(views, 'has_verified_company', Mock(return_value=True))
+@patch.object(views, 'has_company', Mock(return_value=True))
 @patch.object(views.SupplierCompanyProfileLogoEditView, 'serialize_form_data',
               Mock(return_value={}))
 @patch.object(views.api_client.company, 'update_profile')
@@ -900,7 +900,7 @@ def test_company_profile_logo_api_client_success(
     assert response.status_code == http.client.FOUND
 
 
-@patch.object(views, 'has_verified_company', Mock(return_value=True))
+@patch.object(views, 'has_company', Mock(return_value=True))
 @patch.object(views.SupplierCompanyProfileLogoEditView, 'serialize_form_data',
               Mock(return_value={}))
 @patch.object(views.api_client.company, 'update_profile')
@@ -922,7 +922,7 @@ def test_company_profile_logo_api_client_failure(
 @patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
 @patch('company.forms.CompanyAddressVerificationForm.is_form_tampered',
        Mock(return_value=False))
-@patch.object(views, 'has_verified_company', Mock(return_value=True))
+@patch.object(views, 'has_company', Mock(return_value=True))
 @patch.object(views.api_client.company, 'update_profile')
 def test_supplier_company_profile_edit_create_api_success(
     mock_update_profile, company_profile_edit_end_to_end, sso_user,
@@ -943,7 +943,7 @@ def test_supplier_company_profile_edit_create_api_success(
 @patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
 @patch('company.forms.CompanyAddressVerificationForm.is_form_tampered',
        Mock(return_value=False))
-@patch.object(views, 'has_verified_company', Mock(return_value=True))
+@patch.object(views, 'has_company', Mock(return_value=True))
 @patch.object(views.api_client.company, 'update_profile')
 def test_supplier_company_profile_edit_create_api_failure(
     mock_create_case_study, company_profile_edit_end_to_end, api_response_400
@@ -958,7 +958,7 @@ def test_supplier_company_profile_edit_create_api_failure(
 
 
 @patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
-@patch.object(views, 'has_verified_company', Mock(return_value=True))
+@patch.object(views, 'has_company', Mock(return_value=True))
 def test_supplier_company_profile_initial_address_from_profile(
     company_profile_edit_goto_step, retrieve_profile_data
 ):
@@ -973,7 +973,7 @@ def test_supplier_company_profile_initial_address_from_profile(
 
 
 @patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
-@patch.object(views, 'has_verified_company', Mock(return_value=True))
+@patch.object(views, 'has_company', Mock(return_value=True))
 @patch('api_client.api_client.company.retrieve_profile')
 def test_supplier_company_profile_initial_address_from_companies_house(
     mock_retrieve_profile, company_profile_edit_goto_step,
@@ -994,7 +994,7 @@ def test_supplier_company_profile_initial_address_from_companies_house(
 
 
 @patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
-@patch.object(views, 'has_verified_company', Mock(return_value=True))
+@patch.object(views, 'has_company', Mock(return_value=True))
 def test_supplier_company_profile_initial_data_contact_from_profile(
     company_profile_edit_goto_step, retrieve_profile_data
 ):
@@ -1008,7 +1008,7 @@ def test_supplier_company_profile_initial_data_contact_from_profile(
 
 
 @patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
-@patch.object(views, 'has_verified_company', Mock(return_value=True))
+@patch.object(views, 'has_company', Mock(return_value=True))
 @patch('api_client.api_client.company.retrieve_profile')
 def test_supplier_company_profile_initial_contact_from_companies_house(
     mock_retrieve_profile, company_profile_edit_goto_step,
@@ -1029,7 +1029,7 @@ def test_supplier_company_profile_initial_contact_from_companies_house(
 
 
 @patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
-@patch.object(views, 'has_verified_company', Mock(return_value=True))
+@patch.object(views, 'has_company', Mock(return_value=True))
 def test_supplier_company_profile_initial_data_basic(
     company_profile_edit_goto_step, retrieve_profile_data
 ):
@@ -1041,7 +1041,7 @@ def test_supplier_company_profile_initial_data_basic(
 
 
 @patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
-@patch.object(views, 'has_verified_company', Mock(return_value=True))
+@patch.object(views, 'has_company', Mock(return_value=True))
 def test_supplier_company_profile_initial_data_classification(
     company_profile_edit_goto_step, retrieve_profile_data
 ):
@@ -1055,7 +1055,7 @@ def test_supplier_company_profile_initial_data_classification(
 @patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
 @patch('company.forms.CompanyAddressVerificationForm.is_form_tampered',
        Mock(return_value=False))
-@patch.object(views, 'has_verified_company', Mock(return_value=True))
+@patch.object(views, 'has_company', Mock(return_value=True))
 @patch.object(validators.api_client.company, 'verify_with_code')
 def test_company_address_validation_api_success(
     mock_verify_with_code, address_verification_end_to_end, sso_user,
@@ -1075,7 +1075,7 @@ def test_company_address_validation_api_success(
 @patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
 @patch('company.forms.CompanyAddressVerificationForm.is_form_tampered',
        Mock(return_value=False))
-@patch.object(views, 'has_verified_company', Mock(return_value=True))
+@patch.object(views, 'has_company', Mock(return_value=True))
 @patch.object(views.api_client.company, 'verify_with_code')
 def test_company_address_validation_api_failure(
     mock_verify_with_code, address_verification_end_to_end, api_response_400
