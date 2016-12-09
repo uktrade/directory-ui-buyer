@@ -54,6 +54,7 @@
 			<!-- Key Facts -->
 			<div class="span4 key-facts">
 				<div class="company-details-subtitle">Key facts</div>
+				<div>Last updated: {{company.modified|date:"Y-m-d H:i"}}</div>
 				<div class="number-of-employees">
 				{% if company.employees %}
 					<div class="description-content">

@@ -1,3 +1,5 @@
+from datetime import datetime
+
 import requests
 import pytest
 
@@ -17,6 +19,7 @@ def profile_data():
         'keywords': 'I found it most pleasing, hi',
         'employees': '1001-10000',
         'supplier_case_studies': [],
+        'modified': '2016-11-23T11:21:10.977518Z',
     }
 
 
@@ -82,7 +85,8 @@ def test_get_company_profile_from_response(profile_data):
         'name': 'Great corp',
         'keywords': 'I found it most pleasing, hi',
         'employees': '1,001-10,000',
-        'supplier_case_studies': []
+        'supplier_case_studies': [],
+        'modified': datetime(2016, 11, 23, 11, 21, 10, 977518),
     }
     actual = helpers.get_company_profile_from_response(response)
     assert actual == expected
@@ -106,7 +110,8 @@ def test_get_public_company_profile_from_response(profile_data):
         'name': 'Great corp',
         'keywords': 'I found it most pleasing, hi',
         'employees': '1,001-10,000',
-        'supplier_case_studies': []
+        'supplier_case_studies': [],
+        'modified': datetime(2016, 11, 23, 11, 21, 10, 977518),
     }
     actual = helpers.get_public_company_profile_from_response(response)
     assert actual == expected
@@ -134,6 +139,7 @@ def test_get_company_list_from_response(public_companies):
                 'keywords': 'I found it most pleasing, hi',
                 'employees': '1,001-10,000',
                 'supplier_case_studies': [],
+                'modified': datetime(2016, 11, 23, 11, 21, 10, 977518),
             }
         ]
     }
@@ -179,7 +185,8 @@ def test_get_case_study_details_from_response(supplier_case_study_data):
                 'label': 'Software and computer services',
                 'value': 'SOFTWARE_AND_COMPUTER_SERVICES'
             }],
-            'number': '09466004'
+            'number': '09466004',
+            'modified': datetime(2016, 11, 23, 11, 21, 10, 977518),
         },
         'image_one': 'https://image_one.jpg',
         'testimonial': 'I found it most pleasing.',
