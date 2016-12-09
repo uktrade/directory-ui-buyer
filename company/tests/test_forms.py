@@ -279,9 +279,9 @@ def test_serialize_company_profile_forms():
     assert actual == expected
 
 
-def test_serialize_company_logo_forms():
+def test_serialize_company_logo_form():
     logo = create_mock_file()
-    actual = forms.serialize_company_logo_forms({
+    actual = forms.serialize_company_logo_form({
         'logo': logo,
     })
     expected = {
@@ -290,12 +290,80 @@ def test_serialize_company_logo_forms():
     assert actual == expected
 
 
-def test_serialize_company_description_forms():
-    actual = forms.serialize_company_description_forms({
+def test_serialize_company_description_form():
+    actual = forms.serialize_company_description_form({
         'description': 'Jolly good exporter.',
     })
     expected = {
         'description': 'Jolly good exporter.',
+    }
+    assert actual == expected
+
+
+def test_serialize_company_basic_info_form():
+    data = {
+        'name': 'Jim example',
+        'website': 'http://www.google.com',
+        'keywords': 'good, great',
+        'employees': '1-10',
+    }
+    expected = {
+        'name': 'Jim example',
+        'website': 'http://www.google.com',
+        'keywords': 'good, great',
+        'employees': '1-10',
+    }
+    assert forms.serialize_company_basic_info_form(data) == expected
+
+
+def test_serialize_company_sectors_form():
+    data = {
+        'sectors': ['one', 'two']
+    }
+    expected = {
+        'sectors': ['one', 'two']
+    }
+    assert forms.serialize_company_sectors_form(data) == expected
+
+
+def test_serialize_company_contact_form():
+    data = {
+        'email_full_name': 'Jim',
+        'email_address': 'jim@example.com',
+        'mobile_number': '07506504933',
+    }
+    expected = {
+        'contact_details': {
+            'email_full_name': 'Jim',
+            'email_address': 'jim@example.com',
+            'mobile_number': '07506504933',
+        }
+    }
+    assert forms.serialize_company_contact_form(data) == expected
+
+
+def test_serialize_company_address_form():
+
+    actual = forms.serialize_company_address_form({
+        'address_line_1': '123 Fake Street',
+        'address_line_2': 'Fakeville',
+        'country': 'GB',
+        'keywords': 'Jolly good exporter.',
+        'locality': 'London',
+        'po_box': '124',
+        'postal_code': 'E14 9IX',
+        'postal_full_name': 'Jeremy postal',
+    })
+    expected = {
+        'contact_details': {
+            'address_line_1': '123 Fake Street',
+            'address_line_2': 'Fakeville',
+            'country': 'GB',
+            'locality': 'London',
+            'po_box': '124',
+            'postal_code': 'E14 9IX',
+            'postal_full_name': 'Jeremy postal',
+        }
     }
     assert actual == expected
 

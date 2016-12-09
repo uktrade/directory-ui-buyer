@@ -173,6 +173,14 @@ def company_profile_address_data(all_company_profile_data):
 
 
 @pytest.fixture
+def supplier_address_data_standalone(company_profile_address_data):
+    step = views.SupplierAddressEditView.ADDRESS
+    data = company_profile_address_data
+    data['supplier_address_edit_view-current_step'] = step
+    return data
+
+
+@pytest.fixture
 def company_profile_basic_data(all_company_profile_data):
     view = views.SupplierCompanyProfileEditView
     data = all_company_profile_data
@@ -186,6 +194,14 @@ def company_profile_basic_data(all_company_profile_data):
 
 
 @pytest.fixture
+def company_profile_key_facts_standalone_data(company_profile_basic_data):
+    data = company_profile_basic_data
+    step = views.SupplierBasicInfoEditView.BASIC
+    data['supplier_basic_info_edit_view-current_step'] = step
+    return data
+
+
+@pytest.fixture
 def company_profile_classification_data(all_company_profile_data):
     view = views.SupplierCompanyProfileEditView
     data = all_company_profile_data
@@ -193,6 +209,16 @@ def company_profile_classification_data(all_company_profile_data):
         'supplier_company_profile_edit_view-current_step': view.CLASSIFICATION,
         view.CLASSIFICATION + '-sectors': data['sectors'],
     }
+
+
+@pytest.fixture
+def company_profile_sectors_standalone_data(
+    company_profile_classification_data
+):
+    data = company_profile_classification_data
+    step = views.SupplierClassificationEditView.CLASSIFICATION
+    data['supplier_classification_edit_view-current_step'] = step
+    return data
 
 
 @pytest.fixture
@@ -205,6 +231,14 @@ def company_profile_contact_data(all_company_profile_data):
         view.CONTACT + '-email_full_name': data['email_full_name'],
         view.CONTACT + '-mobile_number': data['mobile_number'],
     }
+
+
+@pytest.fixture
+def company_profile_contact_standalone_data(company_profile_contact_data):
+    data = company_profile_contact_data
+    step = views.SupplierContactEditView.CONTACT
+    data['supplier_contact_edit_view-current_step'] = step
+    return data
 
 
 @pytest.fixture
@@ -1087,3 +1121,148 @@ def test_company_address_validation_api_failure(
 
     assert response.status_code == http.client.OK
     assert response.context_data['form'].errors['code'] == expected
+
+
+@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
+@patch.object(views, 'has_company', Mock(return_value=True))
+@patch.object(helpers, 'get_contact_details')
+def test_supplier_address_edit_standalone_initial_data(
+    mock_get_contact_details, client, sso_user,
+):
+    expected_initial_data = {'field': 'value'}
+    mock_get_contact_details.return_value = expected_initial_data
+
+    response = client.get(reverse('company-edit-address'))
+
+    mock_get_contact_details.assert_called_with(sso_user.id)
+    assert response.context_data['form'].initial == expected_initial_data
+
+
+@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
+@patch('company.forms.CompanyAddressVerificationForm.is_form_tampered',
+       Mock(return_value=False))
+@patch.object(views, 'has_company', Mock(return_value=True))
+@patch.object(helpers, 'get_contact_details',
+              Mock(return_value={}))
+@patch.object(views.api_client.company, 'update_profile')
+def test_supplier_address_edit_standalone_view_api_success(
+    mock_update_profile, client, supplier_address_data_standalone, sso_user,
+    api_response_200,
+):
+    mock_update_profile.return_value = api_response_200
+
+    url = reverse('company-edit-address')
+    client.post(url, supplier_address_data_standalone)
+
+    mock_update_profile.assert_called_once_with(
+        sso_user_id=sso_user.id,
+        data={
+            'contact_details': {
+                'postal_code': 'E14 6XK',
+                'country': 'GB',
+                'address_line_2': 'Fakeville',
+                'postal_full_name': 'Jeremy',
+                'address_line_1': '123 Fake Street',
+                'po_box': 'abc',
+                'locality': 'London'
+            }
+        }
+    )
+
+
+@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
+@patch.object(views, 'has_company', Mock(return_value=True))
+def test_supplier_contact_edit_standalone_initial_data(
+    client, retrieve_profile_data
+):
+    response = client.get(reverse('company-edit-contact'))
+    expected = retrieve_profile_data['contact_details']
+
+    assert response.context_data['form'].initial == expected
+
+
+@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
+@patch.object(views, 'has_company', Mock(return_value=True))
+@patch.object(views.api_client.company, 'update_profile')
+def test_supplier_contact_edit_standalone_view_api_success(
+    mock_update_profile, client, company_profile_contact_standalone_data,
+    api_response_200, sso_user,
+):
+    mock_update_profile.return_value = api_response_200
+
+    url = reverse('company-edit-contact')
+    client.post(url, company_profile_contact_standalone_data)
+
+    mock_update_profile.assert_called_once_with(
+        sso_user_id=sso_user.id,
+        data={
+            'contact_details': {
+                'email_full_name': 'Jeremy',
+                'email_address': 'test@example.com',
+                'mobile_number': '07555555555'
+            }
+        }
+    )
+
+
+@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
+@patch.object(views, 'has_company', Mock(return_value=True))
+def test_supplier_sectors_edit_standalone_initial_data(
+    client, retrieve_profile_data
+):
+    response = client.get(reverse('company-edit-sectors'))
+
+    assert response.context_data['form'].initial == retrieve_profile_data
+
+
+@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
+@patch.object(views, 'has_company', Mock(return_value=True))
+@patch.object(views.api_client.company, 'update_profile')
+def test_supplier_sectors_edit_standalone_view_api_success(
+    mock_update_profile, client, company_profile_sectors_standalone_data,
+    api_response_200, sso_user,
+):
+    mock_update_profile.return_value = api_response_200
+
+    url = reverse('company-edit-sectors')
+    client.post(url, company_profile_sectors_standalone_data)
+
+    mock_update_profile.assert_called_once_with(
+        sso_user_id=sso_user.id,
+        data={
+            'sectors': [choices.COMPANY_CLASSIFICATIONS[1][0]]
+        }
+    )
+
+
+@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
+@patch.object(views, 'has_company', Mock(return_value=True))
+def test_supplier_key_facts_edit_standalone_initial_data(
+    client, retrieve_profile_data
+):
+    response = client.get(reverse('company-edit-key-facts'))
+
+    assert response.context_data['form'].initial == retrieve_profile_data
+
+
+@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
+@patch.object(views, 'has_company', Mock(return_value=True))
+@patch.object(views.api_client.company, 'update_profile')
+def test_supplier_key_facts_edit_standalone_view_api_success(
+    mock_update_profile, client, company_profile_key_facts_standalone_data,
+    api_response_200, sso_user,
+):
+    mock_update_profile.return_value = api_response_200
+
+    url = reverse('company-edit-key-facts')
+
+    client.post(url, company_profile_key_facts_standalone_data)
+    mock_update_profile.assert_called_once_with(
+        sso_user_id=sso_user.id,
+        data={
+            'name': 'Example Corp.',
+            'website': 'http://www.example.com',
+            'keywords': 'Nice, Great',
+            'employees': choices.EMPLOYEES[1][0],
+        }
+    )
