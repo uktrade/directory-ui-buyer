@@ -182,7 +182,8 @@ class CompanyContactDetailsForm(AutoFocusFieldMixin,
     mobile_number = MobilePhoneNumberField(
         label='Your mobile phone number:',
         help_text=(
-            'We will send a verification code to this mobile phone number.'
+            'Optional. This is the phone number that international buyers'
+            ' should use when contacting your company.'
         ),
     )
 
