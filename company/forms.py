@@ -451,3 +451,24 @@ def serialize_company_address_form(cleaned_data):
             'postal_full_name': cleaned_data['postal_full_name'],
         }
     }
+
+
+def is_optional_profile_values_set(company_profile):
+    """
+    Return True if the fields set in `CompanyBasicInfoForm` ,
+    `CompanyClassificationForm`, `CompanyContactDetailsForm`
+    `CompanyAddressVerificationForm` are present in the company profile.
+
+    """
+
+    fields = [
+        'name',
+        'website',
+        'sectors',
+        'keywords',
+        'employees',
+        # CompanyAddressVerificationForm and CompanyContactDetailsForm fields
+        # are stored in `contact_details`.
+        'contact_details',
+    ]
+    return all(company_profile.get(field) for field in fields)

@@ -16,7 +16,7 @@
 					Verify your address.
 				</a>
 			{% else %}
-				<a href="{% url 'company-edit-address' %}" target="_self">
+				<a href="{% url show_wizard_links|yesno:'company-edit,company-edit-address' %}" target="_self">
 					Set your address.
 				</a>
 			{% endif %}
@@ -75,7 +75,7 @@
 					</div>
 				{% endif %}
 				{% if show_edit_links %}
-					<a href="{% url 'company-edit-key-facts' %}" target="_self">
+					<a href="{% url show_wizard_links|yesno:'company-edit,company-edit-key-facts' %}" target="_self">
 						Edit your company's key facts.
 					</a>
 				{% endif %}
@@ -178,7 +178,7 @@
 					<div class="description-content"></div>
 					{% endif %}
 					{% if show_edit_links %}
-						<a href="{% url 'company-edit-sectors' %}" target="_self">
+						<a href="{% url show_wizard_links|yesno:'company-edit,company-edit-sectors' %}" target="_self">
 							Edit your company's sectors.
 						</a>
 					{% endif %}
@@ -195,7 +195,7 @@
 					<div class="description-content">{{company.keywords}}</div>
 					{% endif %}
 					{% if show_edit_links %}
-						<a href="{% url 'company-edit' %}" target="_self">
+						<a href="{% url show_wizard_links|yesno:'company-edit,company-edit-key-facts' %}" target="_self">
 							Edit your company's keywords.
 						</a>
 					{% endif %}

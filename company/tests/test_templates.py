@@ -237,6 +237,34 @@ def test_company_profile_details_renders_set_logo_button_hide_edit_links():
     assert SET_LOGO_MESSAGE not in html
 
 
+def test_company_profile_details_renders_wizard_links():
+    context = {
+        'show_edit_links': True,
+        'show_wizard_links': True
+    }
+    html = render_to_string('company-profile-detail.html', context)
+    company_edit_link = 'href="{url}"'.format(url=reverse('company-edit'))
+
+    assert reverse('company-edit-address') not in html
+    assert reverse('company-edit-sectors') not in html
+    assert reverse('company-edit-key-facts') not in html
+    assert html.count(company_edit_link) == 5
+
+
+def test_company_profile_details_renders_standalone_edit_links():
+    context = {
+        'show_edit_links': True,
+        'show_wizard_links': False
+    }
+    html = render_to_string('company-profile-detail.html', context)
+    company_edit_link = 'href="{url}"'.format(url=reverse('company-edit'))
+
+    assert reverse('company-edit-address') in html
+    assert reverse('company-edit-sectors') in html
+    assert reverse('company-edit-key-facts') in html
+    assert html.count(company_edit_link) == 1
+
+
 def test_company_public_profile_list_link_to_profle():
     context = {
         'companies': [

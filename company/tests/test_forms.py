@@ -1,6 +1,8 @@
+import itertools
 from unittest.mock import Mock, patch
 
 from directory_validators.constants import choices
+import pytest
 
 from django.forms.fields import Field
 from django.forms import CharField, Form
@@ -13,6 +15,20 @@ from enrolment.forms import AutoFocusFieldMixin, IndentedInvalidFieldsMixin
 
 URL_FORMAT_MESSAGE = URLValidator.message
 REQUIRED_MESSAGE = Field.default_error_messages['required']
+
+
+@pytest.fixture
+def company_profile():
+    return {
+        'name': 'Example corp',
+        'website': 'http://www.example.com',
+        'sectors': [choices.COMPANY_CLASSIFICATIONS[1][0]],
+        'keywords': 'Thing, Thinger',
+        'employees': choices.EMPLOYEES[1][0],
+        'contact_details': {
+            'full_name': 'Jim Example'
+        },
+    }
 
 
 def create_mock_file():
@@ -433,6 +449,47 @@ def test_company_address_verification_accepts_valid():
 
     assert form.is_valid() is True
     assert form.cleaned_data == data
+
+
+def test_is_optional_profile_values_set_all_set(company_profile):
+    assert forms.is_optional_profile_values_set(company_profile) is True
+
+
+def test_is_optional_profile_values_set_some_missing(company_profile):
+    optional_fields = [
+        'name',
+        'website',
+        'sectors',
+        'keywords',
+        'employees',
+        'contact_details',
+    ]
+
+    for field in optional_fields:
+        data = company_profile.copy()
+        del data[field]
+        assert forms.is_optional_profile_values_set(data) is False
+
+
+def test_is_optional_profile_values_set_some_empty(company_profile):
+    field_names = [
+        'name',
+        'website',
+        'sectors',
+        'keywords',
+        'employees',
+        'contact_details',
+    ]
+    empty_values = [None, '', 0, {}, False, []]
+
+    for field_name, value in itertools.product(field_names, empty_values):
+        data = company_profile.copy()
+        data[field_name] = value
+        assert forms.is_optional_profile_values_set(data) is False
+
+
+def test_is_optional_profile_values_set_none_set():
+    assert forms.is_optional_profile_values_set({}) is False
 
 
 class PreventTamperForm(forms.PreventTamperMixin, Form):
