@@ -1,5 +1,6 @@
 {% extends 'govuk_layout.html' %}
 {% load staticfiles %}
+{% load naturaltime from humanize %}
 {% block css %}
 	<link href="{% static 'company-profile-details.css' %}" media="all" rel="stylesheet" />
 {% endblock %}
@@ -68,6 +69,7 @@
 			<!-- Key Facts -->
 			<div class="span4 key-facts">
 				<div class="company-details-subtitle">Key facts</div>
+				<div>Last updated: {{company.modified|naturaltime}}</div>
 				<div class="number-of-employees">
 				{% if company.employees %}
 					<div class="description-content">

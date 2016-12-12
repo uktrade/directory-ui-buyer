@@ -48,6 +48,7 @@ def list_public_profiles_data():
                 'date_of_creation': '2015-03-01',
                 'employees': '1001-10000',
                 'supplier_case_studies': [],
+                'modified': '2016-11-23T11:21:10.977518Z',
                 'verified_with_code': True,
                 'contact_details': {},
             }
@@ -76,6 +77,7 @@ def supplier_case_study_data():
             'keywords': 'Web development',
             'sectors': ['SOFTWARE_AND_COMPUTER_SERVICES'],
             'number': '09466004',
+            'modified': '2016-11-23T11:21:10.977518Z',
             'verified_with_code': True,
             'contact_details': {},
         },

@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta
+
 from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator
 from django.template.loader import render_to_string
@@ -18,6 +20,7 @@ default_context = {
         'logo': 'www.ukexportersnow.co.uk/logo.png',
         'keywords': 'word1 word2',
         'date_of_creation': '2 Mar 2015',
+        'modified': datetime.now() - timedelta(hours=1),
     }
 }
 
@@ -28,6 +31,7 @@ DATE_CREATED_LABEL = 'Date incorporated'
 CHANGE_LOGO_LABEL = 'Change logo'
 SET_LOGO_MESSAGE = 'Set logo'
 NO_RESULTS_FOUND_LABEL = 'No companies found'
+MODIFIED_LABEL = 'Last updated'
 
 
 def test_company_profile_details_feature_flag_public_profile_on():
@@ -104,6 +108,12 @@ def test_company_profile_details_renders_date_created():
     html = render_to_string('company-profile-detail.html', default_context)
     assert '2 Mar 2015' in html
     assert DATE_CREATED_LABEL in html
+
+
+def test_company_profile_details_renders_modified():
+    html = render_to_string('company-profile-detail.html', default_context)
+    assert 'an hour ago' in html
+    assert MODIFIED_LABEL in html
 
 
 def test_company_profile_details_handles_no_date_created():

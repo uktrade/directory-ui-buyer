@@ -103,6 +103,12 @@ debug_pytest:
 debug_test:
 	$(DEBUG_SET_ENV_VARS) && $(COLLECT_STATIC) && $(FLAKE8) && $(PYTEST) --cov-report=html
 
+debug_manage:
+	$(DEBUG_SET_ENV_VARS) && ./manage.py $(cmd)
+
+debug_shell:
+	$(DEBUG_SET_ENV_VARS) && ./manage.py shell
+
 debug: test_requirements debug_test
 
 heroku_deploy_dev:
