@@ -181,6 +181,7 @@ class CompanyContactDetailsForm(AutoFocusFieldMixin,
     )
     mobile_number = MobilePhoneNumberField(
         label='Your mobile phone number:',
+        required=False,
         help_text=(
             'Optional. This is the phone number that international buyers'
             ' should use when contacting your company.'
