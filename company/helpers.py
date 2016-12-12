@@ -81,6 +81,8 @@ def format_company_details(details):
         'keywords': details['keywords'],
         'employees': get_employees_label(details['employees']),
         'supplier_case_studies': details['supplier_case_studies'],
+        'modified': datetime.datetime.strptime(
+            details['modified'], '%Y-%m-%dT%H:%M:%S.%fZ'),
         'verified_with_code': details['verified_with_code'],
         'is_address_set': details['contact_details'] != {}
     }
