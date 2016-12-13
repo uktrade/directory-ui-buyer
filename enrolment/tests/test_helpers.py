@@ -60,47 +60,20 @@ def test_halt_validation_on_failure_raises_first():
 
 
 @patch.object(helpers.api_client.supplier, 'retrieve_profile')
-def test_has_verified_company_no_company(mock_retrieve_supplier_profile):
+def test_has_company_no_company(mock_retrieve_supplier_profile):
     mock_response = Response()
     mock_response.status_code = http.client.OK
     mock_response.json = lambda: {
         'company': '',
-        'company_email_confirmed': False,
     }
     mock_retrieve_supplier_profile.return_value = mock_response
 
-    assert helpers.has_verified_company(sso_user_id=1) is False
-
-
-@patch.object(helpers.api_client.supplier, 'retrieve_profile')
-def test_has_verified_company_unconfirmed(mock_retrieve_supplier_profile):
-    mock_response = Response()
-    mock_response.status_code = http.client.OK
-    mock_response.json = lambda: {
-        'company': 'Extreme Corp',
-        'company_email_confirmed': False,
-    }
-    mock_retrieve_supplier_profile.return_value = mock_response
-
-    assert helpers.has_verified_company(sso_user_id=1) is False
-
-
-@patch.object(helpers.api_client.supplier, 'retrieve_profile')
-def test_has_verified_company(mock_retrieve_supplier_profile):
-    mock_response = Response()
-    mock_response.status_code = http.client.OK
-    mock_response.json = lambda: {
-        'company': 'Extreme Corp',
-        'company_email_confirmed': True,
-    }
-    mock_retrieve_supplier_profile.return_value = mock_response
-
-    assert helpers.has_verified_company(sso_user_id=1) is True
+    assert helpers.has_company(sso_user_id=1) is False
 
 
 @patch.object(helpers.api_client.supplier, 'retrieve_profile', profile_api_404)
-def test_has_verified_company_404():
-    assert helpers.has_verified_company(sso_user_id=1) is False
+def test_has_company_404():
+    assert helpers.has_company(sso_user_id=1) is False
 
 
 @patch.object(helpers, 'get_companies_house_profile')
@@ -170,6 +143,19 @@ def test_get_companies_house_profile():
         )
         response = helpers.get_companies_house_profile('01234567')
     assert response.json() == profile
+
+
+def test_get_companies_house_contact_details():
+    contact_details = {'address': '111!'}
+    with requests_mock.mock() as mock:
+        mock.get(
+            ('https://api.companieshouse.gov.uk/company/01234567/'
+             'registered-office-address'),
+            status_code=http.client.OK,
+            json=contact_details
+        )
+        response = helpers.get_companies_house_office_address('01234567')
+    assert response.json() == contact_details
 
 
 def test_get_company_date_of_creation_from_session(client):

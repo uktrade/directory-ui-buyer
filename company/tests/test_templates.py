@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta
+
 from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator
 from django.template.loader import render_to_string
@@ -18,6 +20,7 @@ default_context = {
         'logo': 'www.ukexportersnow.co.uk/logo.png',
         'keywords': 'word1 word2',
         'date_of_creation': '2 Mar 2015',
+        'modified': datetime.now() - timedelta(hours=1),
     }
 }
 
@@ -28,6 +31,7 @@ DATE_CREATED_LABEL = 'Date incorporated'
 CHANGE_LOGO_LABEL = 'Change logo'
 SET_LOGO_MESSAGE = 'Set logo'
 NO_RESULTS_FOUND_LABEL = 'No companies found'
+MODIFIED_LABEL = 'Last updated'
 
 
 def test_company_profile_details_feature_flag_public_profile_on():
@@ -39,7 +43,7 @@ def test_company_profile_details_feature_flag_public_profile_on():
             ]
         },
         'features': {
-            'FEATURE_PUBLIC_PROFILES': True
+            'FEATURE_PUBLIC_PROFILES_ENABLED': True
         }
     }
     url = reverse('public-company-profiles-list')
@@ -47,6 +51,35 @@ def test_company_profile_details_feature_flag_public_profile_on():
 
     assert 'href="{url}?sectors=THING"'.format(url=url) in html
     assert 'href="{url}?sectors=OTHER_THING"'.format(url=url) in html
+
+
+def test_company_profile_details_links_to_case_studies():
+    context = {
+        'features': {
+            'FEATURE_PUBLIC_PROFILES_ENABLED': True
+        },
+        'case_studies': [
+            {
+                "pk": 3,
+                "company": 1,
+                "description": "great",
+                "image_one": "https://image_one.jpg",
+                "image_three": None,
+                "image_two": "https://image_two.jpg",
+                "keywords": "nice",
+                "sector": "AEROSPACE",
+                "testimonial": "hello",
+                "title": "three",
+                "video_one": None,
+                "website": "http://www.example.com",
+                "year": "2000"
+            },
+        ]
+    }
+    url = reverse('company-case-study-view', kwargs={'id': '3'})
+    html = render_to_string('company-profile-detail.html', context)
+
+    assert 'href="{url}"'.format(url=url) not in html
 
 
 def test_company_profile_details_feature_flag_public_profile_off():
@@ -57,9 +90,6 @@ def test_company_profile_details_feature_flag_public_profile_off():
                 {'value': 'OTHER_THING', 'label': 'other_thing'},
             ]
         },
-        'features': {
-            'FEATURE_PUBLIC_PROFILES': False
-        }
     }
     url = reverse('public-company-profiles-list')
     html = render_to_string('company-profile-detail.html', context)
@@ -78,6 +108,12 @@ def test_company_profile_details_renders_date_created():
     html = render_to_string('company-profile-detail.html', default_context)
     assert '2 Mar 2015' in html
     assert DATE_CREATED_LABEL in html
+
+
+def test_company_profile_details_renders_modified():
+    html = render_to_string('company-profile-detail.html', default_context)
+    assert 'an hour ago' in html
+    assert MODIFIED_LABEL in html
 
 
 def test_company_profile_details_handles_no_date_created():
@@ -303,3 +339,123 @@ def test_company_public_profile_list_paginate_prev():
     html = render_to_string('company-public-profile-list.html', context)
 
     assert 'href="?sectors=WATER&page=1"' in html
+
+
+def test_supplier_case_study_details_renders_company_details():
+    context = {
+        'case_study': {
+            'company': {
+                'date_of_creation': '1 Jan 2015',
+                'name': 'Example corp',
+            }
+        }
+    }
+    html = render_to_string('supplier-case-study-detail.html', context)
+
+    assert context['case_study']['company']['name'] in html
+    assert context['case_study']['company']['date_of_creation'] in html
+
+
+def test_supplier_case_study_details_renders_case_study_details():
+    context = {
+        'case_study': {
+            'sector': {
+                'label': 'Water'
+            },
+            'year': '2000',
+            'testimonial': 'Good.',
+            'title': 'Very good thing',
+            'image_one': 'image_one.png',
+            'image_two': 'image_two.png',
+            'image_three': 'image_three.png',
+        }
+    }
+    html = render_to_string('supplier-case-study-detail.html', context)
+
+    assert context['case_study']['sector']['label'] in html
+    assert context['case_study']['year'] in html
+    assert context['case_study']['testimonial'] in html
+    assert context['case_study']['title'] in html
+    assert context['case_study']['image_one'] in html
+    assert context['case_study']['image_two'] in html
+    assert context['case_study']['image_three'] in html
+
+
+def test_supplier_case_study_detail_render_profile_link_flag_on_published():
+    context = {
+        'case_study': {
+            'company': {
+                'number': 3,
+                'is_published': True,
+            },
+        },
+        'features': {
+            'FEATURE_PUBLIC_PROFILES_ENABLED': True,
+        },
+    }
+    url = reverse(
+        'public-company-profiles-detail', kwargs={'company_number': '3'}
+    )
+    html = render_to_string('supplier-case-study-detail.html', context)
+
+    assert url in html
+
+
+def test_supplier_case_study_detail_render_profile_link_flag_on_unpublished():
+    context = {
+        'case_study': {
+            'company': {
+                'number': 3,
+                'is_published': False,
+            },
+        },
+        'features': {
+            'FEATURE_PUBLIC_PROFILES_ENABLED': True,
+        },
+    }
+    url = reverse(
+        'public-company-profiles-detail', kwargs={'company_number': '3'}
+    )
+    html = render_to_string('supplier-case-study-detail.html', context)
+
+    assert url not in html
+
+
+def test_supplier_case_study_details_renders_case_study_flag_off_published():
+    context = {
+        'case_study': {
+            'company': {
+                'number': 3,
+                'is_published': True,
+            },
+        },
+        'features': {
+            'FEATURE_PUBLIC_PROFILES_ENABLED': False
+        },
+    }
+    url = reverse(
+        'public-company-profiles-detail', kwargs={'company_number': '3'}
+    )
+    html = render_to_string('supplier-case-study-detail.html', context)
+
+    assert url not in html
+
+
+def test_supplier_case_study_details_renders_case_study_flag_off_unpublished():
+    context = {
+        'case_study': {
+            'company': {
+                'number': 3,
+                'is_published': False,
+            },
+        },
+        'features': {
+            'FEATURE_PUBLIC_PROFILES_ENABLED': False
+        },
+    }
+    url = reverse(
+        'public-company-profiles-detail', kwargs={'company_number': '3'}
+    )
+    html = render_to_string('supplier-case-study-detail.html', context)
+
+    assert url not in html

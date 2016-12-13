@@ -20,26 +20,7 @@ input_output_map="\
 	enrolment/static/sass/landing-page.scss:enrolment/static/landing-page.css \
 "
 
-dev_command="\
-	sass \
-	--style expanded \
-	--line-numbers \
-"
-
-watch_command="\
-	sass \
-	--style expanded \
-	--line-numbers \
-	--watch \
-"
-
 prod_command="sass --style compressed"
 
 eval 'rm enrolment/static/*.css profile/static/*.css'
-if [ "$1" == "dev" ]; then
-	eval $dev_command$libraries$input_output_map
-elif [ "$1" == "prod" ]; then
-	eval $prod_command$libraries$input_output_map
-elif [ "$1" == "watch" ]; then
-	eval $watch_command$libraries$input_output_map
-fi
+eval $prod_command$libraries$input_output_map

@@ -35,6 +35,7 @@ ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
     'django.contrib.staticfiles',
+    'django.contrib.humanize',
     "django_extensions",
     "raven.contrib.django.raven_compat",
     "django.contrib.sessions",
@@ -53,7 +54,6 @@ MIDDLEWARE_CLASSES = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'sso.middleware.SSOUserMiddleware',
-    'enrolment.middleware.ReferrerMiddleware',
 ]
 
 ROOT_URLCONF = 'ui.urls'
@@ -116,6 +116,80 @@ STATIC_HOST = os.environ.get('STATIC_HOST', '')
 STATIC_URL = STATIC_HOST + '/static/'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
+
+# Logging for development
+if DEBUG:
+    LOGGING = {
+        'version': 1,
+        'disable_existing_loggers': False,
+        'filters': {
+            'require_debug_false': {
+                '()': 'django.utils.log.RequireDebugFalse'
+            }
+        },
+        'handlers': {
+            'console': {
+                'level': 'DEBUG',
+                'class': 'logging.StreamHandler',
+            },
+        },
+        'loggers': {
+            'django.request': {
+                'handlers': ['console'],
+                'level': 'ERROR',
+                'propagate': True,
+            },
+            '': {
+                'handlers': ['console'],
+                'level': 'DEBUG',
+                'propagate': False,
+            },
+        }
+    }
+else:
+    # Sentry logging
+    LOGGING = {
+        'version': 1,
+        'disable_existing_loggers': False,
+        'root': {
+            'level': 'WARNING',
+            'handlers': ['sentry'],
+        },
+        'formatters': {
+            'verbose': {
+                'format': '%(levelname)s %(asctime)s %(module)s '
+                          '%(process)d %(thread)d %(message)s'
+            },
+        },
+        'handlers': {
+            'sentry': {
+                'level': 'ERROR',
+                'class': (
+                    'raven.contrib.django.raven_compat.handlers.SentryHandler'
+                ),
+                'tags': {'custom-tag': 'x'},
+            },
+            'console': {
+                'level': 'DEBUG',
+                'class': 'logging.StreamHandler',
+                'formatter': 'verbose'
+            }
+        },
+        'loggers': {
+            'raven': {
+                'level': 'DEBUG',
+                'handlers': ['console'],
+                'propagate': False,
+            },
+            'sentry.errors': {
+                'level': 'DEBUG',
+                'handlers': ['console'],
+                'propagate': False,
+            },
+        },
+    }
+
+
 # directory-api
 API_CLIENT_BASE_URL = os.environ["API_CLIENT_BASE_URL"]
 API_CLIENT_KEY = os.environ["API_CLIENT_KEY"]
@@ -162,4 +236,6 @@ API_CLIENT_CLASS = API_CLIENT_CLASSES[API_CLIENT_CLASS_NAME]
 
 COMPANIES_HOUSE_API_KEY = os.environ['COMPANIES_HOUSE_API_KEY']
 
-FEATURE_PUBLIC_PROFILES = os.getenv('FEATURE_PUBLIC_PROFILES') == 'true'
+FEATURE_PUBLIC_PROFILES_ENABLED = (
+    os.getenv('FEATURE_PUBLIC_PROFILES_ENABLED') == 'true'
+)

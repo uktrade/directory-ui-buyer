@@ -13,13 +13,78 @@ from django.template.response import TemplateResponse
 from django.views.generic import TemplateView
 from django.views.generic.edit import FormView
 
-from company import forms, helpers
-
 from api_client import api_client
-from enrolment.views import SupplierCompanyBaseView
+from company import forms, helpers
+from enrolment.helpers import has_company
+from sso.utils import SSOLoginRequiredMixin
 
 
-class SupplierCaseStudyView(SupplierCompanyBaseView, SessionWizardView):
+class SupplierCompanyBaseView(SSOLoginRequiredMixin):
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.sso_user is None:
+            return self.handle_no_permission()
+        else:
+            if not has_company(self.request.sso_user.id):
+                return redirect('register-instructions')
+            else:
+                return super(SupplierCompanyBaseView, self).dispatch(
+                    request, *args, **kwargs
+                )
+
+
+class SubmitFormOnGetMixin:
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['data'] = self.request.GET or None
+        return kwargs
+
+    def get(self, request, *args, **kwargs):
+        return super().post(request, *args, **kwargs)
+
+
+class UpdateCompanyProfileOnFormWizardDoneMixin:
+
+    def serialize_form_data(self):
+        return self.form_serializer(self.get_all_cleaned_data())
+
+    def done(self, *args, **kwargs):
+        api_response = api_client.company.update_profile(
+            sso_user_id=self.request.sso_user.id,
+            data=self.serialize_form_data()
+        )
+        if api_response.ok:
+            response = redirect('company-detail')
+        else:
+            response = TemplateResponse(self.request, self.failure_template)
+        return response
+
+
+class GetCompanyProfileInitialFormDataMixin:
+    def get_form_initial(self, step):
+        sso_user_id = self.request.sso_user.id
+        response = api_client.company.retrieve_profile(sso_user_id)
+        if not response.ok:
+            response.raise_for_status()
+        return response.json()
+
+
+class GetTemplateForCurrentStepMixin:
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        assert self.templates
+
+    def get_template_names(self):
+        return [self.templates[self.steps.current]]
+
+
+class SupplierCaseStudyWizardView(
+    SupplierCompanyBaseView,
+    GetTemplateForCurrentStepMixin,
+    SessionWizardView
+):
 
     BASIC = 'basic'
     RICH_MEDIA = 'rich-media'
@@ -40,10 +105,9 @@ class SupplierCaseStudyView(SupplierCompanyBaseView, SessionWizardView):
     }
     form_serializer = staticmethod(forms.serialize_supplier_case_study_forms)
 
-    def get_template_names(self):
-        return [self.templates[self.steps.current]]
-
     def get_form_initial(self, step):
+        if not self.kwargs['id']:
+            return {}
         response = api_client.company.retrieve_supplier_case_study(
             sso_user_id=self.request.sso_user.id,
             case_study_id=self.kwargs['id'],
@@ -87,17 +151,6 @@ class SupplierCompanyProfileDetailView(SupplierCompanyBaseView, TemplateView):
             'company': helpers.get_company_profile_from_response(response),
             'show_edit_links': True,
         }
-
-
-class SubmitFormOnGetMixin:
-
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        kwargs['data'] = self.request.GET or None
-        return kwargs
-
-    def get(self, request, *args, **kwargs):
-        return super().post(request, *args, **kwargs)
 
 
 class PublicProfileListView(SubmitFormOnGetMixin, FormView):
@@ -162,3 +215,194 @@ class PublicProfileDetailView(TemplateView):
             'company': company,
             'show_edit_links': False,
         }
+
+
+class SupplierCaseStudyDetailView(TemplateView):
+    template_name = 'supplier-case-study-detail.html'
+
+    def get_case_study(self):
+        response = api_client.company.retrieve_supplier_case_study(
+            sso_user_id=self.request.sso_user.id,
+            case_study_id=self.kwargs['id'],
+        )
+        if not response.ok:
+            response.raise_for_status()
+        return helpers.get_case_study_details_from_response(response)
+
+    def get_context_data(self, **kwargs):
+        return {
+            'case_study': self.get_case_study(),
+        }
+
+
+class SupplierCompanyProfileEditView(
+    SupplierCompanyBaseView,
+    GetTemplateForCurrentStepMixin,
+    UpdateCompanyProfileOnFormWizardDoneMixin,
+    SessionWizardView
+):
+
+    ADDRESS = 'address'
+    BASIC = 'basic'
+    CLASSIFICATION = 'classification'
+    CONTACT = 'contact'
+
+    form_list = (
+        (BASIC, forms.CompanyBasicInfoForm),
+        (CLASSIFICATION, forms.CompanyClassificationForm),
+        (CONTACT, forms.CompanyContactDetailsForm),
+        (ADDRESS, forms.CompanyAddressVerificationForm)
+    )
+    failure_template = 'company-profile-update-error.html'
+    templates = {
+        BASIC: 'company-profile-form.html',
+        CLASSIFICATION: 'company-profile-form-classification.html',
+        CONTACT: 'company-profile-form-contact.html',
+        ADDRESS: 'company-profile-form-address.html',
+    }
+    form_serializer = staticmethod(forms.serialize_company_profile_forms)
+
+    def get_form_initial(self, step):
+        sso_user_id = self.request.sso_user.id
+        if step in [self.ADDRESS, self.CONTACT]:
+            return helpers.get_contact_details(sso_user_id)
+        return helpers.get_company_profile(sso_user_id)
+
+
+class SupplierCompanyProfileLogoEditView(
+    SupplierCompanyBaseView,
+    GetTemplateForCurrentStepMixin,
+    UpdateCompanyProfileOnFormWizardDoneMixin,
+    SessionWizardView
+):
+
+    form_list = (
+        ('logo', forms.CompanyLogoForm),
+    )
+    file_storage = FileSystemStorage(
+        location=os.path.join(settings.MEDIA_ROOT, 'tmp-logos')
+    )
+    failure_template = 'company-profile-update-error.html'
+    templates = {
+        'logo': 'company-profile-logo-form.html',
+    }
+    form_serializer = staticmethod(forms.serialize_company_logo_form)
+
+
+class SupplierCompanyAddressVerificationView(
+    SupplierCompanyBaseView,
+    GetTemplateForCurrentStepMixin,
+    SessionWizardView
+):
+    ADDRESS = 'address'
+    form_list = (
+        (ADDRESS, forms.CompanyCodeVerificationForm),
+    )
+    templates = {
+        ADDRESS: 'company-profile-address-verification-form.html',
+    }
+
+    def get_form_kwargs(self, *args, **kwargs):
+        kwargs = super().get_form_kwargs(*args, **kwargs)
+        kwargs['sso_id'] = self.request.sso_user.id
+        return kwargs
+
+    def done(self, *args, **kwargs):
+        return redirect('company-detail')
+
+
+class SupplierCompanyDescriptionEditView(
+    SupplierCompanyBaseView,
+    GetTemplateForCurrentStepMixin,
+    GetCompanyProfileInitialFormDataMixin,
+    UpdateCompanyProfileOnFormWizardDoneMixin,
+    SessionWizardView
+):
+    DESCRIPTION = 'description'
+    form_list = (
+        (DESCRIPTION, forms.CompanyDescriptionForm),
+    )
+    failure_template = 'company-profile-update-error.html'
+    templates = {
+        DESCRIPTION: 'company-profile-description-form.html',
+    }
+    form_serializer = staticmethod(forms.serialize_company_description_form)
+
+
+class SupplierBasicInfoEditView(
+    SupplierCompanyBaseView,
+    GetTemplateForCurrentStepMixin,
+    GetCompanyProfileInitialFormDataMixin,
+    UpdateCompanyProfileOnFormWizardDoneMixin,
+    SessionWizardView
+):
+    BASIC = 'basic'
+    form_list = (
+        (BASIC, forms.CompanyBasicInfoForm),
+    )
+    failure_template = 'company-profile-update-error.html'
+    templates = {
+        BASIC: 'company-profile-form.html',
+    }
+    form_serializer = staticmethod(forms.serialize_company_basic_info_form)
+
+
+class SupplierClassificationEditView(
+    SupplierCompanyBaseView,
+    GetTemplateForCurrentStepMixin,
+    GetCompanyProfileInitialFormDataMixin,
+    UpdateCompanyProfileOnFormWizardDoneMixin,
+    SessionWizardView
+):
+    CLASSIFICATION = 'classification'
+    form_list = (
+        (CLASSIFICATION, forms.CompanyClassificationForm),
+    )
+    templates = {
+        CLASSIFICATION: 'company-profile-form-classification.html',
+    }
+    failure_template = 'company-profile-update-error.html'
+    form_serializer = staticmethod(forms.serialize_company_sectors_form)
+
+
+class SupplierContactEditView(
+    SupplierCompanyBaseView,
+    GetTemplateForCurrentStepMixin,
+    GetCompanyProfileInitialFormDataMixin,
+    UpdateCompanyProfileOnFormWizardDoneMixin,
+    SessionWizardView
+):
+    CONTACT = 'contact'
+    form_list = (
+        (CONTACT, forms.CompanyContactDetailsForm),
+    )
+    failure_template = 'company-profile-update-error.html'
+    templates = {
+        CONTACT: 'company-profile-form-contact.html',
+    }
+    form_serializer = staticmethod(forms.serialize_company_contact_form)
+
+    def get_form_initial(self, step):
+        sso_user_id = self.request.sso_user.id
+        return helpers.get_contact_details(sso_user_id)
+
+
+class SupplierAddressEditView(
+    SupplierCompanyBaseView,
+    GetTemplateForCurrentStepMixin,
+    UpdateCompanyProfileOnFormWizardDoneMixin,
+    SessionWizardView
+):
+    ADDRESS = 'address'
+    form_list = (
+        (ADDRESS, forms.CompanyAddressVerificationForm),
+    )
+    failure_template = 'company-profile-update-error.html'
+    templates = {
+        ADDRESS: 'company-profile-form-address.html',
+    }
+    form_serializer = staticmethod(forms.serialize_company_address_form)
+
+    def get_form_initial(self, step):
+        sso_user_id = self.request.sso_user.id
+        return helpers.get_contact_details(sso_user_id)

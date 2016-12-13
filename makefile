@@ -46,7 +46,7 @@ DOCKER_SET_DEBUG_ENV_VARS := \
 	export DIRECTORY_UI_SECRET_KEY=debug; \
 	export DIRECTORY_UI_DEBUG=true; \
 	export DIRECTORY_UI_COMPANIES_HOUSE_API_KEY=debug; \
-	export DIRECTORY_UI_FEATURE_PUBLIC_PROFILES=true
+	export DIRECTORY_UI_FEATURE_PUBLIC_PROFILES_ENABLED=true
 
 DOCKER_REMOVE_ALL := \
 	docker ps -a | \
@@ -92,16 +92,22 @@ DEBUG_SET_ENV_VARS := \
 	export SSO_SESSION_COOKIE=debug_sso_session_cookie; \
 	export SESSION_COOKIE_SECURE=false; \
 	export COMPANIES_HOUSE_API_KEY=debug; \
-	export FEATURE_PUBLIC_PROFILES=true
+	export FEATURE_PUBLIC_PROFILES_ENABLED=true
 
 debug_webserver:
 	$(DEBUG_SET_ENV_VARS) && $(DJANGO_WEBSERVER)
 
 debug_pytest:
-	$(DEBUG_SET_ENV_VARS) && $(PYTEST)
+	$(DEBUG_SET_ENV_VARS) && $(COLLECT_STATIC) && $(PYTEST)
 
 debug_test:
 	$(DEBUG_SET_ENV_VARS) && $(COLLECT_STATIC) && $(FLAKE8) && $(PYTEST) --cov-report=html
+
+debug_manage:
+	$(DEBUG_SET_ENV_VARS) && ./manage.py $(cmd)
+
+debug_shell:
+	$(DEBUG_SET_ENV_VARS) && ./manage.py shell
 
 debug: test_requirements debug_test
 

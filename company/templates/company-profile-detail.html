@@ -1,5 +1,6 @@
 {% extends 'govuk_layout.html' %}
 {% load staticfiles %}
+{% load naturaltime from humanize %}
 {% block css %}
 	<link href="{% static 'company-profile-details.css' %}" media="all" rel="stylesheet" />
 {% endblock %}
@@ -8,6 +9,20 @@
 <div class="container">
 	<div class="company-profile-details-body">
 
+		{% if not company.verified_with_code %}
+		<div class="company-profile-invisible-banner">
+			You have not yet verified your address. Your profile will not be visible to international buyers.
+			{% if company.is_address_set %}
+				<a href="{% url 'confirm-company-address' %}" target="_self">
+					Verify your address.
+				</a>
+			{% else %}
+				<a href="{% url 'company-edit-address' %}" target="_self">
+					Set your address.
+				</a>
+			{% endif %}
+		</div>
+		{% endif %}
 		<!-- Company name, contact details & URLS -->
 		<div class="row-fluid">
 			<div class="span12 great-blue-bar">
@@ -54,6 +69,7 @@
 			<!-- Key Facts -->
 			<div class="span4 key-facts">
 				<div class="company-details-subtitle">Key facts</div>
+				<div>Last updated: {{company.modified|naturaltime}}</div>
 				<div class="number-of-employees">
 				{% if company.employees %}
 					<div class="description-content">
@@ -61,7 +77,7 @@
 					</div>
 				{% endif %}
 				{% if show_edit_links %}
-					<a href="{% url 'company-edit' %}" target="_self">
+					<a href="{% url 'company-edit-key-facts' %}" target="_self">
 						Edit your company's key facts.
 					</a>
 				{% endif %}
@@ -107,7 +123,11 @@
 			<div class="span12">
 				{% for case_study in company.supplier_case_studies %}
 					<div class="span4">
-						<div class="supplier-case-study-title">{{ case_study.title }}</div>
+						<div class="supplier-case-study-title">
+							<a href="{% url 'company-case-study-view' id=case_study.pk %}">
+								{{ case_study.title }}
+							</a>
+						</div>
 						<div class="supplier-case-study-images">
 							{% if case_study.image_one %}
 							<img src="{{ case_study.image_one }}" />
@@ -121,6 +141,9 @@
 						</div>
 						<div class="supplier-case-study-description">
 							{{ case_study.description }}
+						</div>
+						<div class="supplier-case-study-read-more-cta">
+							<a href="{% url 'company-case-study-view' id=case_study.pk %}">Read more</a>
 						</div>
 					</div>
 				{% endfor %}
@@ -143,7 +166,7 @@
 				</div>
 				<div class="company-profile-box">
 					{% for sector in company.sectors %}
-						{% if features.FEATURE_PUBLIC_PROFILES %}
+						{% if features.FEATURE_PUBLIC_PROFILES_ENABLED %}
 							<a href="{% url 'public-company-profiles-list' %}?sectors={{sector.value}}" class="label stone-label" target="_blank">
 								{{ sector.label }}
 							</a>
@@ -157,7 +180,7 @@
 					<div class="description-content"></div>
 					{% endif %}
 					{% if show_edit_links %}
-						<a href="{% url 'company-edit' %}" target="_self">
+						<a href="{% url 'company-edit-sectors' %}" target="_self">
 							Edit your company's sectors.
 						</a>
 					{% endif %}
