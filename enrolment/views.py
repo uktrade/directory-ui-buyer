@@ -2,7 +2,7 @@ import logging
 
 from formtools.wizard.views import NamedUrlSessionWizardView
 
-from django.shortcuts import redirect
+from django.shortcuts import Http404, redirect
 from django.template.response import TemplateResponse
 from django.utils.cache import patch_response_headers
 from django.views.generic import TemplateView
@@ -53,8 +53,82 @@ class InternationalLandingView(HandleBuyerFormSubmitMixin, FormView):
     template_name = 'landing-page-international.html'
 
 
-class InternationalLandingSectorsView(HandleBuyerFormSubmitMixin, FormView):
-    template_name = 'landing-page-international-sectors.html'
+class InternationalLandingSectorListView(HandleBuyerFormSubmitMixin, FormView):
+    template_name = 'landing-page-international-sector-list.html'
+
+
+class InternationalLandingSectorDetailView(HandleBuyerFormSubmitMixin,
+                                           FormView):
+    templates = {
+        'health': 'landing-page-international-sector-detail-health.html',
+        'tech': 'landing-page-international-sector-detail-tech.html',
+        'creative': 'landing-page-international-sector-detail-creative.html',
+        'food-and-drink': 'landing-page-international-sector-detail-food.html',
+    }
+
+    contexts = {
+        'health': {
+            'case_study': {
+                'image_url': '/static/images/health-case-study-hero-image.png',
+                'title': 'Touch Bionics',
+                'synopsis': (
+                    'Touch Bionics has transformed thousands of lives in '
+                    'dozens of countries worldwide through its world-leading '
+                    'prosthetic technologies. We have a range of myoelectric '
+                    'prosthetic hand and prosthetic finger solutions to help '
+                    'people increase their independence and confidence.'
+                ),
+                'url': '#',
+                'testimonial': (
+                    'Lorem ipsum dolor sit amet consectetur adipiscing elit '
+                    'sed do eiusmod tempor incididunt ut labore et dolore '
+                    'magna aliqua. Ut enim ad minim'
+                ),
+                'testimonial_name': 'Firstname Surname',
+                'testimonial_company': 'Company name',
+                'company_name': 'Touch Bionics',
+                'sector_url': '#',
+                'sector_name': 'Technology',
+                'keywords': (
+                    'Robotics, Limb Loss, Prosthetics, Healthcare, '
+                    'Technology, Bionics'
+                ),
+            },
+            'companies': [
+                {
+                    'image_url': '/static/images/sector-image.png',
+                    'name': 'Cool Corp',
+                    'descrition': (
+                        'Build labs, factories and clinical facilities with '
+                        'UK infrastructure know-how lorem ipsum dolor sit'
+                    ),
+                    'public_profile_url': '#',
+                },
+                {
+                    'image_url': '/static/images/sector-image.png',
+                    'name': 'Cool Corp',
+                    'descrition': (
+                        'Training and education in the UK lorem ipsum dolor '
+                        'sit'
+                    ),
+                    'public_profile_url': '#',
+                },
+            ]
+        }
+    }
+
+    def dispatch(self, request, *args, **kwargs):
+        if self.kwargs['slug'] not in self.templates:
+            raise Http404()
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_template_names(self):
+        return [self.templates[self.kwargs['slug']]]
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context.update(self.contexts[self.kwargs['slug']])
+        return context
 
 
 class EnrolmentInstructionsView(TemplateView):

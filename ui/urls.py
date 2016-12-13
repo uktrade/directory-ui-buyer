@@ -8,7 +8,8 @@ from enrolment.views import (
     EnrolmentInstructionsView,
     EnrolmentView,
     InternationalLandingView,
-    InternationalLandingSectorsView,
+    InternationalLandingSectorListView,
+    InternationalLandingSectorDetailView,
 )
 from supplier.views import SupplierProfileDetailView
 from company.views import (
@@ -53,13 +54,16 @@ urlpatterns = [
         InternationalLandingView.as_view(),
         name="international"
     ),
-
     url(
         r"^international/sectors$",
-        InternationalLandingSectorsView.as_view(),
-        name="international-sectors"
+        InternationalLandingSectorListView.as_view(),
+        name="international-sector-list"
     ),
-
+    url(
+        r"^international/sectors/(?P<slug>.+)$",
+        InternationalLandingSectorDetailView.as_view(),
+        name="international-sector-detail"
+    ),
     url(
         r"^register$",
         EnrolmentInstructionsView.as_view(),
