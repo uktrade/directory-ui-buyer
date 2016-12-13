@@ -80,19 +80,19 @@ class CaseStudyRichMediaForm(IndentedInvalidFieldsMixin, AutoFocusFieldMixin,
         widget=forms.Textarea,
     )
     source_name = forms.CharField(
-        label="Name",
+        label="Source - full name",
         help_text="The name of the person who gave the testimonial",
         max_length=255,
         required=False,
     )
     source_job_title = forms.CharField(
-        label="Job Title",
+        label="Source - job title",
         help_text="The job title of the person who gave the testimonial",
         max_length=255,
         required=False,
     )
     source_company = forms.CharField(
-        label="Company",
+        label="Source - company name",
         help_text="The company of the person who gave the testimonial",
         max_length=255,
         required=False,
