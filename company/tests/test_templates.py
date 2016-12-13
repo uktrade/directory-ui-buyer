@@ -69,9 +69,9 @@ def test_company_profile_details_links_to_case_studies():
                 "keywords": "nice",
                 "sector": "AEROSPACE",
                 "testimonial": "hello",
-                "source_name": "Neville",
-                "source_job_title": "Abstract hat maker",
-                "source_company": "Imaginary hats Ltd",
+                "testimonial_name": "Neville",
+                "testimonial_job_title": "Abstract hat maker",
+                "testimonial_company": "Imaginary hats Ltd",
                 "title": "three",
                 "video_one": None,
                 "website": "http://www.example.com",
@@ -395,9 +395,9 @@ def test_supplier_case_study_details_renders_case_study_details():
             },
             'year': '2000',
             'testimonial': 'Good.',
-            'source_name': 'Neville',
-            'source_job_title': 'Abstract hat maker',
-            'source_company': 'Imaginary hats Ltd',
+            'testimonial_name': 'Neville',
+            'testimonial_job_title': 'Abstract hat maker',
+            'testimonial_company': 'Imaginary hats Ltd',
             'title': 'Very good thing',
             'image_one': 'image_one.png',
             'image_two': 'image_two.png',
@@ -409,9 +409,9 @@ def test_supplier_case_study_details_renders_case_study_details():
     assert context['case_study']['sector']['label'] in html
     assert context['case_study']['year'] in html
     assert context['case_study']['testimonial'] in html
-    assert context['case_study']['source_name'] in html
-    assert context['case_study']['source_job_title'] in html
-    assert context['case_study']['source_company'] in html
+    assert context['case_study']['testimonial_name'] in html
+    assert context['case_study']['testimonial_job_title'] in html
+    assert context['case_study']['testimonial_company'] in html
     assert context['case_study']['title'] in html
     assert context['case_study']['image_one'] in html
     assert context['case_study']['image_two'] in html

@@ -47,9 +47,9 @@ def test_serialize_supplier_case_study_forms():
         'image_two': '2.png',
         'image_three': '3.png',
         'testimonial': 'very nice',
-        'source_name': 'Neville',
-        'source_job_title': 'Abstract hat maker',
-        'source_company': 'Imaginary hats Ltd',
+        'testimonial_name': 'Neville',
+        'testimonial_job_title': 'Abstract hat maker',
+        'testimonial_company': 'Imaginary hats Ltd',
     }
     expected = {
         'title': 'a title',
@@ -62,9 +62,9 @@ def test_serialize_supplier_case_study_forms():
         'image_two': '2.png',
         'image_three': '3.png',
         'testimonial': 'very nice',
-        'source_name': 'Neville',
-        'source_job_title': 'Abstract hat maker',
-        'source_company': 'Imaginary hats Ltd',
+        'testimonial_name': 'Neville',
+        'testimonial_job_title': 'Abstract hat maker',
+        'testimonial_company': 'Imaginary hats Ltd',
     }
 
     actual = forms.serialize_supplier_case_study_forms(data)
