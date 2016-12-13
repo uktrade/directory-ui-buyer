@@ -34,7 +34,6 @@ def test_auto_focus_mixin_installed():
         forms.CompanyNameForm,
         forms.CompanyForm,
         forms.CompanyExportStatusForm,
-        forms.InternationalBuyerForm,
     ]
     for FormClass in FormClasses:
         assert issubclass(FormClass, forms.AutoFocusFieldMixin)

@@ -8,6 +8,7 @@ from enrolment.views import (
     EnrolmentInstructionsView,
     EnrolmentView,
     InternationalLandingView,
+    InternationalLandingSectorsView,
 )
 from supplier.views import SupplierProfileDetailView
 from company.views import (
@@ -51,6 +52,12 @@ urlpatterns = [
         r"^international$",
         InternationalLandingView.as_view(),
         name="international"
+    ),
+
+    url(
+        r"^international/sectors$",
+        InternationalLandingSectorsView.as_view(),
+        name="international-sectors"
     ),
 
     url(

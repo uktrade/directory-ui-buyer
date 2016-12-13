@@ -102,7 +102,7 @@ class CompanyExportStatusForm(AutoFocusFieldMixin, IndentedInvalidFieldsMixin,
     )
 
 
-class InternationalBuyerForm(AutoFocusFieldMixin, IndentedInvalidFieldsMixin,
+class InternationalBuyerForm(IndentedInvalidFieldsMixin,
                              forms.Form):
     PLEASE_SELECT_LABEL = 'Please select a sector'
     TERMS_CONDITIONS_MESSAGE = ('Tick the box to confirm you agree to '
@@ -120,7 +120,7 @@ class InternationalBuyerForm(AutoFocusFieldMixin, IndentedInvalidFieldsMixin,
         label=mark_safe(
             'I agree to the <a target="_self" '
             'href="/terms_and_conditions">terms and conditions</a> of '
-            'Exporting is GREAT.'
+            'the website.'
         ),
         error_messages={'required': TERMS_CONDITIONS_MESSAGE}
     )
