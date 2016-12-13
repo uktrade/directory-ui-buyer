@@ -79,6 +79,24 @@ class CaseStudyRichMediaForm(IndentedInvalidFieldsMixin, AutoFocusFieldMixin,
         required=False,
         widget=forms.Textarea,
     )
+    source_name = forms.CharField(
+        label="Name",
+        help_text="The name of the person who gave the testimonial",
+        max_length=255,
+        required=False,
+    )
+    source_job_title = forms.CharField(
+        label="Job Title",
+        help_text="The job title of the person who gave the testimonial",
+        max_length=255,
+        required=False,
+    )
+    source_company = forms.CharField(
+        label="Company",
+        help_text="The company of the person who gave the testimonial",
+        max_length=255,
+        required=False,
+    )
 
 
 class CompanyBasicInfoForm(AutoFocusFieldMixin, IndentedInvalidFieldsMixin,
@@ -318,6 +336,9 @@ def serialize_supplier_case_study_forms(cleaned_data):
         'image_two': cleaned_data['image_two'],
         'image_three': cleaned_data['image_three'],
         'testimonial': cleaned_data['testimonial'],
+        'source_name': cleaned_data['source_name'],
+        'source_job_title': cleaned_data['source_job_title'],
+        'source_company': cleaned_data['source_company'],
     }
 
 

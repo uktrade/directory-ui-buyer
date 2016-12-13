@@ -100,6 +100,9 @@ def all_case_study_data(image_three, image_two, image_one):
         'year': '2000',
         'keywords': 'good, great',
         'testimonial': 'Great',
+        'source_name': 'Neville',
+        'source_job_title': 'Abstract hat maker',
+        'source_company': 'Imaginary hats Ltd',
         'image_one': image_one,
         'image_two': image_two,
         'image_three': image_three,
@@ -129,6 +132,9 @@ def supplier_case_study_rich_data(image_three, image_two, image_one):
         view.RICH_MEDIA + '-image_two': image_two,
         view.RICH_MEDIA + '-image_three': image_three,
         view.RICH_MEDIA + '-testimonial': 'Great',
+        view.RICH_MEDIA + '-source_name': 'Neville',
+        view.RICH_MEDIA + '-source_job_title': 'Abstract hat maker',
+        view.RICH_MEDIA + '-source_company': 'Imaginary hats Ltd',
     }
 
 
