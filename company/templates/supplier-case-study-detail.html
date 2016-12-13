@@ -60,6 +60,9 @@
 				<div>Case study year: {{ case_study.year }}</div>
 				<div class="supplier-case-study-testimonail-container">
 					<div>Testimonial: "{{ case_study.testimonial }}"</div>
+					<div>Source - full name: {{ case_study.testimonial_name }}</div>
+					<div>Source - job title: {{ case_study.testimonial_job_title }}</div>
+					<div>Source - company name: {{ case_study.testimonial_company }}</div>
 				</div>
 				{% if case_study.company.is_published and features.FEATURE_PUBLIC_PROFILES_ENABLED %}
 					<div>
