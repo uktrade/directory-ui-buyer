@@ -866,3 +866,64 @@ a.no-focus-highlight {
   border: none;
   margin-left: 20px;
 }
+
+.great-blue-bar {
+  background: $great-blue;
+  display: table!important;
+  height: 80px;
+  padding: 0 24px;
+  .company-name-title {
+    color: $white;
+    font-size: 36px;
+    font-weight: 500;
+    width: 60%;
+
+    span {
+      display: block; /* Fallback for non-webkit */
+      display: -webkit-box;
+      height: 38px;
+      margin: 20px 20px 20px 0;
+      line-height: 1;
+      -webkit-line-clamp: 1;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    @media (max-width: 767px) {
+      font-size: 28px;
+      width: 100%;
+      span {
+        display: block; /* Fallback for non-webkit */
+        display: -webkit-box;
+        max-width: 100%;
+        height: 28*1.4*1px; /* Fallback for non-webkit 39.2 */
+        margin: 20px 0;
+        line-height: 1.4;
+        -webkit-line-clamp: 1;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+  }
+
+  .element-within {
+    display: table-cell;
+    float: none;
+    vertical-align: middle;
+    a {
+      color: $white;
+      &:focus {
+        background: #007EA3;
+      }
+    }
+    .a11y {
+      color: $white;
+    }
+  }
+  @media (max-width: 767px) {
+    .element-within {
+      display: block;
+    }
+  }
+}

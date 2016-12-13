@@ -31,6 +31,16 @@ class CacheMixin:
         return response
 
 
+class HandleBuyerFormSubmitMixin:
+    success_template = 'landing-page-international-success.html'
+    form_class = forms.InternationalBuyerForm
+
+    def form_valid(self, form):
+        data = forms.serialize_international_buyer_forms(form.cleaned_data)
+        api_client.buyer.send_form(data)
+        return TemplateResponse(self.request, self.success_template)
+
+
 class CachableTemplateView(CacheMixin, TemplateView):
     pass
 
@@ -39,15 +49,12 @@ class DomesticLandingView(TemplateView):
     template_name = 'landing-page.html'
 
 
-class InternationalLandingView(FormView):
+class InternationalLandingView(HandleBuyerFormSubmitMixin, FormView):
     template_name = 'landing-page-international.html'
-    success_template = 'landing-page-international-success.html'
-    form_class = forms.InternationalBuyerForm
 
-    def form_valid(self, form):
-        data = forms.serialize_international_buyer_forms(form.cleaned_data)
-        api_client.buyer.send_form(data)
-        return TemplateResponse(self.request, self.success_template)
+
+class InternationalLandingSectorsView(HandleBuyerFormSubmitMixin, FormView):
+    template_name = 'landing-page-international-sectors.html'
 
 
 class EnrolmentInstructionsView(TemplateView):

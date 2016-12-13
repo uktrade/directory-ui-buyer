@@ -12,6 +12,7 @@ from enrolment.views import (
     EnrolmentView,
     EnrolmentInstructionsView,
     InternationalLandingView,
+    InternationalLandingSectorsView,
 )
 from sso.utils import SSOUser
 
@@ -234,6 +235,19 @@ def test_international_landing_view_submit(
     response = InternationalLandingView.as_view()(buyer_request)
 
     assert response.template_name == InternationalLandingView.success_template
+    mock_send_form.assert_called_once_with(
+        forms.serialize_international_buyer_forms(buyer_form_data)
+    )
+
+
+@patch.object(api_client.buyer, 'send_form')
+def test_international_landing_sectors_view_submit(
+    mock_send_form, buyer_request, buyer_form_data
+):
+    response = InternationalLandingSectorsView.as_view()(buyer_request)
+    expected_template_name = InternationalLandingSectorsView.success_template
+
+    assert response.template_name == expected_template_name
     mock_send_form.assert_called_once_with(
         forms.serialize_international_buyer_forms(buyer_form_data)
     )
