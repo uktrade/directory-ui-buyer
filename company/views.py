@@ -147,9 +147,12 @@ class SupplierCompanyProfileDetailView(SupplierCompanyBaseView, TemplateView):
         )
         if not response.ok:
             response.raise_for_status()
+        profile = helpers.get_company_profile_from_response(response)
+        show_wizard_links = not forms.is_optional_profile_values_set(profile)
         return {
-            'company': helpers.get_company_profile_from_response(response),
+            'company': profile,
             'show_edit_links': True,
+            'show_wizard_links': show_wizard_links,
         }
 
 
@@ -241,7 +244,6 @@ class SupplierCompanyProfileEditView(
     UpdateCompanyProfileOnFormWizardDoneMixin,
     SessionWizardView
 ):
-
     ADDRESS = 'address'
     BASIC = 'basic'
     CLASSIFICATION = 'classification'

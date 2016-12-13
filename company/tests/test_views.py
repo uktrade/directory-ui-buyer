@@ -8,7 +8,7 @@ import requests
 from django.core.urlresolvers import reverse
 
 from sso.utils import SSOUser
-from company import helpers, views, validators
+from company import forms, helpers, views, validators
 
 
 default_sector = choices.COMPANY_CLASSIFICATIONS[1][0]
@@ -459,10 +459,13 @@ def test_case_study_update_api_failure(
 
 @patch.object(views, 'has_company', Mock(return_value=True))
 @patch.object(helpers, 'get_company_profile_from_response')
+@patch.object(forms, 'is_optional_profile_values_set', return_value=True)
 def test_company_profile_details_exposes_context(
+    mock_is_optional_profile_values_set,
     mock_get_company_profile_from_response, sso_request
 ):
-    mock_get_company_profile_from_response.return_value = {}
+    company = {'key': 'value'}
+    mock_get_company_profile_from_response.return_value = company
     view = views.SupplierCompanyProfileDetailView.as_view()
     response = view(sso_request)
     assert response.status_code == http.client.OK
@@ -470,8 +473,10 @@ def test_company_profile_details_exposes_context(
         views.SupplierCompanyProfileDetailView.template_name
     ]
 
-    assert response.context_data['company'] == {}
+    assert response.context_data['company'] == company
     assert response.context_data['show_edit_links'] is True
+    assert response.context_data['show_wizard_links'] is False
+    mock_is_optional_profile_values_set.assert_called_once_with(company)
 
 
 @patch.object(views, 'has_company', Mock(return_value=True))
