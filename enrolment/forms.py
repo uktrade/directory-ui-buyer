@@ -120,7 +120,7 @@ class InternationalBuyerForm(AutoFocusFieldMixin, IndentedInvalidFieldsMixin,
         label=mark_safe(
             'I agree to the <a target="_self" '
             'href="/terms_and_conditions">terms and conditions</a> of '
-            'Exporting is GREAT.'
+            'the website.'
         ),
         error_messages={'required': TERMS_CONDITIONS_MESSAGE}
     )
