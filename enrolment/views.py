@@ -2,6 +2,7 @@ import logging
 
 from formtools.wizard.views import NamedUrlSessionWizardView
 
+from django.conf import settings
 from django.shortcuts import Http404, redirect
 from django.template.response import TemplateResponse
 from django.utils.cache import patch_response_headers
@@ -50,7 +51,13 @@ class DomesticLandingView(TemplateView):
 
 
 class InternationalLandingView(HandleBuyerFormSubmitMixin, FormView):
-    template_name = 'landing-page-international.html'
+    template_name_new = 'landing-page-international.html'
+    template_name_old = 'landing-page-international-old.html'
+
+    def get_template_names(self):
+        if settings.FEATURE_NEW_INTERNATIONAL_LANDING_PAGE_ENABLED:
+            return [self.template_name_new]
+        return [self.template_name_old]
 
 
 class InternationalLandingSectorListView(HandleBuyerFormSubmitMixin, FormView):
