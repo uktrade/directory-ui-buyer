@@ -55,16 +55,6 @@ urlpatterns = [
         name="international"
     ),
     url(
-        r"^international/sectors$",
-        InternationalLandingSectorListView.as_view(),
-        name="international-sector-list"
-    ),
-    url(
-        r"^international/sectors/(?P<slug>.+)$",
-        InternationalLandingSectorDetailView.as_view(),
-        name="international-sector-detail"
-    ),
-    url(
         r"^register$",
         EnrolmentInstructionsView.as_view(),
         name="register-instructions"
@@ -160,5 +150,19 @@ if settings.FEATURE_PUBLIC_PROFILES_ENABLED:
             r'^suppliers/(?P<company_number>.+)$',
             PublicProfileDetailView.as_view(),
             name='public-company-profiles-detail',
+        ),
+    ]
+
+if settings.FEATURE_SECTOR_LANDING_PAGES_ENABLED:
+    urlpatterns += [
+        url(
+            r"^international/sectors$",
+            InternationalLandingSectorListView.as_view(),
+            name="international-sector-list"
+        ),
+        url(
+            r"^international/sectors/(?P<slug>.+)$",
+            InternationalLandingSectorDetailView.as_view(),
+            name="international-sector-detail"
         ),
     ]

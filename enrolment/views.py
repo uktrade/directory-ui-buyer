@@ -9,7 +9,7 @@ from django.views.generic import TemplateView
 from django.views.generic.edit import FormView
 
 from api_client import api_client
-from enrolment import forms, helpers
+from enrolment import constants, forms, helpers
 from sso.utils import SSOLoginRequiredMixin
 
 
@@ -59,75 +59,39 @@ class InternationalLandingSectorListView(HandleBuyerFormSubmitMixin, FormView):
 
 class InternationalLandingSectorDetailView(HandleBuyerFormSubmitMixin,
                                            FormView):
-    templates = {
-        'health': 'landing-page-international-sector-detail-health.html',
-        'tech': 'landing-page-international-sector-detail-tech.html',
-        'creative': 'landing-page-international-sector-detail-creative.html',
-        'food-and-drink': 'landing-page-international-sector-detail-food.html',
-    }
-
-    contexts = {
+    pages = {
         'health': {
-            'case_study': {
-                'image_url': '/static/images/health-case-study-hero-image.png',
-                'title': 'Touch Bionics',
-                'synopsis': (
-                    'Touch Bionics has transformed thousands of lives in '
-                    'dozens of countries worldwide through its world-leading '
-                    'prosthetic technologies. We have a range of myoelectric '
-                    'prosthetic hand and prosthetic finger solutions to help '
-                    'people increase their independence and confidence.'
-                ),
-                'url': '#',
-                'testimonial': (
-                    'Lorem ipsum dolor sit amet consectetur adipiscing elit '
-                    'sed do eiusmod tempor incididunt ut labore et dolore '
-                    'magna aliqua. Ut enim ad minim'
-                ),
-                'testimonial_name': 'Firstname Surname',
-                'testimonial_company': 'Company name',
-                'company_name': 'Touch Bionics',
-                'sector_url': '#',
-                'sector_name': 'Technology',
-                'keywords': (
-                    'Robotics, Limb Loss, Prosthetics, Healthcare, '
-                    'Technology, Bionics'
-                ),
-            },
-            'companies': [
-                {
-                    'image_url': '/static/images/sector-image.png',
-                    'name': 'Cool Corp',
-                    'descrition': (
-                        'Build labs, factories and clinical facilities with '
-                        'UK infrastructure know-how lorem ipsum dolor sit'
-                    ),
-                    'public_profile_url': '#',
-                },
-                {
-                    'image_url': '/static/images/sector-image.png',
-                    'name': 'Cool Corp',
-                    'descrition': (
-                        'Training and education in the UK lorem ipsum dolor '
-                        'sit'
-                    ),
-                    'public_profile_url': '#',
-                },
-            ]
+            'template': 'landing-page-international-sector-detail-health.html',
+            'context': constants.HEALTH_SECTOR_CONTEXT,
+        },
+        'tech': {
+            'template': 'landing-page-international-sector-detail-tech.html',
+            'context': constants.TECH_SECTOR_CONTEXT,
+        },
+        'creative': {
+            'template': (
+                'landing-page-international-sector-detail-creative.html'
+            ),
+            'context': constants.CREATIVE_SECTOR_CONTEXT,
+        },
+        'food-and-drink': {
+            'template': 'landing-page-international-sector-detail-food.html',
+            'context': constants.FOOD_SECTOR_CONTEXT,
         }
     }
 
     def dispatch(self, request, *args, **kwargs):
-        if self.kwargs['slug'] not in self.templates:
+        if self.kwargs['slug'] not in self.pages:
             raise Http404()
         return super().dispatch(request, *args, **kwargs)
 
     def get_template_names(self):
-        return [self.templates[self.kwargs['slug']]]
+        template_name = self.pages[self.kwargs['slug']]['template']
+        return [template_name]
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
-        context.update(self.contexts[self.kwargs['slug']])
+        context.update(self.pages[self.kwargs['slug']]['context'])
         return context
 
 

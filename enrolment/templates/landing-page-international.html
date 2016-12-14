@@ -74,11 +74,13 @@ adipiscing elit sed do eiusmod tempor
 		</div>
 	</div>
 
-	<div class="row-fluid ed-landing-page-see-more-button-container">
-		<a href="{% url 'international-sector-list' %}" class="ed-landing-page-see-more-button">
-			See more sectors
-		</a>
-	</div>
+	{% if features.FEATURE_SECTOR_LANDING_PAGES_ENABLED %}
+		<div class="row-fluid ed-landing-page-see-more-button-container">
+			<a href="{% url 'international-sector-list' %}" class="ed-landing-page-see-more-button">
+				See more sectors
+			</a>
+		</div>
+	{% endif %}
 
 	{% include 'landing-page-international-form.html' %}
 

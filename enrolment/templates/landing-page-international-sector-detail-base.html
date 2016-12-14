@@ -26,7 +26,7 @@ adipiscing elit sed do eiusmod tempor
 		</div>
 	</section>
 
-	<section style="border: 2px solid #dedede; padding: 20px; padding-top: 0; margin-bottom: 20px;">
+	<section class="ed-landing-page-sector-companies-list">
 		<div class="row-fluid">
 			{% block company_list_title %}{% endblock %}
 		</div>
@@ -35,7 +35,7 @@ adipiscing elit sed do eiusmod tempor
 			{% for company in companies %}
 				<div class="span4">
 					<div class="row-fluid">
-						<img class="ed-landing-page-sector-image" src="{{ company.image_url }}" />
+						<img class="ed-landing-page-sector-company-image" src="{{ company.image_url }}" />
 					</div>
 					<div class="row-fluid">
 						<h2>{{ company.name }}</h2>
@@ -48,15 +48,15 @@ adipiscing elit sed do eiusmod tempor
 					</div>
 				</div>
 			{% endfor %}
-			<div class="span4">
-				<h2>Find other great companies</h2>
+			<div class="span4 ed-landing-page-find-other-companies-container">
+				<h3>Find other great companies</h3>
 				<p class="ed-landing-page-sector-synopsis">
 					Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veni
 				</p>
 				<p>
 					<div class="btn-container">
 						<a class="button" href="#">
-							Diccover more
+							Discover more
 						</a>
 					</div>
 				</p>
@@ -64,31 +64,31 @@ adipiscing elit sed do eiusmod tempor
 		</div>
 	</section>
 
-	<section style="border: 2px solid #dedede; padding: 20px; padding-top: 0; margin-bottom: 20px;">
+	<section class="ed-landing-page-sector-case-study-container">
 		<div class="row-fluid">
 			<h2>Recent projects</h2>
 		</div>
 		<div class="row-fluid">
-			<img class="ed-landing-page-sector-image span12" style="padding: 0;" src="{{ case_study.image_url }}" />
+			<img class="span12" src="{{ case_study.image_url }}" />
 		</div>
 		<div class="row-fluid">
 			<h2>{{ case_study.title }}</h2>
 		</div>
-		<div class="row-fluid">
+		<div class="row-fluid ed-landing-page-sector-case-study-inner">
 			<div class="span4">
 				<p>{{ case_study.synopsis }}</p>
 				<p>
 					<a href="{{ case_study.url }}"></a>
 				</p>
 			</div>
-			<div class="span4">
+			<div class="span4 arrow_box ed-landing-page-case-study-testomonial-container">
 				<p class="ed-landing-page-sector-synopsis">
-					"{{ case_study.testimonial }}"
+					<b>"{{ case_study.testimonial }}"</b>
 				</p>
 				<div>{{ case_study.testimonial_name }}</div>
 				<div>{{ case_study.testimonial_company }}</div>
 			</div>
-			<div class="span4">
+			<div class="span4 ed-landing-page-case-study-company-details">
 				<p>
 					<b>{{ case_study.company_name }}</b>
 				</b>
