@@ -229,6 +229,24 @@ def test_enrolment_logged_out_has_company_redirects(
     mock_has_company.assert_not_called()
 
 
+def test_international_landing_view_template_new(settings, anon_request):
+    settings.FEATURE_NEW_INTERNATIONAL_LANDING_PAGE_ENABLED = True
+    view = InternationalLandingView
+
+    response = view.as_view()(anon_request)
+
+    assert response.template_name == [view.template_name_new]
+
+
+def test_international_landing_view_template_old(settings, anon_request):
+    settings.FEATURE_NEW_INTERNATIONAL_LANDING_PAGE_ENABLED = False
+    view = InternationalLandingView
+
+    response = view.as_view()(anon_request)
+
+    assert response.template_name == [view.template_name_old]
+
+
 @patch.object(api_client.buyer, 'send_form')
 def test_international_landing_view_submit(
     mock_send_form, buyer_request, buyer_form_data
