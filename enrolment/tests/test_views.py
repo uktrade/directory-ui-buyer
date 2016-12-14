@@ -6,13 +6,14 @@ import pytest
 
 from django.core.urlresolvers import reverse
 
-from enrolment import forms, helpers
+from enrolment import constants, forms, helpers
 from enrolment.views import (
     api_client,
     EnrolmentView,
     EnrolmentInstructionsView,
     InternationalLandingView,
     InternationalLandingSectorListView,
+    InternationalLandingSectorDetailView
 )
 from sso.utils import SSOUser
 
@@ -251,3 +252,33 @@ def test_international_landing_sector_list_view_submit(
     mock_send_form.assert_called_once_with(
         forms.serialize_international_buyer_forms(buyer_form_data)
     )
+
+
+def test_international_landing_page_sector_specific_unknown(client):
+    url = reverse('international-sector-detail', kwargs={'slug': 'jam'})
+
+    response = client.get(url)
+
+    assert response.status_code == http.client.NOT_FOUND
+
+
+def test_international_landing_page_sector_specific_known(client):
+    for slug, values in InternationalLandingSectorDetailView.pages.items():
+        context = values['context']
+        template_name = values['template']
+        url = reverse('international-sector-detail', kwargs={'slug': slug})
+
+        response = client.get(url)
+
+        assert response.status_code == http.client.OK
+        assert response.template_name == [template_name]
+        assert response.context_data['case_study'] == context['case_study']
+        assert response.context_data['companies'] == context['companies']
+
+
+def test_international_landing_page_sector_context(client):
+    pages = InternationalLandingSectorDetailView.pages
+    assert pages['health']['context'] == constants.HEALTH_SECTOR_CONTEXT
+    assert pages['tech']['context'] == constants.TECH_SECTOR_CONTEXT
+    assert pages['creative']['context'] == constants.CREATIVE_SECTOR_CONTEXT
+    assert pages['food-and-drink']['context'] == constants.FOOD_SECTOR_CONTEXT
