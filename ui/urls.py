@@ -8,7 +8,8 @@ from enrolment.views import (
     EnrolmentInstructionsView,
     EnrolmentView,
     InternationalLandingView,
-    InternationalLandingSectorsView,
+    InternationalLandingSectorListView,
+    InternationalLandingSectorDetailView,
 )
 from supplier.views import SupplierProfileDetailView
 from company.views import (
@@ -53,13 +54,6 @@ urlpatterns = [
         InternationalLandingView.as_view(),
         name="international"
     ),
-
-    url(
-        r"^international/sectors$",
-        InternationalLandingSectorsView.as_view(),
-        name="international-sectors"
-    ),
-
     url(
         r"^register$",
         EnrolmentInstructionsView.as_view(),
@@ -156,5 +150,19 @@ if settings.FEATURE_PUBLIC_PROFILES_ENABLED:
             r'^suppliers/(?P<company_number>.+)$',
             PublicProfileDetailView.as_view(),
             name='public-company-profiles-detail',
+        ),
+    ]
+
+if settings.FEATURE_SECTOR_LANDING_PAGES_ENABLED:
+    urlpatterns += [
+        url(
+            r"^international/sectors$",
+            InternationalLandingSectorListView.as_view(),
+            name="international-sector-list"
+        ),
+        url(
+            r"^international/sectors/(?P<slug>.+)$",
+            InternationalLandingSectorDetailView.as_view(),
+            name="international-sector-detail"
         ),
     ]

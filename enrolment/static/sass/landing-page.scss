@@ -300,3 +300,78 @@ a .register-interest-btn {
 .ed-landing-page-gap {
   margin-bottom: 20px;
 }
+
+.arrow_box {
+  position: relative;
+  background: #EDEDED;
+}
+
+.arrow_box:after {
+  top: 100%;
+  left: 50px;
+  border: solid transparent;
+  content: " ";
+  height: 0;
+  width: 0;
+  position: absolute;
+  pointer-events: none;
+  border-color: rgba(237, 237, 237, 0);
+  border-top-color: #EDEDED;
+  border-width: 20px 20px 0px 0px;
+  margin-left: -20px;
+}
+
+
+.ed-landing-page-sector-company-image {
+  padding: 0;
+  width: 100%; 
+}
+
+.ed-landing-page-find-other-companies-container {
+  background: #007EA3;
+  padding-left: 20px;
+  padding-top: 10px;
+  color: white;
+  h3 {
+    line-height: 1em;
+  }
+  a {
+    background: white;
+    color: #00549F;
+    border: 2px solid #00549F;
+  }
+}
+
+.ed-landing-page-sector-companies-list {
+  border: 2px solid #dedede;
+  padding: 20px;
+  padding-top: 0;
+  margin-bottom: 20px;
+}
+
+.ed-landing-page-sector-case-study-container {
+  border: 2px solid #dedede;
+  padding: 20px;
+  padding-top: 0;
+  margin-bottom: 20px;
+
+  img {
+    padding: 0
+  }
+  .ed-landing-page-sector-case-study-inner {
+    margin-bottom: 20px;
+  }
+  .ed-landing-page-case-study-testomonial-container {
+    background: #EDEDED;
+    padding: 20px;
+  }
+  .ed-landing-page-case-study-company-details {
+    background: #007EA3;
+    padding: 20px;
+    color: white;
+    a {
+      color: white;
+      text-decoration: underline;
+    }
+  }
+}
