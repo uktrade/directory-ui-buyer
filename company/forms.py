@@ -216,7 +216,10 @@ class PreventTamperMixin(forms.Form):
     )
 
     def __init__(self, initial=None, *args, **kwargs):
-        assert self.tamper_proof_fields
+        fields = self.tamper_proof_fields
+        assert fields
+        # `self.tamper_proof_fields` must use data type that preserves order
+        assert isinstance(fields, list) or isinstance(fields, tuple)
         initial = initial or {}
         initial['signature'] = self.create_signature(initial)
         super().__init__(initial=initial, *args, **kwargs)
@@ -241,14 +244,14 @@ class CompanyAddressVerificationForm(PreventTamperMixin,
                                      IndentedInvalidFieldsMixin,
                                      forms.Form):
 
-    tamper_proof_fields = {
+    tamper_proof_fields = [
         'address_line_1',
         'address_line_2',
         'locality',
         'country',
         'postal_code',
         'po_box',
-    }
+    ]
 
     postal_full_name = forms.CharField(
         label='Full name:',

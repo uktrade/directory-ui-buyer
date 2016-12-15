@@ -414,14 +414,14 @@ def test_company_address_verification_detects_tamper():
     assert issubclass(
         forms.CompanyAddressVerificationForm, forms.PreventTamperMixin
     )
-    assert forms.CompanyAddressVerificationForm.tamper_proof_fields == {
+    assert forms.CompanyAddressVerificationForm.tamper_proof_fields == [
         'address_line_1',
         'address_line_2',
         'locality',
         'country',
         'postal_code',
         'po_box',
-    }
+    ]
 
 
 def test_company_address_verification_rejects_invalid():
@@ -504,6 +504,19 @@ class PreventTamperForm(forms.PreventTamperMixin, Form):
     field1 = CharField()
     field2 = CharField()
     field3 = CharField()
+
+
+class PreventTamperFormBadDataType(forms.PreventTamperMixin, Form):
+    tamper_proof_fields = {'field1', 'field2'}
+
+    field1 = CharField()
+    field2 = CharField()
+    field3 = CharField()
+
+
+def test_prevent_tamper_rejects_set():
+    with pytest.raises(AssertionError):
+        PreventTamperFormBadDataType()
 
 
 def test_prevent_tamper_rejects_change():
