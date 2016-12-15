@@ -62,8 +62,8 @@
 							{% endif %}
 							</a>
 						{% endif %}
-						{% if company.sales_email %}
-							<br /><a href="mailto:{{company.sales_email}}?subject=International%20buyer%20contact%20via%20your%20great.gov.uk%20trade%20profile">Contact {{company.name}}</a>
+						{% if company.contact_details.email_address %}
+							<br /><a href="mailto:{{company.contact_details.email_address}}?subject=International%20buyer%20contact%20via%20your%20great.gov.uk%20trade%20profile">Contact {{company.name}}</a>
 						{% endif %}
 					</div>
 				</div>

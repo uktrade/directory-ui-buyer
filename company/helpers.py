@@ -71,7 +71,7 @@ def get_company_list_from_response(response):
 def format_company_details(details):
     date_of_creation = format_date_of_creation(details.get('date_of_creation'))
     # If the contact details json is set to null
-    # then details['contact_details'] could be None
+    # then details['contact_details'] will be None
     contact_details = details['contact_details'] or {}
     return {
         'website': details['website'],
@@ -88,7 +88,7 @@ def format_company_details(details):
             details['modified'], '%Y-%m-%dT%H:%M:%S.%fZ'),
         'verified_with_code': details['verified_with_code'],
         'is_address_set': contact_details != {},
-        'sales_email': contact_details.get('email_address'),
+        'contact_details': contact_details,
     }
 
 

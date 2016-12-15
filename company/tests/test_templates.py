@@ -21,7 +21,9 @@ default_context = {
         'keywords': 'word1 word2',
         'date_of_creation': '2 Mar 2015',
         'modified': datetime.now() - timedelta(hours=1),
-        'sales_email': 'sales@example.com',
+        'contact_details': {
+            'email_address': 'sales@example.com',
+        },
     }
 }
 

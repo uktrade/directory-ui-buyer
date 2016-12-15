@@ -93,7 +93,9 @@ def test_get_company_profile_from_response(profile_data):
         'modified': datetime(2016, 11, 23, 11, 21, 10, 977518),
         'verified_with_code': True,
         'is_address_set': True,
-        'sales_email': 'sales@example.com',
+        'contact_details': {
+            'email_address': 'sales@example.com',
+        }
     }
     actual = helpers.get_company_profile_from_response(response)
     assert actual == expected
@@ -121,7 +123,9 @@ def test_get_public_company_profile_from_response(profile_data):
         'modified': datetime(2016, 11, 23, 11, 21, 10, 977518),
         'verified_with_code': True,
         'is_address_set': True,
-        'sales_email': 'sales@example.com'
+        'contact_details': {
+            'email_address': 'sales@example.com',
+        },
     }
     actual = helpers.get_public_company_profile_from_response(response)
     assert actual == expected
@@ -152,7 +156,9 @@ def test_get_company_list_from_response(public_companies):
                 'modified': datetime(2016, 11, 23, 11, 21, 10, 977518),
                 'verified_with_code': True,
                 'is_address_set': True,
-                'sales_email': 'sales@example.com',
+                'contact_details': {
+                    'email_address': 'sales@example.com'
+                },
             }
         ]
     }
@@ -202,7 +208,7 @@ def test_get_case_study_details_from_response(supplier_case_study_data):
             'modified': datetime(2016, 11, 23, 11, 21, 10, 977518),
             'verified_with_code': True,
             'is_address_set': False,
-            'sales_email': None,
+            'contact_details': {},
         },
         'image_one': 'https://image_one.jpg',
         'testimonial': 'I found it most pleasing.',
@@ -244,19 +250,3 @@ def test_format_company_details_none_address_not_set(profile_data):
     actual = helpers.format_company_details(profile_data)
 
     assert actual['is_address_set'] is False
-
-
-def test_format_company_details_email_not_set(profile_data):
-    profile_data['contact_details'] = {}
-    actual = helpers.format_company_details(profile_data)
-
-    # This test also ensures no KeyError etc.
-    assert not actual['sales_email']
-
-
-def test_format_company_details_none_email_not_set(profile_data):
-    profile_data['contact_details'] = None
-    actual = helpers.format_company_details(profile_data)
-
-    # This test also ensures no KeyError etc.
-    assert not actual['sales_email']
