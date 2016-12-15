@@ -139,7 +139,7 @@ class SupplierCaseStudyWizardView(
 
 
 class SupplierCompanyProfileDetailView(SupplierCompanyBaseView, TemplateView):
-    template_name = 'company-profile-detail.html'
+    template_name = 'company-private-profile-detail.html'
 
     def get_context_data(self, **kwargs):
         response = api_client.company.retrieve_profile(
@@ -151,7 +151,6 @@ class SupplierCompanyProfileDetailView(SupplierCompanyBaseView, TemplateView):
         show_wizard_links = not forms.is_optional_profile_values_set(profile)
         return {
             'company': profile,
-            'show_edit_links': True,
             'show_wizard_links': show_wizard_links,
         }
 
@@ -203,7 +202,7 @@ class PublicProfileListView(SubmitFormOnGetMixin, FormView):
 
 
 class PublicProfileDetailView(TemplateView):
-    template_name = 'company-profile-detail.html'
+    template_name = 'company-public-profile-detail.html'
 
     def get_context_data(self, **kwargs):
         api_call = (
@@ -216,7 +215,6 @@ class PublicProfileDetailView(TemplateView):
         company = helpers.get_public_company_profile_from_response(response)
         return {
             'company': company,
-            'show_edit_links': False,
         }
 
 

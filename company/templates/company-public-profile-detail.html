@@ -8,21 +8,6 @@
 {% block content %}
 <div class="container">
 	<div class="company-profile-details-body">
-
-		{% if not company.verified_with_code %}
-		<div class="company-profile-invisible-banner">
-			You have not yet verified your address. Your profile will not be visible to international buyers.
-			{% if company.is_address_set %}
-				<a href="{% url 'confirm-company-address' %}" target="_self">
-					Verify your address.
-				</a>
-			{% else %}
-				<a href="{% url show_wizard_links|yesno:'company-edit,company-edit-address' %}" target="_self">
-					Set your address.
-				</a>
-			{% endif %}
-		</div>
-		{% endif %}
 		<!-- Company name, contact details & URLS -->
 		<div class="row-fluid">
 			<div class="span12 great-blue-bar">
@@ -34,10 +19,6 @@
 					<a href="{{company.website}}" class="arrow-link external-link-white dont-break-out" target="_blank">
 						<span class="url pull-left">{{company.website}}</span>
 						<span class="a11y pull-left">(Opens in a new window)</span>
-					</a>
-					{% elif show_edit_links %}
-					<a href="{% url 'company-edit' %}" target="_self">
-						Edit your company's website address
 					</a>
 					{% endif %}
 				</div>
@@ -53,18 +34,6 @@
 							<img src="{{company.logo}}" />
 						</div>
 						{% endif %}
-						{% if show_edit_links %}
-							<a href="{% url 'company-edit-logo' %}" target="_self">
-							{% if company.logo %}
-								Change logo
-							{% else %}
-								Set logo
-							{% endif %}
-							</a>
-						{% endif %}
-						{% if company.contact_details.email_address %}
-							<br /><a href="mailto:{{company.contact_details.email_address}}?subject=International%20buyer%20contact%20via%20your%20great.gov.uk%20trade%20profile">Contact {{company.name}}</a>
-						{% endif %}
 					</div>
 				</div>
 			</div>
@@ -79,10 +48,8 @@
 						Number of employees: {{company.employees}}
 					</div>
 				{% endif %}
-				{% if show_edit_links %}
-					<a href="{% url show_wizard_links|yesno:'company-edit,company-edit-key-facts' %}" target="_self">
-						Edit your company's key facts.
-					</a>
+				{% if company.contact_details.email_address %}
+					<p><a href="mailto:{{ company.contact_details.email_address }}?subject=International%20buyer%20contact%20via%20your%20great.gov.uk%20trade%20profile">Contact company</a></p>
 				{% endif %}
 				</div>
 			</div>
@@ -92,7 +59,7 @@
 				<div class="company-details-subtitle">Company details</div>
 				<div class="company-number-content" >Registration number: {{company.number}}</div>
 				{% if company.date_of_creation %}
-					<div>Date incorporated: {{company.date_of_creation}}</div>
+					<div>Incorporated: {{company.date_of_creation|date:'Y'}}</div>
 				{% endif %}
 			</div>
 		</div>
@@ -107,11 +74,6 @@
 			<div class="span12">
 				{% if company.description %}
 				<div class="description-content">{{company.description}}</div>
-				{% endif %}
-				{% if show_edit_links %}
-					<a href="{% url 'company-edit-description' %}" target="_self">
-						Edit your company's description.
-					</a>
 				{% endif %}
 			</div>
 		</div>
@@ -151,11 +113,6 @@
 					</div>
 				{% endfor %}
 				<div class="clearfix" style="margin-bottom: 20px;"></div>
-				{% if show_edit_links %}
-				<a href="{% url 'company-case-study-edit' %}" target="_self">
-					Add a case study.
-				</a>
-				{% endif %}
 			</div>
 		</div>
 
@@ -182,11 +139,6 @@
 					{% if company.sectors %}
 					<div class="description-content"></div>
 					{% endif %}
-					{% if show_edit_links %}
-						<a href="{% url show_wizard_links|yesno:'company-edit,company-edit-sectors' %}" target="_self">
-							Edit your company's sectors.
-						</a>
-					{% endif %}
 				</div>
 			</div>
 
@@ -198,11 +150,6 @@
 				<div class="company-profile-box">
 					{% if company.keywords %}
 					<div class="description-content">{{company.keywords}}</div>
-					{% endif %}
-					{% if show_edit_links %}
-						<a href="{% url show_wizard_links|yesno:'company-edit,company-edit-key-facts' %}" target="_self">
-							Edit your company's keywords.
-						</a>
 					{% endif %}
 				</div>
 			</div>

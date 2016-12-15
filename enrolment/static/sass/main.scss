@@ -888,7 +888,6 @@ a.no-focus-highlight {
     color: $white;
     font-size: 36px;
     font-weight: 500;
-    width: 60%;
 
     span {
       display: block; /* Fallback for non-webkit */
@@ -938,4 +937,47 @@ a.no-focus-highlight {
       display: block;
     }
   }
+}
+
+.ed-has-edit-button {
+  position: relative;
+}
+
+.ed-edit-button {
+  position: absolute;
+}
+
+.ed-arrow_box {
+  position: relative;
+  background: #EDEDED;
+}
+
+.ed-arrow_box:after {
+  top: 100%;
+  left: 50px;
+  border: solid transparent;
+  content: " ";
+  height: 0;
+  width: 0;
+  position: absolute;
+  pointer-events: none;
+  border-color: rgba(237, 237, 237, 0);
+  border-top-color: #EDEDED;
+  border-width: 20px 20px 0px 0px;
+  margin-left: -20px;
+}
+
+.ed-special-bottom-border {
+  border-bottom: 7px solid #B00D23;
+}
+
+// do not remove the `a.` prefix - it increases the specificity
+// to ensure `color` we set here is respected.
+a.ed-naked-button-error {
+  border: 3px solid #B00D23;
+  color: #B00D23;
+  padding: 20px;
+  text-align: center;
+  font-weight: bold;
+  display: block;
 }

@@ -13,13 +13,14 @@ default_context = {
             {'value': 'SECTOR1', 'label': 'sector 1'},
             {'value': 'SECTOR2', 'label': 'sector 2'},
         ],
+        'employees': '1-10',
         'number': '123456',
         'name': 'UK exporting co ltd.',
         'description': 'Exporters of UK wares.',
         'website': 'www.ukexportersnow.co.uk',
         'logo': 'www.ukexportersnow.co.uk/logo.png',
         'keywords': 'word1 word2',
-        'date_of_creation': '2 Mar 2015',
+        'date_of_creation': datetime(2015, 3, 2),
         'modified': datetime.now() - timedelta(hours=1),
         'contact_details': {
             'email_address': 'sales@example.com',
@@ -27,18 +28,14 @@ default_context = {
     }
 }
 
-EDIT_KEYWORDS_LABEL = "Edit your company's keywords."
-EDIT_SECTORS_LABEL = "Edit your company's sectors."
-EDIT_WEBSITE_LABEL = "Edit your company's website address"
-DATE_CREATED_LABEL = 'Date incorporated'
-CHANGE_LOGO_LABEL = 'Change logo'
-SET_LOGO_MESSAGE = 'Set logo'
+DATE_CREATED_LABEL = 'Incorporated'
 NO_RESULTS_FOUND_LABEL = 'No companies found'
-MODIFIED_LABEL = 'Last updated'
-CONTACT_LINK_LABEL = 'Contact UK exporting co ltd.'
+CONTACT_LINK_LABEL = 'Contact company'
+SET_LOGO_LABEL = 'Set logo'
+UPDATED_LABEL = 'Last updated'
 
 
-def test_company_profile_details_feature_flag_public_profile_on():
+def test_public_company_profile_details_feature_flag_public_profile_on():
     context = {
         'company': {
             'sectors': [
@@ -51,13 +48,13 @@ def test_company_profile_details_feature_flag_public_profile_on():
         }
     }
     url = reverse('public-company-profiles-list')
-    html = render_to_string('company-profile-detail.html', context)
+    html = render_to_string('company-public-profile-detail.html', context)
 
     assert 'href="{url}?sectors=THING"'.format(url=url) in html
     assert 'href="{url}?sectors=OTHER_THING"'.format(url=url) in html
 
 
-def test_company_profile_details_links_to_case_studies():
+def test_public_company_profile_details_links_to_case_studies():
     context = {
         'features': {
             'FEATURE_PUBLIC_PROFILES_ENABLED': True
@@ -84,12 +81,12 @@ def test_company_profile_details_links_to_case_studies():
         ]
     }
     url = reverse('company-case-study-view', kwargs={'id': '3'})
-    html = render_to_string('company-profile-detail.html', context)
+    html = render_to_string('company-public-profile-detail.html', context)
 
     assert 'href="{url}"'.format(url=url) not in html
 
 
-def test_company_profile_details_feature_flag_public_profile_off():
+def test_public_company_profile_details_feature_flag_public_profile_off():
     context = {
         'company': {
             'sectors': [
@@ -99,203 +96,65 @@ def test_company_profile_details_feature_flag_public_profile_off():
         },
     }
     url = reverse('public-company-profiles-list')
-    html = render_to_string('company-profile-detail.html', context)
+    html = render_to_string('company-public-profile-detail.html', context)
 
     assert 'href="{url}?sectors=THING"'.format(url=url) not in html
     assert 'href="{url}?sectors=OTHER_THING"'.format(url=url) not in html
 
 
-def test_company_profile_details_renders_sectors():
-    html = render_to_string('company-profile-detail.html', default_context)
+def test_public_company_profile_details_renders_sectors():
+    template_name = template_name = 'company-public-profile-detail.html'
+    html = render_to_string(template_name, default_context)
     assert 'sector 1' in html
     assert 'sector 2' in html
 
 
-def test_company_profile_details_renders_date_created():
-    html = render_to_string('company-profile-detail.html', default_context)
-    assert '2 Mar 2015' in html
+def test_public_company_profile_details_renders_date_created():
+    template_name = 'company-public-profile-detail.html'
+    html = render_to_string(template_name, default_context)
+    assert '2015' in html
     assert DATE_CREATED_LABEL in html
 
 
-def test_company_profile_details_handles_no_date_created():
-    html = render_to_string('company-profile-detail.html')
+def test_public_company_profile_details_handles_no_date_created():
+    html = render_to_string('company-public-profile-detail.html')
     assert DATE_CREATED_LABEL not in html
 
 
-def test_company_profile_details_renders_modified():
-    html = render_to_string('company-profile-detail.html', default_context)
-    assert 'an hour ago' in html
-    assert MODIFIED_LABEL in html
-
-
-def test_company_profile_details_renders_contact_link():
-    html = render_to_string('company-profile-detail.html', default_context)
-    email = 'sales@example.com'
-    subject = ('International%20buyer%20contact%20via%20your%20'
-               'great.gov.uk%20trade%20profile')
-    mailto = 'mailto:{email}?subject={subject}'.format(
-        email=email, subject=subject)
-    assert mailto in html
-    assert CONTACT_LINK_LABEL in html
-
-
-def test_company_profile_details_handles_no_sales_email():
-    html = render_to_string('company-profile-detail.html')
-    assert CONTACT_LINK_LABEL not in html
-
-
-def test_company_profile_details_handles_no_sectors_show_edit_links():
-    context = {'show_edit_links': True}
-    html = render_to_string('company-profile-detail.html', context)
-    assert EDIT_SECTORS_LABEL in html
-
-
-def test_company_profile_details_handles_no_sectors_hide_edit_links():
-    context = {'show_edit_links': False}
-    html = render_to_string('company-profile-detail.html', context)
-    assert EDIT_SECTORS_LABEL not in html
-
-
-def test_company_profile_details_renders_company_number():
-    html = render_to_string('company-profile-detail.html', default_context)
+def test_public_company_profile_details_renders_company_number():
+    template_name = 'company-public-profile-detail.html'
+    html = render_to_string(template_name, default_context)
     assert default_context['company']['number'] in html
 
 
-def test_company_profile_details_renders_company_name():
-    html = render_to_string('company-profile-detail.html', default_context)
+def test_public_company_profile_details_renders_company_name():
+    template_name = 'company-public-profile-detail.html'
+    html = render_to_string(template_name, default_context)
     assert default_context['company']['name'] in html
 
 
-def test_company_profile_details_renders_description():
-    html = render_to_string('company-profile-detail.html', default_context)
+def test_public_company_profile_details_renders_description():
+    template_name = 'company-public-profile-detail.html'
+    html = render_to_string(template_name, default_context)
     assert default_context['company']['description'] in html
 
 
-def test_company_profile_details_renders_keywords():
-    html = render_to_string('company-profile-detail.html', default_context)
+def test_public_company_profile_details_renders_keywords():
+    template_name = 'company-public-profile-detail.html'
+    html = render_to_string(template_name, default_context)
     assert default_context['company']['keywords'] in html
 
 
-def test_company_profile_details_handles_no_keywords_show_edit_links():
-    context = {'show_edit_links': True}
-    html = render_to_string('company-profile-detail.html', context)
-    assert EDIT_KEYWORDS_LABEL in html
-
-
-def test_company_profile_details_handles_no_keywords_hide_edit_links():
-    context = {'show_edit_links': False}
-    html = render_to_string('company-profile-detail.html', context)
-    assert EDIT_KEYWORDS_LABEL not in html
-
-
-def test_company_profile_details_renders_website():
-    html = render_to_string('company-profile-detail.html', default_context)
+def test_public_company_profile_details_renders_website():
+    template_name = 'company-public-profile-detail.html'
+    html = render_to_string(template_name, default_context)
     assert default_context['company']['website'] in html
 
 
-def test_company_profile_details_handles_no_website_show_edit_links():
-    context = {'show_edit_links': True}
-    html = render_to_string('company-profile-detail.html', context)
-    assert EDIT_WEBSITE_LABEL in html
-
-
-def test_company_profile_details_handles_no_website_hide_edit_links():
-    context = {'show_edit_links': False}
-    html = render_to_string('company-profile-detail.html', context)
-    assert EDIT_WEBSITE_LABEL not in html
-
-
-def test_company_profile_details_renders_website_hide_edit_links():
-    context = {
-        'show_edit_links': False,
-        'company': {
-            'website': ''
-        },
-    }
-    html = render_to_string('company-profile-detail.html', context)
-    assert EDIT_WEBSITE_LABEL not in html
-
-
-def test_company_profile_details_renders_website_show_edit_links():
-    context = {
-        'show_edit_links': True,
-        'company': {
-            'website': ''
-        },
-    }
-    html = render_to_string('company-profile-detail.html', context)
-    assert EDIT_WEBSITE_LABEL in html
-
-
-def test_company_profile_details_renders_logo():
-    html = render_to_string('company-profile-detail.html', default_context)
+def test_public_company_profile_details_renders_logo():
+    template_name = 'company-public-profile-detail.html'
+    html = render_to_string(template_name, default_context)
     assert default_context['company']['logo'] in html
-
-
-def test_company_profile_details_renders_change_logo_button_show_edit_links():
-    context = {
-        'show_edit_links': True,
-        'company': {
-            'logo': default_context['company']['logo'],
-        }
-    }
-    html = render_to_string('company-profile-detail.html', context)
-    assert CHANGE_LOGO_LABEL in html
-
-
-def test_company_profile_details_renders_change_logo_button_hide_edit_links():
-    context = {
-        'show_edit_links': False,
-        'company': {
-            'logo': default_context['company']['logo'],
-        }
-    }
-    html = render_to_string('company-profile-detail.html', context)
-    assert CHANGE_LOGO_LABEL not in html
-
-
-def test_company_profile_details_renders_set_logo_button_show_edit_links():
-    context = {
-        'show_edit_links': True,
-    }
-    html = render_to_string('company-profile-detail.html', context)
-    assert SET_LOGO_MESSAGE in html
-
-
-def test_company_profile_details_renders_set_logo_button_hide_edit_links():
-    context = {
-        'show_edit_links': False,
-    }
-    html = render_to_string('company-profile-detail.html', context)
-    assert SET_LOGO_MESSAGE not in html
-
-
-def test_company_profile_details_renders_wizard_links():
-    context = {
-        'show_edit_links': True,
-        'show_wizard_links': True
-    }
-    html = render_to_string('company-profile-detail.html', context)
-    company_edit_link = 'href="{url}"'.format(url=reverse('company-edit'))
-
-    assert reverse('company-edit-address') not in html
-    assert reverse('company-edit-sectors') not in html
-    assert reverse('company-edit-key-facts') not in html
-    assert html.count(company_edit_link) == 5
-
-
-def test_company_profile_details_renders_standalone_edit_links():
-    context = {
-        'show_edit_links': True,
-        'show_wizard_links': False
-    }
-    html = render_to_string('company-profile-detail.html', context)
-    company_edit_link = 'href="{url}"'.format(url=reverse('company-edit'))
-
-    assert reverse('company-edit-address') in html
-    assert reverse('company-edit-sectors') in html
-    assert reverse('company-edit-key-facts') in html
-    assert html.count(company_edit_link) == 1
 
 
 def test_company_public_profile_list_link_to_profle():
@@ -340,6 +199,17 @@ def test_company_public_profile_results_label():
     html = render_to_string('company-public-profile-list.html', context)
     assert "Displaying 1 of 1 \'thing\' company" in html
     assert NO_RESULTS_FOUND_LABEL not in html
+
+
+def test_company_public_profile_renders_modified():
+    context = {
+        'companies':  [
+            default_context['company']
+        ],
+    }
+    html = render_to_string('company-public-profile-list.html', context)
+    assert UPDATED_LABEL in html
+    assert '1 hour ago'
 
 
 def test_company_public_profile_results_label_plural():
@@ -516,3 +386,99 @@ def test_supplier_case_study_details_renders_case_study_flag_off_unpublished():
     html = render_to_string('supplier-case-study-detail.html', context)
 
     assert url not in html
+
+
+def test_company_public_details_renders_contact_details():
+    template_name = 'company-public-profile-detail.html'
+    expected = 'mailto:{email}?subject={subject}'.format(
+        email=default_context['company']['contact_details']['email_address'],
+        subject=(
+            'International%20buyer%20contact%20via%20your%20'
+            'great.gov.uk%20trade%20profile'
+        )
+    )
+
+    html = render_to_string(template_name, default_context)
+
+    assert expected in html
+    assert CONTACT_LINK_LABEL in html
+
+
+def test_company_profile_details_renders_contact_details():
+    template_name = 'company-private-profile-detail.html'
+    context = default_context
+
+    html = render_to_string(template_name, context)
+
+    assert context['company']['website'] in html
+    assert context['company']['contact_details']['email_address'] in html
+
+
+def test_company_profile_details_renders_company_details():
+    template_name = 'company-private-profile-detail.html'
+    context = default_context
+
+    html = render_to_string(template_name, context)
+
+    assert context['company']['employees'] in html
+    assert context['company']['number'] in html
+
+
+def test_company_profile_details_renders_company_name():
+    template_name = 'company-private-profile-detail.html'
+    html = render_to_string(template_name, default_context)
+    assert default_context['company']['name'] in html
+
+
+def test_company_profile_details_renders_logo():
+    template_name = 'company-private-profile-detail.html'
+    html = render_to_string(template_name, default_context)
+
+    assert default_context['company']['logo'] in html
+    assert SET_LOGO_LABEL not in html
+
+
+def test_company_profile_details_renders_set_logo():
+    template_name = 'company-private-profile-detail.html'
+    html = render_to_string(template_name, {})
+
+    assert SET_LOGO_LABEL in html
+
+
+def test_company_profile_details_renders_description():
+    template_name = 'company-private-profile-detail.html'
+    html = render_to_string(template_name, default_context)
+    assert default_context['company']['description'] in html
+
+
+def test_company_profile_details_renders_sectors():
+    template_name = 'company-private-profile-detail.html'
+    html = render_to_string(template_name, default_context)
+    assert 'sector 1' in html
+    assert 'sector 2' in html
+
+
+def test_company_profile_details_renders_keywords():
+    template_name = 'company-private-profile-detail.html'
+    html = render_to_string(template_name, default_context)
+    assert default_context['company']['keywords'] in html
+
+
+def test_company_private_profile_details_renders_standalone_edit_links():
+    context = {'show_wizard_links': False}
+    html = render_to_string('company-private-profile-detail.html', context)
+
+    assert reverse('company-edit-address') in html
+    assert reverse('company-edit-sectors') in html
+    assert reverse('company-edit-key-facts') in html
+
+
+def test_company_private_profile_details_renders_wizard_links():
+    context = {'show_wizard_links': True}
+    html = render_to_string('company-private-profile-detail.html', context)
+    company_edit_link = 'href="{url}"'.format(url=reverse('company-edit'))
+
+    assert reverse('company-edit-address') not in html
+    assert reverse('company-edit-sectors') not in html
+    assert reverse('company-edit-key-facts') not in html
+    assert html.count(company_edit_link) == 6

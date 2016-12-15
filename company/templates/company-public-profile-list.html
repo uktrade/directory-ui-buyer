@@ -1,5 +1,6 @@
 {% extends 'govuk_layout.html' %}
 {% load staticfiles %}
+{% load naturaltime from humanize %}
 {% block css %}
 	<link href="{% static 'company-profile-details.css' %}" media="all" rel="stylesheet" />
 {% endblock %}
@@ -69,12 +70,13 @@
 					<div class="company-details-subtitle">At a glance</div>
 					<div class="number-of-employees">
 						{% if company.employees %}
-							<div class="description-content">
+							<p class="description-content">
 								Number of employees: {{company.employees}}
-							</div>
+							</p>
 						{% endif %}
 						{% if company.date_of_creation %}
-							<div>Date incorporated: {{company.date_of_creation}}</div>
+							<p>Incorporated: {{company.date_of_creation|date:'Y'}}</p>
+							<p>Last updated: {{company.modified|naturaltime }}</p>
 						{% endif %}
 					</div>
 				</div>
