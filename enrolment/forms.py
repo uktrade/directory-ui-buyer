@@ -1,6 +1,7 @@
 import http
 from directory_validators import enrolment as shared_validators
 from directory_validators.constants import choices
+from directory_constants.constants import urls
 
 import requests
 
@@ -50,8 +51,9 @@ class CompanyForm(AutoFocusFieldMixin, IndentedInvalidFieldsMixin, forms.Form):
     terms_agreed = forms.BooleanField(
         label=mark_safe(
             'Tick this box to accept the '
-            '<a href="/terms_and_conditions" target="_blank">terms and '
-            'conditions</a> of the Find a Buyer service.'
+            '<a href="{url}" target="_blank">terms and '
+            'conditions</a> of the Find a Buyer service.'.format(
+                url=urls.TERMS_AND_CONDITIONS_URL)
         )
     )
 
@@ -119,8 +121,8 @@ class InternationalBuyerForm(IndentedInvalidFieldsMixin,
     terms = forms.BooleanField(
         label=mark_safe(
             'I agree to the <a target="_self" '
-            'href="/terms_and_conditions">terms and conditions</a> of '
-            'the website.'
+            'href="{url}">terms and conditions</a> of the website.'.format(
+                url=urls.TERMS_AND_CONDITIONS_URL)
         ),
         error_messages={'required': TERMS_CONDITIONS_MESSAGE}
     )
