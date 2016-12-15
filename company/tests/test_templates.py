@@ -21,6 +21,9 @@ default_context = {
         'keywords': 'word1 word2',
         'date_of_creation': '2 Mar 2015',
         'modified': datetime.now() - timedelta(hours=1),
+        'contact_details': {
+            'email_address': 'sales@example.com',
+        },
     }
 }
 
@@ -32,6 +35,7 @@ CHANGE_LOGO_LABEL = 'Change logo'
 SET_LOGO_MESSAGE = 'Set logo'
 NO_RESULTS_FOUND_LABEL = 'No companies found'
 MODIFIED_LABEL = 'Last updated'
+CONTACT_LINK_LABEL = 'Contact UK exporting co ltd.'
 
 
 def test_company_profile_details_feature_flag_public_profile_on():
@@ -113,15 +117,31 @@ def test_company_profile_details_renders_date_created():
     assert DATE_CREATED_LABEL in html
 
 
+def test_company_profile_details_handles_no_date_created():
+    html = render_to_string('company-profile-detail.html')
+    assert DATE_CREATED_LABEL not in html
+
+
 def test_company_profile_details_renders_modified():
     html = render_to_string('company-profile-detail.html', default_context)
     assert 'an hour ago' in html
     assert MODIFIED_LABEL in html
 
 
-def test_company_profile_details_handles_no_date_created():
+def test_company_profile_details_renders_contact_link():
+    html = render_to_string('company-profile-detail.html', default_context)
+    email = 'sales@example.com'
+    subject = ('International%20buyer%20contact%20via%20your%20'
+               'great.gov.uk%20trade%20profile')
+    mailto = 'mailto:{email}?subject={subject}'.format(
+        email=email, subject=subject)
+    assert mailto in html
+    assert CONTACT_LINK_LABEL in html
+
+
+def test_company_profile_details_handles_no_sales_email():
     html = render_to_string('company-profile-detail.html')
-    assert DATE_CREATED_LABEL not in html
+    assert CONTACT_LINK_LABEL not in html
 
 
 def test_company_profile_details_handles_no_sectors_show_edit_links():
