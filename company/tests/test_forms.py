@@ -6,6 +6,7 @@ import pytest
 
 from django.forms.fields import Field
 from django.forms import CharField, Form
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.validators import URLValidator
 
 from company import forms, validators
@@ -35,7 +36,7 @@ def create_mock_file():
     return Mock(size=1)
 
 
-def test_serialize_supplier_case_study_forms():
+def test_serialize_supplier_case_study_forms_string_images():
     data = {
         'title': 'a title',
         'description': 'a description',
@@ -58,13 +59,50 @@ def test_serialize_supplier_case_study_forms():
         'website': 'http://www.example.com',
         'year': '2010',
         'keywords': 'goog, great',
-        'image_one': '1.png',
-        'image_two': '2.png',
-        'image_three': '3.png',
         'testimonial': 'very nice',
         'testimonial_name': 'Neville',
         'testimonial_job_title': 'Abstract hat maker',
         'testimonial_company': 'Imaginary hats Ltd',
+    }
+
+    actual = forms.serialize_supplier_case_study_forms(data)
+
+    assert actual == expected
+
+
+def test_serialize_supplier_case_study_forms_file_images():
+    image_one = SimpleUploadedFile(name='image_one', content=b'one')
+    image_two = SimpleUploadedFile(name='image_two', content=b'one')
+    image_three = SimpleUploadedFile(name='image_three', content=b'one')
+    data = {
+        'title': 'a title',
+        'description': 'a description',
+        'sector': choices.COMPANY_CLASSIFICATIONS[1][0],
+        'website': 'http://www.example.com',
+        'year': '2010',
+        'keywords': 'goog, great',
+        'image_one': image_one,
+        'image_two': image_two,
+        'image_three': image_three,
+        'testimonial': 'very nice',
+        'testimonial_name': 'Neville',
+        'testimonial_job_title': 'Abstract hat maker',
+        'testimonial_company': 'Imaginary hats Ltd',
+    }
+    expected = {
+        'title': 'a title',
+        'description': 'a description',
+        'sector': choices.COMPANY_CLASSIFICATIONS[1][0],
+        'website': 'http://www.example.com',
+        'year': '2010',
+        'keywords': 'goog, great',
+        'testimonial': 'very nice',
+        'testimonial_name': 'Neville',
+        'testimonial_job_title': 'Abstract hat maker',
+        'testimonial_company': 'Imaginary hats Ltd',
+        'image_one': image_one,
+        'image_two': image_two,
+        'image_three': image_three,
     }
 
     actual = forms.serialize_supplier_case_study_forms(data)
