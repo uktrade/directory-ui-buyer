@@ -184,24 +184,25 @@ class CompanyContactDetailsForm(AutoFocusFieldMixin,
     }
 
     email_full_name = forms.CharField(
-        label='Full name:',
+        label='Contact name for buyer enquiries:',
         max_length=200,
         help_text=(
-            'This is the full name that international buyers should use'
-            ' when contacting your company.'
+            'This is the full name of the person that international buyers '
+            'should use when contacting your company.'
         ),
     )
     email_address = forms.EmailField(
+        label='Contact email address',
         help_text=(
             'This is the email address that international buyers should use'
             ' when contacting your company.'
         ),
     )
     mobile_number = MobilePhoneNumberField(
-        label='Your mobile phone number:',
+        label='Your mobile phone number (optional):',
         required=False,
         help_text=(
-            'Optional. This is the phone number that international buyers'
+            'This is the phone number that international buyers'
             ' should use when contacting your company.'
         ),
     )
@@ -280,10 +281,12 @@ class CompanyAddressVerificationForm(PreventTamperMixin,
         widget=forms.TextInput(attrs={'readonly': 'readonly'}),
     )
     postal_code = forms.CharField(
+        label='Postcode:',
         max_length=200,
         widget=forms.TextInput(attrs={'readonly': 'readonly'}),
     )
     po_box = forms.CharField(
+        label='PO box',
         max_length=200,
         required=False,
         widget=forms.TextInput(attrs={'readonly': 'readonly'}),

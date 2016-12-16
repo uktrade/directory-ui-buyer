@@ -57,20 +57,6 @@ def test_form_wrapper_finish_button():
     assert 'value="Register"' in html
 
 
-def test_form_wizard_step_indicator_accessibility_helper():
-    context = {
-        'wizard': {
-            'steps':
-                {
-                    'step1': 1,
-                    'count': 3,
-                }
-        }
-    }
-    html = render_to_string('form_wizard_step_indicator.html', context)
-    assert 'You are now on step 1 of 3' in html
-
-
 def test_company_profile_form_supports_file_upload():
     # http://stackoverflow.com/a/5567063/904887
     html = render_to_string('company-profile-form.html', {})
