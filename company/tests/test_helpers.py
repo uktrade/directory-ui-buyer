@@ -78,7 +78,7 @@ def test_get_company_profile_from_response(profile_data):
         'website': 'http://www.example.com',
         'description': 'bloody good',
         'number': '01234567',
-        'date_of_creation': '10 Oct 2010',
+        'date_of_creation': datetime(2010, 10, 10),
         'sectors': [
             {
                 'label': 'Agriculture, horticulture and fisheries',
@@ -108,7 +108,7 @@ def test_get_public_company_profile_from_response(profile_data):
         'website': 'http://www.example.com',
         'description': 'bloody good',
         'number': '01234567',
-        'date_of_creation': '10 Oct 2010',
+        'date_of_creation': datetime(2010, 10, 10),
         'sectors': [
             {
                 'label': 'Agriculture, horticulture and fisheries',
@@ -141,7 +141,7 @@ def test_get_company_list_from_response(public_companies):
                 'website': 'http://www.example.com',
                 'description': 'bloody good',
                 'number': '01234567',
-                'date_of_creation': '10 Oct 2010',
+                'date_of_creation': datetime(2010, 10, 10),
                 'sectors': [
                     {
                         'label': 'Agriculture, horticulture and fisheries',
@@ -196,7 +196,7 @@ def test_get_case_study_details_from_response(supplier_case_study_data):
             'employees': '1-10',
             'description': 'Good stuff.',
             'logo': 'https://logo.png',
-            'date_of_creation': '02 Mar 2015',
+            'date_of_creation': datetime(2015, 3, 2),
             'name': 'EXAMPLE CORP',
             'supplier_case_studies': [],
             'keywords': 'Web development',
@@ -223,7 +223,7 @@ def test_get_case_study_details_from_response(supplier_case_study_data):
 
 def test_get_company_profile_from_response_without_date(profile_data):
     pairs = [
-        ['2010-10-10', '10 Oct 2010'],
+        ['2010-10-10', datetime(2010, 10, 10)],
         ['', ''],
         [None, None],
     ]

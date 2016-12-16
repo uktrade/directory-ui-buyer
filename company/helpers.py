@@ -11,14 +11,16 @@ EMPLOYEE_CHOICES = {key: value for key, value in choices.EMPLOYEES}
 SECTOR_CHOICES = {key: value for key, value in choices.COMPANY_CLASSIFICATIONS}
 
 
-def format_date_of_creation(raw_date_of_creation):
-    if not raw_date_of_creation:
-        return raw_date_of_creation
-    date_of_creation = datetime.datetime.strptime(
-        raw_date_of_creation,
-        '%Y-%m-%d'
-    )
-    return date_of_creation.strftime('%d %b %Y')
+def format_date_of_creation(raw_date):
+    if not raw_date:
+        return raw_date
+    return datetime.datetime.strptime(raw_date, '%Y-%m-%d')
+
+
+def format_date_modified(raw_date):
+    if not raw_date:
+        return raw_date
+    return datetime.datetime.strptime(raw_date, '%Y-%m-%dT%H:%M:%S.%fZ')
 
 
 def get_employees_label(employees_value):
@@ -73,6 +75,7 @@ def format_company_details(details):
     # If the contact details json is set to null
     # then details['contact_details'] will be None
     contact_details = details['contact_details'] or {}
+    case_studies = map(format_case_study, details['supplier_case_studies'])
     return {
         'website': details['website'],
         'description': details['description'],
@@ -83,13 +86,17 @@ def format_company_details(details):
         'name': details['name'],
         'keywords': details['keywords'],
         'employees': get_employees_label(details['employees']),
-        'supplier_case_studies': details['supplier_case_studies'],
-        'modified': datetime.datetime.strptime(
-            details['modified'], '%Y-%m-%dT%H:%M:%S.%fZ'),
+        'supplier_case_studies': list(case_studies),
+        'modified': format_date_modified(details['modified']),
         'verified_with_code': details['verified_with_code'],
         'is_address_set': contact_details != {},
         'contact_details': contact_details,
     }
+
+
+def format_case_study(case_study):
+    case_study['sector'] = pair_sector_value_with_label(case_study['sector'])
+    return case_study
 
 
 def get_company_profile(sso_id):

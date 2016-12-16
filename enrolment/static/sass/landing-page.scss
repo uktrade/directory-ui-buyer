@@ -283,7 +283,6 @@ a .register-interest-btn {
 }
 
 .ed-landing-page-form-container {
-  border-bottom: 7px solid #B00D23;
   margin-bottom: 40px;
 }
 
@@ -300,27 +299,6 @@ a .register-interest-btn {
 .ed-landing-page-gap {
   margin-bottom: 20px;
 }
-
-.arrow_box {
-  position: relative;
-  background: #EDEDED;
-}
-
-.arrow_box:after {
-  top: 100%;
-  left: 50px;
-  border: solid transparent;
-  content: " ";
-  height: 0;
-  width: 0;
-  position: absolute;
-  pointer-events: none;
-  border-color: rgba(237, 237, 237, 0);
-  border-top-color: #EDEDED;
-  border-width: 20px 20px 0px 0px;
-  margin-left: -20px;
-}
-
 
 .ed-landing-page-sector-company-image {
   padding: 0;

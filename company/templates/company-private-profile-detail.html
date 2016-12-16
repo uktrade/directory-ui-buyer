@@ -1,0 +1,196 @@
+{% extends 'govuk_layout.html' %}
+{% load static from staticfiles %}
+{% block css %}
+	<link href="{% static 'company-profile-details.css' %}" media="all" rel="stylesheet" />
+{% endblock %}
+{% block hero_title %}Find a Buyer{% endblock %}
+{% block sub_header %}{% endblock %}
+{% block content %}
+<div class="container">
+	<div class="company-profile-details-body">
+
+		{% if not company.verified_with_code %}
+		<div class="row-fluid company-profile-invisible-banner">
+			<div class="span8">
+				<h2>Your company has not yet been verified.</h2>
+				<p style="font-weight: 400;">Your profile won't be published until your company is verified</p>
+			</div>
+			<div class="span4" style="margin-top: 10px;">
+				{% if company.is_address_set %}
+					<a href="{% url 'confirm-company-address' %}" target="_self" class="ed-naked-button-error">
+						Verify your company
+					</a>
+				{% else %}
+					<a href="{% url show_wizard_links|yesno:'company-edit,company-edit-address' %}" target="_self">
+						Set your address
+					</a>
+				{% endif %}
+			</div>
+		</div>
+		{% endif %}
+
+
+		<div class="row-fluid">
+			<div class="span12 great-blue-bar ed-has-edit-button">
+				<h1 class="element-within company-name-title">
+					<span class="dont-break-out">Trade profile for {{company.name}}</span>
+				</h1>
+				<a class="ed-edit-button" href="{% url show_wizard_links|yesno:'company-edit,company-edit-key-facts' %}" style="top: 25px; right: 25px; color: white;">Edit</a>
+			</div>
+		</div>
+
+		<div class="row-fluid company-profile-module-container">
+			<div class="span3 company-logo company-profile-module-inner">
+				<div class="logo-container">
+					<div>
+						{% if company.logo %}
+						<div class="ed-has-edit-button ed-company-profile-logo-container">
+							<img src="{{company.logo}}" />
+							<a class="ed-edit-button" href="{% url 'company-edit-logo' %}" style="bottom: 5px; right: 5px; background: white">Edit</a>
+
+						</div>
+						{% endif %}
+							<a href="{% url 'company-edit-logo' %}" target="_self">
+							{% if not company.logo %}
+								Set logo
+							{% endif %}
+							</a>
+					</div>
+				</div>
+			</div>
+
+			<div class="span5 ed-has-edit-button company-profile-module-inner">
+				<h3>Contact</h3>
+				<a class="ed-edit-button" href="{% url show_wizard_links|yesno:'company-edit,company-edit-contact' %}" style="top: 20px; right: 0;">Edit</a>
+				{% if company.website %}
+					<p><a href="{{ company.website}}">{{ company.website }}</a></p>
+				{% endif %}
+				{% if company.contact_details.email_address %}
+					<p><a href="mailto:{{ company.contact_details.email_address }}?subject=International%20buyer%20contact%20via%20your%20great.gov.uk%20trade%20profile">{{ company.contact_details.email_address }}</a></p>
+				{% endif %}
+			</div>
+
+			<div class="span4 ed-has-edit-button company-profile-module-inner" style="border-left: 1px solid #dedede;">
+				<h3>Company details</h3>
+				<a class="ed-edit-button" href="{% url show_wizard_links|yesno:'company-edit,company-edit-key-facts' %}" style="top: 20px; right: 20px;">Edit</a>
+				<p>Number of employees: {{ company.employees|default:'N/A' }}</p>
+				<p>Registration number: {{company.number}}</p>
+				{% if company.date_of_creation %}
+					<p>Incorporated: {{company.date_of_creation|date:'Y'}}</p>
+				{% endif %}
+			</div>
+		</div>
+
+		<div class="row-fluid company-profile-module-container">
+
+			<div class="span12 ed-has-edit-button company-profile-module-inner">
+				<h3>About the company</h3>
+				<a class="ed-edit-button" href="{% url 'company-edit-description' %}" style="top: 20px; right: 20px;">Edit</a>
+				<p>{{company.description}}</p>
+			</div>
+
+		</div>
+
+		<!-- Company description area -->
+		<div class="row-fluid">
+			<div class="span12 great-blue-bar">
+				<h1 class="element-within company-name-title">
+					<span class="dont-break-out">Recent projects</span>
+				</h1>
+			</div>
+		</div>
+		<div class="ed-company-profile-sector-case-study-container">
+			{% for case_study in company.supplier_case_studies %}
+			<div class="row-fluid company-profile-module-container" style="margin-bottom: 0;">
+				<div class="span12 company-profile-module-inner ed-has-edit-button">
+					<h3>{{ case_study.title }}</h3>
+					<a class="ed-edit-button" href="{% url 'company-case-study-edit' id=case_study.pk %}" style="top: 25px; right: 25px;">Edit</a>
+					<div class="supplier-case-study-images">
+						{% if case_study.image_one %}
+						<img src="{{ case_study.image_one }}" />
+						{% elif case_study.image_two %}
+						<img src="{{ case_study.image_two }}" />
+						{% elif case_study.image_three %}
+						<img src="{{ case_study.image_three }}" />
+						{% endif %}
+					</div>
+
+					<div class="row-fluid ed-company-profile-sector-case-study-inner">
+						<div class="span4">
+							<p>{{ case_study.description }}</p>
+							<p class="supplier-case-study-read-more-cta">
+								<a href="{% url 'company-case-study-view' id=case_study.pk %}">Read case study</a>
+							</p>
+						</div>
+						<div class="span4 ed-arrow_box ed-company-profile-case-study-testomonial-container">
+							<p class="ed-company-profile-sector-synopsis">
+								<b>"{{ case_study.testimonial }}"</b>
+							</p>
+							<div>{{ case_study.testimonial_name }}</div>
+							<div>{{ case_study.testimonial_company }}</div>
+						</div>
+						<div class="span4 ed-company-profile-case-study-company-details">
+							<p>
+								<b>{{ company.name }}</b>
+							</b>
+							<p>
+								<span>Incorporated: </span>{{ company.date_of_creation|date:'Y' }}
+							</p>
+							<p>
+								<span>Sector: </span>
+								<a href="{% url 'public-company-profiles-list' %}?sectors={{ case_study.sector.value }}">{{ case_study.sector.label }}</a>
+							</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			{% endfor %}
+		</div>
+
+		<div class="ed-company-profile-add-case-study-button-container">
+			<a href="{% url 'company-case-study-edit' %}" class="ed-company-profile-add-case-study-button">
+				Add another case study
+			</a>
+		</div>
+
+		<div class="row-fluid group two-column-group">
+			<div class="span6 ed-special-bottom-border">
+				<div class="company-profile-module-container" style="margin-bottom: 0;">
+					<div class="company-profile-module-inner ed-has-edit-button">
+						<h3>Sectors of interest</h3>
+						<a class="ed-edit-button"  style="top: 20px; right: 20px;" href="{% url show_wizard_links|yesno:'company-edit,company-edit-sectors' %}">Edit</a>
+						<p>
+						{% for sector in company.sectors %}
+							{% if features.FEATURE_PUBLIC_PROFILES_ENABLED %}
+								<a href="{% url 'public-company-profiles-list' %}?sectors={{sector.value}}" class="label stone-label" target="_blank">
+									{{ sector.label }}
+								</a>
+							{% else %}
+								<span class="label stone-label">
+									{{ sector.label }}
+								</span>
+							{% endif %}
+						{% endfor %}
+						</p>
+						{% if company.sectors %}
+						<div class="description-content"></div>
+						{% endif %}
+					</div>
+				</div>
+			</div>
+			<div class="span6 ed-special-bottom-border">
+				<div class="company-profile-module-container" style="margin-bottom: 0;">
+					<div class=" company-profile-module-inner ed-has-edit-button">
+						<h3>Keywords</h3>
+						<a class="ed-edit-button" href="{% url show_wizard_links|yesno:'company-edit,company-edit-key-facts' %}" style="top: 20px; right: 20px;">Edit</a>
+						{% if company.keywords %}
+						<p>{{company.keywords}}</p>
+						{% endif %}
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+</div>
+{% endblock %}

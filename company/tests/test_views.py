@@ -480,7 +480,6 @@ def test_company_profile_details_exposes_context(
     ]
 
     assert response.context_data['company'] == company
-    assert response.context_data['show_edit_links'] is True
     assert response.context_data['show_wizard_links'] is False
     mock_is_optional_profile_values_set.assert_called_once_with(company)
 
@@ -532,7 +531,6 @@ def test_public_company_profile_details_exposes_context(
         views.PublicProfileDetailView.template_name
     ]
     assert response.context_data['company'] == {}
-    assert response.context_data['show_edit_links'] is False
 
 
 @patch.object(views, 'has_company', Mock(return_value=True))
