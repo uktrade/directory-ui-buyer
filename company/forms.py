@@ -281,10 +281,12 @@ class CompanyAddressVerificationForm(PreventTamperMixin,
         widget=forms.TextInput(attrs={'readonly': 'readonly'}),
     )
     postal_code = forms.CharField(
+        label='Postcode:',
         max_length=200,
         widget=forms.TextInput(attrs={'readonly': 'readonly'}),
     )
     po_box = forms.CharField(
+        label='PO box',
         max_length=200,
         required=False,
         widget=forms.TextInput(attrs={'readonly': 'readonly'}),
