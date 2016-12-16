@@ -1,19 +1,23 @@
 {% extends "enrolment-base.html" %}
 {% block sub_header %}{# prevent the subheader from showing on form pages #}{% endblock %}
+{% block head_title %}Start creating your profile - Find a Buyer - GREAT.gov.uk{% endblock %}
 {% block content %}
 <div class="container ed-enrolment">
     <div class="clearfix"></div>
     <div class="row-fluid">
         <div class="span8">
             <div class="connections-platform-form">
-                <h1>Before you begin</h1>
+                <h1>Before you start</h1>
                 <div>
                     <p>
-                        You will need your Companies House number and access to your email inbox.
+                        You will need your Companies House number.
+                    </p>
+                    <p>
+                        We will need to send you a verification code by post to your company's registered company address. If you are not based at your Companies House registered address, you can add details to ensure that it is sent on to you.
                     </p>
                 <div class="form-wrapper-btn-container btn-container">
                     <a class="register-btn button" type="submit" href="{% url 'register' step='company-number' %}">
-                        Begin
+                        Start
                     </a>
                 </div>
             </div>
