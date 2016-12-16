@@ -260,6 +260,7 @@
   }
 }
 
+<<<<<<< HEAD
 .ed-company-profile-sector-case-study-container {
   margin-bottom: 20px;
 
@@ -282,4 +283,32 @@
       text-decoration: underline;
     }
   }
+=======
+.ed-envelope {
+  border: 1px solid #ddd;
+  width: 40em;
+  height: 15em;
+  position: relative;
+  padding: 1em 1em 1em 2em;
+  box-shadow: 0 .5em 1em rgba(0,0,0,.25);
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 40px;
+  margin-bottom: 60px;
+}
+
+.ed-recipient {
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 50px;
+  width: 200px;
+}
+
+.ed-stamp {
+  position: absolute;
+  right: 20px;
+}
+
+.ed-envelope-container {
+  margin-top: 40px; 
 }

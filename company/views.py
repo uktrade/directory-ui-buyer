@@ -246,12 +246,14 @@ class SupplierCompanyProfileEditView(
     BASIC = 'basic'
     CLASSIFICATION = 'classification'
     CONTACT = 'contact'
+    ADDRESS_CONFIRM = 'confirm'
 
     form_list = (
         (BASIC, forms.CompanyBasicInfoForm),
         (CLASSIFICATION, forms.CompanyClassificationForm),
         (CONTACT, forms.CompanyContactDetailsForm),
-        (ADDRESS, forms.CompanyAddressVerificationForm)
+        (ADDRESS, forms.CompanyAddressVerificationForm),
+        (ADDRESS_CONFIRM, forms.EmptyForm),
     )
     failure_template = 'company-profile-update-error.html'
     templates = {
@@ -259,6 +261,7 @@ class SupplierCompanyProfileEditView(
         CLASSIFICATION: 'company-profile-form-classification.html',
         CONTACT: 'company-profile-form-contact.html',
         ADDRESS: 'company-profile-form-address.html',
+        ADDRESS_CONFIRM: 'company-profile-address-confirm-send.html',
     }
     form_serializer = staticmethod(forms.serialize_company_profile_forms)
 
@@ -267,6 +270,12 @@ class SupplierCompanyProfileEditView(
         if step in [self.ADDRESS, self.CONTACT]:
             return helpers.get_contact_details(sso_user_id)
         return helpers.get_company_profile(sso_user_id)
+
+    def get_context_data(self, form, **kwargs):
+        context = super().get_context_data(form=form, **kwargs)
+        if self.steps.current == self.ADDRESS_CONFIRM:
+            context['all_cleaned_data'] = self.get_all_cleaned_data()
+        return context
 
 
 class SupplierCompanyProfileLogoEditView(
