@@ -331,21 +331,25 @@ def serialize_supplier_case_study_forms(cleaned_data):
 
     """
 
-    return {
+    data = {
         'title': cleaned_data['title'],
         'description': cleaned_data['description'],
         'sector': cleaned_data['sector'],
         'website': cleaned_data['website'],
         'year': cleaned_data['year'],
         'keywords': cleaned_data['keywords'],
-        'image_one': cleaned_data['image_one'],
-        'image_two': cleaned_data['image_two'],
-        'image_three': cleaned_data['image_three'],
         'testimonial': cleaned_data['testimonial'],
         'testimonial_name': cleaned_data['testimonial_name'],
         'testimonial_job_title': cleaned_data['testimonial_job_title'],
         'testimonial_company': cleaned_data['testimonial_company'],
     }
+    # the case studies edit view pre-populates the image fields with the url of
+    # the existing value (rather than the real file). Things would get
+    # confused if we send a string instead of a file here.
+    for field in ['image_one', 'image_two', 'image_three']:
+        if not isinstance(cleaned_data[field], str):
+            data[field] = cleaned_data[field]
+    return data
 
 
 def serialize_company_profile_forms(cleaned_data):
