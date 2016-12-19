@@ -19,6 +19,7 @@ def retrieve_profile_data():
         'employees': '501-1000',
         'date_of_creation': '2015-03-02',
         'verified_with_code': True,
+        'is_verification_letter_sent': False,
         'contact_details': {
             'email_full_name': 'Jeremy',
             'email_address': 'test@example.com',
@@ -120,6 +121,16 @@ def api_response_company_profile_200(retrieve_profile_data):
     response = requests.Response()
     response.status_code = http.client.OK
     response.json = lambda: deepcopy(retrieve_profile_data)
+    return response
+
+
+@pytest.fixture
+def api_response_company_profile_letter_sent_200(retrieve_profile_data):
+    profile_data = deepcopy(retrieve_profile_data)
+    profile_data['is_verification_letter_sent'] = True
+    response = requests.Response()
+    response.status_code = http.client.OK
+    response.json = lambda: profile_data
     return response
 
 
