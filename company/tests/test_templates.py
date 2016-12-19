@@ -31,7 +31,6 @@ default_context = {
 DATE_CREATED_LABEL = 'Incorporated'
 NO_RESULTS_FOUND_LABEL = 'No companies found'
 CONTACT_LINK_LABEL = 'Contact company'
-SET_LOGO_LABEL = 'Set logo'
 UPDATED_LABEL = 'Last updated'
 
 
@@ -435,14 +434,6 @@ def test_company_profile_details_renders_logo():
     html = render_to_string(template_name, default_context)
 
     assert default_context['company']['logo'] in html
-    assert SET_LOGO_LABEL not in html
-
-
-def test_company_profile_details_renders_set_logo():
-    template_name = 'company-private-profile-detail.html'
-    html = render_to_string(template_name, {})
-
-    assert SET_LOGO_LABEL in html
 
 
 def test_company_profile_details_renders_description():
@@ -481,4 +472,4 @@ def test_company_private_profile_details_renders_wizard_links():
     assert reverse('company-edit-address') not in html
     assert reverse('company-edit-sectors') not in html
     assert reverse('company-edit-key-facts') not in html
-    assert html.count(company_edit_link) == 6
+    assert html.count(company_edit_link) == 10

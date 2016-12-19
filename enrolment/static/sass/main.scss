@@ -884,6 +884,9 @@ a.no-focus-highlight {
   display: table!important;
   height: 80px;
   padding: 0 24px;
+  h1 {
+    font-weight: bold;
+  }
   .company-name-title {
     color: $white;
     font-size: 36px;
