@@ -17,11 +17,11 @@
 			</div>
 			<div class="span4" style="margin-top: 10px;">
 				{% if company.is_address_set %}
-					<a href="{% url 'confirm-company-address' %}" target="_self" class="ed-naked-button-error">
+					<a href="{% url 'confirm-company-address' %}" class="ed-naked-button-error">
 						Verify your company
 					</a>
 				{% else %}
-					<a href="{% url show_wizard_links|yesno:'company-edit,company-edit-address' %}" target="_self">
+					<a href="{% url show_wizard_links|yesno:'company-edit,company-edit-address' %}" class="ed-naked-button-error">
 						Set your address
 					</a>
 				{% endif %}
@@ -36,7 +36,7 @@
 					<span class="dont-break-out">Trade profile for {{company.name}}</span>
 				</h1>
 				<a class="ed-edit-button" href="{% url show_wizard_links|yesno:'company-edit,company-edit-key-facts' %}" style="top: 25px; right: 25px; color: white;">
-					<span style="margin-top: 4px;"class="icon-pencil icon-white"></span>
+					<span style="margin-top: 4px;" class="icon-pencil icon-white"></span>
 					<span style="margin-top: 4px;">Edit</span>
 				</a>
 			</div>
@@ -46,21 +46,15 @@
 			<div class="span3 company-logo company-profile-module-inner">
 				<div class="logo-container">
 					<div>
-						{% if company.logo %}
-						<div class="ed-has-edit-button ed-company-profile-logo-container">
-							<img src="{{company.logo}}" />
-							<a class="ed-edit-button" href="{% url 'company-edit-logo' %}" style="bottom: 5px; right: 5px; background: white; color: black;">
+						<div class="ed-has-edit-button ed-company-profile-logo-container">	
+							{% if company.logo %}
+								<img src="{{company.logo}}" />
+							{% endif %}
+							<a class="ed-edit-button" href="{% url 'company-edit-logo' %}" style="bottom: 0; right: 5px; background: white; color: black; padding: 5px;">
 								<span class="icon-pencil"></span>
 								<span>Edit</span>
 							</a>
-
 						</div>
-						{% endif %}
-							<a href="{% url 'company-edit-logo' %}" target="_self">
-							{% if not company.logo %}
-								Set logo
-							{% endif %}
-							</a>
 					</div>
 				</div>
 			</div>
@@ -73,16 +67,23 @@
 				</a>
 				{% if company.website %}
 					<p><a href="{{ company.website}}">{{ company.website }}</a></p>
+				{% else %}
+					<p><a href="{% url show_wizard_links|yesno:'company-edit,company-edit-contact' %}">Add your website</a></p>
 				{% endif %}
 				{% if company.contact_details.email_address %}
 					<p><a href="mailto:{{ company.contact_details.email_address }}?subject=International%20buyer%20contact%20via%20your%20great.gov.uk%20trade%20profile">{{ company.contact_details.email_address }}</a></p>
+				{% else %}
+					<p>
+						<a href="{% url show_wizard_links|yesno:'company-edit,company-edit-contact' %}">Add your email</a></p>
+					</p>
+
 				{% endif %}
 			</div>
 
 			<div class="span4 ed-has-edit-button company-profile-module-inner" style="border-left: 1px solid #dedede;">
-				<h3>Company details</h3>
+				<h3>Facts &amp details</h3>
 				<a class="ed-edit-button" href="{% url show_wizard_links|yesno:'company-edit,company-edit-key-facts' %}" style="top: 20px; right: 20px; color: black;">
-					<spanclass="icon-pencil"></span>
+					<span class="icon-pencil"></span>
 					<span>Edit</span>
 				</a>
 				<p>Number of employees: {{ company.employees|default:'N/A' }}</p>
@@ -96,12 +97,16 @@
 		<div class="row-fluid company-profile-module-container">
 
 			<div class="span12 ed-has-edit-button company-profile-module-inner">
-				<h3>About the company</h3>
+				<h3>Company description</h3>
 				<a class="ed-edit-button" href="{% url 'company-edit-description' %}" style="top: 20px; right: 20px; color: black;">
 					<span class="icon-pencil"></span>
 					<span>Edit</span>
 				</a>
-				<p>{{company.description}}</p>
+				{% if company.description %}
+					<p>{{company.description}}</p>
+				{% else %}
+					<p><a href="{% url 'company-edit-description' %}">Add a description</a></p>
+				{% endif %}
 			</div>
 
 		</div>
@@ -192,6 +197,8 @@
 									{{ sector.label }}
 								</span>
 							{% endif %}
+						{% empty %}
+							<p><a href="{% url show_wizard_links|yesno:'company-edit,company-edit-sectors' %}">Add sectors</a></p>
 						{% endfor %}
 						</p>
 						{% if company.sectors %}
@@ -209,7 +216,9 @@
 							<span>Edit</span>
 						</a>
 						{% if company.keywords %}
-						<p>{{company.keywords}}</p>
+							<p>{{company.keywords}}</p>
+						{% else %}
+							<p><a href="{% url show_wizard_links|yesno:'company-edit,company-edit-key-facts' %}">Add keywords</a></p>
 						{% endif %}
 					</div>
 				</div>
