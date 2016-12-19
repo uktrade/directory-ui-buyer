@@ -179,6 +179,14 @@ def company_profile_address_data(all_company_profile_data):
 
 
 @pytest.fixture
+def company_profile_send_confirm_data():
+    step = views.SupplierCompanyProfileEditView.ADDRESS_CONFIRM
+    return {
+        'supplier_company_profile_edit_view-current_step': step,
+    }
+
+
+@pytest.fixture
 def supplier_address_data_standalone(company_profile_address_data):
     step = views.SupplierAddressEditView.ADDRESS
     data = company_profile_address_data
@@ -303,7 +311,8 @@ def address_verification_end_to_end(client, address_verification_address_data):
 def company_profile_edit_end_to_end(
     client, company_profile_address_data,
     company_profile_basic_data, company_profile_classification_data,
-    company_profile_contact_data, api_response_200
+    company_profile_contact_data, company_profile_send_confirm_data,
+    api_response_200
 ):
     # loop over each step in the supplier case study wizard and post valid data
     view = views.SupplierCompanyProfileEditView
@@ -312,6 +321,7 @@ def company_profile_edit_end_to_end(
         [view.CLASSIFICATION, company_profile_classification_data],
         [view.CONTACT, company_profile_contact_data],
         [view.ADDRESS, company_profile_address_data],
+        [view.ADDRESS_CONFIRM, company_profile_send_confirm_data],
     ]
 
     def inner():
@@ -326,7 +336,8 @@ def company_profile_edit_end_to_end(
 def company_profile_edit_goto_step(
     client, company_profile_address_data,
     company_profile_basic_data, company_profile_classification_data,
-    company_profile_contact_data, api_response_200
+    company_profile_contact_data, company_profile_send_confirm_data,
+    api_response_200
 ):
     # loop over each step in the supplier case study wizard and post valid data
     view = views.SupplierCompanyProfileEditView
@@ -335,6 +346,7 @@ def company_profile_edit_goto_step(
         [view.CLASSIFICATION, company_profile_classification_data],
         [view.CONTACT, company_profile_contact_data],
         [view.ADDRESS, company_profile_address_data],
+        [view.ADDRESS_CONFIRM, company_profile_send_confirm_data]
     ]
 
     def inner(step=view.ADDRESS):
@@ -1081,6 +1093,21 @@ def test_supplier_company_profile_initial_data_basic(
     )
 
     assert response.context_data['form'].initial == retrieve_profile_data
+
+
+@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
+@patch.object(views, 'has_company', Mock(return_value=True))
+@patch('company.forms.CompanyAddressVerificationForm.is_form_tampered',
+       Mock(return_value=False))
+def test_supplier_company_profile_confirm_address_context_data(
+    company_profile_edit_goto_step, retrieve_profile_data,
+    all_company_profile_data
+):
+    response = company_profile_edit_goto_step(
+        step=views.SupplierCompanyProfileEditView.ADDRESS_CONFIRM
+    )
+
+    assert response.context['all_cleaned_data']
 
 
 @patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
