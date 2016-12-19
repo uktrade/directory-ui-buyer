@@ -323,6 +323,12 @@ class CompanyCodeVerificationForm(AutoFocusFieldMixin,
         )
 
 
+class EmptyForm(forms.Form):
+    # django form tools expects a form for every step - even if we want it to
+    # simply be an interstitial page.
+    pass
+
+
 def serialize_supplier_case_study_forms(cleaned_data):
     """
     Return the shape directory-api-client expects for creating and updating
