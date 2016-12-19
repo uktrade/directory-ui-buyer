@@ -49,15 +49,21 @@ class UpdateCompanyProfileOnFormWizardDoneMixin:
     def serialize_form_data(self):
         return self.form_serializer(self.get_all_cleaned_data())
 
+    def handle_profile_update_success(self):
+        return redirect('company-detail')
+
+    def handle_profile_update_failure(self):
+        return TemplateResponse(self.request, self.failure_template)
+
     def done(self, *args, **kwargs):
         api_response = api_client.company.update_profile(
             sso_user_id=self.request.sso_user.id,
             data=self.serialize_form_data()
         )
         if api_response.ok:
-            response = redirect('company-detail')
+            response = self.handle_profile_update_success()
         else:
-            response = TemplateResponse(self.request, self.failure_template)
+            response = self.handle_profile_update_failure()
         return response
 
 
@@ -247,6 +253,7 @@ class SupplierCompanyProfileEditView(
     CLASSIFICATION = 'classification'
     CONTACT = 'contact'
     ADDRESS_CONFIRM = 'confirm'
+    SENT = 'sent'
 
     form_list = (
         (BASIC, forms.CompanyBasicInfoForm),
@@ -255,27 +262,45 @@ class SupplierCompanyProfileEditView(
         (ADDRESS, forms.CompanyAddressVerificationForm),
         (ADDRESS_CONFIRM, forms.EmptyForm),
     )
-    failure_template = 'company-profile-update-error.html'
     templates = {
         BASIC: 'company-profile-form.html',
         CLASSIFICATION: 'company-profile-form-classification.html',
         CONTACT: 'company-profile-form-contact.html',
         ADDRESS: 'company-profile-form-address.html',
         ADDRESS_CONFIRM: 'company-profile-address-confirm-send.html',
+        SENT: 'company-profile-form-letter-sent.html',
     }
+    failure_template = 'company-profile-update-error.html'
     form_serializer = staticmethod(forms.serialize_company_profile_forms)
 
+    def dispatch(self, request, *args, **kwargs):
+        sso_user_id = request.sso_user.id
+        self.company_profile = helpers.get_company_profile(sso_user_id)
+        return super().dispatch(request, *args, **kwargs)
+
+    def condition_show_address(self):
+        return not self.company_profile['is_verification_letter_sent']
+
+    condition_dict = {
+        ADDRESS_CONFIRM: condition_show_address,
+    }
+
     def get_form_initial(self, step):
-        sso_user_id = self.request.sso_user.id
         if step in [self.ADDRESS, self.CONTACT]:
+            sso_user_id = self.request.sso_user.id
             return helpers.get_contact_details(sso_user_id)
-        return helpers.get_company_profile(sso_user_id)
+        return self.company_profile
 
     def get_context_data(self, form, **kwargs):
         context = super().get_context_data(form=form, **kwargs)
         if self.steps.current == self.ADDRESS_CONFIRM:
             context['all_cleaned_data'] = self.get_all_cleaned_data()
         return context
+
+    def handle_profile_update_success(self):
+        if self.condition_show_address():
+            return TemplateResponse(self.request, self.templates[self.SENT])
+        return super().handle_profile_update_success()
 
 
 class SupplierCompanyProfileLogoEditView(

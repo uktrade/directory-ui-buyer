@@ -333,6 +333,29 @@ def company_profile_edit_end_to_end(
 
 
 @pytest.fixture
+def company_profile_letter_already_sent_edit_end_to_end(
+    client, company_profile_address_data,
+    company_profile_basic_data, company_profile_classification_data,
+    company_profile_contact_data, api_response_200
+):
+    # loop over each step in the supplier case study wizard and post valid data
+    view = views.SupplierCompanyProfileEditView
+    data_step_pairs = [
+        [view.BASIC, company_profile_basic_data],
+        [view.CLASSIFICATION, company_profile_classification_data],
+        [view.CONTACT, company_profile_contact_data],
+        [view.ADDRESS, company_profile_address_data],
+    ]
+
+    def inner():
+        url = reverse('company-edit')
+        for key, data in data_step_pairs:
+            response = client.post(url, data)
+        return response
+    return inner
+
+
+@pytest.fixture
 def company_profile_edit_goto_step(
     client, company_profile_address_data,
     company_profile_basic_data, company_profile_classification_data,
@@ -814,9 +837,10 @@ def test_company_description_edit_views_use_correct_template(
               Mock(return_value={'field': 'value'}))
 @patch.object(views.api_client.company, 'update_profile')
 def test_company_profile_edit_api_client_call(
-    mock_update_profile, company_request
+    mock_update_profile, company_request, retrieve_profile_data
 ):
     view = views.SupplierCompanyProfileEditView()
+    view.company_profile = retrieve_profile_data
     view.request = company_request
     view.done()
     mock_update_profile.assert_called_once_with(
@@ -829,14 +853,17 @@ def test_company_profile_edit_api_client_call(
               Mock(return_value={}))
 @patch.object(views.api_client.company, 'update_profile')
 def test_company_profile_edit_api_client_success(
-    mock_update_profile, company_request, api_response_200
+    mock_update_profile, company_request, api_response_200,
+    retrieve_profile_data
 ):
     mock_update_profile.return_value = api_response_200
 
     view = views.SupplierCompanyProfileEditView()
     view.request = company_request
+    view.company_profile = retrieve_profile_data
     response = view.done()
-    assert response.status_code == http.client.FOUND
+    assert response.status_code == http.client.OK
+    assert response.template_name == view.templates[view.SENT]
 
 
 @patch.object(views, 'has_company', Mock(return_value=True))
@@ -844,11 +871,13 @@ def test_company_profile_edit_api_client_success(
               Mock(return_value={}))
 @patch.object(views.api_client.company, 'update_profile')
 def test_company_profile_edit_api_client_failure(
-    mock_update_profile, company_request, api_response_400
+    mock_update_profile, company_request, api_response_400,
+    retrieve_profile_data
 ):
     mock_update_profile.return_value = api_response_400
 
     view = views.SupplierCompanyProfileEditView()
+    view.company_profile = retrieve_profile_data
     view.request = company_request
     response = view.done()
     assert response.status_code == http.client.OK
@@ -984,8 +1013,36 @@ def test_supplier_company_profile_edit_create_api_success(
     all_company_profile_data, api_response_200
 ):
     mock_update_profile.return_value = api_response_200
+    view = views.SupplierCompanyProfileEditView
 
     response = company_profile_edit_end_to_end()
+
+    assert response.status_code == http.client.OK
+    assert response.template_name == view.templates[view.SENT]
+    mock_update_profile.assert_called_once_with(
+        data=all_company_profile_data,
+        sso_user_id=sso_user.id,
+    )
+
+
+@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
+@patch('company.forms.CompanyAddressVerificationForm.is_form_tampered',
+       Mock(return_value=False))
+@patch.object(views, 'has_company', Mock(return_value=True))
+@patch.object(views.api_client.company, 'update_profile')
+@patch('api_client.api_client.company.retrieve_profile')
+def test_supplier_company_profile_letter_already_sent_edit_create_api_success(
+    mock_retrieve_profile, mock_update_profile,
+    api_response_company_profile_letter_sent_200,
+    api_response_200, sso_user, all_company_profile_data,
+    company_profile_letter_already_sent_edit_end_to_end,
+):
+    mock_retrieve_profile.return_value = (
+        api_response_company_profile_letter_sent_200
+    )
+    mock_update_profile.return_value = api_response_200
+
+    response = company_profile_letter_already_sent_edit_end_to_end()
 
     assert response.status_code == http.client.FOUND
     assert response.get('Location') == reverse('company-detail')
