@@ -35,7 +35,10 @@
 				<h1 class="element-within company-name-title">
 					<span class="dont-break-out">Trade profile for {{company.name}}</span>
 				</h1>
-				<a class="ed-edit-button" href="{% url show_wizard_links|yesno:'company-edit,company-edit-key-facts' %}" style="top: 25px; right: 25px; color: white;">Edit</a>
+				<a class="ed-edit-button" href="{% url show_wizard_links|yesno:'company-edit,company-edit-key-facts' %}" style="top: 25px; right: 25px; color: white;">
+					<span style="margin-top: 4px;"class="icon-pencil icon-white"></span>
+					<span style="margin-top: 4px;">Edit</span>
+				</a>
 			</div>
 		</div>
 
@@ -46,7 +49,10 @@
 						{% if company.logo %}
 						<div class="ed-has-edit-button ed-company-profile-logo-container">
 							<img src="{{company.logo}}" />
-							<a class="ed-edit-button" href="{% url 'company-edit-logo' %}" style="bottom: 5px; right: 5px; background: white">Edit</a>
+							<a class="ed-edit-button" href="{% url 'company-edit-logo' %}" style="bottom: 5px; right: 5px; background: white; color: black;">
+								<span class="icon-pencil"></span>
+								<span>Edit</span>
+							</a>
 
 						</div>
 						{% endif %}
@@ -61,7 +67,10 @@
 
 			<div class="span5 ed-has-edit-button company-profile-module-inner">
 				<h3>Contact</h3>
-				<a class="ed-edit-button" href="{% url show_wizard_links|yesno:'company-edit,company-edit-contact' %}" style="top: 20px; right: 0;">Edit</a>
+				<a class="ed-edit-button" href="{% url show_wizard_links|yesno:'company-edit,company-edit-contact' %}" style="top: 20px; right: 0; color: black;">
+					<span class="icon-pencil"></span>
+					<span>Edit</span>
+				</a>
 				{% if company.website %}
 					<p><a href="{{ company.website}}">{{ company.website }}</a></p>
 				{% endif %}
@@ -72,7 +81,10 @@
 
 			<div class="span4 ed-has-edit-button company-profile-module-inner" style="border-left: 1px solid #dedede;">
 				<h3>Company details</h3>
-				<a class="ed-edit-button" href="{% url show_wizard_links|yesno:'company-edit,company-edit-key-facts' %}" style="top: 20px; right: 20px;">Edit</a>
+				<a class="ed-edit-button" href="{% url show_wizard_links|yesno:'company-edit,company-edit-key-facts' %}" style="top: 20px; right: 20px; color: black;">
+					<spanclass="icon-pencil"></span>
+					<span>Edit</span>
+				</a>
 				<p>Number of employees: {{ company.employees|default:'N/A' }}</p>
 				<p>Registration number: {{company.number}}</p>
 				{% if company.date_of_creation %}
@@ -85,7 +97,10 @@
 
 			<div class="span12 ed-has-edit-button company-profile-module-inner">
 				<h3>About the company</h3>
-				<a class="ed-edit-button" href="{% url 'company-edit-description' %}" style="top: 20px; right: 20px;">Edit</a>
+				<a class="ed-edit-button" href="{% url 'company-edit-description' %}" style="top: 20px; right: 20px; color: black;">
+					<span class="icon-pencil"></span>
+					<span>Edit</span>
+				</a>
 				<p>{{company.description}}</p>
 			</div>
 
@@ -104,7 +119,10 @@
 			<div class="row-fluid company-profile-module-container" style="margin-bottom: 0;">
 				<div class="span12 company-profile-module-inner ed-has-edit-button">
 					<h3>{{ case_study.title }}</h3>
-					<a class="ed-edit-button" href="{% url 'company-case-study-edit' id=case_study.pk %}" style="top: 25px; right: 25px;">Edit</a>
+					<a class="ed-edit-button" href="{% url 'company-case-study-edit' id=case_study.pk %}" style="top: 25px; right: 25px; color: black;">
+						<span class="icon-pencil"></span>
+						<span>Edit</span>
+					</a>
 					<div class="supplier-case-study-images">
 						{% if case_study.image_one %}
 						<img src="{{ case_study.image_one }}" />
@@ -147,9 +165,10 @@
 			{% endfor %}
 		</div>
 
-		<div class="ed-company-profile-add-case-study-button-container">
+		<div class="ed-company-profile-add-case-study-button-container" style="color: black;">
 			<a href="{% url 'company-case-study-edit' %}" class="ed-company-profile-add-case-study-button">
-				Add another case study
+				<span class="icon-plus"></span>
+				<span>Add another case study</span>
 			</a>
 		</div>
 
@@ -158,7 +177,10 @@
 				<div class="company-profile-module-container" style="margin-bottom: 0;">
 					<div class="company-profile-module-inner ed-has-edit-button">
 						<h3>Sectors of interest</h3>
-						<a class="ed-edit-button"  style="top: 20px; right: 20px;" href="{% url show_wizard_links|yesno:'company-edit,company-edit-sectors' %}">Edit</a>
+						<a class="ed-edit-button"  style="top: 20px; right: 20px; color: black;" href="{% url show_wizard_links|yesno:'company-edit,company-edit-sectors' %}">
+							<span class="icon-pencil"></span>
+							<span>Edit</span>
+						</a>
 						<p>
 						{% for sector in company.sectors %}
 							{% if features.FEATURE_PUBLIC_PROFILES_ENABLED %}
@@ -182,7 +204,10 @@
 				<div class="company-profile-module-container" style="margin-bottom: 0;">
 					<div class=" company-profile-module-inner ed-has-edit-button">
 						<h3>Keywords</h3>
-						<a class="ed-edit-button" href="{% url show_wizard_links|yesno:'company-edit,company-edit-key-facts' %}" style="top: 20px; right: 20px;">Edit</a>
+						<a class="ed-edit-button" href="{% url show_wizard_links|yesno:'company-edit,company-edit-key-facts' %}" style="top: 20px; right: 20px; color: black;">
+							<span class="icon-pencil"></span>
+							<span>Edit</span>
+						</a>
 						{% if company.keywords %}
 						<p>{{company.keywords}}</p>
 						{% endif %}

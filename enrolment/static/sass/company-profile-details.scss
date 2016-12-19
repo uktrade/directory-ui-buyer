@@ -21,6 +21,9 @@
       font-weight: 100;
       margin-bottom: 20px;
     }
+    .icon-pencil {
+      margin-top: 4px;
+    }
   }
   ul {
     li {
@@ -244,11 +247,16 @@
 
 .ed-company-profile-add-case-study-button {
   border: 3px solid #007EA3;
-  color: #007EA3;
   padding: 20px;
   text-align: center;
   font-weight: bold;
   display: block;
+  span {
+    color: #007EA3;
+  }
+  .icon-plus {
+    margin-top: 4px;
+  }
 }
 
 .ed-company-profile-logo-container {
