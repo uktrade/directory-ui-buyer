@@ -9,7 +9,6 @@ from django.utils.safestring import mark_safe
 
 from company import validators
 from enrolment.forms import IndentedInvalidFieldsMixin, AutoFocusFieldMixin
-from enrolment.fields import MobilePhoneNumberField
 from enrolment.helpers import halt_validation_on_failure
 
 
@@ -198,14 +197,6 @@ class CompanyContactDetailsForm(AutoFocusFieldMixin,
             ' when contacting your company.'
         ),
     )
-    mobile_number = MobilePhoneNumberField(
-        label='Your mobile phone number (optional):',
-        required=False,
-        help_text=(
-            'This is the phone number that international buyers'
-            ' should use when contacting your company.'
-        ),
-    )
 
 
 class PreventTamperMixin(forms.Form):
@@ -390,7 +381,6 @@ def serialize_company_profile_forms(cleaned_data):
             'po_box': cleaned_data['po_box'],
             'postal_code': cleaned_data['postal_code'],
             'postal_full_name': cleaned_data['postal_full_name'],
-            'mobile_number': cleaned_data['mobile_number'],
         }
     }
 
@@ -467,7 +457,6 @@ def serialize_company_contact_form(cleaned_data):
         'contact_details': {
             'email_full_name': cleaned_data['email_full_name'],
             'email_address': cleaned_data['email_address'],
-            'mobile_number': cleaned_data['mobile_number'],
         }
     }
 

@@ -147,7 +147,6 @@ def all_company_profile_data():
         'employees': choices.EMPLOYEES[1][0],
         'sectors': [choices.COMPANY_CLASSIFICATIONS[1][0]],
         'contact_details': {
-            'mobile_number': '07555555555',
             'email_full_name': 'Jeremy',
             'email_address': 'test@example.com',
             'postal_full_name': 'Jeremy',
@@ -243,7 +242,6 @@ def company_profile_contact_data(all_company_profile_data):
         'supplier_company_profile_edit_view-current_step': view.CONTACT,
         view.CONTACT + '-email_address': data['email_address'],
         view.CONTACT + '-email_full_name': data['email_full_name'],
-        view.CONTACT + '-mobile_number': data['mobile_number'],
     }
 
 
@@ -1295,7 +1293,6 @@ def test_supplier_contact_edit_standalone_view_api_success(
             'contact_details': {
                 'email_full_name': 'Jeremy',
                 'email_address': 'test@example.com',
-                'mobile_number': '07555555555'
             }
         }
     )
