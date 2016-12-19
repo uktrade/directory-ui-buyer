@@ -33,18 +33,18 @@ Requires all host environment variables to be set.
     $ make docker_test
 
 ### Host environment variables for docker-compose
-``.env`` files will be automatically created (with ``env_writer.py`` based on ``env.json``) by ``make docker_test``, based on host environment variables with ``DIRECTORY_UI_`` prefix.
+``.env`` files will be automatically created (with ``env_writer.py`` based on ``env.json``) by ``make docker_test``, based on host environment variables with ``DIRECTORY_UI_BUYER_`` prefix.
 
 #### Web server
 | Host environment variable | Docker environment variable  |
 | ------------- | ------------- |
-| DIRECTORY_UI_SECRET_KEY | SECRET_KEY |
-| DIRECTORY_UI_PORT | PORT |
-| DIRECTORY_UI_API_CLIENT_KEY | API_CLIENT_KEY |
-| DIRECTORY_UI_API_CLIENT_BASE_URL | API_CLIENT_BASE_URL |
-| DIRECTORY_UI_COMPANIES_HOUSE_SEARCH_URL | COMPANIES_HOUSE_SEARCH_URL |
-| DIRECTORY_UI_SSO_API_CLIENT_BASE_URL | SSO_API_CLIENT_BASE_URL |
-| DIRECTORY_UI_UI_SESSION_COOKIE_SECURE | UI_SESSION_COOKIE_SECURE |
+| DIRECTORY_UI_BUYER_SECRET_KEY | SECRET_KEY |
+| DIRECTORY_UI_BUYER_PORT | PORT |
+| DIRECTORY_UI_BUYER_API_CLIENT_KEY | API_CLIENT_KEY |
+| DIRECTORY_UI_BUYER_API_CLIENT_BASE_URL | API_CLIENT_BASE_URL |
+| DIRECTORY_UI_BUYER_COMPANIES_HOUSE_SEARCH_URL | COMPANIES_HOUSE_SEARCH_URL |
+| DIRECTORY_UI_BUYER_SSO_API_CLIENT_BASE_URL | SSO_API_CLIENT_BASE_URL |
+| DIRECTORY_UI_BUYER_UI_SESSION_COOKIE_SECURE | UI_SESSION_COOKIE_SECURE |
 
 ## Debugging
 

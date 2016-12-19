@@ -31,23 +31,23 @@ docker_run:
 	docker-compose up --build
 
 DOCKER_SET_DEBUG_ENV_VARS := \
-	export DIRECTORY_UI_API_CLIENT_CLASS_NAME=unit-test; \
-	export DIRECTORY_UI_API_CLIENT_KEY=debug; \
-	export DIRECTORY_UI_API_CLIENT_BASE_URL=http://api.trade.great.dev:8000; \
-	export DIRECTORY_UI_SSO_API_CLIENT_KEY=api_signature_debug; \
-	export DIRECTORY_UI_SSO_API_CLIENT_BASE_URL=http://sso.trade.great.dev:8004/api/v1/; \
-	export DIRECTORY_UI_SSO_LOGIN_URL=http://sso.trade.great.dev:8004/accounts/login/; \
-	export DIRECTORY_UI_SSO_LOGOUT_URL=http://sso.trade.great.dev:8004/accounts/logout/?next=http://ui.trade.great.dev:8001; \
-	export DIRECTORY_UI_SSO_SIGNUP_URL=http://sso.trade.great.dev:8004/accounts/signup/; \
-	export DIRECTORY_UI_SSO_REDIRECT_FIELD_NAME=next; \
-	export DIRECTORY_UI_SSO_SESSION_COOKIE=debug_sso_session_cookie; \
-	export DIRECTORY_UI_SESSION_COOKIE_SECURE=false; \
-	export DIRECTORY_UI_PORT=8001; \
-	export DIRECTORY_UI_SECRET_KEY=debug; \
-	export DIRECTORY_UI_DEBUG=true; \
-	export DIRECTORY_UI_COMPANIES_HOUSE_API_KEY=debug; \
-	export DIRECTORY_UI_FEATURE_PUBLIC_PROFILES_ENABLED=true; \
-	export DIRECTORY_UI_FEATURE_SECTOR_LANDING_PAGES_ENABLED=true
+	export DIRECTORY_UI_BUYER_API_CLIENT_CLASS_NAME=unit-test; \
+	export DIRECTORY_UI_BUYER_API_CLIENT_KEY=debug; \
+	export DIRECTORY_UI_BUYER_API_CLIENT_BASE_URL=http://api.trade.great.dev:8000; \
+	export DIRECTORY_UI_BUYER_SSO_API_CLIENT_KEY=api_signature_debug; \
+	export DIRECTORY_UI_BUYER_SSO_API_CLIENT_BASE_URL=http://sso.trade.great.dev:8004/api/v1/; \
+	export DIRECTORY_UI_BUYER_SSO_LOGIN_URL=http://sso.trade.great.dev:8004/accounts/login/; \
+	export DIRECTORY_UI_BUYER_SSO_LOGOUT_URL=http://sso.trade.great.dev:8004/accounts/logout/?next=http://ui.trade.great.dev:8001; \
+	export DIRECTORY_UI_BUYER_SSO_SIGNUP_URL=http://sso.trade.great.dev:8004/accounts/signup/; \
+	export DIRECTORY_UI_BUYER_SSO_REDIRECT_FIELD_NAME=next; \
+	export DIRECTORY_UI_BUYER_SSO_SESSION_COOKIE=debug_sso_session_cookie; \
+	export DIRECTORY_UI_BUYER_SESSION_COOKIE_SECURE=false; \
+	export DIRECTORY_UI_BUYER_PORT=8001; \
+	export DIRECTORY_UI_BUYER_SECRET_KEY=debug; \
+	export DIRECTORY_UI_BUYER_DEBUG=true; \
+	export DIRECTORY_UI_BUYER_COMPANIES_HOUSE_API_KEY=debug; \
+	export DIRECTORY_UI_BUYER_FEATURE_PUBLIC_PROFILES_ENABLED=true; \
+	export DIRECTORY_UI_BUYER_FEATURE_SECTOR_LANDING_PAGES_ENABLED=true
 
 DOCKER_REMOVE_ALL := \
 	docker ps -a | \
@@ -116,10 +116,5 @@ debug: test_requirements debug_test
 heroku_deploy_dev:
 	docker build -t registry.heroku.com/directory-ui-buyer-dev/web .
 	docker push registry.heroku.com/directory-ui-buyer-dev/web
-
-heroku_deploy_demo:
-	docker build -t registry.heroku.com/directory-ui-buyer-demo/web .
-	docker push registry.heroku.com/directory-ui-buyer-demo/web
-
 
 .PHONY: build clean test_requirements docker_run docker_debug docker_webserver_bash docker_test debug_webserver debug_test debug heroku_deploy_dev heroku_deploy_demo
