@@ -315,7 +315,6 @@ def test_serialize_company_profile_forms():
         'postal_full_name': 'Jeremy postal',
         'sectors': ['1', '2'],
         'website': 'http://example.com',
-        'mobile_number': '07555555555',
     })
     expected = {
         'keywords': 'Jolly good exporter.',
@@ -333,7 +332,6 @@ def test_serialize_company_profile_forms():
             'po_box': '124',
             'postal_code': 'E14 9IX',
             'postal_full_name': 'Jeremy postal',
-            'mobile_number': '07555555555',
         }
     }
     assert actual == expected
@@ -390,13 +388,11 @@ def test_serialize_company_contact_form():
     data = {
         'email_full_name': 'Jim',
         'email_address': 'jim@example.com',
-        'mobile_number': '07506504933',
     }
     expected = {
         'contact_details': {
             'email_full_name': 'Jim',
             'email_address': 'jim@example.com',
-            'mobile_number': '07506504933',
         }
     }
     assert forms.serialize_company_contact_form(data) == expected
@@ -440,7 +436,6 @@ def test_company_contact_details_accepts_valid():
     data = {
         'email_address': 'Jeremy@exmaple.com',
         'email_full_name': 'Jeremy',
-        'mobile_number': '07555555555',
     }
     form = forms.CompanyContactDetailsForm(data=data)
 
