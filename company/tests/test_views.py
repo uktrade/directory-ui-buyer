@@ -1190,9 +1190,12 @@ def test_company_address_validation_api_success(
 ):
     mock_verify_with_code.return_value = api_response_200
 
+    view = views.SupplierCompanyAddressVerificationView
+
     response = address_verification_end_to_end()
-    assert response.status_code == http.client.FOUND
-    assert response.get('Location') == reverse('company-detail')
+
+    assert response.status_code == http.client.OK
+    assert response.template_name == view.templates[view.SUCCESS]
     mock_verify_with_code.assert_called_with(
         code=all_address_verification_data['code'],
         sso_user_id=sso_user.id,
