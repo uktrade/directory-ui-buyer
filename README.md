@@ -1,9 +1,9 @@
-# directory-ui
+# directory-ui-buyer
 [Export Directory UI](https://www.directory.exportingisgreat.gov.uk/)
 
 ## Build status
 
-[![CircleCI](https://circleci.com/gh/uktrade/directory-ui/tree/master.svg?style=svg)](https://circleci.com/gh/uktrade/directory-ui/tree/master)
+[![CircleCI](https://circleci.com/gh/uktrade/directory-ui-buyer/tree/master.svg?style=svg)](https://circleci.com/gh/uktrade/directory-ui-buyer/tree/master)
 
 ## Requirements
 
@@ -15,8 +15,8 @@
 
 ## Local installation
 
-    $ git clone https://github.com/uktrade/directory-ui
-    $ cd directory-ui
+    $ git clone https://github.com/uktrade/directory-ui-buyer
+    $ cd directory-ui-buyer
     $ make
 
 ## Running with Docker
@@ -94,12 +94,12 @@ To make sso work locally add the following to your `/etc/hosts`:
 127.0.0.1 sso.trade.great.
 127.0.0.1 api.trade.great.dev
 
-Then log into `directory-sso` via `sso.trade.great.dev:8001`, and use `directory-ui` on `ui.trade.great.dev:8001`
+Then log into `directory-sso` via `sso.trade.great.dev:8001`, and use `directory-ui-buyer` on `ui.trade.great.dev:8001`
 
 Note in production, the `directory-sso` session cookie is shared with all subdomains that are on the same parent domain as `directory-sso`. However in development we cannot share cookies between subdomains using `localhost` - that would be like trying to set a cookie for `.com`, which is not supported any any RFC.
 
 Therefore to make cookie sharing work in development we need the apps to ne running on subdomains. Some stipulations:
- - `directory-ui` and `directory-sso` must both be running on sibling subdomains (with same parent domain)
+ - `directory-ui-buyer` and `directory-sso` must both be running on sibling subdomains (with same parent domain)
  - `directory-sso` must be told to target cookies at the parent domain.
 
 # Geodata

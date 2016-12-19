@@ -76,7 +76,7 @@ docker_test: docker_remove_all
 	docker-compose -f docker-compose-test.yml run sut
 
 docker_build:
-	docker build -t ukti/directory-ui:latest .
+	docker build -t ukti/directory-ui-buyer:latest .
 
 DEBUG_SET_ENV_VARS := \
 	export PORT=8001; \
@@ -114,12 +114,12 @@ debug_shell:
 debug: test_requirements debug_test
 
 heroku_deploy_dev:
-	docker build -t registry.heroku.com/directory-ui-dev/web .
-	docker push registry.heroku.com/directory-ui-dev/web
+	docker build -t registry.heroku.com/directory-ui-buyer-dev/web .
+	docker push registry.heroku.com/directory-ui-buyer-dev/web
 
 heroku_deploy_demo:
-	docker build -t registry.heroku.com/directory-ui-demo/web .
-	docker push registry.heroku.com/directory-ui-demo/web
+	docker build -t registry.heroku.com/directory-ui-buyer-demo/web .
+	docker push registry.heroku.com/directory-ui-buyer-demo/web
 
 
 .PHONY: build clean test_requirements docker_run docker_debug docker_webserver_bash docker_test debug_webserver debug_test debug heroku_deploy_dev heroku_deploy_demo
