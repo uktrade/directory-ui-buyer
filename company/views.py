@@ -295,11 +295,14 @@ class SupplierCompanyAddressVerificationView(
     SessionWizardView
 ):
     ADDRESS = 'address'
+    SUCCESS = 'success'
+
     form_list = (
         (ADDRESS, forms.CompanyCodeVerificationForm),
     )
     templates = {
         ADDRESS: 'company-profile-address-verification-form.html',
+        SUCCESS: 'company-profile-address-verification-success.html'
     }
 
     def get_form_kwargs(self, *args, **kwargs):
@@ -308,7 +311,10 @@ class SupplierCompanyAddressVerificationView(
         return kwargs
 
     def done(self, *args, **kwargs):
-        return redirect('company-detail')
+        return TemplateResponse(
+            self.request,
+            self.templates[self.SUCCESS]
+        )
 
 
 class SupplierCompanyDescriptionEditView(

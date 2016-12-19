@@ -1,0 +1,13 @@
+{% extends 'enrolment-base.html' %}
+{% load staticfiles %}
+{% block head_title %}Company address confirmed - Find a Buyer - GREAT.gov.uk{% endblock %}
+{% block sub_header %}{# prevent the subheader from showing on form pages #}{% endblock %}
+{% block formarea %}
+	<div class="container">
+		<h1>We've sent your verification letter</h1>
+		<p>
+			You should receive your verification letter within a week. When you receive the letter, please log in to GREAT.gov.uk to enter your verification profile to publish your company profile.
+		</p>
+		<p><a href="{% url 'company-detail' %}">View or amend your company profile</p>
+	</div>
+{%endblock formarea %}
