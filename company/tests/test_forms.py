@@ -42,7 +42,6 @@ def test_serialize_supplier_case_study_forms_string_images():
         'description': 'a description',
         'sector': choices.COMPANY_CLASSIFICATIONS[1][0],
         'website': 'http://www.example.com',
-        'year': '2010',
         'keywords': 'goog, great',
         'image_one': '1.png',
         'image_two': '2.png',
@@ -57,7 +56,6 @@ def test_serialize_supplier_case_study_forms_string_images():
         'description': 'a description',
         'sector': choices.COMPANY_CLASSIFICATIONS[1][0],
         'website': 'http://www.example.com',
-        'year': '2010',
         'keywords': 'goog, great',
         'testimonial': 'very nice',
         'testimonial_name': 'Neville',
@@ -79,7 +77,6 @@ def test_serialize_supplier_case_study_forms_file_images():
         'description': 'a description',
         'sector': choices.COMPANY_CLASSIFICATIONS[1][0],
         'website': 'http://www.example.com',
-        'year': '2010',
         'keywords': 'goog, great',
         'image_one': image_one,
         'image_two': image_two,
@@ -94,7 +91,6 @@ def test_serialize_supplier_case_study_forms_file_images():
         'description': 'a description',
         'sector': choices.COMPANY_CLASSIFICATIONS[1][0],
         'website': 'http://www.example.com',
-        'year': '2010',
         'keywords': 'goog, great',
         'testimonial': 'very nice',
         'testimonial_name': 'Neville',
@@ -122,7 +118,6 @@ def test_case_study_form_required_fields():
     assert form.errors['title'] == [REQUIRED_MESSAGE]
     assert form.errors['description'] == [REQUIRED_MESSAGE]
     assert form.errors['sector'] == [REQUIRED_MESSAGE]
-    assert form.errors['year'] == [REQUIRED_MESSAGE]
     assert form.errors['keywords'] == [REQUIRED_MESSAGE]
 
 
@@ -132,13 +127,21 @@ def test_case_study_form_all_fields():
         'description': 'a description',
         'sector': choices.COMPANY_CLASSIFICATIONS[1][0],
         'website': 'http://www.example.com',
-        'year': '2010',
         'keywords': 'goog, great',
     }
     form = forms.CaseStudyBasicInfoForm(data=data)
 
     assert form.is_valid() is True
     assert form.cleaned_data == data
+
+
+def test_case_study_max_length():
+    form = forms.CaseStudyBasicInfoForm()
+
+    assert form.fields['title'].max_length == 60
+    assert form.fields['description'].max_length == 1000
+    assert form.fields['keywords'].max_length == 1000
+    assert form.fields['website'].max_length == 255
 
 
 def test_auto_focus_mixin_installed():

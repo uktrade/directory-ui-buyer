@@ -97,7 +97,6 @@ def all_case_study_data(image_three, image_two, image_one):
         'description': 'Great',
         'sector': default_sector,
         'website': 'http://www.example.com',
-        'year': '2000',
         'keywords': 'good, great',
         'testimonial': 'Great',
         'testimonial_name': 'Neville',
@@ -118,7 +117,6 @@ def supplier_case_study_basic_data():
         view.BASIC + '-description': 'Great',
         view.BASIC + '-sector': default_sector,
         view.BASIC + '-website': 'http://www.example.com',
-        view.BASIC + '-year': '2000',
         view.BASIC + '-keywords': 'good, great'
     }
 
