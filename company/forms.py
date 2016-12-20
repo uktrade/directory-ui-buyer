@@ -30,9 +30,17 @@ class PublicProfileSearchForm(IndentedInvalidFieldsMixin, AutoFocusFieldMixin,
 class CaseStudyBasicInfoForm(IndentedInvalidFieldsMixin, AutoFocusFieldMixin,
                              forms.Form):
     title = forms.CharField(
-        max_length=100,
+        label='Title of your case study of project:',
+        help_text='Give your case study a title of 60 characters or fewer.',
+        max_length=60,
     )
     description = forms.CharField(
+        label='Describe your case study or project:',
+        help_text=(
+            'Describe the project or case study in 1,000 characters or fewer. '
+            'Make sure you use this space to demonstrate the value of your '
+            'company to an international business audience.'
+        ),
         max_length=1000,
         widget=forms.Textarea,
     )
@@ -40,10 +48,11 @@ class CaseStudyBasicInfoForm(IndentedInvalidFieldsMixin, AutoFocusFieldMixin,
         choices=choices.COMPANY_CLASSIFICATIONS,
     )
     website = forms.URLField(
+        label='Web link for your case study (optional):',
+        help_text='Use a full web address (URL) including http:// or https://',
         max_length=255,
         required=False
     )
-    year = forms.CharField(max_length=4)
     keywords = forms.CharField(
         label=(
             'Enter up to 10 keywords that describe your case study '
@@ -336,7 +345,6 @@ def serialize_supplier_case_study_forms(cleaned_data):
         'description': cleaned_data['description'],
         'sector': cleaned_data['sector'],
         'website': cleaned_data['website'],
-        'year': cleaned_data['year'],
         'keywords': cleaned_data['keywords'],
         'testimonial': cleaned_data['testimonial'],
         'testimonial_name': cleaned_data['testimonial_name'],
