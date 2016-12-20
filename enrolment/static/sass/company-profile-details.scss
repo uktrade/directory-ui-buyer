@@ -292,29 +292,27 @@
   }
 }
 
-.ed-envelope {
-  border: 1px solid #ddd;
-  max-width: 30em;
-  position: relative;
-  padding: 1em 1em 1em 2em;
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: 40px;
-  margin-bottom: 60px;
-}
-
-.ed-recipient {
-  margin-left: 50px;
-  margin-top: 80px;
-  width: 200px;
-  margin-bottom: 50px;
-}
-
-.ed-stamp {
-  position: absolute;
-  right: 20px;
-}
 
 .ed-envelope-container {
   margin-top: 40px; 
+  .ed-envelope {
+    border: 1px solid #ddd;
+    max-width: 35em;
+    position: relative;
+    padding: 1em 1em 1em 2em;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 40px;
+    margin-bottom: 60px;
+    .ed-recipient {
+      margin-left: 75px;
+      margin-top: 80px;
+      width: 200px;
+      margin-bottom: 50px;
+    }
+    .ed-stamp {
+      position: absolute;
+      right: 20px;
+    }
+  }
 }
