@@ -198,15 +198,9 @@
 						</a>
 						<p>
 						{% for sector in company.sectors %}
-							{% if features.FEATURE_PUBLIC_PROFILES_ENABLED %}
-								<a href="{% url 'public-company-profiles-list' %}?sectors={{sector.value}}" class="label stone-label" target="_blank">
-									{{ sector.label }}
-								</a>
-							{% else %}
-								<span class="label stone-label">
-									{{ sector.label }}
-								</span>
-							{% endif %}
+							<span class="label stone-label">
+								{{ sector.label }}
+							</span>
 						{% empty %}
 							<p><a href="{% url show_wizard_links|yesno:'company-edit,company-edit-sectors' %}">Add sectors</a></p>
 						{% endfor %}
