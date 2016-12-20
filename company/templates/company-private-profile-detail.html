@@ -175,7 +175,7 @@
 		</div>
 		<div class="ed-company-profile-sector-case-study-container">
 			{% for case_study in company.supplier_case_studies %}
-			<div class="row-fluid company-profile-module-container" style="margin-bottom: 0; border-bottom: 0;">
+			<div class="row-fluid company-profile-module-container" style="margin-bottom: 0; border-top: 0;">
 				<div class="span12 company-profile-module-inner ed-has-edit-button">
 					<h3>{{ case_study.title }}</h3>
 					<a class="ed-edit-button" href="{% url 'company-case-study-edit' id=case_study.pk %}" style="top: 25px; right: 25px; color: #004F95;">
