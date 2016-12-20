@@ -21,6 +21,9 @@ def profile_data():
         'supplier_case_studies': [],
         'modified': '2016-11-23T11:21:10.977518Z',
         'verified_with_code': True,
+        'twitter_url': 'http://www.twitter.com',
+        'facebook_url': 'http://www.facebook.com',
+        'linkedin_url': 'http://www.linkedin.com',
         'contact_details': {
             'email_address': 'sales@example.com',
         },
@@ -95,7 +98,10 @@ def test_get_company_profile_from_response(profile_data):
         'is_address_set': True,
         'contact_details': {
             'email_address': 'sales@example.com',
-        }
+        },
+        'twitter_url': 'http://www.twitter.com',
+        'facebook_url': 'http://www.facebook.com',
+        'linkedin_url': 'http://www.linkedin.com',
     }
     actual = helpers.get_company_profile_from_response(response)
     assert actual == expected
@@ -126,6 +132,9 @@ def test_get_public_company_profile_from_response(profile_data):
         'contact_details': {
             'email_address': 'sales@example.com',
         },
+        'twitter_url': 'http://www.twitter.com',
+        'facebook_url': 'http://www.facebook.com',
+        'linkedin_url': 'http://www.linkedin.com',
     }
     actual = helpers.get_public_company_profile_from_response(response)
     assert actual == expected
@@ -159,6 +168,9 @@ def test_get_company_list_from_response(public_companies):
                 'contact_details': {
                     'email_address': 'sales@example.com'
                 },
+                'twitter_url': 'http://www.twitter.com',
+                'facebook_url': 'http://www.facebook.com',
+                'linkedin_url': 'http://www.linkedin.com',
             }
         ]
     }
@@ -209,6 +221,9 @@ def test_get_case_study_details_from_response(supplier_case_study_data):
             'verified_with_code': True,
             'is_address_set': False,
             'contact_details': {},
+            'twitter_url': 'http://www.twitter.com',
+            'facebook_url': 'http://www.facebook.com',
+            'linkedin_url': 'http://www.linkedin.com',
         },
         'image_one': 'https://image_one.jpg',
         'testimonial': 'I found it most pleasing.',
