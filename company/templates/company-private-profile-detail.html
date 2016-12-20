@@ -33,11 +33,11 @@
 		<div class="row-fluid">
 			<div class="span12 great-blue-bar ed-has-edit-button">
 				<h1 class="element-within company-name-title">
-					<span class="dont-break-out">Trade profile for {{company.name}}</span>
+					<span class="dont-break-out">{{company.name}}</span>
 				</h1>
 				<a class="ed-edit-button" href="{% url show_wizard_links|yesno:'company-edit,company-edit-key-facts' %}" style="top: 25px; right: 25px; color: white;">
 					<span style="margin-top: 4px;" class="icon-pencil icon-white"></span>
-					<span style="margin-top: 4px;">Edit</span>
+					<b style="margin-top: 4px;">Edit</b>
 				</a>
 			</div>
 		</div>
@@ -52,29 +52,39 @@
 							{% endif %}
 							<a class="ed-edit-button" href="{% url 'company-edit-logo' %}" style="bottom: 0; right: 5px; background: white; color: black; padding: 5px;">
 								<span class="icon-pencil"></span>
-								<span>Edit</span>
+								<b>Edit</b>
 							</a>
 						</div>
 					</div>
 				</div>
 			</div>
 
-			<div class="span5 ed-has-edit-button company-profile-module-inner">
+			<div class="span5 company-profile-module-inner">
 				<h3>Contact</h3>
-				<a class="ed-edit-button" href="{% url show_wizard_links|yesno:'company-edit,company-edit-contact' %}" style="top: 20px; right: 0; color: black;">
-					<span class="icon-pencil"></span>
-					<span>Edit</span>
-				</a>
 				{% if company.website %}
-					<p><a href="{{ company.website}}">{{ company.website }}</a></p>
-				{% else %}
-					<p><a href="{% url show_wizard_links|yesno:'company-edit,company-edit-contact' %}">Add your website</a></p>
-				{% endif %}
-				{% if company.contact_details.email_address %}
-					<p><a href="mailto:{{ company.contact_details.email_address }}?subject=International%20buyer%20contact%20via%20your%20great.gov.uk%20trade%20profile">{{ company.contact_details.email_address }}</a></p>
+					<p>
+						<a href="{{ company.website}}">{{ company.website }}</a>
+						<a href="{% url show_wizard_links|yesno:'company-edit,company-edit-key-facts' %}" style="color: black;">
+							<span class="icon-pencil"></span>
+							<b>Edit</b>
+						</a>
+					</p>
 				{% else %}
 					<p>
-						<a href="{% url show_wizard_links|yesno:'company-edit,company-edit-contact' %}">Add your email</a></p>
+						<a href="{% url show_wizard_links|yesno:'company-edit,company-edit-contact' %}">Add your website</a>
+					</p>
+				{% endif %}
+				{% if company.contact_details.email_address %}
+					<p>
+						<a href="mailto:{{ company.contact_details.email_address }}?subject=International%20buyer%20contact%20via%20your%20great.gov.uk%20trade%20profile">{{ company.contact_details.email_address }}</a>
+						<a href="{% url show_wizard_links|yesno:'company-edit,company-edit-contact' %}" style="color: black;">
+							<span class="icon-pencil"></span>
+							<b>Edit</b>
+						</a>
+					</p>
+				{% else %}
+					<p>
+						<a href="{% url show_wizard_links|yesno:'company-edit,company-edit-contact' %}">Add your email</a>
 					</p>
 
 				{% endif %}
@@ -84,7 +94,7 @@
 				<h3>Facts &amp details</h3>
 				<a class="ed-edit-button" href="{% url show_wizard_links|yesno:'company-edit,company-edit-key-facts' %}" style="top: 20px; right: 20px; color: black;">
 					<span class="icon-pencil"></span>
-					<span>Edit</span>
+					<b>Edit</b>
 				</a>
 				<p>Number of employees: {{ company.employees|default:'N/A' }}</p>
 				<p>Registration number: {{company.number}}</p>
@@ -100,7 +110,7 @@
 				<h3>Company description</h3>
 				<a class="ed-edit-button" href="{% url 'company-edit-description' %}" style="top: 20px; right: 20px; color: black;">
 					<span class="icon-pencil"></span>
-					<span>Edit</span>
+					<b>Edit</b>
 				</a>
 				{% if company.description %}
 					<p>{{company.description}}</p>
@@ -170,7 +180,7 @@
 					<h3>{{ case_study.title }}</h3>
 					<a class="ed-edit-button" href="{% url 'company-case-study-edit' id=case_study.pk %}" style="top: 25px; right: 25px; color: black;">
 						<span class="icon-pencil"></span>
-						<span>Edit</span>
+						<b>Edit</b>
 					</a>
 					<div class="supplier-case-study-images">
 						{% if case_study.image_one %}
@@ -217,7 +227,7 @@
 		<div class="ed-company-profile-add-case-study-button-container" style="color: black;">
 			<a href="{% url 'company-case-study-edit' %}" class="ed-company-profile-add-case-study-button">
 				<span class="icon-plus"></span>
-				<span>Add another case study</span>
+				<span>Add a case study</span>
 			</a>
 		</div>
 
@@ -228,7 +238,7 @@
 						<h3>Sectors of interest</h3>
 						<a class="ed-edit-button"  style="top: 20px; right: 20px; color: black;" href="{% url show_wizard_links|yesno:'company-edit,company-edit-sectors' %}">
 							<span class="icon-pencil"></span>
-							<span>Edit</span>
+							<b>Edit</b>
 						</a>
 						<p>
 						{% for sector in company.sectors %}
@@ -251,7 +261,7 @@
 						<h3>Keywords</h3>
 						<a class="ed-edit-button" href="{% url show_wizard_links|yesno:'company-edit,company-edit-key-facts' %}" style="top: 20px; right: 20px; color: black;">
 							<span class="icon-pencil"></span>
-							<span>Edit</span>
+							<b>Edit</b>
 						</a>
 						{% if company.keywords %}
 							<p>{{company.keywords}}</p>
