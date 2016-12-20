@@ -472,4 +472,4 @@ def test_company_private_profile_details_renders_wizard_links():
     assert reverse('company-edit-address') not in html
     assert reverse('company-edit-sectors') not in html
     assert reverse('company-edit-key-facts') not in html
-    assert html.count(company_edit_link) == 10
+    assert html.count(company_edit_link) == 9
