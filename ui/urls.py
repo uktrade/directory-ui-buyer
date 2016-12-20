@@ -25,6 +25,7 @@ from company.views import (
     SupplierCompanyProfileDetailView,
     SupplierCompanyProfileEditView,
     SupplierCompanyProfileLogoEditView,
+    SupplierCompanySocialLinksEditView,
     SupplierContactEditView,
 )
 from admin.proxy import AdminProxyView
@@ -126,6 +127,11 @@ urlpatterns = [
         r'^company-profile/edit/address$',
         SupplierAddressEditView.as_view(),
         name='company-edit-address'
+    ),
+    url(
+        r'^company-profile/edit/social-media$',
+        SupplierCompanySocialLinksEditView.as_view(),
+        name='company-edit-social-media'
     ),
     url(
         r'^company/case-study/edit/(?P<id>.+)?$',

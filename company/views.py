@@ -369,6 +369,24 @@ class SupplierCompanyDescriptionEditView(
     form_serializer = staticmethod(forms.serialize_company_description_form)
 
 
+class SupplierCompanySocialLinksEditView(
+    SupplierCompanyBaseView,
+    GetTemplateForCurrentStepMixin,
+    GetCompanyProfileInitialFormDataMixin,
+    UpdateCompanyProfileOnFormWizardDoneMixin,
+    SessionWizardView
+):
+    SOCIAL = 'social'
+    form_list = (
+        (SOCIAL, forms.SocialLinksForm),
+    )
+    failure_template = 'company-profile-update-error.html'
+    templates = {
+        SOCIAL: 'company-profile-social-form.html',
+    }
+    form_serializer = staticmethod(forms.serialize_social_links_form)
+
+
 class SupplierBasicInfoEditView(
     SupplierCompanyBaseView,
     GetTemplateForCurrentStepMixin,

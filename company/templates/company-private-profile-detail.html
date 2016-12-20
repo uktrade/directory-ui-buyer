@@ -106,7 +106,7 @@
 
 		<div class="row-fluid company-profile-module-container">
 
-			<div class="span12 ed-has-edit-button company-profile-module-inner">
+			<div class="span8 ed-has-edit-button company-profile-module-inner">
 				<h3>Company description</h3>
 				<a class="ed-edit-button" href="{% url 'company-edit-description' %}" style="top: 20px; right: 20px; color: black;">
 					<span class="icon-pencil"></span>
@@ -117,6 +117,50 @@
 				{% else %}
 					<p><a href="{% url 'company-edit-description' %}">Add a description</a></p>
 				{% endif %}
+			</div>
+
+			<div class="span4 ed-has-edit-button company-profile-module-inner company-profile-module-social-links">
+				<h3>Online profiles</h3>
+				<a class="ed-edit-button" href="/company-profile/edit/social-media" style="top: 20px; right: 20px; color: black;">
+					<span class="icon-pencil"></span>
+					<span>Edit</span>
+				</a>
+				<p>
+					<img src="/static/images/icon-linkedin-white.png">
+					{% if company.linkedin_url %}
+						<span>
+							<a href="{{ company.linkedin_url }}" target="_blank">Visit LinkedIn</a>
+						</span>
+					{% else %}
+						<span>
+							<a href="{% url 'company-edit-social-media' %}">Add LinkedIn</a>
+						</span>
+					{% endif %}
+				</p>
+				<p>
+					<img src="/static/images/icon-twitter.png">
+					{% if company.twitter_url %}
+						<span>
+							<a href="{{ company.twitter_url }}" target="_blank">Visit Twitter</a>
+						</span>
+					{% else %}
+						<span>
+							<a href="{% url 'company-edit-social-media' %}">Add Twitter</a>
+						</span>
+					{% endif %}
+				</p>
+				<p>
+					<img src="/static/images/icon-facebook-white.png">
+					{% if company.facebook_url %}
+						<span>
+							<a href="{{ company.facebook_url }}" target="_blank">Visit Facebook</a>
+						</span>
+					{% else %}
+						<span>
+							<a href="{% url 'company-edit-social-media' %}">Add Facebook</a>
+						</span>
+					{% endif %}
+				</p>
 			</div>
 
 		</div>
