@@ -25,6 +25,9 @@ default_context = {
         'contact_details': {
             'email_address': 'sales@example.com',
         },
+        'twitter_url': 'https://www.twitter.com',
+        'facebook_url': 'https://www.facebook.com',
+        'linkedin_url': 'https://www.linkedin.com',
     }
 }
 
@@ -401,6 +404,29 @@ def test_company_public_details_renders_contact_details():
 
     assert expected in html
     assert CONTACT_LINK_LABEL in html
+
+
+def test_company_profile_details_renders_social_links():
+    edit_url = reverse('company-edit-social-media')
+    template_name = 'company-private-profile-detail.html'
+    context = default_context
+
+    html = render_to_string(template_name, context)
+
+    assert context['company']['twitter_url'] in html
+    assert context['company']['facebook_url'] in html
+    assert context['company']['linkedin_url'] in html
+    assert html.count(edit_url) == 1
+
+
+def test_company_profile_details_renders_edit_social_links():
+    edit_url = reverse('company-edit-social-media')
+    template_name = 'company-private-profile-detail.html'
+    context = {}
+
+    html = render_to_string(template_name, context)
+
+    assert html.count(edit_url) == 4
 
 
 def test_company_profile_details_renders_contact_details():

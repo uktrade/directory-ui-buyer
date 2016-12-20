@@ -663,3 +663,25 @@ def test_company_address_verification_too_short(mock_verify_with_code):
 
     assert form.is_valid() is False
     assert form.errors['code'] == [expected]
+
+
+def test_social_links_form_all_optional():
+    form = forms.SocialLinksForm()
+
+    assert form.fields['twitter_url'].required is False
+    assert form.fields['facebook_url'].required is False
+    assert form.fields['linkedin_url'].required is False
+
+
+def test_serialize_social_links_form():
+    actual = forms.serialize_social_links_form({
+        'twitter_url': 'twitter_url.com',
+        'facebook_url': 'facebook_url.com',
+        'linkedin_url': 'linkedin_url.com',
+    })
+
+    assert actual == {
+        'twitter_url': 'twitter_url.com',
+        'facebook_url': 'facebook_url.com',
+        'linkedin_url': 'linkedin_url.com',
+    }
