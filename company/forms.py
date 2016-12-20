@@ -12,6 +12,28 @@ from enrolment.forms import IndentedInvalidFieldsMixin, AutoFocusFieldMixin
 from enrolment.helpers import halt_validation_on_failure
 
 
+class SocialLinksForm(IndentedInvalidFieldsMixin, AutoFocusFieldMixin,
+                      forms.Form):
+    twitter_url = forms.URLField(
+        label='Web link for your Twitter company profile (optional):',
+        help_text='Use a full web address (URL) including http:// or https://',
+        max_length=255,
+        required=False
+    )
+    linkedin_url = forms.URLField(
+        label='Web link for your LinkedIn company profile (optional):',
+        help_text='Use a full web address (URL) including http:// or https://',
+        max_length=255,
+        required=False
+    )
+    facebook_url = forms.URLField(
+        label='Web link for your Facebook company page (optional):',
+        help_text='Use a full web address (URL) including http:// or https://',
+        max_length=255,
+        required=False
+    )
+
+
 class PublicProfileSearchForm(IndentedInvalidFieldsMixin, AutoFocusFieldMixin,
                               forms.Form):
     sectors = forms.ChoiceField(
@@ -489,6 +511,22 @@ def serialize_company_address_form(cleaned_data):
             'postal_code': cleaned_data['postal_code'],
             'postal_full_name': cleaned_data['postal_full_name'],
         }
+    }
+
+
+def serialize_social_links_form(cleaned_data):
+
+    """
+    Return the shape directory-api-client expects for updating social links.
+
+    @param {dict} cleaned_data - All the fields in `SocialLinksForm`
+    @returns dict
+
+    """
+    return {
+        'facebook_url': cleaned_data['facebook_url'],
+        'twitter_url': cleaned_data['twitter_url'],
+        'linkedin_url': cleaned_data['linkedin_url'],
     }
 
 
