@@ -91,6 +91,9 @@ def format_company_details(details):
         'verified_with_code': details['verified_with_code'],
         'is_address_set': contact_details != {},
         'contact_details': contact_details,
+        'twitter_url': details['twitter_url'],
+        'facebook_url': details['facebook_url'],
+        'linkedin_url': details['linkedin_url'],
     }
 
 
