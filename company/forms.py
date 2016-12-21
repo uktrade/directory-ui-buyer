@@ -14,23 +14,27 @@ from enrolment.helpers import halt_validation_on_failure
 
 class SocialLinksForm(IndentedInvalidFieldsMixin, AutoFocusFieldMixin,
                       forms.Form):
-    twitter_url = forms.URLField(
-        label='URL for your Twitter company profile (optional):',
-        help_text='Use a full web address (URL) including http:// or https://',
-        max_length=255,
-        required=False
-    )
+
     linkedin_url = forms.URLField(
         label='URL for your LinkedIn company profile (optional):',
         help_text='Use a full web address (URL) including http:// or https://',
         max_length=255,
-        required=False
+        required=False,
+        validators=[shared_validators.case_study_social_link_linkedin],
+    )
+    twitter_url = forms.URLField(
+        label='URL for your Twitter company profile (optional):',
+        help_text='Use a full web address (URL) including http:// or https://',
+        max_length=255,
+        required=False,
+        validators=[shared_validators.case_study_social_link_twitter],
     )
     facebook_url = forms.URLField(
         label='URL for your Facebook company page (optional):',
         help_text='Use a full web address (URL) including http:// or https://',
         max_length=255,
-        required=False
+        required=False,
+        validators=[shared_validators.case_study_social_link_facebook],
     )
 
 
