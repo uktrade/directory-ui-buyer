@@ -224,8 +224,8 @@ class CompanyContactDetailsForm(AutoFocusFieldMixin,
     email_address = forms.EmailField(
         label='Contact email address',
         help_text=(
-            'This is the email address that international buyers should use'
-            ' when contacting your company.'
+            'This is the email address that international buyers'
+            ' will see to contact your company.'
         ),
     )
 
