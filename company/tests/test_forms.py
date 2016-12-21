@@ -137,6 +137,12 @@ def test_case_study_form_required_fields():
     assert form.errors['keywords'] == [REQUIRED_MESSAGE]
 
 
+def test_case_study_form_sectors_contains_empty_choice():
+    form = forms.CaseStudyBasicInfoForm(data={})
+
+    assert form.fields['sector'].choices[0] == ('', 'Select Sector')
+
+
 def test_case_study_form_all_fields():
     data = {
         'title': 'a title',

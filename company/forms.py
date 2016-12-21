@@ -56,7 +56,7 @@ class PublicProfileSearchForm(IndentedInvalidFieldsMixin, AutoFocusFieldMixin,
 class CaseStudyBasicInfoForm(IndentedInvalidFieldsMixin, AutoFocusFieldMixin,
                              forms.Form):
     title = forms.CharField(
-        label='Title of your case study of project:',
+        label='Title of your case study or project',
         help_text='Give your case study a title of 60 characters or fewer.',
         max_length=60,
     )
@@ -69,32 +69,32 @@ class CaseStudyBasicInfoForm(IndentedInvalidFieldsMixin, AutoFocusFieldMixin,
         widget=forms.Textarea,
     )
     description = forms.CharField(
-        label='Describe your case study or project:',
+        label='Describe your case study or project',
         help_text=(
             'Describe the project or case study in 1,000 characters or fewer. '
             'Make sure you use this space to demonstrate the value of your '
-            'company to an international business audience.'
+            'company to an international business audience'
         ),
         max_length=1000,
         widget=forms.Textarea,
     )
     sector = forms.ChoiceField(
-        choices=choices.COMPANY_CLASSIFICATIONS,
+        choices=[('', 'Select Sector')] + list(choices.COMPANY_CLASSIFICATIONS)
     )
     website = forms.URLField(
-        label='URL for your case study (optional):',
+        label='URL for your case study (optional)',
         help_text='Use a full web address (URL) including http:// or https://',
         max_length=255,
         required=False
     )
     keywords = forms.CharField(
         label=(
-            'Enter up to 10 keywords that describe your case study '
-            '(separated by commas):'
+            'Enter up to 10 keywords that describe your case study, '
+            'separated by commas'
         ),
         help_text=(
             'These keywords will be used to help potential overseas buyers '
-            'find your case study.'
+            'find your case study'
         ),
         max_length=1000,
         widget=forms.Textarea,
@@ -105,6 +105,7 @@ class CaseStudyBasicInfoForm(IndentedInvalidFieldsMixin, AutoFocusFieldMixin,
 class CaseStudyRichMediaForm(IndentedInvalidFieldsMixin, AutoFocusFieldMixin,
                              forms.Form):
     image_one = forms.FileField(
+        label='Upload your main image',
         required=False,
         validators=[shared_validators.case_study_image_filesize]
     )
@@ -116,6 +117,7 @@ class CaseStudyRichMediaForm(IndentedInvalidFieldsMixin, AutoFocusFieldMixin,
         required=False,
     )
     image_two = forms.FileField(
+        label='Upload another image (optional)',
         required=False,
         validators=[shared_validators.case_study_image_filesize]
     )
@@ -127,6 +129,7 @@ class CaseStudyRichMediaForm(IndentedInvalidFieldsMixin, AutoFocusFieldMixin,
         required=False,
     )
     image_three = forms.FileField(
+        label='Upload another image (optional)',
         required=False,
         validators=[shared_validators.case_study_image_filesize]
     )
