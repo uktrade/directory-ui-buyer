@@ -266,6 +266,13 @@
   }
 }
 
+.ed-company-profile-add-case-study-button:focus {
+  background-color: #007EA3;
+  span {
+    color: white;
+  }
+}
+
 .ed-company-profile-logo-container {
   border: 1px solid #dedede;
   min-width: 140px;

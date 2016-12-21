@@ -13,6 +13,14 @@ html {
   box-sizing: inherit;
 }
 
+html {
+  a:focus {
+    border-color: #007EA3;
+    color: #007EA3;
+    background-color: transparent;
+  }
+}
+
 html input:focus:invalid:focus,
 html textarea:focus:invalid:focus,
 html select:focus:invalid:focus {
@@ -23,6 +31,14 @@ html input:focus:invalid,
 html textarea:focus:invalid,
 html select:focus:invalid {
   color: #4a4a4a;
+}
+
+html {
+  a {
+  }
+  a:focus {
+
+  }
 }
 
 textarea:focus,
