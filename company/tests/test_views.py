@@ -95,6 +95,7 @@ def all_case_study_data(image_three, image_two, image_one):
     return {
         'title': 'Example',
         'description': 'Great',
+        'short_summary': 'Nice',
         'sector': default_sector,
         'website': 'http://www.example.com',
         'keywords': 'good, great',
@@ -105,19 +106,24 @@ def all_case_study_data(image_three, image_two, image_one):
         'image_one': image_one,
         'image_two': image_two,
         'image_three': image_three,
+        'image_one_caption': '',
+        'image_two_caption': '',
+        'image_three_caption': '',
+
     }
 
 
 @pytest.fixture
-def supplier_case_study_basic_data():
+def supplier_case_study_basic_data(all_case_study_data):
     view = views.SupplierCaseStudyWizardView
     return {
         'supplier_case_study_wizard_view-current_step': view.BASIC,
-        view.BASIC + '-title': 'Example',
-        view.BASIC + '-description': 'Great',
-        view.BASIC + '-sector': default_sector,
-        view.BASIC + '-website': 'http://www.example.com',
-        view.BASIC + '-keywords': 'good, great'
+        view.BASIC + '-title': all_case_study_data['title'],
+        view.BASIC + '-short_summary': all_case_study_data['short_summary'],
+        view.BASIC + '-description': all_case_study_data['description'],
+        view.BASIC + '-sector': all_case_study_data['sector'],
+        view.BASIC + '-website': all_case_study_data['website'],
+        view.BASIC + '-keywords': all_case_study_data['keywords'],
     }
 
 
