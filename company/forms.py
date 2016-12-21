@@ -56,6 +56,10 @@ class CaseStudyBasicInfoForm(IndentedInvalidFieldsMixin, AutoFocusFieldMixin,
         help_text='Give your case study a title of 60 characters or fewer.',
         max_length=60,
     )
+    short_summary = forms.CharField(
+        max_length=200,
+        widget=forms.Textarea,
+    )
     description = forms.CharField(
         label='Describe your case study or project:',
         help_text=(
@@ -96,13 +100,28 @@ class CaseStudyRichMediaForm(IndentedInvalidFieldsMixin, AutoFocusFieldMixin,
         required=False,
         validators=[shared_validators.case_study_image_filesize]
     )
+    image_one_caption = forms.CharField(
+        max_length=200,
+        widget=forms.Textarea,
+        required=False,
+    )
     image_two = forms.FileField(
         required=False,
         validators=[shared_validators.case_study_image_filesize]
     )
+    image_two_caption = forms.CharField(
+        max_length=200,
+        widget=forms.Textarea,
+        required=False,
+    )
     image_three = forms.FileField(
         required=False,
         validators=[shared_validators.case_study_image_filesize]
+    )
+    image_three_caption = forms.CharField(
+        max_length=200,
+        widget=forms.Textarea,
+        required=False,
     )
     testimonial = forms.CharField(
         max_length=1000,
@@ -372,6 +391,10 @@ def serialize_supplier_case_study_forms(cleaned_data):
         'testimonial_name': cleaned_data['testimonial_name'],
         'testimonial_job_title': cleaned_data['testimonial_job_title'],
         'testimonial_company': cleaned_data['testimonial_company'],
+        'short_summary': cleaned_data['short_summary'],
+        'image_one_caption': cleaned_data['image_one_caption'],
+        'image_two_caption': cleaned_data['image_two_caption'],
+        'image_three_caption': cleaned_data['image_three_caption'],
     }
     # the case studies edit view pre-populates the image fields with the url of
     # the existing value (rather than the real file). Things would get
