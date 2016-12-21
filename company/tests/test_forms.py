@@ -699,6 +699,17 @@ def test_social_links_form_all_optional():
     assert form.fields['linkedin_url'].required is False
 
 
+def test_social_links_validators():
+    form = forms.SocialLinksForm()
+    twitter_validator = shared_validators.case_study_social_link_twitter
+    facebook_validator = shared_validators.case_study_social_link_facebook
+    linkedin_validator = shared_validators.case_study_social_link_linkedin
+
+    assert twitter_validator in form.fields['twitter_url'].validators
+    assert facebook_validator in form.fields['facebook_url'].validators
+    assert linkedin_validator in form.fields['linkedin_url'].validators
+
+
 def test_serialize_social_links_form():
     actual = forms.serialize_social_links_form({
         'twitter_url': 'twitter_url.com',
