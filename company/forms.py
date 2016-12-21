@@ -15,19 +15,19 @@ from enrolment.helpers import halt_validation_on_failure
 class SocialLinksForm(IndentedInvalidFieldsMixin, AutoFocusFieldMixin,
                       forms.Form):
     twitter_url = forms.URLField(
-        label='Web link for your Twitter company profile (optional):',
+        label='URL for your Twitter company profile (optional):',
         help_text='Use a full web address (URL) including http:// or https://',
         max_length=255,
         required=False
     )
     linkedin_url = forms.URLField(
-        label='Web link for your LinkedIn company profile (optional):',
+        label='URL for your LinkedIn company profile (optional):',
         help_text='Use a full web address (URL) including http:// or https://',
         max_length=255,
         required=False
     )
     facebook_url = forms.URLField(
-        label='Web link for your Facebook company page (optional):',
+        label='URL for your Facebook company page (optional):',
         help_text='Use a full web address (URL) including http:// or https://',
         max_length=255,
         required=False
@@ -70,7 +70,7 @@ class CaseStudyBasicInfoForm(IndentedInvalidFieldsMixin, AutoFocusFieldMixin,
         choices=choices.COMPANY_CLASSIFICATIONS,
     )
     website = forms.URLField(
-        label='Web link for your case study (optional):',
+        label='URL for your case study (optional):',
         help_text='Use a full web address (URL) including http:// or https://',
         max_length=255,
         required=False
