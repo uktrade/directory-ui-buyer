@@ -33,11 +33,11 @@
 		<div class="row-fluid">
 			<div class="span12 great-blue-bar ed-has-edit-button">
 				<h1 class="element-within company-name-title">
-					<span class="dont-break-out">Trade profile for {{company.name}}</span>
+					<span class="dont-break-out">{{company.name}}</span>
 				</h1>
-				<a class="ed-edit-button" href="{% url show_wizard_links|yesno:'company-edit,company-edit-key-facts' %}" style="top: 25px; right: 25px; color: white;">
-					<span style="margin-top: 4px;" class="icon-pencil icon-white"></span>
-					<span style="margin-top: 4px;">Edit</span>
+				<a class="ed-edit-button" href="{% url show_wizard_links|yesno:'company-edit,company-edit-key-facts' %}" style="top: 32px; right: 40px; color: white;">
+					<img src="{% static 'images/pencil-icon-white.png' %}" class="ed-icon-pencil" />
+					<b style="margin-top: 4px;">Edit</b>
 				</a>
 			</div>
 		</div>
@@ -50,31 +50,41 @@
 							{% if company.logo %}
 								<img src="{{company.logo}}" />
 							{% endif %}
-							<a class="ed-edit-button" href="{% url 'company-edit-logo' %}" style="bottom: 0; right: 5px; background: white; color: black; padding: 5px;">
-								<span class="icon-pencil"></span>
-								<span>Edit</span>
+							<a class="ed-edit-button" href="{% url 'company-edit-logo' %}" style="bottom: 0; right: 5px; background: white; color: #004F95; padding: 5px;">
+								<img src="{% static 'images/pencil-icon.png' %}" class="ed-icon-pencil" />
+								<b>Edit</b>
 							</a>
 						</div>
 					</div>
 				</div>
 			</div>
 
-			<div class="span5 ed-has-edit-button company-profile-module-inner">
+			<div class="span5 company-profile-module-inner">
 				<h3>Contact</h3>
-				<a class="ed-edit-button" href="{% url show_wizard_links|yesno:'company-edit,company-edit-contact' %}" style="top: 20px; right: 0; color: black;">
-					<span class="icon-pencil"></span>
-					<span>Edit</span>
-				</a>
 				{% if company.website %}
-					<p><a href="{{ company.website}}">{{ company.website }}</a></p>
-				{% else %}
-					<p><a href="{% url show_wizard_links|yesno:'company-edit,company-edit-contact' %}">Add your website</a></p>
-				{% endif %}
-				{% if company.contact_details.email_address %}
-					<p><a href="mailto:{{ company.contact_details.email_address }}?subject=International%20buyer%20contact%20via%20your%20great.gov.uk%20trade%20profile">{{ company.contact_details.email_address }}</a></p>
+					<p>
+						<a href="{{ company.website}}">{{ company.website }}</a>
+						<a href="{% url show_wizard_links|yesno:'company-edit,company-edit-key-facts' %}" style="color: #004F95;">
+							<img src="{% static 'images/pencil-icon.png' %}" class="ed-icon-pencil" />
+							<b>Edit</b>
+						</a>
+					</p>
 				{% else %}
 					<p>
-						<a href="{% url show_wizard_links|yesno:'company-edit,company-edit-contact' %}">Add your email</a></p>
+						<a href="{% url show_wizard_links|yesno:'company-edit,company-edit-contact' %}">Add your website</a>
+					</p>
+				{% endif %}
+				{% if company.contact_details.email_address %}
+					<p>
+						<a href="mailto:{{ company.contact_details.email_address }}?subject=International%20buyer%20contact%20via%20your%20great.gov.uk%20trade%20profile">{{ company.contact_details.email_address }}</a>
+						<a href="{% url show_wizard_links|yesno:'company-edit,company-edit-contact' %}" style="color: #004F95;">
+							<img src="{% static 'images/pencil-icon.png' %}" class="ed-icon-pencil" />
+							<b>Edit</b>
+						</a>
+					</p>
+				{% else %}
+					<p>
+						<a href="{% url show_wizard_links|yesno:'company-edit,company-edit-contact' %}">Add your email</a>
 					</p>
 
 				{% endif %}
@@ -82,9 +92,9 @@
 
 			<div class="span4 ed-has-edit-button company-profile-module-inner" style="border-left: 1px solid #dedede;">
 				<h3>Facts &amp details</h3>
-				<a class="ed-edit-button" href="{% url show_wizard_links|yesno:'company-edit,company-edit-key-facts' %}" style="top: 20px; right: 20px; color: black;">
-					<span class="icon-pencil"></span>
-					<span>Edit</span>
+				<a class="ed-edit-button" href="{% url show_wizard_links|yesno:'company-edit,company-edit-key-facts' %}" style="top: 20px; right: 20px; color: #004F95;">
+					<img src="{% static 'images/pencil-icon.png' %}" class="ed-icon-pencil" />
+					<b>Edit</b>
 				</a>
 				<p>Number of employees: {{ company.employees|default:'N/A' }}</p>
 				<p>Registration number: {{company.number}}</p>
@@ -96,11 +106,11 @@
 
 		<div class="row-fluid company-profile-module-container">
 
-			<div class="span12 ed-has-edit-button company-profile-module-inner">
+			<div class="span8 ed-has-edit-button company-profile-module-inner">
 				<h3>Company description</h3>
-				<a class="ed-edit-button" href="{% url 'company-edit-description' %}" style="top: 20px; right: 20px; color: black;">
-					<span class="icon-pencil"></span>
-					<span>Edit</span>
+				<a class="ed-edit-button" href="{% url 'company-edit-description' %}" style="top: 20px; right: 20px; color: #004F95;">
+					<img src="{% static 'images/pencil-icon.png' %}" class="ed-icon-pencil" />
+					<b>Edit</b>
 				</a>
 				{% if company.description %}
 					<p>{{company.description}}</p>
@@ -109,24 +119,68 @@
 				{% endif %}
 			</div>
 
+			<div class="span4 ed-has-edit-button company-profile-module-inner company-profile-module-social-links">
+				<h3>Online profiles</h3>
+				<a class="ed-edit-button" href="/company-profile/edit/social-media" style="top: 20px; right: 20px; color: black;">
+					<span class="icon-pencil"></span>
+					<span>Edit</span>
+				</a>
+				<p>
+					<img src="/static/images/icon-linkedin-white.png">
+					{% if company.linkedin_url %}
+						<span>
+							<a href="{{ company.linkedin_url }}" target="_blank">Visit LinkedIn</a>
+						</span>
+					{% else %}
+						<span>
+							<a href="{% url 'company-edit-social-media' %}">Add LinkedIn</a>
+						</span>
+					{% endif %}
+				</p>
+				<p>
+					<img src="/static/images/icon-twitter.png">
+					{% if company.twitter_url %}
+						<span>
+							<a href="{{ company.twitter_url }}" target="_blank">Visit Twitter</a>
+						</span>
+					{% else %}
+						<span>
+							<a href="{% url 'company-edit-social-media' %}">Add Twitter</a>
+						</span>
+					{% endif %}
+				</p>
+				<p>
+					<img src="/static/images/icon-facebook-white.png">
+					{% if company.facebook_url %}
+						<span>
+							<a href="{{ company.facebook_url }}" target="_blank">Visit Facebook</a>
+						</span>
+					{% else %}
+						<span>
+							<a href="{% url 'company-edit-social-media' %}">Add Facebook</a>
+						</span>
+					{% endif %}
+				</p>
+			</div>
+
 		</div>
 
 		<!-- Company description area -->
 		<div class="row-fluid">
 			<div class="span12 great-blue-bar">
-				<h1 class="element-within company-name-title">
+				<h2 class="element-within company-name-title">
 					<span class="dont-break-out">Recent projects</span>
-				</h1>
+				</h2>
 			</div>
 		</div>
 		<div class="ed-company-profile-sector-case-study-container">
 			{% for case_study in company.supplier_case_studies %}
-			<div class="row-fluid company-profile-module-container" style="margin-bottom: 0;">
+			<div class="row-fluid company-profile-module-container" style="margin-bottom: 0; border-top: 0;">
 				<div class="span12 company-profile-module-inner ed-has-edit-button">
 					<h3>{{ case_study.title }}</h3>
-					<a class="ed-edit-button" href="{% url 'company-case-study-edit' id=case_study.pk %}" style="top: 25px; right: 25px; color: black;">
-						<span class="icon-pencil"></span>
-						<span>Edit</span>
+					<a class="ed-edit-button" href="{% url 'company-case-study-edit' id=case_study.pk %}" style="top: 25px; right: 25px; color: #004F95;">
+						<img src="{% static 'images/pencil-icon.png' %}" class="ed-icon-pencil" />
+						<b>Edit</b>
 					</a>
 					<div class="supplier-case-study-images">
 						{% if case_study.image_one %}
@@ -170,10 +224,9 @@
 			{% endfor %}
 		</div>
 
-		<div class="ed-company-profile-add-case-study-button-container" style="color: black;">
+		<div class="ed-company-profile-add-case-study-button-container" style="color: #004F95;">
 			<a href="{% url 'company-case-study-edit' %}" class="ed-company-profile-add-case-study-button">
-				<span class="icon-plus"></span>
-				<span>Add another case study</span>
+				<span>+ Add a case study</span>
 			</a>
 		</div>
 
@@ -182,21 +235,15 @@
 				<div class="company-profile-module-container" style="margin-bottom: 0;">
 					<div class="company-profile-module-inner ed-has-edit-button">
 						<h3>Sectors of interest</h3>
-						<a class="ed-edit-button"  style="top: 20px; right: 20px; color: black;" href="{% url show_wizard_links|yesno:'company-edit,company-edit-sectors' %}">
-							<span class="icon-pencil"></span>
-							<span>Edit</span>
+						<a class="ed-edit-button"  style="top: 20px; right: 20px; color: #004F95;" href="{% url show_wizard_links|yesno:'company-edit,company-edit-sectors' %}">
+							<img src="{% static 'images/pencil-icon.png' %}" class="ed-icon-pencil" />
+							<b>Edit</b>
 						</a>
 						<p>
 						{% for sector in company.sectors %}
-							{% if features.FEATURE_PUBLIC_PROFILES_ENABLED %}
-								<a href="{% url 'public-company-profiles-list' %}?sectors={{sector.value}}" class="label stone-label" target="_blank">
-									{{ sector.label }}
-								</a>
-							{% else %}
-								<span class="label stone-label">
-									{{ sector.label }}
-								</span>
-							{% endif %}
+							<span class="label stone-label">
+								{{ sector.label }}
+							</span>
 						{% empty %}
 							<p><a href="{% url show_wizard_links|yesno:'company-edit,company-edit-sectors' %}">Add sectors</a></p>
 						{% endfor %}
@@ -211,9 +258,9 @@
 				<div class="company-profile-module-container" style="margin-bottom: 0;">
 					<div class=" company-profile-module-inner ed-has-edit-button">
 						<h3>Keywords</h3>
-						<a class="ed-edit-button" href="{% url show_wizard_links|yesno:'company-edit,company-edit-key-facts' %}" style="top: 20px; right: 20px; color: black;">
-							<span class="icon-pencil"></span>
-							<span>Edit</span>
+						<a class="ed-edit-button" href="{% url show_wizard_links|yesno:'company-edit,company-edit-key-facts' %}" style="top: 20px; right: 20px; color: #004F95;">
+							<img src="{% static 'images/pencil-icon.png' %}" class="ed-icon-pencil" />
+							<b>Edit</b>
 						</a>
 						{% if company.keywords %}
 							<p>{{company.keywords}}</p>

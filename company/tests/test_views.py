@@ -159,6 +159,26 @@ def all_company_profile_data():
 
 
 @pytest.fixture
+def all_social_links_data():
+    return {
+        'twitter_url': 'http://www.twitter.com',
+        'facebook_url': 'http://www.facebook.com',
+        'linkedin_url': 'http://www.linkedin.com',
+    }
+
+
+@pytest.fixture
+def company_profile_social_links_data(all_social_links_data):
+    view = views.SupplierCompanySocialLinksEditView
+    return {
+        'supplier_company_social_links_edit_view-current_step': view.SOCIAL,
+        view.SOCIAL + '-twitter_url': all_social_links_data['twitter_url'],
+        view.SOCIAL + '-linkedin_url': all_social_links_data['linkedin_url'],
+        view.SOCIAL + '-facebook_url': all_social_links_data['facebook_url'],
+    }
+
+
+@pytest.fixture
 def company_profile_address_data(all_company_profile_data):
     view = views.SupplierCompanyProfileEditView
     data = all_company_profile_data['contact_details']
@@ -1356,4 +1376,32 @@ def test_supplier_key_facts_edit_standalone_view_api_success(
             'keywords': 'Nice, Great',
             'employees': choices.EMPLOYEES[1][0],
         }
+    )
+
+
+@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
+@patch.object(views, 'has_company', Mock(return_value=True))
+def test_supplier_social_links_edit_standalone_initial_data(
+    client, retrieve_profile_data
+):
+    response = client.get(reverse('company-edit-social-media'))
+
+    assert response.context_data['form'].initial == retrieve_profile_data
+
+
+@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
+@patch.object(views, 'has_company', Mock(return_value=True))
+@patch.object(views.api_client.company, 'update_profile')
+def test_supplier_social_links_edit_standalone_view_api_success(
+    mock_update_profile, client, company_profile_social_links_data,
+    api_response_200, sso_user, all_social_links_data,
+):
+    mock_update_profile.return_value = api_response_200
+    url = reverse('company-edit-social-media')
+
+    client.post(url, company_profile_social_links_data)
+
+    mock_update_profile.assert_called_once_with(
+        sso_user_id=sso_user.id,
+        data=all_social_links_data,
     )
