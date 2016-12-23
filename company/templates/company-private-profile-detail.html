@@ -196,7 +196,7 @@
 						<div class="span4">
 							<p>{{ case_study.description }}</p>
 							<p class="supplier-case-study-read-more-cta">
-								<a href="{% url 'company-case-study-view' id=case_study.pk %}">Read case study</a>
+								<a href="{{ case_study.url }}">Read case study</a>
 							</p>
 						</div>
 						<div class="span4 ed-arrow_box ed-company-profile-case-study-testomonial-container">

@@ -2,8 +2,9 @@ import datetime
 
 from directory_validators.constants import choices
 
-from api_client import api_client
+from django.conf import settings
 
+from api_client import api_client
 from enrolment.helpers import get_companies_house_office_address
 
 
@@ -43,15 +44,6 @@ def get_sectors_label(sectors_value):
     if not sectors_value:
         return sectors_value
     return SECTOR_CHOICES.get(sectors_value)
-
-
-def get_case_study_details_from_response(response):
-    parsed = response.json()
-    # `format_company_details` expects `supplier_case_studies` key.
-    parsed['company']['supplier_case_studies'] = []
-    parsed['sector'] = pair_sector_value_with_label(parsed['sector'])
-    parsed['company'] = format_company_details(parsed['company'])
-    return parsed
 
 
 def get_public_company_profile_from_response(response):
@@ -99,7 +91,12 @@ def format_company_details(details):
 
 def format_case_study(case_study):
     case_study['sector'] = pair_sector_value_with_label(case_study['sector'])
+    case_study['url'] = get_case_study_url(case_study['pk'])
     return case_study
+
+
+def get_case_study_url(case_study_id):
+    return settings.SUPPLIER_CASE_STUDY_URL.format(id=case_study_id)
 
 
 def get_company_profile(sso_id):

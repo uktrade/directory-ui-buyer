@@ -78,13 +78,13 @@ def test_public_company_profile_details_links_to_case_studies():
                 "title": "three",
                 "video_one": None,
                 "website": "http://www.example.com",
-                "year": "2000"
+                "year": "2000",
+                "url": "http://case-study.com/3"
             },
         ]
     }
-    url = reverse('company-case-study-view', kwargs={'id': '3'})
     html = render_to_string('company-public-profile-detail.html', context)
-
+    url = context['case_studies'][0]['url']
     assert 'href="{url}"'.format(url=url) not in html
 
 

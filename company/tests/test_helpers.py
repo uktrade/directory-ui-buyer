@@ -189,53 +189,6 @@ def test_get_company_list_from_response_empty(public_companies_empty):
     assert actual == expected
 
 
-def test_get_case_study_details_from_response(supplier_case_study_data):
-    response = requests.Response()
-    response.json = lambda: supplier_case_study_data
-
-    expected = {
-        'description': 'Damn great',
-        'sector': {
-            'label': 'Software and computer services',
-            'value': 'SOFTWARE_AND_COMPUTER_SERVICES'
-        },
-        'image_three': 'https://image_three.jpg',
-        'website': 'http://www.google.com',
-        'video_one': 'https://video_one.wav',
-        'title': 'Two',
-        'company': {
-            'website': 'https://www.example.com',
-            'employees': '1-10',
-            'description': 'Good stuff.',
-            'logo': 'https://logo.png',
-            'date_of_creation': datetime(2015, 3, 2),
-            'name': 'EXAMPLE CORP',
-            'supplier_case_studies': [],
-            'keywords': 'Web development',
-            'sectors': [{
-                'label': 'Software and computer services',
-                'value': 'SOFTWARE_AND_COMPUTER_SERVICES'
-            }],
-            'number': '09466004',
-            'modified': datetime(2016, 11, 23, 11, 21, 10, 977518),
-            'verified_with_code': True,
-            'is_address_set': False,
-            'contact_details': {},
-            'twitter_url': 'http://www.twitter.com',
-            'facebook_url': 'http://www.facebook.com',
-            'linkedin_url': 'http://www.linkedin.com',
-        },
-        'image_one': 'https://image_one.jpg',
-        'testimonial': 'I found it most pleasing.',
-        'keywords': 'great',
-        'pk': 2,
-        'year': '2000',
-        'image_two': 'https://image_two.jpg'
-    }
-
-    assert helpers.get_case_study_details_from_response(response) == expected
-
-
 def test_get_company_profile_from_response_without_date(profile_data):
     pairs = [
         ['2010-10-10', datetime(2010, 10, 10)],
@@ -265,3 +218,13 @@ def test_format_company_details_none_address_not_set(profile_data):
     actual = helpers.format_company_details(profile_data)
 
     assert actual['is_address_set'] is False
+
+
+def test_format_case_study(supplier_case_study_data, settings):
+    settings.SUPPLIER_CASE_STUDY_URL = 'http://case_study.com/{id}'
+    actual = helpers.format_case_study(supplier_case_study_data)
+    assert actual['sector'] == {
+        'label': 'Software and computer services',
+        'value': 'SOFTWARE_AND_COMPUTER_SERVICES',
+    }
+    assert actual['url'] == 'http://case_study.com/2'
