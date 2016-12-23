@@ -193,19 +193,22 @@
 					</div>
 
 					<div class="row-fluid ed-company-profile-sector-case-study-inner">
-						<div class="span4">
+						<div class="{{case_study.testimonial|yesno:'span4,span8'}}">
 							<p>{{ case_study.short_summary }}</p>
+
 							<p class="supplier-case-study-read-more-cta">
 								<a href="{{ case_study.url }}">Read case study</a>
 							</p>
 						</div>
-						<div class="span4 ed-arrow_box ed-company-profile-case-study-testomonial-container">
-							<p class="ed-company-profile-sector-synopsis">
-								<b>"{{ case_study.testimonial }}"</b>
-							</p>
-							<div>{{ case_study.testimonial_name }}</div>
-							<div>{{ case_study.testimonial_company }}</div>
-						</div>
+						{% if case_study.testimonial %}
+							<div class="span4 ed-arrow_box ed-company-profile-case-study-testomonial-container">
+								<p class="ed-company-profile-sector-synopsis">
+									<b>"{{ case_study.testimonial }}"</b>
+								</p>
+								<div>{{ case_study.testimonial_name }}</div>
+								<div>{{ case_study.testimonial_company }}</div>
+							</div>
+						{% endif %}
 						<div class="span4 ed-company-profile-case-study-company-details">
 							<p>
 								<b>{{ company.name }}</b>
