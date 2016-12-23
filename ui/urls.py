@@ -17,7 +17,6 @@ from company.views import (
     PublicProfileListView,
     SupplierAddressEditView,
     SupplierBasicInfoEditView,
-    SupplierCaseStudyDetailView,
     SupplierCaseStudyWizardView,
     SupplierClassificationEditView,
     SupplierCompanyAddressVerificationView,
@@ -137,11 +136,6 @@ urlpatterns = [
         r'^company/case-study/edit/(?P<id>.+)?$',
         SupplierCaseStudyWizardView.as_view(),
         name='company-case-study-edit'
-    ),
-    url(
-        r'^company/case-study/view/(?P<id>.+)$',
-        SupplierCaseStudyDetailView.as_view(),
-        name='company-case-study-view'
     ),
 ]
 

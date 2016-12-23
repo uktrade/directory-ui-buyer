@@ -224,24 +224,6 @@ class PublicProfileDetailView(TemplateView):
         }
 
 
-class SupplierCaseStudyDetailView(TemplateView):
-    template_name = 'supplier-case-study-detail.html'
-
-    def get_case_study(self):
-        response = api_client.company.retrieve_supplier_case_study(
-            sso_user_id=self.request.sso_user.id,
-            case_study_id=self.kwargs['id'],
-        )
-        if not response.ok:
-            response.raise_for_status()
-        return helpers.get_case_study_details_from_response(response)
-
-    def get_context_data(self, **kwargs):
-        return {
-            'case_study': self.get_case_study(),
-        }
-
-
 class SupplierCompanyProfileEditView(
     SupplierCompanyBaseView,
     GetTemplateForCurrentStepMixin,
