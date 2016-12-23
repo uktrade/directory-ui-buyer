@@ -14,23 +14,27 @@ from enrolment.helpers import halt_validation_on_failure
 
 class SocialLinksForm(IndentedInvalidFieldsMixin, AutoFocusFieldMixin,
                       forms.Form):
-    twitter_url = forms.URLField(
-        label='Web link for your Twitter company profile (optional):',
-        help_text='Use a full web address (URL) including http:// or https://',
-        max_length=255,
-        required=False
-    )
+
     linkedin_url = forms.URLField(
-        label='Web link for your LinkedIn company profile (optional):',
+        label='URL for your LinkedIn company profile (optional):',
         help_text='Use a full web address (URL) including http:// or https://',
         max_length=255,
-        required=False
+        required=False,
+        validators=[shared_validators.case_study_social_link_linkedin],
+    )
+    twitter_url = forms.URLField(
+        label='URL for your Twitter company profile (optional):',
+        help_text='Use a full web address (URL) including http:// or https://',
+        max_length=255,
+        required=False,
+        validators=[shared_validators.case_study_social_link_twitter],
     )
     facebook_url = forms.URLField(
-        label='Web link for your Facebook company page (optional):',
+        label='URL for your Facebook company page (optional):',
         help_text='Use a full web address (URL) including http:// or https://',
         max_length=255,
-        required=False
+        required=False,
+        validators=[shared_validators.case_study_social_link_facebook],
     )
 
 
@@ -56,6 +60,14 @@ class CaseStudyBasicInfoForm(IndentedInvalidFieldsMixin, AutoFocusFieldMixin,
         help_text='Give your case study a title of 60 characters or fewer.',
         max_length=60,
     )
+    short_summary = forms.CharField(
+        help_text=(
+            'Describe the project or case study for visitors to get a quick '
+            'insight when visiting your profile.'
+        ),
+        max_length=200,
+        widget=forms.Textarea,
+    )
     description = forms.CharField(
         label='Describe your case study or project:',
         help_text=(
@@ -70,7 +82,7 @@ class CaseStudyBasicInfoForm(IndentedInvalidFieldsMixin, AutoFocusFieldMixin,
         choices=choices.COMPANY_CLASSIFICATIONS,
     )
     website = forms.URLField(
-        label='Web link for your case study (optional):',
+        label='URL for your case study (optional):',
         help_text='Use a full web address (URL) including http:// or https://',
         max_length=255,
         required=False
@@ -96,13 +108,34 @@ class CaseStudyRichMediaForm(IndentedInvalidFieldsMixin, AutoFocusFieldMixin,
         required=False,
         validators=[shared_validators.case_study_image_filesize]
     )
+    image_one_caption = forms.CharField(
+        label='Caption for image one (optional):',
+        help_text='Use this to add a caption for the first image.',
+        max_length=200,
+        widget=forms.Textarea,
+        required=False,
+    )
     image_two = forms.FileField(
         required=False,
         validators=[shared_validators.case_study_image_filesize]
     )
+    image_two_caption = forms.CharField(
+        label='Caption for image two (optional):',
+        help_text='Use this to add a caption for the second image.',
+        max_length=200,
+        widget=forms.Textarea,
+        required=False,
+    )
     image_three = forms.FileField(
         required=False,
         validators=[shared_validators.case_study_image_filesize]
+    )
+    image_three_caption = forms.CharField(
+        label='Caption for image three (optional):',
+        help_text='Use this to add a caption for the third image.',
+        max_length=200,
+        widget=forms.Textarea,
+        required=False,
     )
     testimonial = forms.CharField(
         max_length=1000,
@@ -110,8 +143,8 @@ class CaseStudyRichMediaForm(IndentedInvalidFieldsMixin, AutoFocusFieldMixin,
         widget=forms.Textarea,
     )
     testimonial_name = forms.CharField(
-        label="Source - full name",
-        help_text="The name of the person who gave the testimonial",
+        label='Source - full name',
+        help_text='The name of the person who gave the testimonial',
         max_length=255,
         required=False,
     )
@@ -122,8 +155,8 @@ class CaseStudyRichMediaForm(IndentedInvalidFieldsMixin, AutoFocusFieldMixin,
         required=False,
     )
     testimonial_company = forms.CharField(
-        label="Source - company name",
-        help_text="The company of the person who gave the testimonial",
+        label='Source - company name',
+        help_text='The company of the person who gave the testimonial',
         max_length=255,
         required=False,
     )
@@ -224,8 +257,8 @@ class CompanyContactDetailsForm(AutoFocusFieldMixin,
     email_address = forms.EmailField(
         label='Contact email address',
         help_text=(
-            'This is the email address that international buyers should use'
-            ' when contacting your company.'
+            'This is the email address that international buyers'
+            ' will see to contact your company.'
         ),
     )
 
@@ -372,6 +405,10 @@ def serialize_supplier_case_study_forms(cleaned_data):
         'testimonial_name': cleaned_data['testimonial_name'],
         'testimonial_job_title': cleaned_data['testimonial_job_title'],
         'testimonial_company': cleaned_data['testimonial_company'],
+        'short_summary': cleaned_data['short_summary'],
+        'image_one_caption': cleaned_data['image_one_caption'],
+        'image_two_caption': cleaned_data['image_two_caption'],
+        'image_three_caption': cleaned_data['image_three_caption'],
     }
     # the case studies edit view pre-populates the image fields with the url of
     # the existing value (rather than the real file). Things would get

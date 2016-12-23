@@ -40,12 +40,16 @@ def test_serialize_supplier_case_study_forms_string_images():
     data = {
         'title': 'a title',
         'description': 'a description',
+        'short_summary': 'damn good',
         'sector': choices.COMPANY_CLASSIFICATIONS[1][0],
         'website': 'http://www.example.com',
         'keywords': 'goog, great',
         'image_one': '1.png',
         'image_two': '2.png',
         'image_three': '3.png',
+        'image_one_caption': 'image one caption',
+        'image_two_caption': 'image two caption',
+        'image_three_caption': 'image three caption',
         'testimonial': 'very nice',
         'testimonial_name': 'Neville',
         'testimonial_job_title': 'Abstract hat maker',
@@ -54,6 +58,7 @@ def test_serialize_supplier_case_study_forms_string_images():
     expected = {
         'title': 'a title',
         'description': 'a description',
+        'short_summary': 'damn good',
         'sector': choices.COMPANY_CLASSIFICATIONS[1][0],
         'website': 'http://www.example.com',
         'keywords': 'goog, great',
@@ -61,6 +66,9 @@ def test_serialize_supplier_case_study_forms_string_images():
         'testimonial_name': 'Neville',
         'testimonial_job_title': 'Abstract hat maker',
         'testimonial_company': 'Imaginary hats Ltd',
+        'image_one_caption': 'image one caption',
+        'image_two_caption': 'image two caption',
+        'image_three_caption': 'image three caption',
     }
 
     actual = forms.serialize_supplier_case_study_forms(data)
@@ -75,12 +83,16 @@ def test_serialize_supplier_case_study_forms_file_images():
     data = {
         'title': 'a title',
         'description': 'a description',
+        'short_summary': 'damn good',
         'sector': choices.COMPANY_CLASSIFICATIONS[1][0],
         'website': 'http://www.example.com',
         'keywords': 'goog, great',
         'image_one': image_one,
         'image_two': image_two,
         'image_three': image_three,
+        'image_one_caption': 'image one caption',
+        'image_two_caption': 'image two caption',
+        'image_three_caption': 'image three caption',
         'testimonial': 'very nice',
         'testimonial_name': 'Neville',
         'testimonial_job_title': 'Abstract hat maker',
@@ -89,6 +101,7 @@ def test_serialize_supplier_case_study_forms_file_images():
     expected = {
         'title': 'a title',
         'description': 'a description',
+        'short_summary': 'damn good',
         'sector': choices.COMPANY_CLASSIFICATIONS[1][0],
         'website': 'http://www.example.com',
         'keywords': 'goog, great',
@@ -99,6 +112,9 @@ def test_serialize_supplier_case_study_forms_file_images():
         'image_one': image_one,
         'image_two': image_two,
         'image_three': image_three,
+        'image_one_caption': 'image one caption',
+        'image_two_caption': 'image two caption',
+        'image_three_caption': 'image three caption',
     }
 
     actual = forms.serialize_supplier_case_study_forms(data)
@@ -125,6 +141,7 @@ def test_case_study_form_all_fields():
     data = {
         'title': 'a title',
         'description': 'a description',
+        'short_summary': 'damn good',
         'sector': choices.COMPANY_CLASSIFICATIONS[1][0],
         'website': 'http://www.example.com',
         'keywords': 'goog, great',
@@ -135,9 +152,18 @@ def test_case_study_form_all_fields():
     assert form.cleaned_data == data
 
 
-def test_case_study_max_length():
+def test_case_study_rich_media_max_length():
+    form = forms.CaseStudyRichMediaForm()
+
+    assert form.fields['image_one_caption'].max_length == 200
+    assert form.fields['image_two_caption'].max_length == 200
+    assert form.fields['image_three_caption'].max_length == 200
+
+
+def test_case_study_basic_info_max_length():
     form = forms.CaseStudyBasicInfoForm()
 
+    assert form.fields['short_summary'].max_length == 200
     assert form.fields['title'].max_length == 60
     assert form.fields['description'].max_length == 1000
     assert form.fields['keywords'].max_length == 1000
@@ -671,6 +697,17 @@ def test_social_links_form_all_optional():
     assert form.fields['twitter_url'].required is False
     assert form.fields['facebook_url'].required is False
     assert form.fields['linkedin_url'].required is False
+
+
+def test_social_links_validators():
+    form = forms.SocialLinksForm()
+    twitter_validator = shared_validators.case_study_social_link_twitter
+    facebook_validator = shared_validators.case_study_social_link_facebook
+    linkedin_validator = shared_validators.case_study_social_link_linkedin
+
+    assert twitter_validator in form.fields['twitter_url'].validators
+    assert facebook_validator in form.fields['facebook_url'].validators
+    assert linkedin_validator in form.fields['linkedin_url'].validators
 
 
 def test_serialize_social_links_form():

@@ -9,7 +9,7 @@
   }
   .company-profile-module-social-links {
     border-left: 1px solid #dedede;
-    img {
+    .ed-social-icon {
       width: 20px;
       margin-bottom: 2px;
       margin-right: 5px;
@@ -263,6 +263,13 @@
   }
   .icon-plus {
     margin-top: 4px;
+  }
+}
+
+.ed-company-profile-add-case-study-button:focus {
+  background-color: #007EA3;
+  span {
+    color: white;
   }
 }
 

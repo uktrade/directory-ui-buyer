@@ -121,12 +121,12 @@
 
 			<div class="span4 ed-has-edit-button company-profile-module-inner company-profile-module-social-links">
 				<h3>Online profiles</h3>
-				<a class="ed-edit-button" href="/company-profile/edit/social-media" style="top: 20px; right: 20px; color: black;">
-					<span class="icon-pencil"></span>
-					<span>Edit</span>
+				<a class="ed-edit-button" href="/company-profile/edit/social-media" style="top: 20px; right: 20px; color: #004F95;">
+					<img src="{% static 'images/pencil-icon.png' %}" class="ed-icon-pencil" />
+					<b>Edit</b>
 				</a>
 				<p>
-					<img src="/static/images/icon-linkedin-white.png">
+					<img class="ed-social-icon" src="/static/images/icon-linkedin-white.png">
 					{% if company.linkedin_url %}
 						<span>
 							<a href="{{ company.linkedin_url }}" target="_blank">Visit LinkedIn</a>
@@ -138,7 +138,7 @@
 					{% endif %}
 				</p>
 				<p>
-					<img src="/static/images/icon-twitter.png">
+					<img class="ed-social-icon" src="/static/images/icon-twitter.png">
 					{% if company.twitter_url %}
 						<span>
 							<a href="{{ company.twitter_url }}" target="_blank">Visit Twitter</a>
@@ -150,7 +150,7 @@
 					{% endif %}
 				</p>
 				<p>
-					<img src="/static/images/icon-facebook-white.png">
+					<img class="ed-social-icon" src="/static/images/icon-facebook-white.png">
 					{% if company.facebook_url %}
 						<span>
 							<a href="{{ company.facebook_url }}" target="_blank">Visit Facebook</a>
@@ -194,7 +194,7 @@
 
 					<div class="row-fluid ed-company-profile-sector-case-study-inner">
 						<div class="span4">
-							<p>{{ case_study.description }}</p>
+							<p>{{ case_study.short_summary }}</p>
 							<p class="supplier-case-study-read-more-cta">
 								<a href="{{ case_study.url }}">Read case study</a>
 							</p>
@@ -215,7 +215,11 @@
 							</p>
 							<p>
 								<span>Sector: </span>
-								<a href="{% url 'public-company-profiles-list' %}?sectors={{ case_study.sector.value }}">{{ case_study.sector.label }}</a>
+								{% if features.FEATURE_PUBLIC_PROFILES_ENABLED %}
+									<a href="{% url 'public-company-profiles-list' %}?sectors={{ case_study.sector.value }}">{{ case_study.sector.label }}</a>
+								{% else %}
+									<span>{{ case_study.sector.label }}</span>
+								{% endif %}
 							</p>
 						</div>
 					</div>
