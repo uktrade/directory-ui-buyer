@@ -61,9 +61,10 @@ class CaseStudyBasicInfoForm(IndentedInvalidFieldsMixin, AutoFocusFieldMixin,
         max_length=60,
     )
     short_summary = forms.CharField(
+        label='Summary of your case study or project',
         help_text=(
-            'Describe the project or case study for visitors to get a quick '
-            'insight when visiting your profile.'
+            'Summarise your case study in 50 words or fewer. This will'
+            ' appear on your main trade profile page.'
         ),
         max_length=200,
         widget=forms.Textarea,
@@ -73,19 +74,22 @@ class CaseStudyBasicInfoForm(IndentedInvalidFieldsMixin, AutoFocusFieldMixin,
         help_text=(
             'Describe the project or case study in 1,000 characters or fewer. '
             'Make sure you use this space to demonstrate the value of your '
-            'company to an international business audience'
+            'company to an international business audience.'
         ),
         max_length=1000,
         widget=forms.Textarea,
     )
     sector = forms.ChoiceField(
+        help_text=(
+            'Select the sector most relevant to your case study or project.'
+        ),
         choices=[('', 'Select Sector')] + list(choices.COMPANY_CLASSIFICATIONS)
     )
     website = forms.URLField(
-        label='URL for your case study (optional)',
+        label='The web address for your case study (optional)',
         help_text='Use a full web address (URL) including http:// or https://',
         max_length=255,
-        required=False
+        required=False,
     )
     keywords = forms.CharField(
         label=(
