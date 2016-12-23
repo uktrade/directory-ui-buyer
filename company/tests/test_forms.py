@@ -161,9 +161,9 @@ def test_case_study_form_all_fields():
 def test_case_study_rich_media_max_length():
     form = forms.CaseStudyRichMediaForm()
 
-    assert form.fields['image_one_caption'].max_length == 200
-    assert form.fields['image_two_caption'].max_length == 200
-    assert form.fields['image_three_caption'].max_length == 200
+    assert form.fields['image_one_caption'].max_length == 120
+    assert form.fields['image_two_caption'].max_length == 120
+    assert form.fields['image_three_caption'].max_length == 120
 
 
 def test_case_study_basic_info_max_length():
