@@ -56,20 +56,21 @@ class PublicProfileSearchForm(IndentedInvalidFieldsMixin, AutoFocusFieldMixin,
 class CaseStudyBasicInfoForm(IndentedInvalidFieldsMixin, AutoFocusFieldMixin,
                              forms.Form):
     title = forms.CharField(
-        label='Title of your case study of project:',
+        label='Title of your case study or project',
         help_text='Give your case study a title of 60 characters or fewer.',
         max_length=60,
     )
     short_summary = forms.CharField(
+        label='Summary of your case study or project',
         help_text=(
-            'Describe the project or case study for visitors to get a quick '
-            'insight when visiting your profile.'
+            'Summarise your case study in 50 words or fewer. This will'
+            ' appear on your main trade profile page.'
         ),
         max_length=200,
         widget=forms.Textarea,
     )
     description = forms.CharField(
-        label='Describe your case study or project:',
+        label='Describe your case study or project',
         help_text=(
             'Describe the project or case study in 1,000 characters or fewer. '
             'Make sure you use this space to demonstrate the value of your '
@@ -79,18 +80,21 @@ class CaseStudyBasicInfoForm(IndentedInvalidFieldsMixin, AutoFocusFieldMixin,
         widget=forms.Textarea,
     )
     sector = forms.ChoiceField(
-        choices=choices.COMPANY_CLASSIFICATIONS,
+        help_text=(
+            'Select the sector most relevant to your case study or project.'
+        ),
+        choices=[('', 'Select Sector')] + list(choices.COMPANY_CLASSIFICATIONS)
     )
     website = forms.URLField(
-        label='URL for your case study (optional):',
+        label='The web address for your case study (optional)',
         help_text='Use a full web address (URL) including http:// or https://',
         max_length=255,
-        required=False
+        required=False,
     )
     keywords = forms.CharField(
         label=(
-            'Enter up to 10 keywords that describe your case study '
-            '(separated by commas):'
+            'Enter up to 10 keywords that describe your case study, '
+            'separated by commas'
         ),
         help_text=(
             'These keywords will be used to help potential overseas buyers '
@@ -105,58 +109,85 @@ class CaseStudyBasicInfoForm(IndentedInvalidFieldsMixin, AutoFocusFieldMixin,
 class CaseStudyRichMediaForm(IndentedInvalidFieldsMixin, AutoFocusFieldMixin,
                              forms.Form):
     image_one = forms.FileField(
+        label='Upload main image for this case study',
+        help_text=(
+            'This will appear at the top of your case study and on your'
+            ' trade profile.'
+        ),
         required=False,
         validators=[shared_validators.case_study_image_filesize]
     )
     image_one_caption = forms.CharField(
-        label='Caption for image one (optional):',
-        help_text='Use this to add a caption for the first image.',
-        max_length=200,
+        label=(
+            'Add a caption that tells visitors what the main image'
+            ' represents'
+        ),
+        help_text='Maximum 120 characters',
+        max_length=120,
         widget=forms.Textarea,
         required=False,
     )
     image_two = forms.FileField(
+        label='Upload a second image (optional)',
+        help_text='This image will appear at the end of this case study.',
         required=False,
         validators=[shared_validators.case_study_image_filesize]
     )
     image_two_caption = forms.CharField(
-        label='Caption for image two (optional):',
-        help_text='Use this to add a caption for the second image.',
-        max_length=200,
+        label=(
+            'Add a caption that tells visitors what this second image '
+            'represents'
+        ),
+        help_text='Maximum 120 characters',
+        max_length=120,
         widget=forms.Textarea,
         required=False,
     )
     image_three = forms.FileField(
+        label='Upload a third image (optional)',
+        help_text=(
+            'This image will appear at the end of this case study, '
+            'after the second image.'
+        ),
         required=False,
         validators=[shared_validators.case_study_image_filesize]
     )
     image_three_caption = forms.CharField(
-        label='Caption for image three (optional):',
-        help_text='Use this to add a caption for the third image.',
-        max_length=200,
+        label=(
+            'Add a caption that tells visitors what this third image '
+            'represents'
+        ),
+        help_text='Maximum 120 characters',
+        max_length=120,
         widget=forms.Textarea,
         required=False,
     )
     testimonial = forms.CharField(
+        label='Testimonial or block quote',
+        help_text=(
+            'Add a testimonial from a satisfied client or use this space'
+            ' to highlight an important part of your case study.'
+        ),
         max_length=1000,
         required=False,
         widget=forms.Textarea,
     )
     testimonial_name = forms.CharField(
-        label='Source - full name',
-        help_text='The name of the person who gave the testimonial',
+        label='Full name of the source of the testimonial (optional)',
+        help_text=(
+            'Add the source to make the quote more credible and to '
+            'help buyers understand the importance of the testimonial.'
+        ),
         max_length=255,
         required=False,
     )
     testimonial_job_title = forms.CharField(
-        label="Source - job title",
-        help_text="The job title of the person who gave the testimonial",
+        label='Job title of the source (optional)',
         max_length=255,
         required=False,
     )
     testimonial_company = forms.CharField(
-        label='Source - company name',
-        help_text='The company of the person who gave the testimonial',
+        label="Company name of the source (optional)",
         max_length=255,
         required=False,
     )

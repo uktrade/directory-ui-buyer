@@ -137,6 +137,12 @@ def test_case_study_form_required_fields():
     assert form.errors['keywords'] == [REQUIRED_MESSAGE]
 
 
+def test_case_study_form_sectors_contains_empty_choice():
+    form = forms.CaseStudyBasicInfoForm(data={})
+
+    assert form.fields['sector'].choices[0] == ('', 'Select Sector')
+
+
 def test_case_study_form_all_fields():
     data = {
         'title': 'a title',
@@ -155,9 +161,9 @@ def test_case_study_form_all_fields():
 def test_case_study_rich_media_max_length():
     form = forms.CaseStudyRichMediaForm()
 
-    assert form.fields['image_one_caption'].max_length == 200
-    assert form.fields['image_two_caption'].max_length == 200
-    assert form.fields['image_three_caption'].max_length == 200
+    assert form.fields['image_one_caption'].max_length == 120
+    assert form.fields['image_two_caption'].max_length == 120
+    assert form.fields['image_three_caption'].max_length == 120
 
 
 def test_case_study_basic_info_max_length():
