@@ -90,7 +90,11 @@ def format_company_details(details):
 
 
 def format_case_study(case_study):
-    case_study['sector'] = pair_sector_value_with_label(case_study['sector'])
+    sector_value = case_study['sector']
+    case_study['sector'] = {
+        'url': settings.SUPPLIER_PROFILE_LIST_URL.format(sectors=sector_value),
+        'label': get_sectors_label(sector_value),
+    }
     case_study['url'] = get_case_study_url(case_study['pk'])
     return case_study
 

@@ -4,7 +4,6 @@ from unittest.mock import Mock
 from directory_validators.constants import choices
 
 from django.conf import settings
-from django.core.urlresolvers import reverse
 from django.template.loader import render_to_string
 
 from enrolment import forms
@@ -151,28 +150,6 @@ def test_google_tag_manager():
     # sanity check
     assert 'www.googletagmanager.com' in expected_head
     assert 'www.googletagmanager.com' in expected_body
-
-
-def test_international_landing_page_sector_feature_flag_enabled():
-    context = {
-        'features': {
-            'FEATURE_SECTOR_LANDING_PAGES_ENABLED': True
-        }
-    }
-    html = render_to_string('landing-page-international.html', context)
-
-    assert reverse('international-sector-list') in html
-
-
-def test_international_landing_page_sector_feature_flag_disabled():
-    context = {
-        'features': {
-            'FEATURE_SECTOR_LANDING_PAGES_ENABLED': False
-        }
-    }
-    html = render_to_string('landing-page-international.html', context)
-
-    assert reverse('international-sector-list') not in html
 
 
 def test_enrolment_instructions_page_renders():

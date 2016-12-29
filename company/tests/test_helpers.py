@@ -222,9 +222,10 @@ def test_format_company_details_none_address_not_set(profile_data):
 
 def test_format_case_study(supplier_case_study_data, settings):
     settings.SUPPLIER_CASE_STUDY_URL = 'http://case_study.com/{id}'
+    settings.SUPPLIER_PROFILE_LIST_URL = 'http://list.com/{sectors}'
     actual = helpers.format_case_study(supplier_case_study_data)
     assert actual['sector'] == {
         'label': 'Software and computer services',
-        'value': 'SOFTWARE_AND_COMPUTER_SERVICES',
+        'url': 'http://list.com/SOFTWARE_AND_COMPUTER_SERVICES',
     }
     assert actual['url'] == 'http://case_study.com/2'

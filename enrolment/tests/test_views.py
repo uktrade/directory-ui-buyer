@@ -6,14 +6,11 @@ import pytest
 
 from django.core.urlresolvers import reverse
 
-from enrolment import constants, forms, helpers
+from enrolment import forms, helpers
 from enrolment.views import (
     api_client,
     EnrolmentView,
     EnrolmentInstructionsView,
-    InternationalLandingView,
-    InternationalLandingSectorListView,
-    InternationalLandingSectorDetailView
 )
 from sso.utils import SSOUser
 
@@ -227,76 +224,3 @@ def test_enrolment_logged_out_has_company_redirects(
          '?next=http%3A//testserver/register/' + step
     )
     mock_has_company.assert_not_called()
-
-
-def test_international_landing_view_template_new(settings, anon_request):
-    settings.FEATURE_NEW_INTERNATIONAL_LANDING_PAGE_ENABLED = True
-    view = InternationalLandingView
-
-    response = view.as_view()(anon_request)
-
-    assert response.template_name == [view.template_name_new]
-
-
-def test_international_landing_view_template_old(settings, anon_request):
-    settings.FEATURE_NEW_INTERNATIONAL_LANDING_PAGE_ENABLED = False
-    view = InternationalLandingView
-
-    response = view.as_view()(anon_request)
-
-    assert response.template_name == [view.template_name_old]
-
-
-@patch.object(api_client.buyer, 'send_form')
-def test_international_landing_view_submit(
-    mock_send_form, buyer_request, buyer_form_data
-):
-    response = InternationalLandingView.as_view()(buyer_request)
-
-    assert response.template_name == InternationalLandingView.success_template
-    mock_send_form.assert_called_once_with(
-        forms.serialize_international_buyer_forms(buyer_form_data)
-    )
-
-
-@patch.object(api_client.buyer, 'send_form')
-def test_international_landing_sector_list_view_submit(
-    mock_send_form, buyer_request, buyer_form_data
-):
-    response = InternationalLandingSectorListView.as_view()(buyer_request)
-    expected_template = InternationalLandingSectorListView.success_template
-
-    assert response.template_name == expected_template
-    mock_send_form.assert_called_once_with(
-        forms.serialize_international_buyer_forms(buyer_form_data)
-    )
-
-
-def test_international_landing_page_sector_specific_unknown(client):
-    url = reverse('international-sector-detail', kwargs={'slug': 'jam'})
-
-    response = client.get(url)
-
-    assert response.status_code == http.client.NOT_FOUND
-
-
-def test_international_landing_page_sector_specific_known(client):
-    for slug, values in InternationalLandingSectorDetailView.pages.items():
-        context = values['context']
-        template_name = values['template']
-        url = reverse('international-sector-detail', kwargs={'slug': slug})
-
-        response = client.get(url)
-
-        assert response.status_code == http.client.OK
-        assert response.template_name == [template_name]
-        assert response.context_data['case_study'] == context['case_study']
-        assert response.context_data['companies'] == context['companies']
-
-
-def test_international_landing_page_sector_context(client):
-    pages = InternationalLandingSectorDetailView.pages
-    assert pages['health']['context'] == constants.HEALTH_SECTOR_CONTEXT
-    assert pages['tech']['context'] == constants.TECH_SECTOR_CONTEXT
-    assert pages['creative']['context'] == constants.CREATIVE_SECTOR_CONTEXT
-    assert pages['food-and-drink']['context'] == constants.FOOD_SECTOR_CONTEXT

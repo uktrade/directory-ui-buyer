@@ -43,7 +43,6 @@ INSTALLED_APPS = [
     "formtools",
     "ui",
     "enrolment",
-    "supplier",
     "company",
     "directory_constants",
 ]
@@ -205,6 +204,7 @@ SSO_SESSION_COOKIE = os.environ["SSO_SESSION_COOKIE"]
 
 # directory-ui
 SUPPLIER_CASE_STUDY_URL = os.environ['SUPPLIER_CASE_STUDY_URL']
+SUPPLIER_PROFILE_LIST_URL = os.environ['SUPPLIER_PROFILE_LIST_URL']
 
 ANALYTICS_ID = os.getenv("ANALYTICS_ID")
 
@@ -241,12 +241,4 @@ COMPANIES_HOUSE_API_KEY = os.environ['COMPANIES_HOUSE_API_KEY']
 
 FEATURE_PUBLIC_PROFILES_ENABLED = (
     os.getenv('FEATURE_PUBLIC_PROFILES_ENABLED') == 'true'
-)
-
-FEATURE_SECTOR_LANDING_PAGES_ENABLED = (
-    os.getenv('FEATURE_SECTOR_LANDING_PAGES_ENABLED') == 'true'
-)
-
-FEATURE_NEW_INTERNATIONAL_LANDING_PAGE_ENABLED = (
-    os.getenv('FEATURE_NEW_INTERNATIONAL_LANDING_PAGE_ENABLED') == 'true'
 )
