@@ -219,7 +219,7 @@
 							<p>
 								<span>Sector: </span>
 								{% if features.FEATURE_PUBLIC_PROFILES_ENABLED %}
-									<a href="{% url 'public-company-profiles-list' %}?sectors={{ case_study.sector.value }}">{{ case_study.sector.label }}</a>
+									<a href="{{ case_study.sector.url }}">{{ case_study.sector.label }}</a>
 								{% else %}
 									<span>{{ case_study.sector.label }}</span>
 								{% endif %}
