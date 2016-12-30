@@ -114,7 +114,6 @@ class CaseStudyRichMediaForm(IndentedInvalidFieldsMixin, AutoFocusFieldMixin,
             'This will appear at the top of your case study and on your'
             ' trade profile.'
         ),
-        required=False,
         validators=[shared_validators.case_study_image_filesize]
     )
     image_one_caption = forms.CharField(
@@ -125,7 +124,6 @@ class CaseStudyRichMediaForm(IndentedInvalidFieldsMixin, AutoFocusFieldMixin,
         help_text='Maximum 120 characters',
         max_length=120,
         widget=forms.Textarea,
-        required=False,
     )
     image_two = forms.FileField(
         label='Upload a second image (optional)',

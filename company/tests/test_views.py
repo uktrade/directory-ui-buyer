@@ -77,20 +77,26 @@ def sso_request(rf, client, sso_user):
 
 @pytest.fixture(scope='session')
 def image_one(tmpdir_factory):
-    return tmpdir_factory.mktemp('media').join('image_one.png').write('1')
+    image = tmpdir_factory.mktemp('media').join('image_one.png')
+    image.write('1')
+    return image
 
 
 @pytest.fixture(scope='session')
 def image_two(tmpdir_factory):
-    return tmpdir_factory.mktemp('media').join('image_two.png').write('2')
+    image = tmpdir_factory.mktemp('media').join('image_two.png')
+    image.write('2')
+    return image
 
 
 @pytest.fixture(scope='session')
 def image_three(tmpdir_factory):
-    return tmpdir_factory.mktemp('media').join('image_three.png').write('3')
+    image = tmpdir_factory.mktemp('media').join('image_three.png')
+    image.write('3')
+    return image
 
 
-@pytest.fixture
+@pytest.fixture()
 def all_case_study_data(image_three, image_two, image_one):
     return {
         'title': 'Example',
@@ -106,7 +112,7 @@ def all_case_study_data(image_three, image_two, image_one):
         'image_one': image_one,
         'image_two': image_two,
         'image_three': image_three,
-        'image_one_caption': '',
+        'image_one_caption': 'nice image',
         'image_two_caption': '',
         'image_three_caption': '',
 
@@ -128,17 +134,19 @@ def supplier_case_study_basic_data(all_case_study_data):
 
 
 @pytest.fixture
-def supplier_case_study_rich_data(image_three, image_two, image_one):
-    view = views.SupplierCaseStudyWizardView
+def supplier_case_study_rich_data(all_case_study_data):
+    step = views.SupplierCaseStudyWizardView.RICH_MEDIA
+    data = all_case_study_data
     return {
-        'supplier_case_study_wizard_view-current_step': view.RICH_MEDIA,
-        view.RICH_MEDIA + '-image_one': image_one,
-        view.RICH_MEDIA + '-image_two': image_two,
-        view.RICH_MEDIA + '-image_three': image_three,
-        view.RICH_MEDIA + '-testimonial': 'Great',
-        view.RICH_MEDIA + '-testimonial_name': 'Neville',
-        view.RICH_MEDIA + '-testimonial_job_title': 'Abstract hat maker',
-        view.RICH_MEDIA + '-testimonial_company': 'Imaginary hats Ltd',
+        'supplier_case_study_wizard_view-current_step': step,
+        step + '-image_one': data['image_one'],
+        step + '-image_one_caption': data['image_one_caption'],
+        step + '-image_two': data['image_two'],
+        step + '-image_three': data['image_three'],
+        step + '-testimonial': data['description'],
+        step + '-testimonial_name': data['testimonial_name'],
+        step + '-testimonial_job_title': data['testimonial_job_title'],
+        step + '-testimonial_company': data['testimonial_company'],
     }
 
 
@@ -464,8 +472,14 @@ def test_case_study_create_api_success(
 
     assert response.status_code == http.client.FOUND
     assert response.get('Location') == reverse('company-detail')
+    data = all_case_study_data
+    # django converts uploaded files to UploadedFile, which makes
+    # `assert_called_once_with` tricky.
+    data['image_one'] = Wildcard()
+    data['image_two'] = Wildcard()
+    data['image_three'] = Wildcard()
     mock_create_case_study.assert_called_once_with(
-        data=all_case_study_data,
+        data=data,
         sso_user_id=sso_user.id,
     )
 
@@ -498,8 +512,14 @@ def test_case_study_update_api_success(
 
     assert response.status_code == http.client.FOUND
     assert response.get('Location') == reverse('company-detail')
+    data = all_case_study_data
+    # django converts uploaded files to UploadedFile, which makes
+    # `assert_called_once_with` tricky.
+    data['image_one'] = Wildcard()
+    data['image_two'] = Wildcard()
+    data['image_three'] = Wildcard()
     mock_update_case_study.assert_called_once_with(
-        data=all_case_study_data,
+        data=data,
         case_study_id='1',
         sso_user_id=sso_user.id,
     )
