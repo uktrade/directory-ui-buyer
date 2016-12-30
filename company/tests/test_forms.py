@@ -158,6 +158,16 @@ def test_case_study_form_all_fields():
     assert form.cleaned_data == data
 
 
+def test_case_study_rich_media_required():
+    form = forms.CaseStudyRichMediaForm()
+    assert form.fields['image_one'].required is True
+    assert form.fields['image_one_caption'].required is True
+    assert form.fields['image_two'].required is False
+    assert form.fields['image_two_caption'].required is False
+    assert form.fields['image_three'].required is False
+    assert form.fields['image_three_caption'].required is False
+
+
 def test_case_study_rich_media_max_length():
     form = forms.CaseStudyRichMediaForm()
 
