@@ -12,7 +12,6 @@
 {% block container_class %}ed-envelope-container{% endblock %}
 {% block form_subtitle %}
 	<p>The letter will be sent to your registered business address. You can change the name of the person who will receive this letter.</p>
-
 	<div class="ed-envelope">
 		<div class="ed-stamp">
 			<img src="{% static 'images/stamp.png' %}" /> 
@@ -30,5 +29,4 @@
 			<div>{{ all_cleaned_data.postal_code }}</div>
 		</div>
 	</div>
-
 {% endblock form_subtitle %}
