@@ -36,7 +36,7 @@ def create_mock_file():
     return Mock(size=1)
 
 
-def test_serialize_supplier_case_study_forms_string_images():
+def test_serialize_case_study_forms_string_images():
     data = {
         'title': 'a title',
         'description': 'a description',
@@ -71,12 +71,12 @@ def test_serialize_supplier_case_study_forms_string_images():
         'image_three_caption': 'image three caption',
     }
 
-    actual = forms.serialize_supplier_case_study_forms(data)
+    actual = forms.serialize_case_study_forms(data)
 
     assert actual == expected
 
 
-def test_serialize_supplier_case_study_forms_file_images():
+def test_serialize_case_study_forms_file_images():
     image_one = SimpleUploadedFile(name='image_one', content=b'one')
     image_two = SimpleUploadedFile(name='image_two', content=b'one')
     image_three = SimpleUploadedFile(name='image_three', content=b'one')
@@ -117,7 +117,7 @@ def test_serialize_supplier_case_study_forms_file_images():
         'image_three_caption': 'image three caption',
     }
 
-    actual = forms.serialize_supplier_case_study_forms(data)
+    actual = forms.serialize_case_study_forms(data)
 
     assert actual == expected
 

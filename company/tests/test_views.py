@@ -420,7 +420,7 @@ def company_profile_edit_goto_step(
 
 @patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
 @patch.object(views, 'has_company', Mock(return_value=True))
-@patch('api_client.api_client.company.retrieve_supplier_case_study')
+@patch('api_client.api_client.company.retrieve_private_case_study')
 def test_case_study_edit_retrieves_data(
     mock_retrieve_supplier_case_study, client
 ):
@@ -434,7 +434,7 @@ def test_case_study_edit_retrieves_data(
 
 @patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
 @patch.object(views, 'has_company', Mock(return_value=True))
-@patch('api_client.api_client.company.retrieve_supplier_case_study')
+@patch('api_client.api_client.company.retrieve_private_case_study')
 def test_case_study_edit_exposes_api_response_data(
     mock_retrieve_case_study, client, retrieve_supplier_case_study_200
 ):
@@ -448,7 +448,7 @@ def test_case_study_edit_exposes_api_response_data(
 
 @patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
 @patch.object(views, 'has_company', Mock(return_value=True))
-@patch('api_client.api_client.company.retrieve_supplier_case_study')
+@patch('api_client.api_client.company.retrieve_private_case_study')
 def test_case_study_edit_handles_api_error(
     mock_retrieve_case_study, client, api_response_400
 ):
@@ -461,7 +461,7 @@ def test_case_study_edit_handles_api_error(
 
 @patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
 @patch.object(views, 'has_company', Mock(return_value=True))
-@patch.object(views.api_client.company, 'create_supplier_case_study')
+@patch.object(views.api_client.company, 'create_case_study')
 def test_case_study_create_api_success(
     mock_create_case_study, supplier_case_study_end_to_end, sso_user,
     all_case_study_data, api_response_200
@@ -486,7 +486,7 @@ def test_case_study_create_api_success(
 
 @patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
 @patch.object(views, 'has_company', Mock(return_value=True))
-@patch.object(views.api_client.company, 'create_supplier_case_study')
+@patch.object(views.api_client.company, 'create_case_study')
 def test_case_study_create_api_failure(
     mock_create_case_study, supplier_case_study_end_to_end, api_response_400
 ):
@@ -501,7 +501,7 @@ def test_case_study_create_api_failure(
 
 @patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
 @patch.object(views, 'has_company', Mock(return_value=True))
-@patch.object(views.api_client.company, 'update_supplier_case_study')
+@patch.object(views.api_client.company, 'update_case_study')
 def test_case_study_update_api_success(
     mock_update_case_study, supplier_case_study_end_to_end, sso_user,
     all_case_study_data, api_response_200
@@ -527,7 +527,7 @@ def test_case_study_update_api_success(
 
 @patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
 @patch.object(views, 'has_company', Mock(return_value=True))
-@patch.object(views.api_client.company, 'update_supplier_case_study')
+@patch.object(views.api_client.company, 'update_case_study')
 def test_case_study_update_api_failure(
     mock_update_case_study, supplier_case_study_end_to_end, api_response_400
 ):

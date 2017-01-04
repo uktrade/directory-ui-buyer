@@ -104,12 +104,12 @@ class SupplierCaseStudyWizardView(
         BASIC: 'supplier-case-study-basic-form.html',
         RICH_MEDIA: 'supplier-case-study-rich-media-form.html',
     }
-    form_serializer = staticmethod(forms.serialize_supplier_case_study_forms)
+    form_serializer = staticmethod(forms.serialize_case_study_forms)
 
     def get_form_initial(self, step):
         if not self.kwargs['id']:
             return {}
-        response = api_client.company.retrieve_supplier_case_study(
+        response = api_client.company.retrieve_private_case_study(
             sso_user_id=self.request.sso_user.id,
             case_study_id=self.kwargs['id'],
         )
@@ -123,13 +123,13 @@ class SupplierCaseStudyWizardView(
     def done(self, *args, **kwags):
         data = self.serialize_form_data()
         if self.kwargs['id']:
-            response = api_client.company.update_supplier_case_study(
+            response = api_client.company.update_case_study(
                 data=data,
                 case_study_id=self.kwargs['id'],
                 sso_user_id=self.request.sso_user.id,
             )
         else:
-            response = api_client.company.create_supplier_case_study(
+            response = api_client.company.create_case_study(
                 sso_user_id=self.request.sso_user.id,
                 data=data,
             )
