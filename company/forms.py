@@ -87,14 +87,14 @@ class CaseStudyBasicInfoForm(IndentedInvalidFieldsMixin, AutoFocusFieldMixin,
     )
     website = forms.URLField(
         label='The web address for your case study (optional)',
-        help_text='Use a full web address (URL) including http:// or https://',
+        help_text='Enter a full URL including http:// or https://',
         max_length=255,
         required=False,
     )
     keywords = forms.CharField(
         label=(
-            'Enter up to 10 keywords that describe your case study, '
-            'separated by commas'
+            'Enter up to 10 keywords that describe your case study. '
+            'Keywords should be separated by commas.'
         ),
         help_text=(
             'These keywords will be used to help potential overseas buyers '
@@ -161,9 +161,9 @@ class CaseStudyRichMediaForm(IndentedInvalidFieldsMixin, AutoFocusFieldMixin,
         required=False,
     )
     testimonial = forms.CharField(
-        label='Testimonial or block quote',
+        label='Testimonial or block quote (optional)',
         help_text=(
-            'Add a testimonial from a satisfied client or use this space'
+            'Add testimonial from a satisfied client or use this space'
             ' to highlight an important part of your case study.'
         ),
         max_length=1000,
