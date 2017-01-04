@@ -180,7 +180,7 @@ def api_response_retrieve_supplier_case_study_200(supplier_case_study_data):
 @pytest.fixture(autouse=True)
 def retrieve_supplier_case_study_response(api_response_200):
     stub = patch(
-        'api_client.api_client.company.retrieve_supplier_case_study',
+        'api_client.api_client.company.retrieve_private_case_study',
         return_value=api_response_200,
     )
     stub.start()
@@ -204,7 +204,7 @@ def retrieve_supplier_case_study(
     api_response_retrieve_supplier_case_study_200
 ):
     stub = patch(
-        'api_client.api_client.company.retrieve_supplier_case_study',
+        'api_client.api_client.company.retrieve_private_case_study',
         return_value=api_response_retrieve_supplier_case_study_200,
     )
     stub.start()

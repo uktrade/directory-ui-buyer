@@ -413,7 +413,7 @@ class EmptyForm(forms.Form):
     pass
 
 
-def serialize_supplier_case_study_forms(cleaned_data):
+def serialize_case_study_forms(cleaned_data):
     """
     Return the shape directory-api-client expects for creating and updating
     supplier case studies.
