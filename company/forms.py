@@ -73,7 +73,7 @@ class CaseStudyBasicInfoForm(IndentedInvalidFieldsMixin, AutoFocusFieldMixin,
         label='Describe your case study or project',
         help_text=(
             'Describe the project or case study in 1,000 characters or fewer. '
-            'Make sure you use this space to demonstrate the value of your '
+            'Use this space to demonstrate the value of your '
             'company to an international business audience.'
         ),
         max_length=1000,
