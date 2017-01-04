@@ -87,7 +87,7 @@ class CaseStudyBasicInfoForm(IndentedInvalidFieldsMixin, AutoFocusFieldMixin,
     )
     website = forms.URLField(
         label='The web address for your case study (optional)',
-        help_text='Use a full web address (URL) including http:// or https://',
+        help_text='Enter a full URL including http:// or https://',
         max_length=255,
         required=False,
     )
