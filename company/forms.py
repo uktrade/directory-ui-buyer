@@ -235,8 +235,14 @@ class CompanyDescriptionForm(AutoFocusFieldMixin, IndentedInvalidFieldsMixin,
     description = forms.CharField(
         widget=forms.Textarea,
         label='Describe your business to overseas buyers:',
-        help_text='Maximum 1,000 characters.',
-        max_length=1000,
+        help_text='Maximum 2,000 characters.',
+        max_length=2000,
+    )
+    summary = forms.CharField(
+        widget=forms.Textarea,
+        label='Brief summary to make your company stand out to buyers:',
+        help_text='Maximum 250 characters.',
+        max_length=250,
     )
 
 
@@ -443,7 +449,7 @@ def serialize_case_study_forms(cleaned_data):
     # the existing value (rather than the real file). Things would get
     # confused if we send a string instead of a file here.
     for field in ['image_one', 'image_two', 'image_three']:
-        if not isinstance(cleaned_data[field], str):
+        if cleaned_data[field] and not isinstance(cleaned_data[field], str):
             data[field] = cleaned_data[field]
     return data
 
@@ -506,6 +512,7 @@ def serialize_company_description_form(cleaned_data):
 
     return {
         'description': cleaned_data['description'],
+        'summary': cleaned_data['summary']
     }
 
 

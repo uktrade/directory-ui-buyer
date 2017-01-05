@@ -11,6 +11,7 @@ def profile_data():
     return {
         'website': 'http://www.example.com',
         'description': 'bloody good',
+        'summary': 'good',
         'number': '01234567',
         'date_of_creation': '2010-10-10',
         'sectors': ['AGRICULTURE_HORTICULTURE_AND_FISHERIES'],
@@ -80,6 +81,7 @@ def test_get_company_profile_from_response(profile_data):
     expected = {
         'website': 'http://www.example.com',
         'description': 'bloody good',
+        'summary': 'good',
         'number': '01234567',
         'date_of_creation': datetime(2010, 10, 10),
         'sectors': [
@@ -113,6 +115,7 @@ def test_get_public_company_profile_from_response(profile_data):
     expected = {
         'website': 'http://www.example.com',
         'description': 'bloody good',
+        'summary': 'good',
         'number': '01234567',
         'date_of_creation': datetime(2010, 10, 10),
         'sectors': [
@@ -149,6 +152,7 @@ def test_get_company_list_from_response(public_companies):
             {
                 'website': 'http://www.example.com',
                 'description': 'bloody good',
+                'summary': 'good',
                 'number': '01234567',
                 'date_of_creation': datetime(2010, 10, 10),
                 'sectors': [

@@ -285,7 +285,8 @@ def test_company_profile_logo_validator():
 
 def test_company_description_form_accepts_valid_data():
     form = forms.CompanyDescriptionForm(data={
-        'description': 'thing'
+        'description': 'thing',
+        'summary': 'good',
     })
     assert form.is_valid() is True
     assert form.cleaned_data['description'] == 'thing'
@@ -396,9 +397,11 @@ def test_serialize_company_logo_form():
 def test_serialize_company_description_form():
     actual = forms.serialize_company_description_form({
         'description': 'Jolly good exporter.',
+        'summary': 'Nice and good'
     })
     expected = {
         'description': 'Jolly good exporter.',
+        'summary': 'Nice and good'
     }
     assert actual == expected
 

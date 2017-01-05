@@ -71,6 +71,7 @@ def format_company_details(details):
     return {
         'website': details['website'],
         'description': details['description'],
+        'summary': details['summary'],
         'number': details['number'],
         'date_of_creation': date_of_creation,
         'sectors': pair_sector_values_with_label(details['sectors']),
