@@ -112,9 +112,14 @@
 					<img src="{% static 'images/pencil-icon.png' %}" class="ed-icon-pencil" />
 					<b>Edit</b>
 				</a>
+				{% if company.summary %}
+					<p>{{ company.summary }}</p>
+				{% endif %}
 				{% if company.description %}
-					<p>{{company.description}}</p>
-				{% else %}
+					<p>{{ company.description }}</p>
+				{% endif %}
+
+				{% if not company.summary and not company.description %}
 					<p><a href="{% url 'company-edit-description' %}">Add a description</a></p>
 				{% endif %}
 			</div>
