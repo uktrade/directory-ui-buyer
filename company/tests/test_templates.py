@@ -13,7 +13,7 @@ default_context = {
         'employees': '1-10',
         'number': '123456',
         'name': 'UK exporting co ltd.',
-        'description': 'Exporters of UK wares.',
+        'summary': 'Exporters of UK wares.',
         'website': 'www.ukexportersnow.co.uk',
         'logo': 'www.ukexportersnow.co.uk/logo.png',
         'keywords': 'word1 word2',
@@ -22,9 +22,11 @@ default_context = {
         'contact_details': {
             'email_address': 'sales@example.com',
         },
+        'is_published': False,
         'twitter_url': 'https://www.twitter.com',
         'facebook_url': 'https://www.facebook.com',
         'linkedin_url': 'https://www.linkedin.com',
+        'public_profile_url': 'http://www.example.com/profile'
     }
 }
 
@@ -32,6 +34,33 @@ DATE_CREATED_LABEL = 'Incorporated'
 NO_RESULTS_FOUND_LABEL = 'No companies found'
 CONTACT_LINK_LABEL = 'Contact company'
 UPDATED_LABEL = 'Last updated'
+
+
+def test_company_profile_details_renders_public_link_if_published():
+    template_name = 'company-private-profile-detail.html'
+    context = {
+        'company': {
+            'summary': 'thing',
+            'public_profile_url': 'http://www.example.com/profile',
+            'is_published': True,
+        }
+    }
+    html = render_to_string(template_name, context)
+
+    assert html.count('href="http://www.example.com/profile"') == 2
+
+
+def test_company_profile_details_not_render_public_link_if_published():
+    template_name = 'company-private-profile-detail.html'
+    context = {
+        'company': {
+            'public_profile_url': 'http://www.example.com/profile',
+            'is_published': False,
+        }
+    }
+    html = render_to_string(template_name, context)
+
+    assert html.count('href="http://www.example.com/profile"') == 0
 
 
 def test_company_profile_details_renders_social_links():
@@ -90,10 +119,10 @@ def test_company_profile_details_renders_logo():
     assert default_context['company']['logo'] in html
 
 
-def test_company_profile_details_renders_description():
+def test_company_profile_details_renders_summary():
     template_name = 'company-private-profile-detail.html'
     html = render_to_string(template_name, default_context)
-    assert default_context['company']['description'] in html
+    assert default_context['company']['summary'] in html
 
 
 def test_company_profile_details_renders_sectors():

@@ -283,6 +283,13 @@ def test_company_profile_logo_validator():
     assert shared_enrolment_validators.logo_filesize in field.validators
 
 
+def test_company_description_form_field_lengths():
+    form = forms.CompanyDescriptionForm()
+
+    assert form.fields['description'].max_length == 2000
+    assert form.fields['summary'].max_length == 250
+
+
 def test_company_description_form_accepts_valid_data():
     form = forms.CompanyDescriptionForm(data={
         'description': 'thing',

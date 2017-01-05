@@ -87,6 +87,8 @@ def format_company_details(details):
         'twitter_url': details['twitter_url'],
         'facebook_url': details['facebook_url'],
         'linkedin_url': details['linkedin_url'],
+        'is_published': details['is_published'],
+        'public_profile_url': get_public_profile_url(details['number'])
     }
 
 
@@ -102,6 +104,10 @@ def format_case_study(case_study):
 
 def get_case_study_url(case_study_id):
     return settings.SUPPLIER_CASE_STUDY_URL.format(id=case_study_id)
+
+
+def get_public_profile_url(company_number):
+    return settings.SUPPLIER_PROFILE_URL.format(number=company_number)
 
 
 def get_company_profile(sso_id):
