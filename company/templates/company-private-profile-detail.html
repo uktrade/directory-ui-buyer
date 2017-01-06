@@ -112,10 +112,15 @@
 					<img src="{% static 'images/pencil-icon.png' %}" class="ed-icon-pencil" />
 					<b>Edit</b>
 				</a>
-				{% if company.description %}
-					<p>{{company.description}}</p>
-				{% else %}
+				{% if not company.summary %}
 					<p><a href="{% url 'company-edit-description' %}">Add a description</a></p>
+				{% else %}
+					{{ company.summary }}
+					{% if company.is_published %}
+						<a href="{{ company.public_profile_url }}">
+							Read full company profile
+						</a>
+					{% endif %}
 				{% endif %}
 			</div>
 
@@ -280,6 +285,15 @@
 				</div>
 			</div>
 		</div>
+
+		{% if company.is_published %}
+
+			<div class="ed-company-profile-add-case-study-button-container" style="color: #004F95;">
+				<a href="{{ company.public_profile_url }}" class="ed-filled-button-primary">
+					<span>View your published profile on our International Find a Supplier website</span>
+				</a>
+			</div>
+		{% endif %}
 
 	</div>
 </div>

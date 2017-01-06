@@ -11,6 +11,7 @@ def profile_data():
     return {
         'website': 'http://www.example.com',
         'description': 'bloody good',
+        'summary': 'good',
         'number': '01234567',
         'date_of_creation': '2010-10-10',
         'sectors': ['AGRICULTURE_HORTICULTURE_AND_FISHERIES'],
@@ -21,6 +22,7 @@ def profile_data():
         'supplier_case_studies': [],
         'modified': '2016-11-23T11:21:10.977518Z',
         'verified_with_code': True,
+        'is_published': False,
         'twitter_url': 'http://www.twitter.com',
         'facebook_url': 'http://www.facebook.com',
         'linkedin_url': 'http://www.linkedin.com',
@@ -74,12 +76,14 @@ def test_pair_sector_values_with_label_empty():
         assert helpers.pair_sector_values_with_label(value) == []
 
 
-def test_get_company_profile_from_response(profile_data):
+def test_get_company_profile_from_response(profile_data, settings):
+    settings.SUPPLIER_PROFILE_URL = 'http://profile.com/{number}'
     response = requests.Response()
     response.json = lambda: profile_data
     expected = {
         'website': 'http://www.example.com',
         'description': 'bloody good',
+        'summary': 'good',
         'number': '01234567',
         'date_of_creation': datetime(2010, 10, 10),
         'sectors': [
@@ -102,17 +106,21 @@ def test_get_company_profile_from_response(profile_data):
         'twitter_url': 'http://www.twitter.com',
         'facebook_url': 'http://www.facebook.com',
         'linkedin_url': 'http://www.linkedin.com',
+        'is_published': False,
+        'public_profile_url': 'http://profile.com/01234567',
     }
     actual = helpers.get_company_profile_from_response(response)
     assert actual == expected
 
 
-def test_get_public_company_profile_from_response(profile_data):
+def test_get_public_company_profile_from_response(profile_data, settings):
+    settings.SUPPLIER_PROFILE_URL = 'http://profile.com/{number}'
     response = requests.Response()
     response.json = lambda: profile_data
     expected = {
         'website': 'http://www.example.com',
         'description': 'bloody good',
+        'summary': 'good',
         'number': '01234567',
         'date_of_creation': datetime(2010, 10, 10),
         'sectors': [
@@ -135,12 +143,15 @@ def test_get_public_company_profile_from_response(profile_data):
         'twitter_url': 'http://www.twitter.com',
         'facebook_url': 'http://www.facebook.com',
         'linkedin_url': 'http://www.linkedin.com',
+        'is_published': False,
+        'public_profile_url': 'http://profile.com/01234567',
     }
     actual = helpers.get_public_company_profile_from_response(response)
     assert actual == expected
 
 
-def test_get_company_list_from_response(public_companies):
+def test_get_company_list_from_response(public_companies, settings):
+    settings.SUPPLIER_PROFILE_URL = 'http://profile.com/{number}'
     response = requests.Response()
     response.json = lambda: public_companies
     expected = {
@@ -149,6 +160,7 @@ def test_get_company_list_from_response(public_companies):
             {
                 'website': 'http://www.example.com',
                 'description': 'bloody good',
+                'summary': 'good',
                 'number': '01234567',
                 'date_of_creation': datetime(2010, 10, 10),
                 'sectors': [
@@ -171,6 +183,8 @@ def test_get_company_list_from_response(public_companies):
                 'twitter_url': 'http://www.twitter.com',
                 'facebook_url': 'http://www.facebook.com',
                 'linkedin_url': 'http://www.linkedin.com',
+                'is_published': False,
+                'public_profile_url': 'http://profile.com/01234567',
             }
         ]
     }
