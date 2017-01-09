@@ -232,17 +232,17 @@ class CompanyBasicInfoForm(AutoFocusFieldMixin, IndentedInvalidFieldsMixin,
 
 class CompanyDescriptionForm(AutoFocusFieldMixin, IndentedInvalidFieldsMixin,
                              forms.Form):
-    description = forms.CharField(
-        widget=forms.Textarea,
-        label='Describe your business to overseas buyers:',
-        help_text='Maximum 2,000 characters.',
-        max_length=2000,
-    )
     summary = forms.CharField(
         widget=forms.Textarea,
         label='Brief summary to make your company stand out to buyers:',
         help_text='Maximum 250 characters.',
         max_length=250,
+    )
+    description = forms.CharField(
+        widget=forms.Textarea,
+        label='Describe your business to overseas buyers:',
+        help_text='Maximum 2,000 characters.',
+        max_length=2000,
     )
 
 

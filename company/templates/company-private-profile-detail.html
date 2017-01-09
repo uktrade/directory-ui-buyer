@@ -117,7 +117,7 @@
 				{% else %}
 					{{ company.summary }}
 					{% if company.is_published %}
-						<a href="{{ company.public_profile_url }}">
+						<a href="{{ company.public_profile_url }}" target="_blank">
 							Read full company profile
 						</a>
 					{% endif %}
@@ -289,7 +289,7 @@
 		{% if company.is_published %}
 
 			<div class="ed-company-profile-add-case-study-button-container" style="color: #004F95;">
-				<a href="{{ company.public_profile_url }}" class="ed-filled-button-primary">
+				<a href="{{ company.public_profile_url }}" target="_blank" class="ed-filled-button-primary">
 					<span>View your published profile on our International Find a Supplier website</span>
 				</a>
 			</div>
