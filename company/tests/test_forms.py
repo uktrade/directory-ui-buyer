@@ -18,20 +18,6 @@ URL_FORMAT_MESSAGE = URLValidator.message
 REQUIRED_MESSAGE = Field.default_error_messages['required']
 
 
-@pytest.fixture
-def company_profile():
-    return {
-        'name': 'Example corp',
-        'website': 'http://www.example.com',
-        'sectors': [choices.COMPANY_CLASSIFICATIONS[1][0]],
-        'keywords': 'Thing, Thinger',
-        'employees': choices.EMPLOYEES[1][0],
-        'contact_details': {
-            'full_name': 'Jim Example'
-        },
-    }
-
-
 def create_mock_file():
     return Mock(size=1)
 
@@ -375,17 +361,15 @@ def test_serialize_company_profile_forms():
         'name': 'Example ltd.',
         'sectors': ['1', '2'],
         'website': 'http://example.com',
-        'contact_details': {
-            'address_line_1': '123 Fake Street',
-            'address_line_2': 'Fakeville',
-            'country': 'GB',
-            'email_address': 'Jeremy@example.com',
-            'email_full_name': 'Jeremy email',
-            'locality': 'London',
-            'po_box': '124',
-            'postal_code': 'E14 9IX',
-            'postal_full_name': 'Jeremy postal',
-        }
+        'address_line_1': '123 Fake Street',
+        'address_line_2': 'Fakeville',
+        'country': 'GB',
+        'email_address': 'Jeremy@example.com',
+        'email_full_name': 'Jeremy email',
+        'locality': 'London',
+        'po_box': '124',
+        'postal_code': 'E14 9IX',
+        'postal_full_name': 'Jeremy postal',
     }
     assert actual == expected
 
@@ -445,10 +429,8 @@ def test_serialize_company_contact_form():
         'email_address': 'jim@example.com',
     }
     expected = {
-        'contact_details': {
-            'email_full_name': 'Jim',
-            'email_address': 'jim@example.com',
-        }
+        'email_full_name': 'Jim',
+        'email_address': 'jim@example.com',
     }
     assert forms.serialize_company_contact_form(data) == expected
 
@@ -466,15 +448,13 @@ def test_serialize_company_address_form():
         'postal_full_name': 'Jeremy postal',
     })
     expected = {
-        'contact_details': {
-            'address_line_1': '123 Fake Street',
-            'address_line_2': 'Fakeville',
-            'country': 'GB',
-            'locality': 'London',
-            'po_box': '124',
-            'postal_code': 'E14 9IX',
-            'postal_full_name': 'Jeremy postal',
-        }
+        'address_line_1': '123 Fake Street',
+        'address_line_2': 'Fakeville',
+        'country': 'GB',
+        'locality': 'London',
+        'po_box': '124',
+        'postal_code': 'E14 9IX',
+        'postal_full_name': 'Jeremy postal',
     }
     assert actual == expected
 
@@ -545,39 +525,43 @@ def test_company_address_verification_accepts_valid():
     assert form.cleaned_data == data
 
 
-def test_is_optional_profile_values_set_all_set(company_profile):
-    assert forms.is_optional_profile_values_set(company_profile) is True
+def test_is_optional_profile_values_set_all_set(retrieve_profile_data):
+    assert forms.is_optional_profile_values_set(retrieve_profile_data) is True
 
 
-def test_is_optional_profile_values_set_some_missing(company_profile):
+def test_is_optional_profile_values_set_some_missing(retrieve_profile_data):
     optional_fields = [
         'name',
         'website',
         'sectors',
         'keywords',
         'employees',
-        'contact_details',
+        'postal_full_name',
+        'email_address',
+        'email_full_name',
     ]
 
     for field in optional_fields:
-        data = company_profile.copy()
+        data = retrieve_profile_data.copy()
         del data[field]
         assert forms.is_optional_profile_values_set(data) is False
 
 
-def test_is_optional_profile_values_set_some_empty(company_profile):
+def test_is_optional_profile_values_set_some_empty(retrieve_profile_data):
     field_names = [
         'name',
         'website',
         'sectors',
         'keywords',
         'employees',
-        'contact_details',
+        'postal_full_name',
+        'email_address',
+        'email_full_name',
     ]
-    empty_values = [None, '', 0, {}, False, []]
+    empty_values = ['', 0, {}, False, []]
 
     for field_name, value in itertools.product(field_names, empty_values):
-        data = company_profile.copy()
+        data = retrieve_profile_data.copy()
         data[field_name] = value
         assert forms.is_optional_profile_values_set(data) is False
 

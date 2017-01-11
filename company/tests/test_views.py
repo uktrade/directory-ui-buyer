@@ -158,17 +158,15 @@ def all_company_profile_data():
         'keywords': 'Nice, Great',
         'employees': choices.EMPLOYEES[1][0],
         'sectors': [choices.COMPANY_CLASSIFICATIONS[1][0]],
-        'contact_details': {
-            'email_full_name': 'Jeremy',
-            'email_address': 'test@example.com',
-            'postal_full_name': 'Jeremy',
-            'address_line_1': '123 Fake Street',
-            'address_line_2': 'Fakeville',
-            'locality': 'London',
-            'postal_code': 'E14 6XK',
-            'po_box': 'abc',
-            'country': 'GB',
-        },
+        'email_full_name': 'Jeremy',
+        'email_address': 'test@example.com',
+        'postal_full_name': 'Jeremy',
+        'address_line_1': '123 Fake Street',
+        'address_line_2': 'Fakeville',
+        'locality': 'London',
+        'postal_code': 'E14 6XK',
+        'po_box': 'abc',
+        'country': 'GB',
     }
 
 
@@ -195,7 +193,7 @@ def company_profile_social_links_data(all_social_links_data):
 @pytest.fixture
 def company_profile_address_data(all_company_profile_data):
     view = views.SupplierCompanyProfileEditView
-    data = all_company_profile_data['contact_details']
+    data = all_company_profile_data
     return {
         'supplier_company_profile_edit_view-current_step': view.ADDRESS,
         view.ADDRESS + '-postal_full_name': data['postal_full_name'],
@@ -269,7 +267,7 @@ def company_profile_sectors_standalone_data(
 @pytest.fixture
 def company_profile_contact_data(all_company_profile_data):
     view = views.SupplierCompanyProfileEditView
-    data = all_company_profile_data['contact_details']
+    data = all_company_profile_data
     return {
         'supplier_company_profile_edit_view-current_step': view.CONTACT,
         view.CONTACT + '-email_address': data['email_address'],
@@ -938,7 +936,7 @@ def test_supplier_company_profile_edit_create_api_failure(
 def test_supplier_company_profile_initial_address_from_profile(
     company_profile_edit_goto_step, retrieve_profile_data
 ):
-    expected = retrieve_profile_data['contact_details'].copy()
+    expected = retrieve_profile_data.copy()
     expected['signature'] = Wildcard()
 
     response = company_profile_edit_goto_step(
@@ -974,7 +972,7 @@ def test_supplier_company_profile_initial_address_from_companies_house(
 def test_supplier_company_profile_initial_data_contact_from_profile(
     company_profile_edit_goto_step, retrieve_profile_data
 ):
-    expected = retrieve_profile_data['contact_details']
+    expected = retrieve_profile_data
 
     response = company_profile_edit_goto_step(
         step=views.SupplierCompanyProfileEditView.CONTACT
@@ -1117,15 +1115,13 @@ def test_supplier_address_edit_standalone_view_api_success(
     mock_update_profile.assert_called_once_with(
         sso_user_id=sso_user.id,
         data={
-            'contact_details': {
-                'postal_code': 'E14 6XK',
-                'country': 'GB',
-                'address_line_2': 'Fakeville',
-                'postal_full_name': 'Jeremy',
-                'address_line_1': '123 Fake Street',
-                'po_box': 'abc',
-                'locality': 'London'
-            }
+            'postal_code': 'E14 6XK',
+            'country': 'GB',
+            'address_line_2': 'Fakeville',
+            'postal_full_name': 'Jeremy',
+            'address_line_1': '123 Fake Street',
+            'po_box': 'abc',
+            'locality': 'London'
         }
     )
 
@@ -1136,7 +1132,7 @@ def test_supplier_contact_edit_standalone_initial_data(
     client, retrieve_profile_data
 ):
     response = client.get(reverse('company-edit-contact'))
-    expected = retrieve_profile_data['contact_details']
+    expected = retrieve_profile_data
 
     assert response.context_data['form'].initial == expected
 
@@ -1156,10 +1152,8 @@ def test_supplier_contact_edit_standalone_view_api_success(
     mock_update_profile.assert_called_once_with(
         sso_user_id=sso_user.id,
         data={
-            'contact_details': {
-                'email_full_name': 'Jeremy',
-                'email_address': 'test@example.com',
-            }
+            'email_full_name': 'Jeremy',
+            'email_address': 'test@example.com',
         }
     )
 

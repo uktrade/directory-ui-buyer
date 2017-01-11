@@ -7,40 +7,6 @@ from company import helpers
 
 
 @pytest.fixture
-def profile_data():
-    return {
-        'website': 'http://www.example.com',
-        'description': 'bloody good',
-        'summary': 'good',
-        'number': '01234567',
-        'date_of_creation': '2010-10-10',
-        'sectors': ['AGRICULTURE_HORTICULTURE_AND_FISHERIES'],
-        'logo': 'nice.png',
-        'name': 'Great corp',
-        'keywords': 'I found it most pleasing, hi',
-        'employees': '1001-10000',
-        'supplier_case_studies': [],
-        'modified': '2016-11-23T11:21:10.977518Z',
-        'verified_with_code': True,
-        'is_published': False,
-        'twitter_url': 'http://www.twitter.com',
-        'facebook_url': 'http://www.facebook.com',
-        'linkedin_url': 'http://www.linkedin.com',
-        'contact_details': {
-            'email_address': 'sales@example.com',
-        },
-    }
-
-
-@pytest.fixture
-def public_companies(profile_data):
-    return {
-        'count': 100,
-        'results': [profile_data]
-    }
-
-
-@pytest.fixture
 def public_companies_empty():
     return {
         'count': 0,
@@ -76,118 +42,128 @@ def test_pair_sector_values_with_label_empty():
         assert helpers.pair_sector_values_with_label(value) == []
 
 
-def test_get_company_profile_from_response(profile_data, settings):
+def test_get_company_profile_from_response(
+    api_response_company_profile_200, settings
+):
     settings.SUPPLIER_PROFILE_URL = 'http://profile.com/{number}'
-    response = requests.Response()
-    response.json = lambda: profile_data
+    response = api_response_company_profile_200
     expected = {
-        'website': 'http://www.example.com',
-        'description': 'bloody good',
-        'summary': 'good',
-        'number': '01234567',
-        'date_of_creation': datetime(2010, 10, 10),
-        'sectors': [
-            {
-                'label': 'Agriculture, horticulture and fisheries',
-                'value': 'AGRICULTURE_HORTICULTURE_AND_FISHERIES',
-            }
-        ],
-        'logo': 'nice.png',
-        'name': 'Great corp',
-        'keywords': 'I found it most pleasing, hi',
-        'employees': '1,001-10,000',
-        'supplier_case_studies': [],
-        'modified': datetime(2016, 11, 23, 11, 21, 10, 977518),
-        'verified_with_code': True,
-        'is_address_set': True,
-        'contact_details': {
-            'email_address': 'sales@example.com',
-        },
-        'twitter_url': 'http://www.twitter.com',
-        'facebook_url': 'http://www.facebook.com',
+        'public_profile_url': 'http://profile.com/123456',
         'linkedin_url': 'http://www.linkedin.com',
-        'is_published': False,
-        'public_profile_url': 'http://profile.com/01234567',
+        'has_valid_address': True,
+        'country': 'GB',
+        'email_full_name': 'Jeremy',
+        'locality': 'London',
+        'name': 'Great company',
+        'modified': datetime(2016, 11, 23, 11, 21, 10, 977518),
+        'website': 'http://example.com',
+        'postal_code': 'E14 6XK',
+        'mobile_number': '07507694377',
+        'supplier_case_studies': [],
+        'verified_with_code': True,
+        'sectors': [{'value': 'SECURITY', 'label': 'Security'}],
+        'number': 123456,
+        'postal_full_name': 'Jeremy',
+        'po_box': '',
+        'keywords': 'word1, word2',
+        'is_published': True,
+        'employees': '501-1,000',
+        'twitter_url': 'http://www.twitter.com',
+        'date_of_creation': datetime(2015, 3, 2, 0, 0),
+        'email_address': 'test@example.com',
+        'address_line_2': 'Fakeville',
+        'address_line_1': '123 Fake Street',
+        'summary': 'good',
+        'logo': 'nice.jpg',
+        'facebook_url': 'http://www.facebook.com',
+        'description': 'Ecommerce website',
     }
     actual = helpers.get_company_profile_from_response(response)
+
     assert actual == expected
 
 
-def test_get_public_company_profile_from_response(profile_data, settings):
+def test_get_public_company_profile_from_response(
+    api_response_company_profile_200, settings
+):
     settings.SUPPLIER_PROFILE_URL = 'http://profile.com/{number}'
-    response = requests.Response()
-    response.json = lambda: profile_data
+    response = api_response_company_profile_200
     expected = {
-        'website': 'http://www.example.com',
-        'description': 'bloody good',
-        'summary': 'good',
-        'number': '01234567',
-        'date_of_creation': datetime(2010, 10, 10),
-        'sectors': [
-            {
-                'label': 'Agriculture, horticulture and fisheries',
-                'value': 'AGRICULTURE_HORTICULTURE_AND_FISHERIES',
-            }
-        ],
-        'logo': 'nice.png',
-        'name': 'Great corp',
-        'keywords': 'I found it most pleasing, hi',
-        'employees': '1,001-10,000',
+        'sectors': [{'value': 'SECURITY', 'label': 'Security'}],
+        'email_full_name': 'Jeremy',
+        'website': 'http://example.com',
+        'date_of_creation': datetime(2015, 3, 2),
         'supplier_case_studies': [],
-        'modified': datetime(2016, 11, 23, 11, 21, 10, 977518),
-        'verified_with_code': True,
-        'is_address_set': True,
-        'contact_details': {
-            'email_address': 'sales@example.com',
-        },
-        'twitter_url': 'http://www.twitter.com',
-        'facebook_url': 'http://www.facebook.com',
+        'public_profile_url': 'http://profile.com/123456',
         'linkedin_url': 'http://www.linkedin.com',
-        'is_published': False,
-        'public_profile_url': 'http://profile.com/01234567',
+        'logo': 'nice.jpg',
+        'summary': 'good',
+        'keywords': 'word1, word2',
+        'twitter_url': 'http://www.twitter.com',
+        'mobile_number': '07507694377',
+        'postal_code': 'E14 6XK',
+        'address_line_1': '123 Fake Street',
+        'address_line_2': 'Fakeville',
+        'country': 'GB',
+        'postal_full_name': 'Jeremy',
+        'description': 'Ecommerce website',
+        'po_box': '',
+        'has_valid_address': True,
+        'modified': datetime(2016, 11, 23, 11, 21, 10, 977518),
+        'locality': 'London',
+        'is_published': True,
+        'number': 123456,
+        'verified_with_code': True,
+        'email_address': 'test@example.com',
+        'employees': '501-1,000',
+        'name': 'Great company',
+        'facebook_url': 'http://www.facebook.com',
     }
     actual = helpers.get_public_company_profile_from_response(response)
     assert actual == expected
 
 
-def test_get_company_list_from_response(public_companies, settings):
+def test_get_company_list_from_response(api_response_list_public_profile_200,
+                                        settings):
     settings.SUPPLIER_PROFILE_URL = 'http://profile.com/{number}'
-    response = requests.Response()
-    response.json = lambda: public_companies
+    response = api_response_list_public_profile_200
     expected = {
-        'count': 100,
         'results': [
             {
-                'website': 'http://www.example.com',
-                'description': 'bloody good',
-                'summary': 'good',
-                'number': '01234567',
-                'date_of_creation': datetime(2010, 10, 10),
-                'sectors': [
-                    {
-                        'label': 'Agriculture, horticulture and fisheries',
-                        'value': 'AGRICULTURE_HORTICULTURE_AND_FISHERIES',
-                    }
-                ],
-                'logo': 'nice.png',
-                'name': 'Great corp',
-                'keywords': 'I found it most pleasing, hi',
-                'employees': '1,001-10,000',
+                'sectors': [{'value': 'SECURITY', 'label': 'Security'}],
+                'email_full_name': 'Jeremy',
+                'website': 'http://example.com',
+                'date_of_creation': datetime(2015, 3, 2),
                 'supplier_case_studies': [],
-                'modified': datetime(2016, 11, 23, 11, 21, 10, 977518),
-                'verified_with_code': True,
-                'is_address_set': True,
-                'contact_details': {
-                    'email_address': 'sales@example.com'
-                },
-                'twitter_url': 'http://www.twitter.com',
-                'facebook_url': 'http://www.facebook.com',
+                'public_profile_url': 'http://profile.com/123456',
                 'linkedin_url': 'http://www.linkedin.com',
-                'is_published': False,
-                'public_profile_url': 'http://profile.com/01234567',
+                'logo': 'nice.jpg',
+                'summary': 'good',
+                'keywords': 'word1, word2',
+                'twitter_url': 'http://www.twitter.com',
+                'mobile_number': '07507694377',
+                'postal_code': 'E14 6XK',
+                'address_line_1': '123 Fake Street',
+                'address_line_2': 'Fakeville',
+                'country': 'GB',
+                'postal_full_name': 'Jeremy',
+                'description': 'Ecommerce website',
+                'po_box': '',
+                'has_valid_address': True,
+                'modified': datetime(2016, 11, 23, 11, 21, 10, 977518),
+                'locality': 'London',
+                'is_published': True,
+                'number': 123456,
+                'verified_with_code': True,
+                'email_address': 'test@example.com',
+                'employees': '501-1,000',
+                'name': 'Great company',
+                'facebook_url': 'http://www.facebook.com',
             }
-        ]
+        ],
+        'count': 20
     }
+
     actual = helpers.get_company_list_from_response(response)
     assert actual == expected
 
@@ -203,7 +179,7 @@ def test_get_company_list_from_response_empty(public_companies_empty):
     assert actual == expected
 
 
-def test_get_company_profile_from_response_without_date(profile_data):
+def test_get_company_profile_from_response_without_date():
     pairs = [
         ['2010-10-10', datetime(2010, 10, 10)],
         ['', ''],
@@ -211,27 +187,6 @@ def test_get_company_profile_from_response_without_date(profile_data):
     ]
     for provided, expected in pairs:
         assert helpers.format_date_of_creation(provided) == expected
-
-
-def test_format_company_details_address_set(profile_data):
-    profile_data['contact_details'] = {'key': 'value'}
-    actual = helpers.format_company_details(profile_data)
-
-    assert actual['is_address_set'] is True
-
-
-def test_format_company_details_address_not_set(profile_data):
-    profile_data['contact_details'] = {}
-    actual = helpers.format_company_details(profile_data)
-
-    assert actual['is_address_set'] is False
-
-
-def test_format_company_details_none_address_not_set(profile_data):
-    profile_data['contact_details'] = None
-    actual = helpers.format_company_details(profile_data)
-
-    assert actual['is_address_set'] is False
 
 
 def test_format_case_study(supplier_case_study_data, settings):

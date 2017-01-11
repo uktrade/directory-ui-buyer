@@ -9,63 +9,50 @@ import pytest
 @pytest.fixture
 def retrieve_profile_data():
     return {
-        'website': 'http://example.com',
-        'description': 'Ecommerce website',
-        'number': 123456,
-        'sectors': ['SECURITY'],
-        'logo': 'nice.jpg',
-        'name': 'Great company',
-        'keywords': 'word1 word2',
-        'employees': '501-1000',
+        'address_line_1': '123 Fake Street',
+        'address_line_2': 'Fakeville',
+        'country': 'GB',
         'date_of_creation': '2015-03-02',
-        'verified_with_code': True,
-        'is_verification_letter_sent': False,
-        'twitter_url': 'http://www.twitter.com',
+        'description': 'Ecommerce website',
+        'email_address': 'test@example.com',
+        'email_full_name': 'Jeremy',
+        'employees': '501-1000',
         'facebook_url': 'http://www.facebook.com',
+        'has_valid_address': True,
+        'is_published': True,
+        'is_verification_letter_sent': False,
+        'keywords': 'word1, word2',
         'linkedin_url': 'http://www.linkedin.com',
-        'contact_details': {
-            'email_full_name': 'Jeremy',
-            'email_address': 'test@example.com',
-            'postal_full_name': 'Jeremy',
-            'address_line_1': '123 Fake Street',
-            'address_line_2': 'Fakeville',
-            'locality': 'London',
-            'postal_code': 'E14 6XK',
-            'po_box': 'abc',
-            'country': 'GB',
-        },
+        'locality': 'London',
+        'logo': 'nice.jpg',
+        'mobile_number': '07507694377',
+        'modified': '2016-11-23T11:21:10.977518Z',
+        'name': 'Great company',
+        'number': 123456,
+        'po_box': '',
+        'postal_code': 'E14 6XK',
+        'postal_full_name': 'Jeremy',
+        'sectors': ['SECURITY'],
+        'summary': 'good',
+        'supplier_case_studies': [],
+        'twitter_url': 'http://www.twitter.com',
+        'verified_with_code': True,
+        'website': 'http://example.com',
     }
 
 
 @pytest.fixture
-def list_public_profiles_data():
+def list_public_profiles_data(retrieve_profile_data):
     return {
         'results': [
-            {
-                'sectors': ['SECTOR1', 'SECTOR2'],
-                'number': '123456',
-                'name': 'UK exporting co ltd.',
-                'description': 'Exporters of UK wares.',
-                'website': 'http://www.ukexportersnow.co.uk',
-                'logo': 'www.ukexportersnow.co.uk/logo.png',
-                'keywords': 'word1 word2',
-                'date_of_creation': '2015-03-01',
-                'employees': '1001-10000',
-                'supplier_case_studies': [],
-                'modified': '2016-11-23T11:21:10.977518Z',
-                'verified_with_code': True,
-                'twitter_url': 'http://www.twitter.com',
-                'facebook_url': 'http://www.facebook.com',
-                'linkedin_url': 'http://www.linkedin.com',
-                'contact_details': {},
-            }
+            retrieve_profile_data
         ],
         'count': 20
     }
 
 
 @pytest.fixture
-def supplier_case_study_data():
+def supplier_case_study_data(retrieve_profile_data):
     return {
         'description': 'Damn great',
         'sector': 'SOFTWARE_AND_COMPUTER_SERVICES',
@@ -73,24 +60,7 @@ def supplier_case_study_data():
         'website': 'http://www.google.com',
         'video_one': 'https://video_one.wav',
         'title': 'Two',
-        'company': {
-            'website': 'https://www.example.com',
-            'employees': '1-10',
-            'description': 'Good stuff.',
-            'logo': 'https://logo.png',
-            'date_of_creation': '2015-03-02',
-            'name': 'EXAMPLE CORP',
-            'supplier_case_studies': [],
-            'keywords': 'Web development',
-            'sectors': ['SOFTWARE_AND_COMPUTER_SERVICES'],
-            'number': '09466004',
-            'modified': '2016-11-23T11:21:10.977518Z',
-            'verified_with_code': True,
-            'contact_details': {},
-            'twitter_url': 'http://www.twitter.com',
-            'facebook_url': 'http://www.facebook.com',
-            'linkedin_url': 'http://www.linkedin.com',
-        },
+        'company': retrieve_profile_data,
         'image_one': 'https://image_one.jpg',
         'testimonial': 'I found it most pleasing.',
         'keywords': 'great',
@@ -110,7 +80,7 @@ def company_profile_companies_house_data():
         'address_line_2': 'Fakeville',
         'locality': 'London',
         'postal_code': 'E14 6XK',
-        'po_box': 'abc',
+        'po_box': '',
         'country': 'GB',
     }
 
@@ -146,7 +116,7 @@ def api_response_company_profile_letter_sent_200(retrieve_profile_data):
 @pytest.fixture
 def api_response_company_profile_no_contact_details(retrieve_profile_data):
     data = retrieve_profile_data.copy()
-    data['contact_details'] = {}
+    data['has_valid_address'] = False
     response = requests.Response()
     response.status_code = http.client.OK
     response.json = lambda: deepcopy(data)

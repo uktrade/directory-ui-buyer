@@ -16,12 +16,10 @@ default_context = {
         'summary': 'Exporters of UK wares.',
         'website': 'www.ukexportersnow.co.uk',
         'logo': 'www.ukexportersnow.co.uk/logo.png',
-        'keywords': 'word1 word2',
+        'keywords': 'word1, word2',
         'date_of_creation': datetime(2015, 3, 2),
         'modified': datetime.now() - timedelta(hours=1),
-        'contact_details': {
-            'email_address': 'sales@example.com',
-        },
+        'email_address': 'sales@example.com',
         'is_published': False,
         'twitter_url': 'https://www.twitter.com',
         'facebook_url': 'https://www.facebook.com',
@@ -93,7 +91,7 @@ def test_company_profile_details_renders_contact_details():
     html = render_to_string(template_name, context)
 
     assert context['company']['website'] in html
-    assert context['company']['contact_details']['email_address'] in html
+    assert context['company']['email_address'] in html
 
 
 def test_company_profile_details_renders_company_details():
