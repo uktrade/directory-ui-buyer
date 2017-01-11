@@ -23,25 +23,29 @@ class SSOLoginRequiredMixin:
     """ CBV mixin which verifies sso user """
 
     def dispatch(self, request, *args, **kwargs):
-        if request.sso_user is None:
+        if not self.has_sso_user():
             return self.handle_no_permission()
         return super(SSOLoginRequiredMixin, self).dispatch(
             request, *args, **kwargs
         )
 
     def handle_no_permission(self):
-        return self.redirect_to_login(
-            next_url=self.request.build_absolute_uri(),
-        )
+        return HttpResponseRedirect(self.get_login_url())
 
-    def redirect_to_login(self, next_url):
+    def has_sso_user(self):
+        return self.request.sso_user is not None
+
+    def get_login_url(self):
         """
-        Redirects the user to the sso signup page, passing the 'next' page
+        Returns a url, adding the 'next' url to the querystring
+
         """
-        resolved_url = resolve_url(settings.SSO_SIGNUP_URL)
+
+        resolved_url = resolve_url(settings.SSO_LOGIN_URL)
+        next_url = self.request.build_absolute_uri()
         login_url_parts = list(urlparse(resolved_url))
         querystring = QueryDict(login_url_parts[4], mutable=True)
         querystring[settings.SSO_REDIRECT_FIELD_NAME] = next_url
         login_url_parts[4] = querystring.urlencode(safe='/')
 
-        return HttpResponseRedirect(urlunparse(login_url_parts))
+        return urlunparse(login_url_parts)

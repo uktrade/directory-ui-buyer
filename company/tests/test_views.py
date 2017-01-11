@@ -790,18 +790,21 @@ def test_company_profile_edit_handles_bad_api_response(
         view(company_request)
 
 
-@patch.object(views, 'has_company', Mock(return_value=False))
-def test_supplier_company_redirect_non_verified_company(sso_request):
+@patch.object(views, 'has_company', Mock(return_value=True))
+def test_company_edit_views_anon_user(client, rf, settings):
+    request = rf.get(reverse('company-edit'))
+    request.sso_user = None
+
     view_classes = [
         views.SupplierCompanyProfileEditView,
         views.SupplierCompanyProfileLogoEditView,
         views.SupplierCompanyDescriptionEditView,
     ]
     for ViewClass in view_classes:
-        response = ViewClass.as_view()(sso_request)
+        response = ViewClass.as_view()(request)
 
         assert response.status_code == http.client.FOUND
-        assert response.get('Location') == reverse('register-instructions')
+        assert response.get('Location').startswith(settings.SSO_LOGIN_URL)
 
 
 @patch.object(views, 'has_company', Mock(return_value=True))
