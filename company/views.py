@@ -188,7 +188,7 @@ class SupplierCompanyProfileEditView(
     form_serializer = staticmethod(forms.serialize_company_profile_forms)
 
     def dispatch(self, request, *args, **kwargs):
-        if request.sso_user is None:
+        if not self.has_sso_user():
             return self.handle_no_permission()
         sso_user_id = request.sso_user.id
         self.company_profile = helpers.get_company_profile(sso_user_id)
