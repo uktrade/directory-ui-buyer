@@ -6,6 +6,7 @@ from django.conf import settings
 from django.core.files.storage import FileSystemStorage
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
+from django.utils.functional import cached_property
 from django.views.generic import TemplateView
 
 from api_client import api_client
@@ -187,17 +188,16 @@ class SupplierCompanyProfileEditView(
     failure_template = 'company-profile-update-error.html'
     form_serializer = staticmethod(forms.serialize_company_profile_forms)
 
-    def dispatch(self, request, *args, **kwargs):
-        sso_user_id = request.sso_user.id
-        self.company_profile = helpers.get_company_profile(sso_user_id)
-        return super().dispatch(request, *args, **kwargs)
-
     def condition_show_address(self):
         return not self.company_profile['is_verification_letter_sent']
 
     condition_dict = {
         ADDRESS_CONFIRM: condition_show_address,
     }
+
+    @cached_property
+    def company_profile(self):
+        return helpers.get_company_profile(self.request.sso_user.id)
 
     def get_form_initial(self, step):
         if step in [self.ADDRESS, self.CONTACT]:
