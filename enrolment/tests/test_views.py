@@ -9,6 +9,7 @@ from django.core.urlresolvers import reverse
 from enrolment import forms, helpers
 from enrolment.views import (
     api_client,
+    DomesticLandingView,
     EnrolmentView,
     EnrolmentInstructionsView,
 )
@@ -224,3 +225,15 @@ def test_enrolment_logged_out_has_company_redirects(
          '?next=http%3A//testserver/register/' + step
     )
     mock_has_company.assert_not_called()
+
+
+def test_landing_page_context(anon_request, settings):
+    settings.SUPPLIER_PROFILE_URL = 'http://profile.com/{number}'
+
+    response = DomesticLandingView.as_view()(anon_request)
+
+    assert response.context_data['supplier_profile_urls'] == {
+        'immersive': 'http://profile.com/07723438',
+        'blippar': 'http://profile.com/07446749',
+        'briggs': 'http://profile.com/06836628',
+    }
