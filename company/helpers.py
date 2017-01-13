@@ -64,9 +64,6 @@ def get_company_list_from_response(response):
 
 def format_company_details(details):
     date_of_creation = format_date_of_creation(details.get('date_of_creation'))
-    # If the contact details json is set to null
-    # then details['contact_details'] will be None
-    contact_details = details['contact_details'] or {}
     case_studies = map(format_case_study, details['supplier_case_studies'])
     return {
         'website': details['website'],
@@ -82,8 +79,20 @@ def format_company_details(details):
         'supplier_case_studies': list(case_studies),
         'modified': format_date_modified(details['modified']),
         'verified_with_code': details['verified_with_code'],
-        'is_address_set': contact_details != {},
-        'contact_details': contact_details,
+        'postal_full_name': details['postal_full_name'],
+        'address_line_1': details['address_line_1'],
+        'address_line_2': details['address_line_2'],
+        'locality': details['locality'],
+        'country': details['country'],
+        'postal_code': details['postal_code'],
+        'po_box': details['po_box'],
+        'mobile_number': details['mobile_number'],
+        'twitter_url': details['twitter_url'],
+        'facebook_url': details['facebook_url'],
+        'linkedin_url': details['linkedin_url'],
+        'email_address': details['email_address'],
+        'email_full_name': details['email_full_name'],
+        'has_valid_address': details['has_valid_address'],
         'twitter_url': details['twitter_url'],
         'facebook_url': details['facebook_url'],
         'linkedin_url': details['linkedin_url'],
@@ -126,10 +135,6 @@ def get_company_contact_details_from_companies_house(number):
 
 def get_contact_details(sso_id):
     profile = get_company_profile(sso_id)
-    is_address_known = (
-        profile.get('contact_details') and
-        profile['contact_details'].get('address_line_1')
-    )
-    if is_address_known:
-        return profile['contact_details']
+    if profile['has_valid_address']:
+        return profile
     return get_company_contact_details_from_companies_house(profile['number'])

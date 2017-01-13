@@ -473,17 +473,15 @@ def serialize_company_profile_forms(cleaned_data):
         'keywords': cleaned_data['keywords'],
         'employees': cleaned_data['employees'],
         'sectors': cleaned_data['sectors'],
-        'contact_details': {
-            'address_line_1': cleaned_data['address_line_1'],
-            'address_line_2': cleaned_data['address_line_2'],
-            'country': cleaned_data['country'],
-            'email_address': cleaned_data['email_address'],
-            'email_full_name': cleaned_data['email_full_name'],
-            'locality': cleaned_data['locality'],
-            'po_box': cleaned_data['po_box'],
-            'postal_code': cleaned_data['postal_code'],
-            'postal_full_name': cleaned_data['postal_full_name'],
-        }
+        'address_line_1': cleaned_data['address_line_1'],
+        'address_line_2': cleaned_data['address_line_2'],
+        'country': cleaned_data['country'],
+        'email_address': cleaned_data['email_address'],
+        'email_full_name': cleaned_data['email_full_name'],
+        'locality': cleaned_data['locality'],
+        'po_box': cleaned_data['po_box'],
+        'postal_code': cleaned_data['postal_code'],
+        'postal_full_name': cleaned_data['postal_full_name'],
     }
 
 
@@ -557,10 +555,8 @@ def serialize_company_contact_form(cleaned_data):
     """
 
     return {
-        'contact_details': {
-            'email_full_name': cleaned_data['email_full_name'],
-            'email_address': cleaned_data['email_address'],
-        }
+        'email_full_name': cleaned_data['email_full_name'],
+        'email_address': cleaned_data['email_address'],
     }
 
 
@@ -575,15 +571,13 @@ def serialize_company_address_form(cleaned_data):
     """
 
     return {
-        'contact_details': {
-            'address_line_1': cleaned_data['address_line_1'],
-            'address_line_2': cleaned_data['address_line_2'],
-            'country': cleaned_data['country'],
-            'locality': cleaned_data['locality'],
-            'po_box': cleaned_data['po_box'],
-            'postal_code': cleaned_data['postal_code'],
-            'postal_full_name': cleaned_data['postal_full_name'],
-        }
+        'address_line_1': cleaned_data['address_line_1'],
+        'address_line_2': cleaned_data['address_line_2'],
+        'country': cleaned_data['country'],
+        'locality': cleaned_data['locality'],
+        'po_box': cleaned_data['po_box'],
+        'postal_code': cleaned_data['postal_code'],
+        'postal_full_name': cleaned_data['postal_full_name'],
     }
 
 
@@ -617,8 +611,8 @@ def is_optional_profile_values_set(company_profile):
         'sectors',
         'keywords',
         'employees',
-        # CompanyAddressVerificationForm and CompanyContactDetailsForm fields
-        # are stored in `contact_details`.
-        'contact_details',
+        'postal_full_name',
+        'email_address',
+        'email_full_name',
     ]
     return all(company_profile.get(field) for field in fields)
