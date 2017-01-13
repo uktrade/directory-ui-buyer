@@ -909,7 +909,7 @@ a.no-focus-highlight {
       display: block; /* Fallback for non-webkit */
       display: -webkit-box;
       margin: 20px 20px 20px 0;
-      line-height: 1;
+      line-height: 1.1;
       -webkit-line-clamp: 1;
       -webkit-box-orient: vertical;
       overflow: hidden;

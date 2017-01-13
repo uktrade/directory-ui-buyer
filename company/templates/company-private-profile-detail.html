@@ -16,7 +16,7 @@
 				<p style="font-weight: 400;">Your profile won't be published until your company is verified</p>
 			</div>
 			<div class="span4" style="margin-top: 10px;">
-				{% if company.is_address_set %}
+				{% if company.has_valid_address %}
 					<a href="{% url 'confirm-company-address' %}" class="ed-naked-button-error">
 						Verify your company
 					</a>
@@ -74,9 +74,9 @@
 						<a href="{% url show_wizard_links|yesno:'company-edit,company-edit-contact' %}">Add your website</a>
 					</p>
 				{% endif %}
-				{% if company.contact_details.email_address %}
+				{% if company.email_address %}
 					<p>
-						<a href="mailto:{{ company.contact_details.email_address }}?subject=International%20buyer%20contact%20via%20your%20great.gov.uk%20trade%20profile">{{ company.contact_details.email_address }}</a>
+						<a href="mailto:{{ company.email_address }}?subject=International%20buyer%20contact%20via%20your%20great.gov.uk%20trade%20profile">{{ company.email_address }}</a>
 						<a href="{% url show_wizard_links|yesno:'company-edit,company-edit-contact' %}" style="color: #004F95;">
 							<img src="{% static 'images/pencil-icon.png' %}" class="ed-icon-pencil" />
 							<b>Edit</b>
