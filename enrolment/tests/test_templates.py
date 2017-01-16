@@ -16,6 +16,20 @@ supplier_context = {
 }
 
 
+def test_landing_page_includes_hero_links():
+    context = {
+        'supplier_profile_urls': {
+            'immersive': 'http://07723438.com',
+            'blippar': 'http://07446749.com',
+            'briggs': 'http://06836628.com',
+        }
+    }
+    html = render_to_string('landing-page.html', context)
+
+    for url in context['supplier_profile_urls'].values():
+        assert 'href="{0}"'.format(url) in html
+
+
 def test_company_description_form_cancel_button():
     html = render_to_string('company-profile-description-form.html', {})
     assert 'Cancel' in html
