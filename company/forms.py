@@ -348,7 +348,6 @@ class CompanyAddressVerificationForm(PreventTamperMixin,
         label='Full name:',
         max_length=255,
         help_text='This is the full name that letters will be addressed to.',
-        required=False,
     )
     address_line_1 = forms.CharField(
         max_length=200,
