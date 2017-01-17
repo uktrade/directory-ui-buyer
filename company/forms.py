@@ -108,18 +108,21 @@ class CaseStudyBasicInfoForm(IndentedInvalidFieldsMixin, AutoFocusFieldMixin,
 
 class CaseStudyRichMediaForm(IndentedInvalidFieldsMixin, AutoFocusFieldMixin,
                              forms.Form):
+
+    image_help_text = (
+        'This image is shown at full width on your case study page and must '
+        'be at least 700 pixels wide and in landscape format. For best '
+        'results, upload an image at 1820 x 682 pixels.'
+    )
+
     image_one = forms.FileField(
         label='Upload main image for this case study',
-        help_text=(
-            'This will appear at the top of your case study and on your'
-            ' trade profile.'
-        ),
+        help_text=image_help_text,
         validators=[shared_validators.case_study_image_filesize]
     )
     image_one_caption = forms.CharField(
         label=(
-            'Add a caption that tells visitors what the main image'
-            ' represents'
+            'Add a caption that tells visitors what the main image represents'
         ),
         help_text='Maximum 120 characters',
         max_length=120,
@@ -127,7 +130,7 @@ class CaseStudyRichMediaForm(IndentedInvalidFieldsMixin, AutoFocusFieldMixin,
     )
     image_two = forms.FileField(
         label='Upload a second image (optional)',
-        help_text='This image will appear at the end of this case study.',
+        help_text=image_help_text,
         required=False,
         validators=[shared_validators.case_study_image_filesize]
     )
@@ -143,10 +146,7 @@ class CaseStudyRichMediaForm(IndentedInvalidFieldsMixin, AutoFocusFieldMixin,
     )
     image_three = forms.FileField(
         label='Upload a third image (optional)',
-        help_text=(
-            'This image will appear at the end of this case study, '
-            'after the second image.'
-        ),
+        help_text=image_help_text,
         required=False,
         validators=[shared_validators.case_study_image_filesize]
     )
