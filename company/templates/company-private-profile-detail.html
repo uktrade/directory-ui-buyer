@@ -201,9 +201,11 @@
 						<div class="{{case_study.testimonial|yesno:'span4,span8'}}">
 							<p>{{ case_study.short_summary }}</p>
 
-							<p class="supplier-case-study-read-more-cta">
-								<a href="{{ case_study.url }}">Read case study</a>
-							</p>
+							{% if company.is_published %}
+								<p class="supplier-case-study-read-more-cta">
+									<a href="{{ case_study.url }}">Read case study</a>
+								</p>
+							{% endif %}
 						</div>
 						{% if case_study.testimonial %}
 							<div class="span4 ed-arrow_box ed-company-profile-case-study-testomonial-container">

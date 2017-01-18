@@ -47,7 +47,7 @@ DOCKER_SET_DEBUG_ENV_VARS := \
 	export DIRECTORY_UI_BUYER_DEBUG=true; \
 	export DIRECTORY_UI_BUYER_COMPANIES_HOUSE_API_KEY=debug; \
 	export DIRECTORY_UI_BUYER_FEATURE_PUBLIC_PROFILES_ENABLED=true; \
-	export DIRECTORY_UI_BUYER_SUPPLIER_CASE_STUDY_URL=http://supplier.trade.great.dev:8005/company/case-study/view/{id}; \
+	export DIRECTORY_UI_BUYER_SUPPLIER_CASE_STUDY_URL=http://supplier.trade.great.dev:8005/case-study/{id}; \
 	export DIRECTORY_UI_BUYER_SUPPLIER_PROFILE_LIST_URL=http://supplier.trade.great.dev:8005/suppliers?sectors={sectors}; \
 	export DIRECTORY_UI_BUYER_SUPPLIER_PROFILE_URL=http://supplier.trade.great.dev:8005/suppliers/{number}
 
@@ -97,7 +97,7 @@ DEBUG_SET_ENV_VARS := \
 	export SESSION_COOKIE_SECURE=false; \
 	export COMPANIES_HOUSE_API_KEY=debug; \
 	export FEATURE_PUBLIC_PROFILES_ENABLED=true; \
-	export SUPPLIER_CASE_STUDY_URL=http://supplier.trade.great.dev:8005/company/case-study/view/{id}; \
+	export SUPPLIER_CASE_STUDY_URL=http://supplier.trade.great.dev:8005/case-study/{id}; \
 	export SUPPLIER_PROFILE_LIST_URL=http://supplier.trade.great.dev:8005/suppliers?sectors={sectors}; \
 	export SUPPLIER_PROFILE_URL=http://supplier.trade.great.dev:8005/suppliers/{number}
 
