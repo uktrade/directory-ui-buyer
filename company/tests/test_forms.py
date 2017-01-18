@@ -492,18 +492,16 @@ def test_company_address_verification_detects_tamper():
     ]
 
 
-def test_company_address_verification_rejects_invalid():
+def test_company_address_verification_required_fields():
     form = forms.CompanyAddressVerificationForm(data={})
 
-    assert form.is_valid() is False
-    assert form.errors['address_line_1'] == [REQUIRED_MESSAGE]
-    assert form.errors['postal_code'] == [REQUIRED_MESSAGE]
-
-    assert 'postal_full_name' not in form.errors
-    assert 'address_line_2' not in form.errors
-    assert 'locality' not in form.errors
-    assert 'po_box' not in form.errors
-    assert 'country' not in form.errors
+    assert form.fields['address_line_1'].required is True
+    assert form.fields['postal_code'].required is True
+    assert form.fields['postal_full_name'].required is True
+    assert form.fields['address_line_2'].required is False
+    assert form.fields['locality'].required is False
+    assert form.fields['po_box'].required is False
+    assert form.fields['country'].required is False
 
 
 @patch('company.forms.CompanyAddressVerificationForm.is_form_tampered',
