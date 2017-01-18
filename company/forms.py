@@ -115,10 +115,14 @@ class CaseStudyRichMediaForm(IndentedInvalidFieldsMixin, AutoFocusFieldMixin,
         'results, upload an image at 1820 x 682 pixels.'
     )
 
-    image_one = forms.FileField(
+    image_one = forms.ImageField(
         label='Upload main image for this case study',
         help_text=image_help_text,
-        validators=[shared_validators.case_study_image_filesize]
+        validators=[
+            shared_validators.case_study_image_filesize,
+            shared_validators.image_format,
+
+        ]
     )
     image_one_caption = forms.CharField(
         label=(
@@ -128,11 +132,14 @@ class CaseStudyRichMediaForm(IndentedInvalidFieldsMixin, AutoFocusFieldMixin,
         max_length=120,
         widget=forms.Textarea,
     )
-    image_two = forms.FileField(
+    image_two = forms.ImageField(
         label='Upload a second image (optional)',
         help_text=image_help_text,
         required=False,
-        validators=[shared_validators.case_study_image_filesize]
+        validators=[
+            shared_validators.case_study_image_filesize,
+            shared_validators.image_format,
+        ]
     )
     image_two_caption = forms.CharField(
         label=(
@@ -144,11 +151,14 @@ class CaseStudyRichMediaForm(IndentedInvalidFieldsMixin, AutoFocusFieldMixin,
         widget=forms.Textarea,
         required=False,
     )
-    image_three = forms.FileField(
+    image_three = forms.ImageField(
         label='Upload a third image (optional)',
         help_text=image_help_text,
         required=False,
-        validators=[shared_validators.case_study_image_filesize]
+        validators=[
+            shared_validators.case_study_image_filesize,
+            shared_validators.image_format,
+        ]
     )
     image_three_caption = forms.CharField(
         label=(
@@ -248,7 +258,7 @@ class CompanyDescriptionForm(AutoFocusFieldMixin, IndentedInvalidFieldsMixin,
 
 class CompanyLogoForm(AutoFocusFieldMixin, IndentedInvalidFieldsMixin,
                       forms.Form):
-    logo = forms.FileField(
+    logo = forms.ImageField(
         help_text=(
             'For best results this should be a transparent PNG file of 600 x '
             '600 pixels and no more than {0}MB'.format(
@@ -256,7 +266,10 @@ class CompanyLogoForm(AutoFocusFieldMixin, IndentedInvalidFieldsMixin,
             )
         ),
         required=True,
-        validators=[shared_enrolment_validators.logo_filesize]
+        validators=[
+            shared_enrolment_validators.logo_filesize,
+            shared_validators.image_format,
+        ]
     )
 
 

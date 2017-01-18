@@ -11,6 +11,7 @@ from django.core.validators import URLValidator
 
 from company import forms, validators
 from company.forms import shared_enrolment_validators, shared_validators
+from company.tests import helpers
 from enrolment.forms import AutoFocusFieldMixin, IndentedInvalidFieldsMixin
 
 
@@ -18,8 +19,14 @@ URL_FORMAT_MESSAGE = URLValidator.message
 REQUIRED_MESSAGE = Field.default_error_messages['required']
 
 
-def create_mock_file():
-    return Mock(size=1)
+@pytest.fixture()
+def uploaded_png_image():
+    png_image = helpers.create_test_image('png')
+    return SimpleUploadedFile(
+        name='image.png',
+        content=png_image.read(),
+        content_type='image/png',
+    )
 
 
 def test_serialize_case_study_forms_string_images():
@@ -144,8 +151,18 @@ def test_case_study_form_all_fields():
     assert form.cleaned_data == data
 
 
+def test_case_study_rich_media_validators():
+    form = forms.CaseStudyRichMediaForm()
+
+    for field_name in ['image_one', 'image_two', 'image_three']:
+        field_validators = form.fields[field_name].validators
+        assert shared_validators.case_study_image_filesize in field_validators
+        assert shared_validators.image_format in field_validators
+
+
 def test_case_study_rich_media_required():
     form = forms.CaseStudyRichMediaForm()
+
     assert form.fields['image_one'].required is True
     assert form.fields['image_one_caption'].required is True
     assert form.fields['image_two'].required is False
@@ -242,15 +259,14 @@ def test_public_profile_search_form_valid_data():
     assert form.is_valid() is True
 
 
-def test_company_logo_form_accepts_valid_data():
-    logo = create_mock_file()
-    form = forms.CompanyLogoForm(files={'logo': logo})
+def test_company_logo_form_accepts_valid_data(uploaded_png_image):
+    form = forms.CompanyLogoForm(files={'logo': uploaded_png_image})
 
     valid = form.is_valid()
 
     assert valid is True
     assert form.cleaned_data == {
-        'logo': logo,
+        'logo': uploaded_png_image,
     }
 
 
@@ -265,8 +281,11 @@ def test_company_logo_form_logo_is_required():
 
 
 def test_company_profile_logo_validator():
-    field = forms.CompanyLogoForm.base_fields['logo']
-    assert shared_enrolment_validators.logo_filesize in field.validators
+    form = forms.CompanyLogoForm()
+    field_validators = form.fields['logo'].validators
+
+    assert shared_enrolment_validators.logo_filesize in field_validators
+    assert shared_validators.image_format in field_validators
 
 
 def test_company_description_form_field_lengths():
@@ -374,14 +393,10 @@ def test_serialize_company_profile_forms():
     assert actual == expected
 
 
-def test_serialize_company_logo_form():
-    logo = create_mock_file()
-    actual = forms.serialize_company_logo_form({
-        'logo': logo,
-    })
-    expected = {
-        'logo': logo,
-    }
+def test_serialize_company_logo_form(uploaded_png_image):
+    actual = forms.serialize_company_logo_form({'logo': uploaded_png_image})
+    expected = {'logo': uploaded_png_image}
+
     assert actual == expected
 
 
