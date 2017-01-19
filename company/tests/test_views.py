@@ -9,6 +9,7 @@ from django.core.urlresolvers import reverse
 
 from sso.utils import SSOUser
 from company import forms, helpers, views, validators
+from company.tests.helpers import create_test_image
 
 
 default_sector = choices.COMPANY_CLASSIFICATIONS[1][0]
@@ -75,25 +76,19 @@ def sso_request(rf, client, sso_user):
     return request
 
 
-@pytest.fixture(scope='session')
-def image_one(tmpdir_factory):
-    image = tmpdir_factory.mktemp('media').join('image_one.png')
-    image.write('1')
-    return image
+@pytest.fixture()
+def image_one():
+    return create_test_image('png')
 
 
-@pytest.fixture(scope='session')
-def image_two(tmpdir_factory):
-    image = tmpdir_factory.mktemp('media').join('image_two.png')
-    image.write('2')
-    return image
+@pytest.fixture()
+def image_two():
+    return create_test_image('png')
 
 
-@pytest.fixture(scope='session')
-def image_three(tmpdir_factory):
-    image = tmpdir_factory.mktemp('media').join('image_three.png')
-    image.write('3')
-    return image
+@pytest.fixture()
+def image_three():
+    return create_test_image('png')
 
 
 @pytest.fixture()
