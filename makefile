@@ -49,7 +49,9 @@ DOCKER_SET_DEBUG_ENV_VARS := \
 	export DIRECTORY_UI_BUYER_FEATURE_PUBLIC_PROFILES_ENABLED=true; \
 	export DIRECTORY_UI_BUYER_SUPPLIER_CASE_STUDY_URL=http://supplier.trade.great.dev:8005/case-study/{id}; \
 	export DIRECTORY_UI_BUYER_SUPPLIER_PROFILE_LIST_URL=http://supplier.trade.great.dev:8005/suppliers?sectors={sectors}; \
-	export DIRECTORY_UI_BUYER_SUPPLIER_PROFILE_URL=http://supplier.trade.great.dev:8005/suppliers/{number}
+	export DIRECTORY_UI_BUYER_SUPPLIER_PROFILE_URL=http://supplier.trade.great.dev:8005/suppliers/{number}; \
+	export DIRECTORY_UI_BUYER_GOOGLE_TAG_MANAGER_ID=GTM-TC46J8K; \
+	export DIRECTORY_UI_BUYER_GOOGLE_TAG_MANAGER_ENV=&gtm_auth=kH9XolShYWhOJg8TA9bW_A&gtm_preview=env-32&gtm_cookies_win=x
 
 
 DOCKER_REMOVE_ALL := \
@@ -99,7 +101,9 @@ DEBUG_SET_ENV_VARS := \
 	export FEATURE_PUBLIC_PROFILES_ENABLED=true; \
 	export SUPPLIER_CASE_STUDY_URL=http://supplier.trade.great.dev:8005/case-study/{id}; \
 	export SUPPLIER_PROFILE_LIST_URL=http://supplier.trade.great.dev:8005/suppliers?sectors={sectors}; \
-	export SUPPLIER_PROFILE_URL=http://supplier.trade.great.dev:8005/suppliers/{number}
+	export SUPPLIER_PROFILE_URL=http://supplier.trade.great.dev:8005/suppliers/{number}; \
+	export GOOGLE_TAG_MANAGER_ID=GTM-TC46J8K; \
+	export GOOGLE_TAG_MANAGER_ENV=&gtm_auth=kH9XolShYWhOJg8TA9bW_A&gtm_preview=env-32&gtm_cookies_win=x
 
 debug_webserver:
 	$(DEBUG_SET_ENV_VARS) && $(DJANGO_WEBSERVER)
