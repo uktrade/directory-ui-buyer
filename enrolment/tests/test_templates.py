@@ -153,11 +153,44 @@ def test_header_logged_out():
     assert context['sso_logout_url'] not in html
 
 
-def test_google_tag_manager():
-    expected_head = render_to_string('google_tag_manager_head.html')
-    expected_body = render_to_string('google_tag_manager_body.html')
+def test_google_tag_manager_project_id():
+    context = {
+        'analytics': {
+            'GOOGLE_TAG_MANAGER_ID': '1234567',
+            'GOOGLE_TAG_MANAGER_ENABLED': True,
+        }
+    }
+    head_html = render_to_string('google_tag_manager_head.html', context)
+    body_html = render_to_string('google_tag_manager_body.html', context)
 
-    html = render_to_string('govuk_layout.html')
+    assert '1234567' in head_html
+    assert 'https://www.googletagmanager.com/ns.html?id=1234567' in body_html
+
+
+def test_google_tag_manager_turned_off():
+    context = {
+        'analytics': {
+            'GOOGLE_TAG_MANAGER_ID': '1234567',
+            'GOOGLE_TAG_MANAGER_ENABLED': False,
+        }
+    }
+    head_html = render_to_string('google_tag_manager_head.html', context)
+    body_html = render_to_string('google_tag_manager_body.html', context)
+
+    assert '1234567' not in head_html
+    assert '1234567' not in body_html
+
+
+def test_google_tag_manager():
+    context = {
+        'analytics': {
+            'GOOGLE_TAG_MANAGER_ENABLED': True,
+        }
+    }
+    expected_head = render_to_string('google_tag_manager_head.html', context)
+    expected_body = render_to_string('google_tag_manager_body.html', context)
+
+    html = render_to_string('govuk_layout.html', context)
 
     assert expected_head in html
     assert expected_body in html

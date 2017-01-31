@@ -68,6 +68,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'sso.context_processors.sso_user_processor',
                 'ui.context_processors.feature_flags',
+                'ui.context_processors.analytics',
             ],
         },
     },
@@ -244,3 +245,7 @@ COMPANIES_HOUSE_API_KEY = os.environ['COMPANIES_HOUSE_API_KEY']
 FEATURE_PUBLIC_PROFILES_ENABLED = (
     os.getenv('FEATURE_PUBLIC_PROFILES_ENABLED') == 'true'
 )
+
+# Google tag manager
+GOOGLE_TAG_MANAGER_ID = os.getenv('GOOGLE_TAG_MANAGER_ID', '')
+GOOGLE_TAG_MANAGER_ENABLED = os.getenv('GOOGLE_TAG_MANAGER_ENABLED') == 'true'
