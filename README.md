@@ -101,8 +101,3 @@ Note in production, the `directory-sso` session cookie is shared with all subdom
 Therefore to make cookie sharing work in development we need the apps to ne running on subdomains. Some stipulations:
  - `directory-ui-buyer` and `directory-sso` must both be running on sibling subdomains (with same parent domain)
  - `directory-sso` must be told to target cookies at the parent domain.
-
-# Geodata
-
-This product includes GeoLite2 data created by MaxMind, available from
-<a href="http://www.maxmind.com">http://www.maxmind.com</a>.
