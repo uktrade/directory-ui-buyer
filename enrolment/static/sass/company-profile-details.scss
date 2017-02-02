@@ -241,9 +241,15 @@
   }
 }
 
-.company-profile-invisible-banner {
+.company-profile-unpublished {
   padding: 20px;
   color: #B00D23;
+  font-weight: bold;
+}
+
+.company-profile-published {
+  padding: 20px;
+  color: #00549F;
   font-weight: bold;
 }
 

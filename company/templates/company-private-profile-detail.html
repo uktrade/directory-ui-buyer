@@ -9,24 +9,60 @@
 <div class="container">
 	<div class="company-profile-details-body">
 
-		{% if not company.verified_with_code %}
-		<div class="row-fluid company-profile-invisible-banner">
-			<div class="span8">
-				<h2>Your company has not yet been verified.</h2>
-				<p style="font-weight: 400;">Your profile won't be published until your company is verified</p>
-			</div>
-			<div class="span4" style="margin-top: 10px;">
-				{% if company.has_valid_address %}
-					<a href="{% url 'confirm-company-address' %}" class="ed-naked-button-error">
-						Verify your company
+		{% if company.is_published %}
+			<div class="row-fluid company-profile-published">
+				<div class="span8">
+					<h2>Your company is published</h2>
+					<p style="font-weight: 400;">Your profile is visible to international buyers</p>
+				</div>
+				<div class="span4" style="margin-top: 10px;">
+					<a href="{{ company.public_profile_url }}" target="_blank" class="ed-naked-button-primary">
+						View published profile
 					</a>
-				{% else %}
-					<a href="{% url show_wizard_links|yesno:'company-edit,company-edit-address' %}" class="ed-naked-button-error">
-						Set your address
-					</a>
-				{% endif %}
+				</div>
 			</div>
-		</div>
+		{% elif not company.description or not company.summary %}
+			<div class="row-fluid company-profile-unpublished">
+				<div class="span8">
+					<h2>Your company has no description.</h2>
+					<p style="font-weight: 400;">Your profile can't be published until your company has a description</p>
+				</div>
+				<div class="span4" style="margin-top: 10px;">
+					<a href="{% url 'company-edit-description' %}" class="ed-naked-button-error">
+						Set your description
+					</a>
+				</div>
+			</div>
+		{% elif not company.email_address %}
+			<div class="row-fluid company-profile-unpublished">
+				<div class="span8">
+					<h2>Your company has no contact details.</h2>
+					<p style="font-weight: 400;">Your profile can't be published. Buyers would be unable to contact you</p>
+				</div>
+				<div class="span4" style="margin-top: 10px;">
+					<a href="{% url 'company-edit-contact' %}" class="ed-naked-button-error">
+						Set your contact email
+					</a>
+				</div>
+			</div>
+		{% elif not company.verified_with_code %}
+			<div class="row-fluid company-profile-unpublished">
+				<div class="span8">
+					<h2>Your company has not yet been verified.</h2>
+					<p style="font-weight: 400;">Your profile can't be published until your company is verified</p>
+				</div>
+				<div class="span4" style="margin-top: 10px;">
+					{% if company.has_valid_address %}
+						<a href="{% url 'confirm-company-address' %}" class="ed-naked-button-error">
+							Verify your company
+						</a>
+					{% else %}
+						<a href="{% url 'company-edit-address' %}" class="ed-naked-button-error">
+							Set your address
+						</a>
+					{% endif %}
+				</div>
+			</div>
 		{% endif %}
 
 

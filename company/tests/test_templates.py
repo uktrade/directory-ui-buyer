@@ -45,7 +45,7 @@ def test_company_profile_details_renders_public_link_if_published():
     }
     html = render_to_string(template_name, context)
 
-    assert html.count('href="http://www.example.com/profile"') == 2
+    assert html.count('href="http://www.example.com/profile"') == 3
 
 
 def test_company_profile_details_not_render_public_link_if_published():
@@ -137,7 +137,16 @@ def test_company_profile_details_renders_keywords():
 
 
 def test_company_private_profile_details_renders_standalone_edit_links():
-    context = {'show_wizard_links': False}
+    context = {
+        'show_wizard_links': False,
+        'company': {
+            'description': 'description description',
+            'summary': 'summary summary',
+            'email_address': 'thing@example.com',
+            'verified_with_code': False,
+            'is_published': False,
+        }
+    }
     html = render_to_string('company-private-profile-detail.html', context)
 
     assert reverse('company-edit-address') in html
@@ -146,11 +155,80 @@ def test_company_private_profile_details_renders_standalone_edit_links():
 
 
 def test_company_private_profile_details_renders_wizard_links():
-    context = {'show_wizard_links': True}
+    context = {
+        'show_wizard_links': True,
+        'company': {
+            'description': 'description description',
+            'summary': 'summary summary',
+            'email_address': 'thing@example.com',
+            'verified_with_code': False,
+            'is_published': False,
+        }
+    }
     html = render_to_string('company-private-profile-detail.html', context)
     company_edit_link = 'href="{url}"'.format(url=reverse('company-edit'))
 
-    assert reverse('company-edit-address') not in html
     assert reverse('company-edit-sectors') not in html
     assert reverse('company-edit-key-facts') not in html
-    assert html.count(company_edit_link) == 9
+    assert html.count(company_edit_link) == 8
+
+
+def test_company_profile_unpublished_no_description():
+    context = {
+        'company': {
+            'is_published': False,
+            'description': '',
+            'summary': '',
+        }
+    }
+    template_name = 'company-private-profile-detail.html'
+
+    html = render_to_string(template_name, context)
+
+    assert 'Your company has no description' in html
+
+
+def test_company_profile_unpublished_no_email():
+    context = {
+        'company': {
+            'is_published': False,
+            'description': 'description description',
+            'summary': 'summary summary',
+            'email_address': ''
+        }
+    }
+    template_name = 'company-private-profile-detail.html'
+
+    html = render_to_string(template_name, context)
+
+    assert 'Your company has no contact details' in html
+
+
+def test_company_profile_unpublished_not_verified():
+    context = {
+        'company': {
+            'is_published': False,
+            'description': 'description description',
+            'summary': 'summary summary',
+            'email_address': 'thing@example.com',
+            'verified_with_code': False
+        }
+    }
+    template_name = 'company-private-profile-detail.html'
+
+    html = render_to_string(template_name, context)
+
+    assert 'Your company has not yet been verified' in html
+
+
+def test_company_profile_unpublished_published():
+    context = {
+        'company': {
+            'is_published': True,
+        }
+    }
+    template_name = 'company-private-profile-detail.html'
+
+    html = render_to_string(template_name, context)
+
+    assert 'Your company is published' in html
