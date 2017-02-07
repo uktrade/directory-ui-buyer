@@ -248,7 +248,10 @@
 }
 
 .company-profile-published {
-  padding: 20px;
+  font-weight: bold;
+  margin-top: 30px;
+  margin-bottom: 30px;
+  margin-left: 30px;
   color: #00549F;
   font-weight: bold;
 }
@@ -307,7 +310,6 @@
     color: white;
     a {
       color: white;
-      text-decoration: underline;
     }
   }
 }
@@ -339,5 +341,4 @@
 
 .ed-icon-pencil {
   height: 15px;
-  margin-bottom: 4px;
 }
