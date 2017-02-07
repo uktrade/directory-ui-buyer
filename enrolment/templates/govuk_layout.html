@@ -30,8 +30,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta property="og:image" content="{% static 'govuk-0.18.0/assets/images/opengraph-image.png' %}">
 
-        <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" media="all" rel="stylesheet" />
-        <link href="{% static 'vendor/bootstrap/css/bootstrap-responsive.min.css' %}" media="all" rel="stylesheet" />
+        <link href="http://dit-styleguide.herokuapp.com/css/main.css" media="all" rel="stylesheet" />
 
         {% block css %}
             <link href="{% static 'main.css' %}" media="all" rel="stylesheet" />
@@ -51,14 +50,14 @@
         {% include 'header.html' %}
         {% block sub_header %}
             <section class="ed-hero-sub-header">
-                <div class="container">
-                    <div class="row-fluid">
-                        <span class="span12 ed-hero-sub-header-title">
-                            <h1>{% block hero_title %}{% endblock %}</h1>
+                <div class="outer-container">
+                    <div class="ed-row">
+                        <span class="col-12 ed-hero-sub-header-title">
+                            <h1 class="h1">{% block hero_title %}{% endblock %}</h1>
                         </span>
                     </div>
-                    <div class="row-fluid ed-hero-sub-header-synopsis">
-                        <span class="span9">
+                    <div class="ed-row ed-hero-sub-header-synopsis">
+                        <span class="col-9">
                             <span>{% block hero_text %}{% endblock %}</span>
                         </span>
                     </div>
