@@ -8,16 +8,6 @@
         <meta charset="utf-8" />
         <title>{% block head_title %}Find a Buyer - GREAT.gov.uk{% endblock %}</title>
 
-        <!--[if gt IE 8]><!--><link href="{% static 'govuk-0.18.0/assets/stylesheets/govuk-template.css' %}" media="screen" rel="stylesheet" /><!--<![endif]-->
-        <!--[if IE 6]><link href="{% static 'govuk-0.18.0/assets/stylesheets/govuk-template-ie6.css' %}" media="screen" rel="stylesheet" /><![endif]-->
-        <!--[if IE 7]><link href="{% static 'govuk-0.18.0/assets/stylesheets/govuk-template-ie7.css' %}" media="screen" rel="stylesheet" /><![endif]-->
-        <!--[if IE 8]><link href="{% static 'govuk-0.18.0/assets/stylesheets/govuk-template-ie8.css' %}" media="screen" rel="stylesheet" /><![endif]-->
-        <link href="{% static 'govuk-0.18.0/assets/stylesheets/govuk-template-print.css' %}" media="print" rel="stylesheet" />
-
-        <!--[if IE 8]><link href="{% static 'govuk-0.18.0/assets/stylesheets/fonts-ie8.css' %}" media="all" rel="stylesheet" /><![endif]-->
-        <!--[if gte IE 9]><!--><link href="{% static 'govuk-0.18.0/assets/stylesheets/fonts.css' %}" media="all" rel="stylesheet" /><!--<![endif]-->
-        <!--[if lt IE 9]><script src="{% static 'govuk-0.18.0/assets/javascripts/ie.js' %}"></script><![endif]-->
-
         <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900" rel="stylesheet">
 
         <link rel="shortcut icon" href="{% static 'govuk-0.18.0/assets/images/favicon.ico' %}" type="image/x-icon" />
@@ -40,13 +30,6 @@
     <body>
         {% include 'google_tag_manager_body.html' %}
         <script>document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');</script>
-
-        <div id="skiplink-container">
-            <div>
-                <a href="#content" class="skiplink">Skip to main content</a>
-            </div>
-        </div>
-
         {% include 'header.html' %}
         {% block sub_header %}
             <section class="ed-hero-sub-header">
