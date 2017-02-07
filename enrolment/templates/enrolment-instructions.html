@@ -2,9 +2,9 @@
 {% block sub_header %}{# prevent the subheader from showing on form pages #}{% endblock %}
 {% block head_title %}Start creating your profile - Find a Buyer - GREAT.gov.uk{% endblock %}
 {% block content %}
-<div class="container ed-enrolment">
-    <div class="clearfix"></div>
-    <div class="row-fluid">
+<div class="outer-container ed-enrolment">
+    <div class="cf"></div>
+    <div class="ed-row cf">
         <div class="col-8">
             <div class="connections-platform-form">
                 <h1>Before you start</h1>
@@ -15,8 +15,8 @@
                     <p>
                         We will need to send you a verification code by post to your company's registered company address.
                     </p>
-                <div class="form-wrapper-btn-container btn-container">
-                    <a class="register-btn button" type="submit" href="{% url 'register' step='company-number' %}">
+                <div>
+                    <a class="button button-blue" type="submit" href="{% url 'register' step='company-number' %}">
                         Start
                     </a>
                 </div>

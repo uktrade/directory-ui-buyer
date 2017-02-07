@@ -893,6 +893,7 @@ a.no-focus-highlight {
   background: transparent;
   border: none;
   margin-left: 20px;
+  cursor: pointer;
 }
 
 .great-blue-bar {
@@ -1033,4 +1034,9 @@ a.ed-filled-button-primary {
     background: #007EA3;
     outline: 0;
   }
+}
+
+
+.pull-right {
+  float: right;
 }
