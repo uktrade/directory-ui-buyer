@@ -7,6 +7,15 @@
           <ul class="list-inline list-separators">
             <li class="float--left soft--right"><a class="" href="https://www.gov.uk/" title="hm government"><img src="{% static 'images/hm-gov-horizontal.svg' %}"></a></li>
             <li class="float--left soft--left"><a class="link--grey" href="https://www.exportingisgreat.gov.uk/" title="part of great.gov.uk">Part of <strong>great.gov.uk</strong></a></li>
+
+          </ul>
+          <ul class="list-inline list-separators float--right">
+            {% if not sso_is_logged_in %}
+                <li class="float--left soft--right"><a href="{{ sso_login_url }}" target="_self" title="Login"  class="link--grey">Login</a></li>
+            {% else %}
+                <li class="float--left soft--right"><a href="{% url 'company-detail' %}" target="_self" title="Profile" class="link--grey">Profile</a></li>
+                <li class="float--left soft--left"><a href="{{ sso_logout_url }}" target="_self" title="Logout" class="link--grey">Logout</a></li>
+            {% endif %}
           </ul>
         </div>
       </div>

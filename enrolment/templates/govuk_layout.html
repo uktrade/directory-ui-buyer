@@ -25,6 +25,13 @@
         {% block css %}
             <link href="{% static 'main.css' %}" media="all" rel="stylesheet" />
         {% endblock %}
+        <noscript>
+            <style>
+                .navigation-toggle {
+                    display: block;
+                }
+            </style>
+        </noscript>
     </head>
 
     <body>

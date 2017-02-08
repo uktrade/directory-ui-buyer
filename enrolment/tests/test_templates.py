@@ -127,17 +127,43 @@ def test_company_profile_form_correct_title():
     assert 'Your company details' in html
 
 
+def test_header_logged_in():
+    context = {
+        'sso_is_logged_in': True,
+        'sso_login_url': 'login.com',
+        'sso_logout_url': 'logout.com',
+    }
+    html = render_to_string('header.html', context)
+    assert 'Login' not in html
+    assert context['sso_login_url'] not in html
+    assert 'Logout' in html
+    assert context['sso_logout_url'] in html
+
+
+def test_header_logged_out():
+    context = {
+        'sso_is_logged_in': False,
+        'sso_login_url': 'login.com',
+        'sso_logout_url': 'logout.com',
+    }
+    html = render_to_string('header.html', context)
+    assert 'Login' in html
+    assert context['sso_login_url'] in html
+    assert 'Logout' not in html
+    assert context['sso_logout_url'] not in html
+
+
 def test_google_tag_manager_project_id():
     context = {
         'analytics': {
-            'GOOGLE_TAG_MANAGER_ID': '1234567',
+            'GOOGLE_TAG_MANAGER_ID': '123456',
         }
     }
     head_html = render_to_string('google_tag_manager_head.html', context)
     body_html = render_to_string('google_tag_manager_body.html', context)
 
-    assert '1234567' in head_html
-    assert 'https://www.googletagmanager.com/ns.html?id=1234567' in body_html
+    assert '123456' in head_html
+    assert 'https://www.googletagmanager.com/ns.html?id=123456' in body_html
 
 
 def test_google_tag_manager():

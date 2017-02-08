@@ -2,6 +2,13 @@ $asset-path: '../';
 
 @import 'variables.scss';
 
+img {
+  height: auto;
+  max-width: 100%;
+  vertical-align: middle;
+  border: 0;
+}
+
 html {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
