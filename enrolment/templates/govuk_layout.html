@@ -2,7 +2,8 @@
 
 <!DOCTYPE html>
 <!--[if lt IE 9]><html class="lte-ie8" lang="en"><![endif]-->
-<!--[if gt IE 8]><!--><html lang="en"><!--<![endif]-->
+<!--[if gt IE 8]><!--><html lang="en-us"><!--<![endif]-->
+<!--[if gt IE 8]><!--> <html lang="en" class="ie8"> <!--<![endif]-->
     <head>
         {% include 'google_tag_manager_head.html' %}
         <meta charset="utf-8" />
@@ -19,8 +20,7 @@
 
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta property="og:image" content="{% static 'govuk-0.18.0/assets/images/opengraph-image.png' %}">
-
-        <link href="http://dit-styleguide.herokuapp.com/css/main.css" media="all" rel="stylesheet" />
+        <link href="{% static 'Dit-Pattern-Styling/public/css/main.css' %}" media="all" rel="stylesheet" />
 
         {% block css %}
             <link href="{% static 'main.css' %}" media="all" rel="stylesheet" />
@@ -57,7 +57,10 @@
 
         <div id="global-app-error" class="app-error hidden"></div>
 
-        <script src="{% static 'javascripts/index.js' %}"></script>
+        <script src="{% static 'Dit-Pattern-Styling/public/js/jquery.js' %}"></script>
+        <!--[if IE 8]><script src="{% static 'Dit-Pattern-Styling/public/js/ie8.js' }"></script><![endif]-->
+        <!--[if IE 8]><script type="text/javascript" src="js/selectivizr.js"></script><![endif]-->
+        <script type="text/javascript" src="{% static 'Dit-Pattern-Styling/public/js/navigation.js' %}"></script>
 
         {% block bodyScripts %}{% endblock bodyScripts %}
     </body>
