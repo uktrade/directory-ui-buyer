@@ -982,3 +982,52 @@ a.no-focus-highlight {
 .pull-right {
   float: right;
 }
+
+// do not remove the `a.` prefix - it increases the specificity
+// to ensure `color` we set here is respected.
+a.ed-naked-button-error {
+  border: 3px solid #B00D23;
+  color: #B00D23;
+  padding: 20px;
+  text-align: center;
+  font-weight: bold;
+  display: block;
+}
+
+// do not remove the `a.` prefix - it increases the specificity
+// to ensure `color` we set here is respected.
+a.ed-naked-button-primary {
+  border: 3px solid #00549F;
+  color: #00549F;
+  padding: 20px;
+  text-align: center;
+  font-weight: bold;
+  display: block;
+}
+
+// do not remove the `a.` prefix - it increases the specificity
+// to ensure `color` we set here is respected.
+a.ed-filled-button-primary {
+  border-radius: 4px;
+  background-color: #00549F;
+  width: 100%;
+  text-align: center;
+  display: -moz-inline-stack;
+  display: inline-block;
+  padding: 21px 24px;
+  border: none;
+  -webkit-appearance: none;
+  font-weight: 500;
+  text-decoration: none;
+  -webkit-font-smoothing: antialiased;
+  cursor: pointer;
+  color: #fff;
+  box-sizing: border-box;
+  vertical-align: top;
+  line-height: 1;
+  font-family: 'Roboto', sans-serif;
+  &:focus {
+    background: #007EA3;
+    outline: 0;
+  }
+}

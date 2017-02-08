@@ -16,7 +16,7 @@
 					<p style="font-weight: 400;">Your profile is visible to international buyers</p>
 				</div>
 				<div class="col-4" style="margin-top: 12px;">
-					<a href="{{ company.public_profile_url }}" target="_blank" class="button button-border">
+					<a href="{{ company.public_profile_url }}" target="_blank" class="ed-naked-button-primary">
 						View published profile
 					</a>
 				</div>
@@ -28,7 +28,7 @@
 					<p style="font-weight: 400;">Your profile can't be published until your company has a description</p>
 				</div>
 				<div class="col-4" style="margin-top: 10px;">
-					<a href="{% url 'company-edit-description' %}" class="button button-red">
+					<a href="{% url 'company-edit-description' %}" class="ed-naked-button-error">
 						Set your description
 					</a>
 				</div>
@@ -40,7 +40,7 @@
 					<p style="font-weight: 400;">Your profile can't be published. Buyers would be unable to contact you</p>
 				</div>
 				<div class="col-4" style="margin-top: 10px;">
-					<a href="{% url 'company-edit-contact' %}" class="button button-red">
+					<a href="{% url 'company-edit-contact' %}" class="ed-naked-button-error">
 						Set your contact email
 					</a>
 				</div>
@@ -53,11 +53,11 @@
 				</div>
 				<div class="col-4" style="margin-top: 10px;">
 					{% if company.has_valid_address %}
-						<a href="{% url 'confirm-company-address' %}" class="button button-red">
+						<a href="{% url 'confirm-company-address' %}" class="ed-naked-button-error">
 							Verify your company
 						</a>
 					{% else %}
-						<a href="{% url 'company-edit-address' %}" class="button button-red">
+						<a href="{% url 'company-edit-address' %}" class="ed-naked-button-error">
 							Set your address
 						</a>
 					{% endif %}
@@ -326,7 +326,7 @@
 		{% if company.is_published %}
 
 			<div class="ed-company-profile-add-case-study-button-container">
-				<a href="{{ company.public_profile_url }}" target="_blank" class="button button-blue" style="width: 100%; text-align: center;">
+				<a href="{{ company.public_profile_url }}" target="_blank" class="ed-filled-button-primary">
 					<span>View your published profile on our International Find a Supplier website</span>
 				</a>
 			</div>
