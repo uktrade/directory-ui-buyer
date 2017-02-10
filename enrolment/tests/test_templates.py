@@ -187,7 +187,7 @@ def test_utm_cookie_domain():
     }
     html = render_to_string('govuk_layout.html', context)
 
-    assert '<meta id="cookieDomain" value=".thing.com" />' in html
+    assert '<meta id="utmCookieDomain" value=".thing.com" />' in html
 
 
 def test_enrolment_instructions_page_renders():
