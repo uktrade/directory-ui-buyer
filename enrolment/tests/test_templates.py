@@ -179,6 +179,17 @@ def test_google_tag_manager():
     assert 'www.googletagmanager.com' in expected_body
 
 
+def test_google_tag_manager():
+    context = {
+        'analytics': {
+            'UTM_COOKIE_DOMAIN': '.thing.com',
+        }
+    }
+    html = render_to_string('govuk_layout.html', context)
+
+    assert '<meta id="cookieDomain" value=".thing.com" />' in html
+
+
 def test_enrolment_instructions_page_renders():
     # confirm the template renders without error
     render_to_string('enrolment-instructions.html')
