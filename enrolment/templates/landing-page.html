@@ -8,7 +8,7 @@ Get seen by motivated overseas buyers
 {% endblock %}
 
 {% block content %}
-<div class="container">
+<div class="outer-container">
 
 	<!-- Register block -->
 	<div class="ed-landing-page">
@@ -16,41 +16,38 @@ Get seen by motivated overseas buyers
 			<div class="span12 ed-landing-page-login-synopsis">
 				<p>Get a Find a Buyer profile to generate international sales leads</p>
 			</div>
-			<div class="span4 offset4">
+			<div class="span12 text--center">
 				<a class="" target="_self" href="{% url 'register-instructions' %}">
-					<div class="register-interest-btn aqua">
-						Get your profile
-						<span class="a11y">on Export Connect</span>
-					</div>
+					<div class="register-interest-btn aqua">Get your profile</div>
 				</a>
 			</div>
-			<div class="clearfix"></div>
+			<div class="cf"></div>
 		</div>
 	</div>
-	<div class="clearfix"></div>
+	<div class="cf"></div>
 
 	<!-- iPad image -->
 	<div class="ipad-image">
-		<div class="text-center ipad-intro-txt">
+		<h3 class="h3 text--center">
 			The place to let international buyers know all about your business
-		</div>
+		</h3>
 		<div class="ipad-img-container">
 			<div class="desktop-mode">
 
 				<div class="ipad-img-with-arrows">
-					<div class="top-left-text">
+					<div class="top-left-text font-large">
 						Highlight the vital facts about your company to give buyers confidence to get in touch.
 					</div>
-					<div class="bottom-left-text">
+					<div class="bottom-left-text font-large">
 						Show off your company's experience and outstanding projects to give potential buyers more insight.
 					</div>
 
 					<img class="" src="{% static 'images/registry-hero-profile-ipad.png' %}" alt="">
 
-					<div class="top-right-text">
+					<div class="top-right-text font-large">
 						Get emails from international buyers straight to your sales or business development teams.
 					</div>
-					<div class="bottom-right-text">
+					<div class="bottom-right-text font-large">
 						See relevant government-supported export development events where overseas buyers will be attending.
 					</div>
 				</div>
@@ -79,10 +76,9 @@ Get seen by motivated overseas buyers
 		</div>
 	</div>
 
-	<!-- Hero profiles -->
 	<div class="row-fluid">
-		<div class="span12 mid-blue-bar">
-			 <h2 class="element-within company-sub-title">These great companies have already joined. <a target="_self" href="{% url 'register-instructions' %}">Join now</a></h2>
+		<div class="span12 push--bottom mid-blue-bar">
+			 <h2 class="h2 element-within company-sub-title">These great companies have already joined. <a target="_self" href="{% url 'register-instructions' %}">Join now</a></h2>
 		</div>
 	</div>
 	<div class="row-fluid hero-profiles">
@@ -90,12 +86,12 @@ Get seen by motivated overseas buyers
 			<div class="hero-profile-img-container">
 				<img class="" src="{% static 'images/immersive-profile.jpg' %}" alt="" />
 			</div>
-			<div class="hero-profile-title">Immersive</div>
-			<div class="hero-profile-txt">
+			<h4 class="h4">Immersive</h4>
+			<div class="font-large">
 				Immersive are a complete solution provider for audio-visual projects of any scale. Immersive are new media technology.
 				<p>
 					<br>
-					<a href="{{ supplier_profile_urls.immersive }}" target="_blank">Read more</a>
+					<a href="{{ supplier_profile_urls.immersive }}" target="_blank" class="link">Read more</a>
 				</p>
 			</div>
 		</div>
@@ -104,12 +100,12 @@ Get seen by motivated overseas buyers
 			<div class="hero-profile-img-container">
 				<img class="" src="{% static 'images/bac-profile.png' %}" alt="" />
 			</div>
-			<div class="hero-profile-title">Briggs Automotive Company</div>
-			<div class="hero-profile-txt">
+			<h4 class="h4">Briggs Automotive Company</h4>
+			<div class="font-large">
 				Briggs Automotive Company (BAC) Ltd is the British manufacturer behind the mono, the world's first and only road-legal, single-seat supercar.
 				<p>
 					<br>
-					<a href="{{ supplier_profile_urls.briggs }}" target="_blank">Read more</a>
+					<a href="{{ supplier_profile_urls.briggs }}" target="_blank" class="link">Read more</a>
 				</p>
 			</div>
 		</div>
@@ -118,12 +114,12 @@ Get seen by motivated overseas buyers
 			<div class="hero-profile-img-container">
 				<img class="" src="{% static 'images/blippar-profile.png' %}" alt="" />
 			</div>
-			<div class="hero-profile-title">Blippar</div>
-			<div class="hero-profile-txt">
+			<h4 class="h4">Blippar</h4>
+			<div class="font-large">
 				Blippar is the leading visual discovery app, harnessing augmented reality, image-recognition technology, and artificial intelligence to bring.
 				<p>
 					<br>
-					<a href="{{ supplier_profile_urls.blippar }}" target="_blank">Read more</a>
+					<a href="{{ supplier_profile_urls.blippar }}" target="_blank" class="link">Read more</a>
 				</p>
 			</div>
 		</div>

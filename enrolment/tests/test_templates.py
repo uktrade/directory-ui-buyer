@@ -117,7 +117,7 @@ def test_export_status_common_invalid_form_error_size():
         'form': form
     }
     html = render_to_string('export-status-form.html', context)
-    assert 'span8' in html
+    assert 'col-8' in html
     assert 'Sorry, this is not the right service for your company' not in html
     assert '<form' in html
 
@@ -156,14 +156,14 @@ def test_header_logged_out():
 def test_google_tag_manager_project_id():
     context = {
         'analytics': {
-            'GOOGLE_TAG_MANAGER_ID': '1234567',
+            'GOOGLE_TAG_MANAGER_ID': '123456',
         }
     }
     head_html = render_to_string('google_tag_manager_head.html', context)
     body_html = render_to_string('google_tag_manager_body.html', context)
 
-    assert '1234567' in head_html
-    assert 'https://www.googletagmanager.com/ns.html?id=1234567' in body_html
+    assert '123456' in head_html
+    assert 'https://www.googletagmanager.com/ns.html?id=123456' in body_html
 
 
 def test_google_tag_manager():

@@ -1,5 +1,11 @@
 @import 'main.scss';
 
+.ed-enrolment {
+  margin-top: 40px;
+  margin-bottom: 40px;
+  color: #4a4a4a;
+}
+
 .company-profile-details-body {
   position: relative;
   h3 {
@@ -248,7 +254,9 @@
 }
 
 .company-profile-published {
-  padding: 20px;
+  font-weight: bold;
+  margin-top: 30px;
+  margin-bottom: 30px;
   color: #00549F;
   font-weight: bold;
 }
@@ -307,7 +315,6 @@
     color: white;
     a {
       color: white;
-      text-decoration: underline;
     }
   }
 }
@@ -339,5 +346,4 @@
 
 .ed-icon-pencil {
   height: 15px;
-  margin-bottom: 4px;
 }

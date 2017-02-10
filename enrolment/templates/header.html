@@ -1,73 +1,67 @@
 {% load static %}
-{% load external_url from constants_tags %}
-<header class="ed-header">
-    <div class="row-fluid ed-header-level-one">
-        <div class="container">
-            <div class="level-one-container">
-                <h3 class="our-services-top hide-in-mobile">Our services:</h3>
-                <ul class="">
-                    <li class="hide-in-mobile"><a href="{% external_url 'export_opportunities' %}" title="Export opportunities">Export opportunities</a></li>
-                    <li class="hide-in-mobile"><a href="{% external_url 'find_a_buyer' %}" title="Find a buyer">Find a buyer</a></li>
-                    <li class="hide-in-mobile"><a href="{% external_url 'selling_online_overseas' %}" title="Selling online overseas">Selling online overseas</a></li>
-                    <li class="hide-in-mobile"><a href="{% external_url 'events' %}" title="Events">Events</a></li>
-                    {% if not sso_is_logged_in %}
-                        <li><a href="{{ sso_login_url }}" target="_self" title="Login">Login</a></li>
-                    {% else %}
-                        <li><a href="{% url 'company-detail' %}" target="_self" title="Profile">Profile</a></li>
-                        <li><a href="{{ sso_logout_url }}" target="_self" title="Logout">Logout</a></li>
-                    {% endif %}
-                </ul>
-            </div>
+<header role="banner">
+    <div class="navigation">
+      <div class="navigation-strip background--dark-navy">
+        <div class="outer-container">
+          <ul class="list-inline list-separators">
+            <li class="float--left soft--right"><a class="logo-hmg" href="https://www.gov.uk/" title="hm government"><img src="{% static 'images/hm-gov-horizontal.svg' %}"></a></li>
+            <li class="float--left soft--left"><a class="link--grey" href="https://www.exportingisgreat.gov.uk/" title="part of great.gov.uk">Part of <strong>Great.gov.uk</strong></a></li>
+          </ul>
+          <ul class="list-inline list-separators float--right">
+            {% if not sso_is_logged_in %}
+                <li class="float--left soft--right"><a href="{{ sso_login_url }}" target="_self" title="Login"  class="link--grey">Login</a></li>
+            {% else %}
+                <li class="float--left soft--right"><a href="{% url 'company-detail' %}" target="_self" title="Profile" class="link--grey">Profile</a></li>
+                <li class="float--left soft--left"><a href="{{ sso_logout_url }}" target="_self" title="Logout" class="link--grey">Logout</a></li>
+            {% endif %}
+          </ul>
         </div>
-    </div>
-
-    <div class="row-fluid ed-header-level-two">
-        <div class="container ed-header-image-container">
-            <a href="{% external_url 'exporting_is_great' %}" target="_self">
-                <img class="header-main-logo" height="62.13px" width="300px" src="{% static 'images/eig-logo-withhmg-24png-2x_480.png' %}" alt="" />
-            </a>
-            <span class="header-nav-menu-toggle-button js-header-nav-menu-toggle-button">
-                Menu
-                <i class="icon-white icon-align-justify" style="margin-top: 4px;"></i>
-            </span>
-            <div class="eig-links">
-                <nav>
-                <h3 class="a11y">Exporting is GREAT:</h3>
-                <ul class="header-nav-links">
-                    <li class="header-nav-link"><a title="new to exporting" href="{% external_url 'new_to_exporting' %}" class="">NEW TO EXPORTING</a></li>
-                    <li class="header-nav-link"><a title="occasional exporter" href="{% external_url 'occasional_exporter' %}">OCCASIONAL EXPORTER</a></li>
-                    <li class="header-nav-link"><a title="regular exporter" href="{% external_url 'regular_exporter' %}">REGULAR EXPORTER</a></li>
-                    </ul>
-                </nav>
-            </div>
-        </span>
-    </div>
-
-    <div class="row-fluid ed-header-mobile-view" id="">
-        <div class="header-nav">
-            <div class="js-header-nav-menu js-header-nav-menu-hide">
-                <div class="background--indigo soft-half--sides soft--ends header-nav--top">
-                    <nav>
-                        <h3 class="font-white font-weight-medium font-size-15">Our services:</h3>
-                        <ul class="mobile-secondary-nav">
-                            <li class="header-nav-link"><a class="font-reg" href="{% external_url 'export_opportunities' %}" title="Export opportunities">Export opportunities</a></li>
-                            <li class="header-nav-link"><a class="font-reg" href="{% external_url 'find_a_buyer' %}" title="Find a buyer">Find a buyer</a></li>
-                            <li class="header-nav-link"><a class="font-reg" href="{% external_url 'selling_online_overseas' %}" title="Selling online overseas">Selling online overseas</a></li>
-                            <li class="header-nav-link"><a class="font-reg" href="{% external_url 'events' %}" title="Events">Events</a></li>
-                        </ul>
-                    </nav>
-                </div>
-                <div class="soft-half--sides">
-                    <nav>
-                        <h3 class="font-white font-weight-medium font-size-15 push--top desktop-only">Exporting is GREAT:</h3>
-                        <ul id="secondaryNav" class="mobile-secondary-nav">
-                            <li class="header-nav-link"><a title="NEW TO EXPORTING" href="{% external_url 'new_to_exporting' %}" class="">NEW TO EXPORTING</a></li>
-                            <li class="header-nav-link"><a title="OCCASIONAL EXPORTER" href="{% external_url 'occasional_exporter' %}">OCCASIONAL EXPORTER</a></li>
-                            <li class="header-nav-link"><a title="REGULAR EXPORTER" href="{% external_url 'regular_exporter' %}">REGULAR EXPORTER</a></li>
-                        </ul>
-                    </nav>
-                </div>
-            </div>
+      </div>
+      <div class="background--great-blue">
+        <div class="outer-container">
+          <a href="https://www.exportingisgreat.gov.uk" title="Go to the Exporting is great homepage" class="float--left">
+            <img src="{% static 'images/EiG_logo_horizontal.svg' %}" alt="Exporting is great logo" class="navigation-logo">
+          </a>
         </div>
+      </div>
+      <div class="navigation-main background--dark-blue">
+        <div class="navigation-main-section outer-container">
+          <nav>
+            <ul class="list-inline list-separators navigation-main-menu">
+              <li><a title="new to exporting" href="https://www.exportingisgreat.gov.uk/new/" class="navigation-main-link background--light-blue font-medium">New to exporting</a></li>
+              <li><a title="occasional exporter" href="https://www.exportingisgreat.gov.uk/occasional/" class="navigation-main-link background--light-blue font-medium">Occasional exporter</a></li>
+              <li><a title="regular exporter" href="https://www.exportingisgreat.gov.uk/regular/" class="navigation-main-link background--light-blue font-medium">Regular exporter</a></li>
+              <li><a href="https://www.exportingisgreat.gov.uk/opportunities" title="Export opportunities" class="navigation-main-link">Export opportunities</a></li>
+              <li><a href="http://find-a-buyer.export.great.gov.uk/" title="Find a buyer" class="navigation-main-link navigation-main-link--active">Find a buyer</a></li>
+              <li><a href="https://selling-online-overseas.export.great.gov.uk/markets/" title="Selling online overseas" class="navigation-main-link">Selling online overseas</a></li>
+              <li><a href="" title="UK Export Finance" class="navigation-main-link">UK Export Finance</a></li>
+              <li><a href="https://events.trade.gov.uk/" title="Export Events" class="navigation-main-link">Export events</a></li>
+            </ul>
+          </nav>
+          <a class="button navigation-main-button font-white" title="" href=""><i class="icon icon-menu"></i>All</a>
+        </div>
+        <div class="navigation-toggle background--dark-navy">
+          <div class="outer-container">
+            <ul class="span3">
+              <li class="navigation-toggle-item navigation-toggle-services"><a title="new to exporting" href="https://www.exportingisgreat.gov.uk/new/">New to exporting</a></li>
+              <li class="navigation-toggle-item navigation-toggle-services"><a title="occasional exporter" href="https://www.exportingisgreat.gov.uk/occasional/">Occasional exporter</a></li>
+              <li class="navigation-toggle-item navigation-toggle-services"><a title="regular exporter" href="https://www.exportingisgreat.gov.uk/regular/" class="last">Regular exporter</a></li>
+            </ul>
+            <ul class="span3 navigation-toggle-middle">
+              <li class="navigation-toggle-item"><a href="https://www.exportingisgreat.gov.uk/opportunities" title="Export opportunities">Export opportunities</a></li>
+              <li class="navigation-toggle-item"><a href="http://find-a-buyer.export.great.gov.uk/" title="Find a buyer" class="navigation-toggle-active">Find a buyer</a></li>
+              <li class="navigation-toggle-item"><a href="https://selling-online-overseas.export.great.gov.uk/markets/" title="Selling online overseas">Selling online overseas</a></li>
+            </ul>
+            <ul class="span3 navigation-toggle-middle">
+              <li class="navigation-toggle-item"><a href="" title="UK Export Finance">UK Export Finance</a></li>
+              <li class="navigation-toggle-item"><a href="https://events.trade.gov.uk/" title="Export Events">Export events</a></li>
+            </ul>
+            <ul class="span3 navigation-toggle-middle">
+              <li class="navigation-toggle-item"><a href="https://www.exportingisgreat.gov.uk/about/" title="About">About</a></li>
+              <li class="navigation-toggle-item"><a href="https://contact-us.export.great.gov.uk/selling_online_overseas" title="Contact us" class="last">Contact us</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
     </div>
-</header>
+  </header>

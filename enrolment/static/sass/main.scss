@@ -2,6 +2,13 @@ $asset-path: '../';
 
 @import 'variables.scss';
 
+img {
+  height: auto;
+  max-width: 100%;
+  vertical-align: middle;
+  border: 0;
+}
+
 html {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
@@ -11,14 +18,6 @@ html {
   -webkit-box-sizing: inherit;
   -moz-box-sizing: inherit;
   box-sizing: inherit;
-}
-
-html {
-  a:focus {
-    border-color: #007EA3;
-    color: #007EA3;
-    background-color: transparent;
-  }
 }
 
 html input:focus:invalid:focus,
@@ -39,6 +38,10 @@ html {
   a:focus {
 
   }
+}
+
+.icon-menu{
+  background-image:url("Dit-Pattern-Styling/public/images/icons/menu.svg")
 }
 
 textarea:focus,
@@ -893,6 +896,7 @@ a.no-focus-highlight {
   background: transparent;
   border: none;
   margin-left: 20px;
+  cursor: pointer;
 }
 
 .great-blue-bar {
@@ -984,6 +988,10 @@ a.no-focus-highlight {
 
 .ed-special-bottom-border {
   border-bottom: 7px solid #B00D23;
+}
+
+.pull-right {
+  float: right;
 }
 
 // do not remove the `a.` prefix - it increases the specificity

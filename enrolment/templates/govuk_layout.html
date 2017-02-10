@@ -2,21 +2,12 @@
 
 <!DOCTYPE html>
 <!--[if lt IE 9]><html class="lte-ie8" lang="en"><![endif]-->
-<!--[if gt IE 8]><!--><html lang="en"><!--<![endif]-->
+<!--[if gt IE 8]><!--><html lang="en-us"><!--<![endif]-->
+<!--[if gt IE 8]><!--> <html lang="en" class="ie8"> <!--<![endif]-->
     <head>
         {% include 'google_tag_manager_head.html' %}
         <meta charset="utf-8" />
         <title>{% block head_title %}Find a Buyer - GREAT.gov.uk{% endblock %}</title>
-
-        <!--[if gt IE 8]><!--><link href="{% static 'govuk-0.18.0/assets/stylesheets/govuk-template.css' %}" media="screen" rel="stylesheet" /><!--<![endif]-->
-        <!--[if IE 6]><link href="{% static 'govuk-0.18.0/assets/stylesheets/govuk-template-ie6.css' %}" media="screen" rel="stylesheet" /><![endif]-->
-        <!--[if IE 7]><link href="{% static 'govuk-0.18.0/assets/stylesheets/govuk-template-ie7.css' %}" media="screen" rel="stylesheet" /><![endif]-->
-        <!--[if IE 8]><link href="{% static 'govuk-0.18.0/assets/stylesheets/govuk-template-ie8.css' %}" media="screen" rel="stylesheet" /><![endif]-->
-        <link href="{% static 'govuk-0.18.0/assets/stylesheets/govuk-template-print.css' %}" media="print" rel="stylesheet" />
-
-        <!--[if IE 8]><link href="{% static 'govuk-0.18.0/assets/stylesheets/fonts-ie8.css' %}" media="all" rel="stylesheet" /><![endif]-->
-        <!--[if gte IE 9]><!--><link href="{% static 'govuk-0.18.0/assets/stylesheets/fonts.css' %}" media="all" rel="stylesheet" /><!--<![endif]-->
-        <!--[if lt IE 9]><script src="{% static 'govuk-0.18.0/assets/javascripts/ie.js' %}"></script><![endif]-->
 
         <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900" rel="stylesheet">
 
@@ -29,32 +20,32 @@
 
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta property="og:image" content="{% static 'govuk-0.18.0/assets/images/opengraph-image.png' %}">
-
-        <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" media="all" rel="stylesheet" />
-        <link href="{% static 'vendor/bootstrap/css/bootstrap-responsive.min.css' %}" media="all" rel="stylesheet" />
+        <link href="{% static 'Dit-Pattern-Styling/public/css/main.css' %}" media="all" rel="stylesheet" />
+        <link href="{% static 'vendor/bootstrap/css/bootstrap-grid-only.css' %}" media="all" rel="stylesheet" />
+        <link href="{% static 'vendor/bootstrap/css/bootstrap-responsive.css' %}" media="all" rel="stylesheet" />
 
         {% block css %}
             <link href="{% static 'main.css' %}" media="all" rel="stylesheet" />
         {% endblock %}
+        <noscript>
+            <style>
+                .navigation-toggle {
+                    display: block;
+                }
+            </style>
+        </noscript>
     </head>
 
     <body>
         {% include 'google_tag_manager_body.html' %}
         <script>document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');</script>
-
-        <div id="skiplink-container">
-            <div>
-                <a href="#content" class="skiplink">Skip to main content</a>
-            </div>
-        </div>
-
         {% include 'header.html' %}
         {% block sub_header %}
             <section class="ed-hero-sub-header">
-                <div class="container">
+                <div class="outer-container">
                     <div class="row-fluid">
                         <span class="span12 ed-hero-sub-header-title">
-                            <h1>{% block hero_title %}{% endblock %}</h1>
+                            <h1 class="h1">{% block hero_title %}{% endblock %}</h1>
                         </span>
                     </div>
                     <div class="row-fluid ed-hero-sub-header-synopsis">
@@ -75,7 +66,10 @@
 
         <div id="global-app-error" class="app-error hidden"></div>
 
-        <script src="{% static 'javascripts/index.js' %}"></script>
+        <script src="{% static 'Dit-Pattern-Styling/public/js/jquery.js' %}"></script>
+        <!--[if IE 8]><script src="{% static 'Dit-Pattern-Styling/public/js/ie8.js' }"></script><![endif]-->
+        <!--[if IE 8]><script type="text/javascript" src="js/selectivizr.js"></script><![endif]-->
+        <script type="text/javascript" src="{% static 'Dit-Pattern-Styling/public/js/navigation.js' %}"></script>
 
         {% block bodyScripts %}{% endblock bodyScripts %}
     </body>

@@ -13,7 +13,7 @@
 {% block formarea %}
 	<form action="" method="post" enctype="multipart/form-data">
 		<div class="connections-platform-form {% block container_class %}{% endblock %}">
-			<h1>{% block form_title %}{% endblock form_title %}</h1>
+			<h1 class="h1">{% block form_title %}{% endblock form_title %}</h1>
 			{% block form_subtitle %}{% endblock form_subtitle %}
 			{% csrf_token %}
 			<div class="input-field-container">
@@ -27,11 +27,11 @@
 					{{ wizard.form.as_ul }}
 				{% endif %}
 			</div>
-			<div class="form-wrapper-btn-container btn-container">
+			<div>
 				{% if wizard.steps.step1 != wizard.steps.count %}
-					<input class="register-btn button" type="submit" value="{% block button_next_label %}Next{% endblock%}"/>
+					<input class="button button-blue" type="submit" value="{% block button_next_label %}Next{% endblock%}"/>
 				{% else %}
-					<input class="register-btn button" type="submit" value="{% block button_finish_label %}Register{% endblock%}"/>
+					<input class="button button-blue" type="submit" value="{% block button_finish_label %}Register{% endblock%}"/>
 				{% endif %}
 				{% block extra_buttons %}{% endblock %}
 				{% if wizard.steps.prev %}
@@ -42,6 +42,6 @@
 				{% endif %}
 			</div>
 		</div>
-		<div class="clearfix"></div>
+		<div class="cf"></div>
 	</form>
 {% endblock %}
