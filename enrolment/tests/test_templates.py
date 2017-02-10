@@ -179,7 +179,7 @@ def test_google_tag_manager():
     assert 'www.googletagmanager.com' in expected_body
 
 
-def test_google_tag_manager():
+def test_utm_cookie_domain():
     context = {
         'analytics': {
             'UTM_COOKIE_DOMAIN': '.thing.com',
