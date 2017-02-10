@@ -23,13 +23,15 @@ def test_feature_returns_expected_features(rf, settings):
 def test_analytics(rf, settings):
     settings.GOOGLE_TAG_MANAGER_ID = '123'
     settings.GOOGLE_TAG_MANAGER_ENV = '?thing=1'
+    settings.ANALYTICS_COOKIE_DOMAIN = '.thing.com'
 
     actual = context_processors.analytics(None)
 
     assert actual == {
         'analytics': {
             'GOOGLE_TAG_MANAGER_ID': '123',
-            'GOOGLE_TAG_MANAGER_ENV': '?thing=1'
+            'GOOGLE_TAG_MANAGER_ENV': '?thing=1',
+            'UTM_COOKIE_DOMAIN': '.thing.com',
         }
     }
 
