@@ -114,10 +114,7 @@ GOVUK.utm = (new function() {
     
     // 1. Does not add empty values.
     for(var i=0; i<params.length; ++i) {
-      console.log(i);
-      console.log("params[%d]: ", i, params[i]);
       value = utils.getParameterByName(params[i]);
-      console.log("value: ", value);
       if(value) {
         data[params[i]] = value;
         GOVUK.cookie.set("ed_utm", JSON.stringify(data), config);
