@@ -115,7 +115,7 @@ GOVUK.utm = (new function() {
     };
 
     if(domain) {
-      opts.domain = domain.getAttribute("value");
+      domain = domain.getAttribute("value");
     }
     
     GOVUK.cookie.set("ed_utm", JSON.stringify(data), { days: 7 });
@@ -129,23 +129,29 @@ GOVUK.utm = (new function() {
   
 });
 
-// This is what we want to run on page. 
-function page() {
-  
-  // Run immediately.
-  GOVUK.utm.set();
-}
-
-/* window does not exist in test environment.
- * In test mode we don't want the code to 
+/* In test mode we don't want the code to 
  * run immediately because we have to compensate
  * for not having a browser environment first.
- * Exporting GOVUK will make it available to 
- * the test environment. 
+ **/ 
+GOVUK.page = (new function() {
+  
+  // Run on every page (called from <body>).
+  this.init = function() {
+    GOVUK.utm.set();
+  }
+});
+
+/* GOVUK is a global variable, so will be placed on
+ * the window object in a browser environment. Since
+ * we are using 'require()' in test environment, the
+ * GOVUK will be scoped to the required module.
+ * The (otherwise pointless) use of window.GOVUK 
+ * statement will trigger the catch in test 
+ * environment thus, ensuring the GOVUK will be 
+ * exposed for testing purpose.
  **/
 try {
   window.GOVUK = GOVUK;
-  page();
 }
 catch(e) {
   module.exports = GOVUK;
