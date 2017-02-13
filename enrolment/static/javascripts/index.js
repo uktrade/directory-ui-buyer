@@ -55,11 +55,6 @@ GOVUK.cookie = (new function() {
       str += "; Secure";
     }
     
-    // TDD only.
-    if(document.tdd) {
-      this.value = str;
-    }
-    
     document.cookie = str;
   }
   
