@@ -1,4 +1,4 @@
-var GOVUK = GOVUK || {};
+var GOVUK = {};
 
 /* 
   General utility methods
@@ -13,24 +13,8 @@ GOVUK.utils = (new function() {
   this.getParameterByName = function(name) {
     name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
     var regex = new RegExp("[\\?&amp;]" + name + "=([^&amp;#]*)"),
-        results = regex.exec(location.search);
+        results = regex.exec(document.location.search);
     return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
-  }
-
-  /* Merge two objects (obj2 into obj1) - overwrites existing values.
-   * @obj1 (Object) Object to be altered
-   * @obj2 (Object) Object containing properties to add
-   * e.g.
-   * GOVUK.utils.merge({foo:'foo'}, {bar:'bar'});
-   * returns {foo:'foo', bar:'bar'}
-   **/
-  this.merge = function(obj1, obj2) {
-    for(var o in obj2) {
-      if(obj2.hasOwnProperty(o)) {
-        obj1[o] = obj2[o];
-      }
-    }
-    return obj1;
   }
 });
 
@@ -54,28 +38,29 @@ GOVUK.cookie = (new function() {
    * @options (Object) Optional configurations
    **/
   this.set = function(name, value, options) {
-    var opts = GOVUK.utils.merge({
-      domain: null // Set a domain value (e.g. exclude sub domain).
-    }, options || {});
-    
-    var cookieString = name + "=" + value + "; path=/";
+    var opts = options || {};
+    var str = name + "=" + value + "; path=/";
     var domain, domainSplit;
-
     if (opts.days) {
       var date = new Date();
       date.setTime(date.getTime() + (opts.days * 24 * 60 * 60 * 1000));
-      cookieString = cookieString + "; expires=" + date.toGMTString();
+      str += "; expires=" + date.toGMTString();
     }
 
     if(opts.domain) {
-      cookieString += ";domain=" + opts.domain + ";path=/"
+      str += "; domain=" + opts.domain;
     }
-  
+
     if (document.location.protocol == 'https:'){
-      cookieString = cookieString + "; Secure";
+      str += "; Secure";
     }
-  
-    document.cookie = cookieString;
+    
+    // TDD only.
+    if(document.tdd) {
+      this.value = str;
+    }
+    
+    document.cookie = str;
   }
   
  /* Read a cookie
@@ -111,24 +96,17 @@ GOVUK.cookie = (new function() {
   UTM value storage
   =================
   Store values from URL param:
-  GOVUK.cookie.set();
+  GOVUK.utm.set();
 
   Reading stored values:
-  GOVUK.cookie.get();
+  GOVUK.utm.get();
 */
 GOVUK.utm = (new function() {
-  var COOKIE_NAME = "ed_utm";
   var UTILS = GOVUK.utils;
   
-  /* Store the data
-   * @options (Object) Configurable information.
-   **/
-  this.set = function(options) {
-    var opts = UTILS.merge({
-      days: 7 // Defatult days to keep the cookie.
-    }, options || {});
-    
-    var utmData = {
+  this.set = function() {
+    var domain = document.getElementById("utmCookieDomain");
+    var data = {
       utm_campaign: UTILS.getParameterByName("utm_campaign"),
       utm_content: UTILS.getParameterByName("utm_content"),
       utm_medium: UTILS.getParameterByName("utm_medium"),
@@ -136,21 +114,39 @@ GOVUK.utm = (new function() {
       utm_term: UTILS.getParameterByName("utm_term")
     };
 
-    var domain = document.getElementById("utmCookieDomain");
     if(domain) {
       opts.domain = domain.getAttribute("value");
     }
     
-    GOVUK.cookie.set(COOKIE_NAME, JSON.stringify(utmData), opts);
+    GOVUK.cookie.set("ed_utm", JSON.stringify(data), { days: 7 });
   }
 
   this.get = function() {
-    return GOVUK.cookie.get(COOKIE_NAME);
+    var cookie = GOVUK.cookie.get("ed_utm");
+    var data = JSON.parse(cookie);
+    return data;
   }
   
 });
 
-// Run immediately.
-if(GOVUK) {
+// This is what we want to run on page. 
+function page() {
+  
+  // Run immediately.
   GOVUK.utm.set();
+}
+
+/* window does not exist in test environment.
+ * In test mode we don't want the code to 
+ * run immediately because we have to compensate
+ * for not having a browser environment first.
+ * Exporting GOVUK will make it available to 
+ * the test environment. 
+ **/
+try {
+  window.GOVUK = GOVUK;
+  page();
+}
+catch(e) {
+  module.exports = GOVUK;
 }
