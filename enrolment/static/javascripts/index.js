@@ -136,19 +136,3 @@ GOVUK.page = (new function() {
     GOVUK.utm.set();
   }
 });
-
-/* GOVUK is a global variable, so will be placed on
- * the window object in a browser environment. Since
- * we are using 'require()' in test environment, the
- * GOVUK will be scoped to the required module.
- * The (otherwise pointless) use of window.GOVUK 
- * statement will trigger the catch in test 
- * environment thus, ensuring the GOVUK will be 
- * exposed for testing purpose.
- **/
-try {
-  window.GOVUK = GOVUK;
-}
-catch(e) {
-  module.exports = GOVUK;
-}
