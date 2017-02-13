@@ -97,30 +97,37 @@ GOVUK.cookie = (new function() {
   GOVUK.utm.get();
 */
 GOVUK.utm = (new function() {
-  var UTILS = GOVUK.utils;
+  var utils = GOVUK.utils;
   
   this.set = function() {
+    // params = [utm_campaign|utm_content|utm_medium|utm_source\utm_term]
+    var params = document.location.search.match(/utm_[a-z]+/g);
     var domain = document.getElementById("utmCookieDomain");
     var config = { days: 7 };
-    var data = {
-      utm_campaign: UTILS.getParameterByName("utm_campaign"),
-      utm_content: UTILS.getParameterByName("utm_content"),
-      utm_medium: UTILS.getParameterByName("utm_medium"),
-      utm_source: UTILS.getParameterByName("utm_source"),
-      utm_term: UTILS.getParameterByName("utm_term")
-    };
-
+    var data = {};
+    var value;
+    
     if(domain) {
       config.domain = domain.getAttribute("value");
     }
     
-    GOVUK.cookie.set("ed_utm", JSON.stringify(data), config);
+    // 1. Does not add empty values.
+    for(var i=0; i<params.length; ++i) {
+      console.log(i);
+      console.log("params[%d]: ", i, params[i]);
+      value = utils.getParameterByName(params[i]);
+      console.log("value: ", value);
+      if(value) {
+        data[params[i]] = value;
+        GOVUK.cookie.set("ed_utm", JSON.stringify(data), config);
+        break;
+      }
+    }
   }
 
   this.get = function() {
     var cookie = GOVUK.cookie.get("ed_utm");
-    var data = JSON.parse(cookie);
-    return data;
+    return cookie ? JSON.parse(cookie) : null;
   }
   
 });
@@ -131,8 +138,18 @@ GOVUK.utm = (new function() {
  **/ 
 GOVUK.page = (new function() {
   
-  // Run on every page (called from <body>).
+  // What to run on every page (called from <body>).
   this.init = function() {
-    GOVUK.utm.set();
+    captureUtmValue();
+  }
+  
+  /* Attempt to capture UTM information if we haven't already
+   * got something and querystring is not empty.
+   **/
+  function captureUtmValue() {
+    var captured = GOVUK.utm.get();
+    if(!captured && document.location.search.substring(1)) {
+      GOVUK.utm.set();
+    }
   }
 });
