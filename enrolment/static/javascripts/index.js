@@ -114,11 +114,12 @@ GOVUK.utm = (new function() {
       utm_term: UTILS.getParameterByName("utm_term")
     };
 
+    var options = { days: 7 };
     if(domain) {
-      opts.domain = domain.getAttribute("value");
+      options.domain = domain.getAttribute("value");
     }
     
-    GOVUK.cookie.set("ed_utm", JSON.stringify(data), { days: 7 });
+    GOVUK.cookie.set("ed_utm", JSON.stringify(data), options);
   }
 
   this.get = function() {
@@ -129,24 +130,4 @@ GOVUK.utm = (new function() {
   
 });
 
-// This is what we want to run on page. 
-function page() {
-  
-  // Run immediately.
-  GOVUK.utm.set();
-}
-
-/* window does not exist in test environment.
- * In test mode we don't want the code to 
- * run immediately because we have to compensate
- * for not having a browser environment first.
- * Exporting GOVUK will make it available to 
- * the test environment. 
- **/
-try {
-  window.GOVUK = GOVUK;
-  page();
-}
-catch(e) {
-  module.exports = GOVUK;
-}
+GOVUK.utm.set();
