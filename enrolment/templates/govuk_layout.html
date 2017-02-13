@@ -5,6 +5,7 @@
 <!--[if gt IE 8]><!--><html lang="en-us"><!--<![endif]-->
 <!--[if gt IE 8]><!--> <html lang="en" class="ie8"> <!--<![endif]-->
     <head>
+        <meta id="utmCookieDomain" value="{{ analytics.UTM_COOKIE_DOMAIN }}" />
         {% include 'google_tag_manager_head.html' %}
         <meta charset="utf-8" />
         <title>{% block head_title %}Find a Buyer - GREAT.gov.uk{% endblock %}</title>
@@ -70,7 +71,7 @@
         <!--[if IE 8]><script src="{% static 'Dit-Pattern-Styling/public/js/ie8.js' }"></script><![endif]-->
         <!--[if IE 8]><script type="text/javascript" src="js/selectivizr.js"></script><![endif]-->
         <script type="text/javascript" src="{% static 'Dit-Pattern-Styling/public/js/navigation.js' %}"></script>
-
+        <script type="text/javascript" src="{% static 'javascripts/index.js' %}"></script>
         {% block bodyScripts %}{% endblock bodyScripts %}
     </body>
 </html>
