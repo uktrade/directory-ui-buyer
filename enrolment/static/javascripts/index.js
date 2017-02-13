@@ -11,9 +11,10 @@ GOVUK.utils = (new function() {
    * GOVUK.utils.getParameterByName('a_param');
    **/
   this.getParameterByName = function(name) {
-    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
-    var regex = new RegExp("[\\?&amp;]" + name + "=([^&amp;#]*)"),
-        results = regex.exec(document.location.search);
+    var param = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+    var qs = document.location.search.replace("&amp;", "&");
+    var regex = new RegExp("[\\?&]" + param + "=([^&#]*)");
+    var results = regex.exec(qs);
     return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
   }
 });
