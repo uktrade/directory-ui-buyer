@@ -138,3 +138,7 @@ def get_contact_details(sso_id):
     if profile['has_valid_address']:
         return profile
     return get_company_contact_details_from_companies_house(profile['number'])
+
+
+def chunk_list(unchunked, length):
+    return [unchunked[x:x+length] for x in range(0, len(unchunked), length)]

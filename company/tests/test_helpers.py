@@ -198,3 +198,15 @@ def test_format_case_study(supplier_case_study_data, settings):
         'url': 'http://list.com/SOFTWARE_AND_COMPUTER_SERVICES',
     }
     assert actual['url'] == 'http://case_study.com/2'
+
+
+def test_chunk_list():
+    input_list = [1, 2, 3, 4, 5, 6, 7, 8]
+    expected_list = [[1, 2, 3], [4, 5, 6], [7, 8]]
+    assert helpers.chunk_list(input_list, 3) == expected_list
+
+
+def test_chunk_list_empty():
+    input_list = []
+    expected_list = []
+    assert helpers.chunk_list(input_list, 3) == expected_list

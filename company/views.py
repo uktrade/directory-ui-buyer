@@ -161,6 +161,8 @@ class SupplierCompanyProfileDetailView(SupplierCompanyBaseView, TemplateView):
         if not response.ok:
             response.raise_for_status()
         profile = helpers.get_company_profile_from_response(response)
+        case_studies = profile.get('supplier_case_studies', [])
+        profile['supplier_case_studies'] = helpers.chunk_list(case_studies, 3)
         show_wizard_links = not forms.is_optional_profile_values_set(profile)
         return {
             'company': profile,

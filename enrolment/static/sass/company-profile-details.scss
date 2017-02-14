@@ -303,12 +303,15 @@
 
 .ed-company-profile-sector-case-study-container {
   margin-bottom: 20px;
-
   img {
-    padding: 0
+    padding: 0;
+    max-width: 344px;
   }
   .ed-company-profile-sector-case-study-inner {
     margin-bottom: 20px;
+    p {
+      color: #4a4a4a;
+    }
   }
   .ed-company-profile-case-study-testomonial-container {
     background: #EDEDED;
