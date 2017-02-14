@@ -11,9 +11,10 @@ GOVUK.utils = (new function() {
    * GOVUK.utils.getParameterByName('a_param');
    **/
   this.getParameterByName = function(name) {
-    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
-    var regex = new RegExp("[\\?&amp;]" + name + "=([^&amp;#]*)"),
-        results = regex.exec(document.location.search);
+    var param = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+    var qs = document.location.search.replace("&amp;", "&");
+    var regex = new RegExp("[\\?&]" + param + "=([^&#]*)");
+    var results = regex.exec(qs);
     return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
   }
 });
@@ -53,11 +54,6 @@ GOVUK.cookie = (new function() {
 
     if (document.location.protocol == 'https:'){
       str += "; Secure";
-    }
-    
-    // TDD only.
-    if(document.tdd) {
-      this.value = str;
     }
     
     document.cookie = str;
@@ -102,32 +98,59 @@ GOVUK.cookie = (new function() {
   GOVUK.utm.get();
 */
 GOVUK.utm = (new function() {
-  var UTILS = GOVUK.utils;
+  var utils = GOVUK.utils;
   
   this.set = function() {
+    // params = [utm_campaign|utm_content|utm_medium|utm_source\utm_term]
+    var params = document.location.search.match(/utm_[a-z]+/g);
     var domain = document.getElementById("utmCookieDomain");
-    var data = {
-      utm_campaign: UTILS.getParameterByName("utm_campaign"),
-      utm_content: UTILS.getParameterByName("utm_content"),
-      utm_medium: UTILS.getParameterByName("utm_medium"),
-      utm_source: UTILS.getParameterByName("utm_source"),
-      utm_term: UTILS.getParameterByName("utm_term")
-    };
-
-    var options = { days: 7 };
+    var config = { days: 7 };
+    var data = {};
+    var json, value;
+    
     if(domain) {
-      options.domain = domain.getAttribute("value");
+      config.domain = domain.getAttribute("value");
     }
     
-    GOVUK.cookie.set("ed_utm", JSON.stringify(data), options);
+    // 1. Does not add empty values.
+    for(var i=0; i<params.length; ++i) {
+      value = utils.getParameterByName(params[i]);
+      if(value) {
+        data[params[i]] = value;
+      }
+    }
+    
+    json = JSON.stringify(data);
+    if(json.length > 2) { // ie. not empty
+      GOVUK.cookie.set("ed_utm", json, config);
+    }
   }
 
   this.get = function() {
     var cookie = GOVUK.cookie.get("ed_utm");
-    var data = JSON.parse(cookie);
-    return data;
+    return cookie ? JSON.parse(cookie) : null;
   }
   
 });
 
-GOVUK.utm.set();
+/* In test mode we don't want the code to 
+ * run immediately because we have to compensate
+ * for not having a browser environment first.
+ **/ 
+GOVUK.page = (new function() {
+  
+  // What to run on every page (called from <body>).
+  this.init = function() {
+    captureUtmValue();
+  }
+  
+  /* Attempt to capture UTM information if we haven't already
+   * got something and querystring is not empty.
+   **/
+  function captureUtmValue() {
+    var captured = GOVUK.utm.get();
+    if(!captured && document.location.search.substring(1)) {
+      GOVUK.utm.set();
+    }
+  }
+});
