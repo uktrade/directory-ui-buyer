@@ -106,7 +106,7 @@ GOVUK.utm = (new function() {
     var domain = document.getElementById("utmCookieDomain");
     var config = { days: 7 };
     var data = {};
-    var value;
+    var json, value;
     
     if(domain) {
       config.domain = domain.getAttribute("value");
@@ -117,9 +117,12 @@ GOVUK.utm = (new function() {
       value = utils.getParameterByName(params[i]);
       if(value) {
         data[params[i]] = value;
-        GOVUK.cookie.set("ed_utm", JSON.stringify(data), config);
-        break;
       }
+    }
+    
+    json = JSON.stringify(data);
+    if(json.length > 2) { // ie. not empty
+      GOVUK.cookie.set("ed_utm", json, config);
     }
   }
 
