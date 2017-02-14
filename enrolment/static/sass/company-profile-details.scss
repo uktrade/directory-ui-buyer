@@ -28,6 +28,10 @@
       list-style: initial;
     }
   }
+  .ed-pencil-edit-button-container {
+    color: #004F95;
+    margin-left: 10px;
+  }
   .company-profile-module-inner {
     padding: 20px;
     min-height: 135px;
@@ -248,15 +252,16 @@
 }
 
 .company-profile-unpublished {
-  padding: 20px;
+  margin-top: 15px;
+  margin-bottom: 10px;
   color: #B00D23;
   font-weight: bold;
 }
 
 .company-profile-published {
   font-weight: bold;
-  margin-top: 30px;
-  margin-bottom: 30px;
+  margin-top: 15px;
+  margin-bottom: 10px;
   color: #00549F;
   font-weight: bold;
 }
@@ -289,10 +294,10 @@
 
 .ed-company-profile-logo-container {
   border: 1px solid #dedede;
-  min-width: 140px;
-  height: 140px;
+  min-width: 147px;
+  min-height: 147px;
   img {
-    max-height: 140px;
+    max-height: 147px;
   }
 }
 

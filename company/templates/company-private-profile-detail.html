@@ -71,7 +71,7 @@
 				<h1 class="element-within company-name-title">
 					<span class="dont-break-out">{{company.name}}</span>
 				</h1>
-				<a class="ed-edit-button" href="{% url show_wizard_links|yesno:'company-edit,company-edit-key-facts' %}" style="top: 32px; right: 40px; color: white;">
+				<a class="ed-edit-button" href="{% url show_wizard_links|yesno:'company-edit,company-edit-key-facts' %}" style="top: 36px; right: 22px; color: white;">
 					<img src="{% static 'images/pencil-icon-white.png' %}" class="ed-icon-pencil" />
 					<strong>Edit</strong>
 				</a>
@@ -79,7 +79,7 @@
 		</div>
 
 		<div class="row-fluid clearfix company-profile-module-container">
-			<div class="span3 company-logo company-profile-module-inner">
+			<div class="span2 company-logo company-profile-module-inner">
 				<div class="logo-container">
 					<div>
 						<div class="ed-has-edit-button ed-company-profile-logo-container">	
@@ -95,12 +95,12 @@
 				</div>
 			</div>
 
-			<div class="span5 company-profile-module-inner">
+			<div class="span6 company-profile-module-inner">
 				<h3 class="h3">Contact</h3>
 				{% if company.website %}
 					<p>
 						<a href="{{ company.website}}">{{ company.website }}</a>
-						<a href="{% url show_wizard_links|yesno:'company-edit,company-edit-key-facts' %}" style="color: #004F95;">
+						<a href="{% url show_wizard_links|yesno:'company-edit,company-edit-key-facts' %}" class="ed-pencil-edit-button-container">
 							<img src="{% static 'images/pencil-icon.png' %}" class="ed-icon-pencil" />
 							<strong>Edit</strong>
 						</a>
@@ -113,7 +113,7 @@
 				{% if company.email_address %}
 					<p>
 						<a href="mailto:{{ company.email_address }}?subject=International%20buyer%20contact%20via%20your%20great.gov.uk%20trade%20profile">{{ company.email_address }}</a>
-						<a href="{% url show_wizard_links|yesno:'company-edit,company-edit-contact' %}" style="color: #004F95;">
+						<a href="{% url show_wizard_links|yesno:'company-edit,company-edit-contact' %}" class="ed-pencil-edit-button-container">
 							<img src="{% static 'images/pencil-icon.png' %}" class="ed-icon-pencil" />
 							<strong>Edit</strong>
 						</a>
@@ -144,7 +144,7 @@
 
 			<div class="span8 ed-has-edit-button company-profile-module-inner">
 				<h3 class="h3">Company description</h3>
-				<a class="ed-edit-button" href="{% url 'company-edit-description' %}" style="top: 20px; right: 20px; color: #004F95;">
+				<a class="ed-edit-button" href="{% url 'company-edit-description' %}" style="top: 20px; right: 0; color: #004F95;">
 					<img src="{% static 'images/pencil-icon.png' %}" class="ed-icon-pencil" />
 					<strong>Edit</strong>
 				</a>
