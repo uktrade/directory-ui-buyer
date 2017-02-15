@@ -1,5 +1,4 @@
 import os
-from unittest.mock import Mock
 
 from directory_validators.constants import choices
 
@@ -216,3 +215,63 @@ def test_templates_render_successfully():
     assert template_list
     for template in template_list:
         render_to_string(template, default_context)
+
+
+def test_form_progress_indicator_no_steps():
+    context = {}
+    html = render_to_string('form_progress_indicator.html', context)
+    assert html.strip() == ''
+
+
+def test_form_progress_indicator_first_step_active():
+    context = {
+        'form_labels': ['one', 'two', 'three'],
+        'wizard': {
+            'steps':
+                {
+                    'step1': 1,
+                    'count': 3,
+                }
+        }
+    }
+    html = render_to_string('form_progress_indicator.html', context)
+
+    assert html.count('ed-form-progress-indicator-line') == 1
+    assert html.count('ed-form-progress-indicator-active') == 1
+    assert html.count('ed-form-progress-indicator-prev') == 0
+
+
+def test_form_progress_indicator_second_step_active():
+    context = {
+        'form_labels': ['one', 'two', 'three'],
+        'wizard': {
+            'steps':
+                {
+                    'step1': 2,
+                    'count': 3,
+                }
+        }
+    }
+    html = render_to_string('form_progress_indicator.html', context)
+
+    assert html.count('ed-form-progress-indicator-line') == 2
+    assert html.count('ed-form-progress-indicator-active') == 1
+    assert html.count('ed-form-progress-indicator-prev') == 1
+
+
+def test_form_progress_indicator_last_step_active():
+    context = {
+        'form_labels': ['one', 'two', 'three'],
+        'wizard': {
+            'steps':
+                {
+                    'step1': 3,
+                    'count': 3,
+                }
+        }
+    }
+    html = render_to_string('form_progress_indicator.html', context)
+
+    assert html.count('ed-form-progress-indicator-line') == 3
+    assert html.count('ed-form-progress-indicator-active') == 1
+    assert html.count('ed-form-progress-indicator-prev') == 2
