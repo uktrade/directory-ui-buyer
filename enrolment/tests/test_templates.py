@@ -4,6 +4,7 @@ from unittest.mock import Mock
 from directory_validators.constants import choices
 
 from django.conf import settings
+from django.forms import Form
 from django.template.loader import render_to_string
 
 from enrolment import forms
@@ -117,7 +118,7 @@ def test_export_status_common_invalid_form_error_size():
         'form': form
     }
     html = render_to_string('export-status-form.html', context)
-    assert 'col-8' in html
+    assert 'span8' in html
     assert 'Sorry, this is not the right service for your company' not in html
     assert '<form' in html
 
@@ -210,7 +211,7 @@ def test_templates_render_successfully():
 
     default_context = {
         'supplier': None,
-        'form': Mock(),
+        'form': Form(),
     }
     assert template_list
     for template in template_list:

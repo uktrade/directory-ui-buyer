@@ -204,7 +204,7 @@ class CaseStudyRichMediaForm(IndentedInvalidFieldsMixin, AutoFocusFieldMixin,
 class CompanyBasicInfoForm(AutoFocusFieldMixin, IndentedInvalidFieldsMixin,
                            forms.Form):
     name = forms.CharField(
-        label='Change your company name',
+        label='Company name',
         help_text=(
             'Enter your preferred business name'
         ),
