@@ -288,25 +288,37 @@ label, input, button, select, textarea {
   margin-bottom: 40px;
   
   label {
+    font-size: 18px;
+    color: #4a4a4a;
+    display: table;
+    font-family: "Roboto",sans-serif;
     margin-bottom: 10px;
-    font-size: 20px;
-    font-weight: 400; 
   }
 
   input, select, textarea {
-    border-radius: 0;
-    font-size: 18px;
-    height: 50px;
+    background: #f6f4f1;
+    border: 1px solid #6f777b;
+    font-family: "Roboto",sans-serif;
+    font-size: 16px;
+    height: 40px;
+    padding: 10px;
     width: 100%;
-    color: #4a4a4a;
-    background-color: #fafafa;
-    border: 3px solid #6f777b;
+    font-weight: 300;
+    line-height: 1.31579;
     margin-bottom: 10px;
-    font-family: 'Roboto', sans-serif;
     &:focus {
-      border: 3px solid #007EA3;
+      outline: 3px solid #007ea3;
     }
   }
+
+  .helptext {
+    font-weight: 300;
+    color: #4a4a4a;
+    font-family: "Roboto",sans-serif;
+    font-size: 15px;
+    line-height: 1.25;
+  }
+
   input[type='checkbox'] {
     height: 14px;
     width: 14px;
