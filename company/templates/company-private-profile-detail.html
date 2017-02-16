@@ -1,5 +1,6 @@
 {% extends 'govuk_layout.html' %}
 {% load static from staticfiles %}
+{% load chunk_list from company_tags %}
 {% block css %}
 	<link href="{% static 'company-profile-details.css' %}" media="all" rel="stylesheet" />
 {% endblock %}
@@ -215,7 +216,7 @@
 		</div>
 
 		<div class="ed-company-profile-sector-case-study-container company-profile-module-container">
-			{% for group in company.supplier_case_studies %}
+			{% for group in company.supplier_case_studies|chunk_list:3 %}
 				<div class="row-fluid" style="margin-bottom: 0; border-top: 0;">
 				{% for case_study in group %}
 					<div class="span4 company-profile-module-inner">
