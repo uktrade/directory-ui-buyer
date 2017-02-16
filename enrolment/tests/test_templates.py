@@ -1,9 +1,9 @@
 import os
-from unittest.mock import Mock
 
 from directory_validators.constants import choices
 
 from django.conf import settings
+from django.forms import Form
 from django.template.loader import render_to_string
 
 from enrolment import forms
@@ -117,7 +117,7 @@ def test_export_status_common_invalid_form_error_size():
         'form': form
     }
     html = render_to_string('export-status-form.html', context)
-    assert 'col-8' in html
+    assert 'span8' in html
     assert 'Sorry, this is not the right service for your company' not in html
     assert '<form' in html
 
@@ -210,8 +210,68 @@ def test_templates_render_successfully():
 
     default_context = {
         'supplier': None,
-        'form': Mock(),
+        'form': Form(),
     }
     assert template_list
     for template in template_list:
         render_to_string(template, default_context)
+
+
+def test_form_progress_indicator_no_steps():
+    context = {}
+    html = render_to_string('form_progress_indicator.html', context)
+    assert html.strip() == ''
+
+
+def test_form_progress_indicator_first_step_active():
+    context = {
+        'form_labels': ['one', 'two', 'three'],
+        'wizard': {
+            'steps':
+                {
+                    'step1': 1,
+                    'count': 3,
+                }
+        }
+    }
+    html = render_to_string('form_progress_indicator.html', context)
+
+    assert html.count('ed-form-progress-indicator-line') == 1
+    assert html.count('ed-form-progress-indicator-active') == 1
+    assert html.count('ed-form-progress-indicator-prev') == 0
+
+
+def test_form_progress_indicator_second_step_active():
+    context = {
+        'form_labels': ['one', 'two', 'three'],
+        'wizard': {
+            'steps':
+                {
+                    'step1': 2,
+                    'count': 3,
+                }
+        }
+    }
+    html = render_to_string('form_progress_indicator.html', context)
+
+    assert html.count('ed-form-progress-indicator-line') == 2
+    assert html.count('ed-form-progress-indicator-active') == 1
+    assert html.count('ed-form-progress-indicator-prev') == 1
+
+
+def test_form_progress_indicator_last_step_active():
+    context = {
+        'form_labels': ['one', 'two', 'three'],
+        'wizard': {
+            'steps':
+                {
+                    'step1': 3,
+                    'count': 3,
+                }
+        }
+    }
+    html = render_to_string('form_progress_indicator.html', context)
+
+    assert html.count('ed-form-progress-indicator-line') == 3
+    assert html.count('ed-form-progress-indicator-active') == 1
+    assert html.count('ed-form-progress-indicator-prev') == 2

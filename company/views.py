@@ -105,6 +105,12 @@ class SupplierCaseStudyWizardView(
         BASIC: 'supplier-case-study-basic-form.html',
         RICH_MEDIA: 'supplier-case-study-rich-media-form.html',
     }
+
+    form_labels = (
+        (BASIC, 'Basic'),
+        (RICH_MEDIA, 'Images'),
+    )
+
     form_serializer = staticmethod(forms.serialize_case_study_forms)
 
     def get_form_initial(self, step):
@@ -117,6 +123,11 @@ class SupplierCaseStudyWizardView(
         if not response.ok:
             response.raise_for_status()
         return response.json()
+
+    def get_context_data(self, *args, **kwargs):
+        return super().get_context_data(
+            form_labels=self.form_labels, *args, **kwargs
+        )
 
     def serialize_form_data(self):
         return self.form_serializer(self.get_all_cleaned_data())
@@ -185,6 +196,13 @@ class SupplierCompanyProfileEditView(
         ADDRESS_CONFIRM: 'company-profile-address-confirm-send.html',
         SENT: 'company-profile-form-letter-sent.html',
     }
+    form_labels = (
+        (BASIC, 'Basic'),
+        (CLASSIFICATION, 'Industries'),
+        (CONTACT, 'Contact'),
+        (ADDRESS, 'Address'),
+        (ADDRESS_CONFIRM, 'Confirm'),
+    )
     failure_template = 'company-profile-update-error.html'
     form_serializer = staticmethod(forms.serialize_company_profile_forms)
 
@@ -206,7 +224,9 @@ class SupplierCompanyProfileEditView(
         return self.company_profile
 
     def get_context_data(self, form, **kwargs):
-        context = super().get_context_data(form=form, **kwargs)
+        context = super().get_context_data(
+            form=form, form_labels=self.form_labels, **kwargs
+        )
         if self.steps.current == self.ADDRESS_CONFIRM:
             context['all_cleaned_data'] = self.get_all_cleaned_data()
         return context

@@ -288,25 +288,43 @@ label, input, button, select, textarea {
   margin-bottom: 40px;
   
   label {
-    margin-bottom: 10px;
-    font-size: 20px;
-    font-weight: 400; 
+    font-size: 18px;
+    color: #4a4a4a;
+    display: table;
+    font-family: "Roboto",sans-serif;
+    margin-bottom: 5px;
   }
 
   input, select, textarea {
-    border-radius: 0;
-    font-size: 18px;
-    height: 50px;
+    background: #f6f4f1;
+    border: 1px solid #6f777b;
+    font-family: "Roboto",sans-serif;
+    font-size: 16px;
+    height: 40px;
+    padding: 10px;
     width: 100%;
-    color: #4a4a4a;
-    background-color: #fafafa;
-    border: 3px solid #6f777b;
+    font-weight: 300;
+    line-height: 1.31579;
     margin-bottom: 10px;
-    font-family: 'Roboto', sans-serif;
     &:focus {
-      border: 3px solid #007EA3;
+      outline: 3px solid #007ea3;
     }
   }
+
+  .errorlist li {
+    margin-bottom: 0;
+  }
+
+  .helptext {
+    color: #4a4a4a;
+    display: inline-block;
+    font-family: "Roboto",sans-serif;
+    font-size: 15px;
+    font-weight: 300;
+    line-height: 1.25;
+    margin-bottom: 10px;
+  }
+
   input[type='checkbox'] {
     height: 14px;
     width: 14px;
@@ -417,7 +435,7 @@ body {
   }
   #content {
     padding-bottom: 0;
-    .container {
+    .outer-container {
       .enrolment-intro-container {
         margin-bottom: 20px;
         margin-top: 70px;
@@ -888,6 +906,11 @@ a.no-focus-highlight {
   cursor: pointer;
 }
 
+.ed-form-back-button {
+  margin-right: 40px;
+  font-size: 15px;
+}
+
 .great-blue-bar {
   background: $great-blue;
   display: table!important;
@@ -1029,5 +1052,67 @@ a.ed-filled-button-primary {
   &:focus {
     background: #007EA3;
     outline: 0;
+  }
+}
+
+
+.ed-form-progress-indicator {
+  background-color: #DCE0DF;
+  ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    li {
+      margin-top: 9px;
+      display: inline-block;
+      &.ed-form-progress-indicator-line {
+        border-bottom: 9px solid #007EA3;
+      }
+      &.ed-form-progress-indicator-prev {
+        button {
+          cursor: pointer;
+          span {
+            color: #007ea3;
+          }
+        }
+      }
+      &.ed-form-progress-indicator-active {
+        button span {
+          color: #007ea3;
+          font-size: 18px;
+        }
+        .ed-form-tab-order {
+          padding: 6px 12px;
+        }
+      }
+    }
+  }
+  button {
+    text-align: left;
+    padding: 18px 0;
+    width: 100%;
+    border: none;
+    background: transparent;
+    span {
+      color: #777;
+      font-size: 15px;
+      margin-top: -8px;
+    }
+    @media (max-width: 640px) {
+      text-align: center;
+    }
+  }
+  .ed-form-tab-order {
+    border-radius: 100px;
+    border-style: solid;
+    border-width: 2px;
+    padding: 3px 8px;
+  }
+  .ed-form-tab-label {
+    margin-left: 5px;
+    font-weight: 600;
+    @media (max-width: 640px) {
+      display: none;
+    }
   }
 }
