@@ -5,13 +5,13 @@
     <div class="footer background--great-blue soft--top">
         <div class="outer-container">
           <div class="footer-section">
-            <div class="span8">
+            <div class="col-8">
               <a href="https://www.exportingisgreat.gov.uk/" title="Go to the Exporting is Great homepage">
                 <img src="{% static 'images/EiG-logo-stacked.svg' %}" alt="Exporting is Great logo" class="footer-logo">
               </a>
             </div>
 
-            <div class="span4">
+            <div class="col-4">
               <ul class="footer-links footer-links--border">
                 <li class="push-half--bottom"><a href="{% external_url 'new_to_exporting' %}" title="New to exporting">{% trans 'New to exporting' %}</a></li>
                 <li class="push-half--bottom"><a href="{% external_url 'occasional_exporter' %}" title="Occasional exporter">{% trans 'Occasional exporter' %}</a></li>
@@ -22,7 +22,7 @@
 
           <div class="footer-section footer-section-right">
 
-            <div class="span6">
+            <div class="col-6">
               <ul class="footer-links footer-middle-section">
                 <li class="push-half--bottom"><a href="{% external_url 'export_opportunities' %}" title="Export opportunities">{% trans 'Export opportunities' %}</a></li>
                 <li class="push-half--bottom"><a href="{% external_url 'find_a_buyer' %}" title="Find a buyer">{% trans 'Find a buyer' %}</a></li>
@@ -32,7 +32,7 @@
               </ul>
             </div>
 
-            <div class="span6">
+            <div class="col-6">
               <ul class="footer-links footer-links--border">
                 <li class="push-half--bottom"><a href="{% external_url 'about' %}" title="About">{% trans 'About' %}</a></li>
                 <li class="push-half--bottom"><a href="mailto:help@digital.trade.gov.uk?subject=General%20enquiry%20for%20{{ request.get_full_path }}" title="">{% trans 'Contact us' %}</a></li>
