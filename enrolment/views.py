@@ -56,6 +56,11 @@ class EnrolmentView(SSOLoginRequiredMixin, NamedUrlSessionWizardView):
         NAME: 'company-form-name.html',
         STATUS: 'export-status-form.html',
     }
+    form_labels = (
+        (COMPANY, 'Company number'),
+        (NAME, 'Company name'),
+        (STATUS, 'Export status'),
+    )
 
     def dispatch(self, request, *args, **kwargs):
         if request.sso_user is None:
@@ -100,3 +105,8 @@ class EnrolmentView(SSOLoginRequiredMixin, NamedUrlSessionWizardView):
         else:
             template = self.failure_template
         return TemplateResponse(self.request, template)
+
+    def get_context_data(self, *args, **kwargs):
+        return super().get_context_data(
+            form_labels=self.form_labels, *args, **kwargs
+        )

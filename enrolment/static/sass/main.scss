@@ -1061,7 +1061,6 @@ a.ed-filled-button-primary {
     margin: 0;
     padding: 0;
     li {
-      margin-top: 9px;
       display: inline-block;
       &.ed-form-progress-indicator-line {
         border-bottom: 9px solid #007EA3;
@@ -1088,6 +1087,7 @@ a.ed-filled-button-primary {
   button {
     text-align: left;
     padding: 18px 0;
+    padding-top: 20px;
     width: 100%;
     border: none;
     background: transparent;
@@ -1098,6 +1098,9 @@ a.ed-filled-button-primary {
     }
     @media (max-width: 640px) {
       text-align: center;
+    }
+    &:focus {
+      outline: 3px solid #FFBF47;
     }
   }
   .ed-form-tab-order {
