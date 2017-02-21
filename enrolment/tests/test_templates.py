@@ -190,6 +190,36 @@ def test_utm_cookie_domain():
     assert '<meta id="utmCookieDomain" value=".thing.com" />' in html
 
 
+def test_shared_style_enabled():
+    context = {
+        'features': {
+            'FEATURE_NEW_HEADER_FOOTER_ENABLED': True,
+        }
+    }
+
+    html = render_to_string('govuk_layout.html', context)
+
+    assert render_to_string('header.html') in html
+    assert render_to_string('footer.html') in html
+    assert render_to_string('header_old.html') not in html
+    assert render_to_string('footer_old.html') not in html
+
+
+def test_shared_style_disabled():
+    context = {
+        'features': {
+            'FEATURE_NEW_HEADER_FOOTER_ENABLED': False,
+        }
+    }
+
+    html = render_to_string('govuk_layout.html', context)
+
+    assert render_to_string('header.html') not in html
+    assert render_to_string('footer.html') not in html
+    assert render_to_string('header_old.html') in html
+    assert render_to_string('footer_old.html') in html
+
+
 def test_enrolment_instructions_page_renders():
     # confirm the template renders without error
     render_to_string('enrolment-instructions.html')

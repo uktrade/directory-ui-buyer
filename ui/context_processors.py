@@ -7,6 +7,9 @@ def feature_flags(request):
             'FEATURE_PUBLIC_PROFILES_ENABLED': (
                 settings.FEATURE_PUBLIC_PROFILES_ENABLED
             ),
+            'FEATURE_NEW_HEADER_FOOTER_ENABLED': (
+                settings.FEATURE_NEW_HEADER_FOOTER_ENABLED
+            ),
         }
     }
 

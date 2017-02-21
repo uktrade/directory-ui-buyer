@@ -8,14 +8,15 @@ def test_feature_flags_installed(settings):
 
 
 def test_feature_returns_expected_features(rf, settings):
-    request = rf.get('/')
-    actual = context_processors.feature_flags(request)
+    settings.FEATURE_PUBLIC_PROFILES_ENABLED = 1
+    settings.FEATURE_NEW_HEADER_FOOTER_ENABLED = 2
+
+    actual = context_processors.feature_flags(None)
 
     assert actual == {
         'features': {
-            'FEATURE_PUBLIC_PROFILES_ENABLED': (
-                settings.FEATURE_PUBLIC_PROFILES_ENABLED
-            ),
+            'FEATURE_PUBLIC_PROFILES_ENABLED': 1,
+            'FEATURE_NEW_HEADER_FOOTER_ENABLED': 2
         }
     }
 
