@@ -35,12 +35,25 @@
                 }
             </style>
         </noscript>
+        <style type="text/css">
+            {% if not features.FEATURE_NEW_HEADER_FOOTER_ENABLED %}
+                .outer-container {
+                    max-width: 960px;
+                }
+            {% endif %}
+        </style>
     </head>
 
     <body>
         {% include 'google_tag_manager_body.html' %}
         <script>document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');</script>
-        {% include 'header.html' %}
+
+        {% if features.FEATURE_NEW_HEADER_FOOTER_ENABLED %}
+            {% include 'header.html' %}
+        {% else %}
+            {% include 'header_old.html' %}
+        {% endif %}
+
         {% block sub_header %}
             <section class="ed-hero-sub-header">
                 <div class="outer-container">
@@ -63,8 +76,11 @@
             {% block content %}
             {% endblock content %}
         </div>
-        {% include 'footer.html' %}
-
+        {% if features.FEATURE_NEW_HEADER_FOOTER_ENABLED %}
+            {% include 'footer.html' %}
+        {% else %}
+            {% include 'footer_old.html' %}
+        {% endif %}
         <div id="global-app-error" class="app-error hidden"></div>
 
         <script src="{% static 'Dit-Pattern-Styling/public/js/jquery.js' %}"></script>

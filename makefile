@@ -52,7 +52,8 @@ DOCKER_SET_DEBUG_ENV_VARS := \
 	export DIRECTORY_UI_BUYER_SUPPLIER_PROFILE_URL=http://supplier.trade.great.dev:8005/suppliers/{number}; \
 	export DIRECTORY_UI_BUYER_GOOGLE_TAG_MANAGER_ID=GTM-TC46J8K; \
 	export DIRECTORY_UI_BUYER_GOOGLE_TAG_MANAGER_ENV=&gtm_auth=kH9XolShYWhOJg8TA9bW_A&gtm_preview=env-32&gtm_cookies_win=x; \
-	export DIRECTORY_UI_BUYER_UTM_COOKIE_DOMAIN=.great.dev
+	export DIRECTORY_UI_BUYER_UTM_COOKIE_DOMAIN=.great.dev; \
+	export DIRECTORY_UI_BUYER_FEATURE_NEW_HEADER_FOOTER_ENABLED=true
 
 
 DOCKER_REMOVE_ALL := \
@@ -105,7 +106,8 @@ DEBUG_SET_ENV_VARS := \
 	export SUPPLIER_PROFILE_URL=http://supplier.trade.great.dev:8005/suppliers/{number}; \
 	export GOOGLE_TAG_MANAGER_ID=GTM-TC46J8K; \
 	export GOOGLE_TAG_MANAGER_ENV=&gtm_auth=kH9XolShYWhOJg8TA9bW_A&gtm_preview=env-32&gtm_cookies_win=x; \
-	export UTM_COOKIE_DOMAIN=.great.dev
+	export UTM_COOKIE_DOMAIN=.great.dev; \
+	export FEATURE_NEW_HEADER_FOOTER_ENABLED=true
 
 debug_webserver:
 	$(DEBUG_SET_ENV_VARS) && $(DJANGO_WEBSERVER)
