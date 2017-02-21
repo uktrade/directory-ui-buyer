@@ -23,7 +23,14 @@ Some views allow creating and updating a company. Therefore FAB has a dependency
 | [directory-sso-proxy](https://github.com/uktrade/directory-sso-proxy) | http://sso.trade.great.dev:8004 | See `/etc/hosts` instructions below. |
 | [directory-sso](https://github.com/uktrade/directory-sso) | http://localhost:8003 | Requests must go through `directory-sso-proxy`. |
 
-Normally, the user will need to sign up on SSO, then create a company on FAB. To reduce developer effort, [directory-sso](https://github.com/uktrade/directory-sso) and [directory-api](https://github.com/uktrade/directory-api) both allow creating dummy users and companies for use in development. See [directory-api](https://github.com/uktrade/directory-api) and [directory-sso](https://github.com/uktrade/directory-sso) for more details.
+[directory-sso](https://github.com/uktrade/directory-sso) is required for user authentication and sign up.
+[directory-api](https://github.com/uktrade/directory-api) is required for creating companies.
+
+The user will need to sign up/register to create a company on FAB.
+Follow data loading instructions on [directory-sso](https://github.com/uktrade/directory-sso) and then [directory-api](https://github.com/uktrade/directory-api) to create a dummy user and a dummy company for use in development.
+
+See [directory-sso](https://github.com/uktrade/directory-sso) and [directory-api](https://github.com/uktrade/directory-api) for more details and dummy user credentials.
+
 
 ## Requirements
 [Python 3.5](https://www.python.org/downloads/release/python-352/)
