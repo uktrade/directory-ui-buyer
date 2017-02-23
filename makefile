@@ -130,4 +130,14 @@ heroku_deploy_dev:
 	docker build -t registry.heroku.com/directory-ui-buyer-dev/web .
 	docker push registry.heroku.com/directory-ui-buyer-dev/web
 
+smoke_tests:
+	cd $(mktemp -d) && \
+	git clone https://github.com/uktrade/directory-tests && \
+	cd directory-tests && \
+	pip install virtualenv && \
+	virtualenv venv && \
+	source venv/bin/activate && \
+	make requirements && \
+	make test_smoke_buyer
+
 .PHONY: build clean test_requirements docker_run docker_debug docker_webserver_bash docker_test debug_webserver debug_test debug heroku_deploy_dev heroku_deploy_demo
