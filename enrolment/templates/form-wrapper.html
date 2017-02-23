@@ -32,7 +32,10 @@
 						{{ form }}
 					{% endfor %}
 				{% else %}
-					{% for field in form %}
+					{% for hidden in form.hidden_fields %}
+					    {{ hidden }}
+					{% endfor %}
+					{% for field in form.visible_fields %}
 						<li class="{{ field.css_classes }}">
 							{{ field.errors }}
 							{{ field.label_tag }}
