@@ -106,23 +106,72 @@ class CaseStudyBasicInfoForm(IndentedInvalidFieldsMixin, AutoFocusFieldMixin,
     )
 
 
-class CaseStudyRichMediaForm(IndentedInvalidFieldsMixin, AutoFocusFieldMixin,
-                             forms.Form):
+class DynamicHelptextFieldsMixin:
+    """
+    Set the help_text and label to different values depending on if
+    the field has an initial value.
 
-    image_help_text = (
-        'This image is shown at full width on your case study page and must '
-        'be at least 700 pixels wide and in landscape format. For best '
+    """
+
+    def __init__(self, *args, **kwargs):
+        assert hasattr(self, 'help_text_maps')
+        super().__init__(*args, **kwargs)
+        self.set_help_text()
+
+    def set_help_text(self):
+        for help_text_map in self.help_text_maps:
+            field = self[help_text_map['field_name']]
+            if self.initial.get(field.name):
+                field.label = help_text_map['update_label']
+                field.help_text = help_text_map['update_help_text']
+            else:
+                field.label = help_text_map['create_label']
+                field.help_text = help_text_map['create_help_text']
+
+
+class CaseStudyRichMediaForm(IndentedInvalidFieldsMixin, AutoFocusFieldMixin,
+                             DynamicHelptextFieldsMixin, forms.Form):
+
+    image_help_text_create = (
+        'This image will be shown at full width on your case study page and '
+        'must be at least 700 pixels wide and in landscape format. For best '
         'results, upload an image at 1820 x 682 pixels.'
     )
+    image_help_text_update = (
+        'Select a different image to replace the current one. ' +
+        image_help_text_create
+    )
+    help_text_maps = [
+        {
+            'field_name': 'image_one',
+            'create_help_text': image_help_text_create,
+            'update_help_text': image_help_text_update,
+            'create_label': 'Upload main image for this case study',
+            'update_label': (
+                'Replace the main image for this case study (optional)',
+            )
+        },
+        {
+            'field_name': 'image_two',
+            'create_help_text': image_help_text_create,
+            'update_help_text': image_help_text_update,
+            'create_label': 'Upload a second image (optional)',
+            'update_label': 'Replace the second image (optional)',
+        },
+        {
+            'field_name': 'image_three',
+            'create_help_text': image_help_text_create,
+            'update_help_text': image_help_text_update,
+            'create_label': 'Upload a third image (optional)',
+            'update_label': 'Replace the third image (optional)',
+        },
+    ]
 
     image_one = forms.ImageField(
-        label='Upload main image for this case study',
-        help_text=image_help_text,
         validators=[
             shared_validators.case_study_image_filesize,
             shared_validators.image_format,
-
-        ]
+        ],
     )
     image_one_caption = forms.CharField(
         label=(
@@ -133,8 +182,6 @@ class CaseStudyRichMediaForm(IndentedInvalidFieldsMixin, AutoFocusFieldMixin,
         widget=forms.Textarea,
     )
     image_two = forms.ImageField(
-        label='Upload a second image (optional)',
-        help_text=image_help_text,
         required=False,
         validators=[
             shared_validators.case_study_image_filesize,
@@ -152,8 +199,6 @@ class CaseStudyRichMediaForm(IndentedInvalidFieldsMixin, AutoFocusFieldMixin,
         required=False,
     )
     image_three = forms.ImageField(
-        label='Upload a third image (optional)',
-        help_text=image_help_text,
         required=False,
         validators=[
             shared_validators.case_study_image_filesize,
