@@ -148,7 +148,7 @@ class CaseStudyRichMediaForm(IndentedInvalidFieldsMixin, AutoFocusFieldMixin,
             'update_help_text': image_help_text_update,
             'create_label': 'Upload main image for this case study',
             'update_label': (
-                'Replace the main image for this case study (optional)',
+                'Replace the main image for this case study (optional)'
             )
         },
         {

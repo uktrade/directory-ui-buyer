@@ -8,14 +8,14 @@ def test_feature_flags_installed(settings):
 
 
 def test_feature_returns_expected_features(rf, settings):
-    settings.FEATURE_PUBLIC_PROFILES_ENABLED = 1
+    settings.FEATURE_UNSUBSCRIBE_VIEW_ENABLED = 1
     settings.FEATURE_NEW_HEADER_FOOTER_ENABLED = 2
 
     actual = context_processors.feature_flags(None)
 
     assert actual == {
         'features': {
-            'FEATURE_PUBLIC_PROFILES_ENABLED': 1,
+            'FEATURE_UNSUBSCRIBE_VIEW_ENABLED': 1,
             'FEATURE_NEW_HEADER_FOOTER_ENABLED': 2
         }
     }

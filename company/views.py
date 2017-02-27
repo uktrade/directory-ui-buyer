@@ -68,7 +68,7 @@ class UpdateCompanyProfileOnFormWizardDoneMixin:
 class GetCompanyProfileInitialFormDataMixin:
     def get_form_initial(self, step):
         sso_user_id = self.request.sso_user.id
-        response = api_client.company.retrieve_profile(sso_user_id)
+        response = api_client.company.retrieve_private_profile(sso_user_id)
         if not response.ok:
             response.raise_for_status()
         return response.json()
@@ -157,7 +157,7 @@ class SupplierCompanyProfileDetailView(SupplierCompanyBaseView, TemplateView):
     template_name = 'company-private-profile-detail.html'
 
     def get_context_data(self, **kwargs):
-        response = api_client.company.retrieve_profile(
+        response = api_client.company.retrieve_private_profile(
             sso_user_id=self.request.sso_user.id
         )
         if not response.ok:
@@ -414,7 +414,7 @@ class EmailUnsubscribeView(SSOLoginRequiredMixin, FormView):
         return super().dispatch(*args, **kwargs)
 
     def form_valid(self, form):
-        response = api_client.company.unsubscribe(
+        response = api_client.supplier.unsubscribe(
             sso_user_id=self.request.sso_user.id
         )
         if response.ok:
