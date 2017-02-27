@@ -1242,3 +1242,54 @@ def test_supplier_social_links_edit_standalone_view_api_success(
         sso_user_id=sso_user.id,
         data=all_social_links_data,
     )
+
+
+def test_unsubscribe_feature_flag_off(settings):
+    settings.FEATURE_UNSUBSCRIBE_VIEW_ENABLED = False
+
+    response = client.get(reverse('unsubscribe'))
+
+    assert response.status_code == http.client.NOT_FOUND
+
+
+@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
+def test_unsubscribe_logged_in_user():
+    response = client.get(reverse('unsubscribe'))
+
+    view = views.EmailUnsubscribeView
+    assert response.status_code == http.client.OK
+    assert response.template_name == view.template_name
+
+
+def test_unsubscribe_anon_user():
+    response = client.get(reverse('unsubscribe'))
+
+    assert response.status_code == http.client.FOUND
+
+
+@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
+@patch.object(views.api_client.company, 'unsubscribe')
+def test_unsubscribe_api_failure(
+    mock_unsubscribe, api_response_400
+):
+    mock_unsubscribe.return_value = api_response_400
+
+    response = client.post(reverse('unsubscribe'))
+
+    view = views.EmailUnsubscribeView
+    assert response.status_code == http.client.OK
+    assert response.template_name == view.failure_template
+
+
+@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
+@patch.object(views.api_client.company, 'unsubscribe')
+def test_unsubscribe_api_success(
+    mock_unsubscribe, api_response_200
+):
+    mock_unsubscribe.return_value = api_response_200
+
+    response = client.post(reverse('unsubscribe'))
+
+    view = views.EmailUnsubscribeView
+    assert response.status_code == http.client.OK
+    assert response.template_name == view.success_template

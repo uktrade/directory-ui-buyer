@@ -471,8 +471,8 @@ class CompanyCodeVerificationForm(AutoFocusFieldMixin,
 
 
 class EmptyForm(forms.Form):
-    # django form tools expects a form for every step - even if we want it to
-    # simply be an interstitial page.
+    # some views expect a form, even if no data entry is required. This works
+    # around this requirement.
     pass
 
 
