@@ -22,8 +22,8 @@ class IndentedInvalidFieldsMixin:
 class AutoFocusFieldMixin:
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        first_field_name = next(field for field in self.fields)
-        self.fields[first_field_name].widget.attrs['autofocus'] = 'autofocus'
+        first_field = self.visible_fields()[0]
+        self.fields[first_field.name].widget.attrs['autofocus'] = 'autofocus'
 
 
 class CompanyForm(AutoFocusFieldMixin, IndentedInvalidFieldsMixin, forms.Form):

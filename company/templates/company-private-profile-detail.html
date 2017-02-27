@@ -152,7 +152,7 @@
 				{% if not company.summary %}
 					<p><a href="{% url 'company-edit-description' %}">Add a description</a></p>
 				{% else %}
-					{{ company.summary }}
+					{{ company.summary|linebreaks }}
 					{% if company.is_published %}
 						<a href="{{ company.public_profile_url }}" target="_blank">
 							Read full company profile
@@ -231,12 +231,12 @@
 							</div>
 						</div>
 						<div class="row-fluid ed-company-profile-sector-case-study-inner">
-							<div class="{{case_study.testimonial|yesno:'span4,span8'}}">
+							<div class="span12">
 								<p>
 									{% if case_study.summary %}
-										{{ case_study.summary }}
+										{{ case_study.summary|linebreaks }}
 									{% elif case_study.description %}
-										{{ case_study.description|truncatechars:200 }}
+										{{ case_study.description|truncatechars:200|linebreaks }}
 									{% endif %}
 								</p>
 								<a class="ed-edit-button" href="{% url 'company-case-study-edit' id=case_study.pk %}" style="color: #004F95;">

@@ -52,7 +52,8 @@ DOCKER_SET_DEBUG_ENV_VARS := \
 	export DIRECTORY_UI_BUYER_SUPPLIER_PROFILE_URL=http://supplier.trade.great.dev:8005/suppliers/{number}; \
 	export DIRECTORY_UI_BUYER_GOOGLE_TAG_MANAGER_ID=GTM-TC46J8K; \
 	export DIRECTORY_UI_BUYER_GOOGLE_TAG_MANAGER_ENV=&gtm_auth=kH9XolShYWhOJg8TA9bW_A&gtm_preview=env-32&gtm_cookies_win=x; \
-	export DIRECTORY_UI_BUYER_UTM_COOKIE_DOMAIN=.great.dev
+	export DIRECTORY_UI_BUYER_UTM_COOKIE_DOMAIN=.great.dev; \
+	export DIRECTORY_UI_BUYER_FEATURE_NEW_HEADER_FOOTER_ENABLED=true
 
 
 DOCKER_REMOVE_ALL := \
@@ -105,7 +106,8 @@ DEBUG_SET_ENV_VARS := \
 	export SUPPLIER_PROFILE_URL=http://supplier.trade.great.dev:8005/suppliers/{number}; \
 	export GOOGLE_TAG_MANAGER_ID=GTM-TC46J8K; \
 	export GOOGLE_TAG_MANAGER_ENV=&gtm_auth=kH9XolShYWhOJg8TA9bW_A&gtm_preview=env-32&gtm_cookies_win=x; \
-	export UTM_COOKIE_DOMAIN=.great.dev
+	export UTM_COOKIE_DOMAIN=.great.dev; \
+	export FEATURE_NEW_HEADER_FOOTER_ENABLED=true
 
 debug_webserver:
 	$(DEBUG_SET_ENV_VARS) && $(DJANGO_WEBSERVER)
@@ -127,5 +129,15 @@ debug: test_requirements debug_test
 heroku_deploy_dev:
 	docker build -t registry.heroku.com/directory-ui-buyer-dev/web .
 	docker push registry.heroku.com/directory-ui-buyer-dev/web
+
+smoke_tests:
+	cd $(mktemp -d) && \
+	git clone https://github.com/uktrade/directory-tests && \
+	cd directory-tests && \
+	pip install virtualenv && \
+	virtualenv venv && \
+	source venv/bin/activate && \
+	make requirements && \
+	make test_smoke_buyer
 
 .PHONY: build clean test_requirements docker_run docker_debug docker_webserver_bash docker_test debug_webserver debug_test debug heroku_deploy_dev heroku_deploy_demo

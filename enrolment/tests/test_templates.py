@@ -3,7 +3,7 @@ import os
 from directory_validators.constants import choices
 
 from django.conf import settings
-from django.forms import Form
+from django.forms import CharField, Form, HiddenInput
 from django.template.loader import render_to_string
 
 from enrolment import forms
@@ -84,6 +84,21 @@ def test_aims_form_renders_title():
 def test_company_form_renders_title():
     html = render_to_string('company-form.html', {})
     assert "Create your company’s profile" in html
+
+
+def test_form_wrapper_hides_hidden_fields():
+
+    class FormWithHiddenField(Form):
+        visible = CharField()
+        hidden = CharField(widget=HiddenInput())
+
+    context = {
+        'form': FormWithHiddenField()
+    }
+    html = render_to_string('form-wrapper.html', context)
+
+    assert '<label for="id_visible">Visible:</label>' in html
+    assert '<label for="id_hidden">Hidden:</label>' not in html
 
 
 def test_export_status_form_error():
@@ -188,6 +203,36 @@ def test_utm_cookie_domain():
     html = render_to_string('govuk_layout.html', context)
 
     assert '<meta id="utmCookieDomain" value=".thing.com" />' in html
+
+
+def test_shared_style_enabled():
+    context = {
+        'features': {
+            'FEATURE_NEW_HEADER_FOOTER_ENABLED': True,
+        }
+    }
+
+    html = render_to_string('govuk_layout.html', context)
+
+    assert render_to_string('header.html') in html
+    assert render_to_string('footer.html') in html
+    assert render_to_string('header_old.html') not in html
+    assert render_to_string('footer_old.html') not in html
+
+
+def test_shared_style_disabled():
+    context = {
+        'features': {
+            'FEATURE_NEW_HEADER_FOOTER_ENABLED': False,
+        }
+    }
+
+    html = render_to_string('govuk_layout.html', context)
+
+    assert render_to_string('header.html') not in html
+    assert render_to_string('footer.html') not in html
+    assert render_to_string('header_old.html') in html
+    assert render_to_string('footer_old.html') in html
 
 
 def test_enrolment_instructions_page_renders():

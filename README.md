@@ -1,26 +1,56 @@
 # directory-ui-buyer
-[Export Directory UI](https://www.directory.exportingisgreat.gov.uk/)
+[Export Directory UI](https://find-a-buyer.export.great.gov.uk/)
+
+This is the repo for Find A Buyer (FAB) - the Department for International Trade (DIT) service for exposing motivated British exporters to international buyers seeking British goods and service.
 
 ## Build status
 
 [![CircleCI](https://circleci.com/gh/uktrade/directory-ui-buyer/tree/master.svg?style=svg)](https://circleci.com/gh/uktrade/directory-ui-buyer/tree/master)
 
+## Development 
+
+The back-end framework is Django 1.9. The front-end uses minimal Javascript. The motivation for this is for accessibility reasons, to reduce technical complexity, and reduce cross-browser compatibility issues. Therefore most front-end work will be HTML and SASS/CSS development.
+
+We aim to follow [GDS service standards](https://www.gov.uk/service-manual/service-standard) and [GDS design principles](https://www.gov.uk/design-principles).
+
+### Dependencies
+
+Some views allow creating and updating a company. Therefore FAB has a dependency on the following services:
+
+| Service | Location  | Notes |
+| ------------- | ------------- | ------------- |
+| [directory-api](https://github.com/uktrade/directory-api) | http://api.trade.great.dev:8000 | See `/etc/hosts` instructions below. |
+| [directory-sso-proxy](https://github.com/uktrade/directory-sso-proxy) | http://sso.trade.great.dev:8004 | See `/etc/hosts` instructions below. |
+| [directory-sso](https://github.com/uktrade/directory-sso) | http://localhost:8003 | Requests must go through `directory-sso-proxy`. |
+
+[directory-sso](https://github.com/uktrade/directory-sso) is required for user authentication and sign up.  
+[directory-api](https://github.com/uktrade/directory-api) is required for creating companies.
+
+The user will need to sign up/register to create a company on FAB.  
+Follow data loading instructions on [directory-sso](https://github.com/uktrade/directory-sso) and then [directory-api](https://github.com/uktrade/directory-api) to create a dummy user and a dummy company for use in development.
+
+See [directory-sso](https://github.com/uktrade/directory-sso) and [directory-api](https://github.com/uktrade/directory-api) for more details and dummy user credentials.
+
+
 ## Requirements
+[Python 3.5](https://www.python.org/downloads/release/python-352/)
 
 ### Docker
+The production environment uses Docker containerization technology. To use this technology in your local development environment you will also need the following dependencies:
+
 [Docker >= 1.10](https://docs.docker.com/engine/installation/)
 
 [Docker Compose >= 1.8](https://docs.docker.com/compose/install/)
 
+### SASS
+We use SASS CSS pre-compiler. If you're doing front-end work your local machine will also need the following dependencies:
 
-## Local installation
+[node](https://nodejs.org/en/download/)
 
-    $ git clone https://github.com/uktrade/directory-ui-buyer
-    $ cd directory-ui-buyer
-    $ make
+[SASS](http://sass-lang.com/)
 
-## Running with Docker
-Requires all host environment variables to be set.
+## Running locally with Docker
+This requires all host environment variables to be set.
 
     $ make docker_run
 
@@ -46,42 +76,35 @@ Requires all host environment variables to be set.
 | DIRECTORY_UI_BUYER_SSO_API_CLIENT_BASE_URL | SSO_API_CLIENT_BASE_URL |
 | DIRECTORY_UI_BUYER_UI_SESSION_COOKIE_SECURE | UI_SESSION_COOKIE_SECURE |
 
-## Debugging
+## Running locally without Docker
 
-### Setup debug environment
+### Installing
+    $ git clone https://github.com/uktrade/directory-ui-buyer
+    $ cd directory-ui-buyer
+    $ virtualenv .venv -p python3.5
+    $ source .venv/bin/activate
+    $ pip install -r requirements_text.txt
 
-    $ make debug
-
-### Run debug webserver
-
+### Running the webserver
+	$ source .venv/bin/activate
     $ make debug_webserver
 
-### Run debug tests
+### Running the tests
 
     $ make debug_test
 
 ### CSS development
 
-#### Requirements
-[node](https://nodejs.org/en/download/)
-[SASS](http://sass-lang.com/)
+If you're doing front-end development work you will need to be able to compile the SASS to CSS. For this you need:
 
 ```bash
 npm install
-npm run sass-dev
-```
-
-#### Update CSS under version control
-
-```bash
 npm run sass-prod
 ```
 
-#### Rebuild the CSS files when the scss file changes
+We add compiled CSS files to version control. This will sometimes result in conflicts if multiple developers are working on the same SASS files. However, by adding the compiled CSS to version control we avoid having to install node, npm, node-sass, etc to non-development machines.
 
-```bash
-npm run sass-watch
-```
+You should not edit CSS files directly, instead edit their SCSS counterparts.
 
 # Session
 

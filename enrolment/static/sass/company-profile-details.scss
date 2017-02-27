@@ -170,6 +170,7 @@
   background: $stone;
   border-radius: 6px;
   color: $mid-grey;
+  display: inline-block;
   font-size: 1em;
   font-weight: 300;
   margin: 0 5px 8px 0;
@@ -285,13 +286,6 @@
   }
 }
 
-.ed-company-profile-add-case-study-button:focus {
-  background-color: #007EA3;
-  span {
-    color: white;
-  }
-}
-
 .ed-company-profile-logo-container {
   border: 1px solid #dedede;
   min-width: 147px;
@@ -305,7 +299,7 @@
   margin-bottom: 20px;
   img {
     padding: 0;
-    max-width: 344px;
+    max-width: 100%;
   }
   .ed-company-profile-sector-case-study-inner {
     margin-bottom: 20px;

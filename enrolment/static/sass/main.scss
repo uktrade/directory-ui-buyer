@@ -722,13 +722,15 @@ body {
 #footer.ed-footer {
   background: #1E1348;
   padding: 40px 40px 50px;
+  .footer-section {
+    width: 100%;
+  }
   @media (max-width: 960px) {
     padding: 40px 0;
 
     .footer-section {
       border-top: 1px solid #fff;
       padding: 30px 0;
-
     }
 
     .container {
@@ -1047,10 +1049,6 @@ a.ed-filled-button-primary {
   vertical-align: top;
   line-height: 1;
   font-family: 'Roboto', sans-serif;
-  &:focus {
-    background: #007EA3;
-    outline: 0;
-  }
 }
 
 
@@ -1061,7 +1059,6 @@ a.ed-filled-button-primary {
     margin: 0;
     padding: 0;
     li {
-      margin-top: 9px;
       display: inline-block;
       &.ed-form-progress-indicator-line {
         border-bottom: 9px solid #007EA3;
@@ -1088,6 +1085,7 @@ a.ed-filled-button-primary {
   button {
     text-align: left;
     padding: 18px 0;
+    padding-top: 20px;
     width: 100%;
     border: none;
     background: transparent;
@@ -1098,6 +1096,9 @@ a.ed-filled-button-primary {
     }
     @media (max-width: 640px) {
       text-align: center;
+    }
+    &:focus {
+      outline: 3px solid #FFBF47;
     }
   }
   .ed-form-tab-order {

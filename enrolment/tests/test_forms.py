@@ -4,7 +4,7 @@ from unittest.mock import Mock, patch
 from directory_validators import enrolment as shared_validators
 from requests.exceptions import RequestException
 
-from django.forms import Form
+from django.forms import Form, HiddenInput
 
 from django.forms.fields import CharField, Field
 from django.core.validators import EmailValidator
@@ -19,6 +19,7 @@ TERMS_CONDITIONS_MESSAGE = \
 
 
 class FormWithAutoFocusFieldMixin(forms.AutoFocusFieldMixin, Form):
+    hiddenfield = CharField(widget=HiddenInput())
     field1 = CharField()
     field1 = CharField()
 
