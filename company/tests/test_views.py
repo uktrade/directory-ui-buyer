@@ -556,7 +556,7 @@ def test_company_profile_details_exposes_context(
 
 @patch.object(views, 'has_company', Mock(return_value=True))
 @patch.object(helpers, 'get_company_profile_from_response')
-@patch.object(views.api_client.company, 'retrieve_profile')
+@patch.object(views.api_client.company, 'retrieve_private_profile')
 def test_company_profile_details_calls_api(
     mock_retrieve_profile, mock_get_company_profile_from_response,
     sso_request
@@ -571,7 +571,7 @@ def test_company_profile_details_calls_api(
 
 @patch.object(views, 'has_company', Mock(return_value=True))
 @patch.object(helpers, 'get_company_profile_from_response')
-@patch.object(views.api_client.company, 'retrieve_profile')
+@patch.object(views.api_client.company, 'retrieve_private_profile')
 def test_company_profile_details_handles_bad_status(
     mock_retrieve_profile, mock_get_company_profile_from_response,
     sso_request, api_response_400
@@ -634,7 +634,7 @@ def test_company_profile_description_api_client_failure(
 
 
 @patch.object(views, 'has_company', Mock(return_value=True))
-@patch.object(views.api_client.company, 'retrieve_profile')
+@patch.object(views.api_client.company, 'retrieve_private_profile')
 def test_company_description_edit_calls_api(
     mock_retrieve_profile, company_request, api_response_company_profile_200
 ):
@@ -647,7 +647,7 @@ def test_company_description_edit_calls_api(
 
 
 @patch.object(views, 'has_company', Mock(return_value=True))
-@patch.object(views.api_client.company, 'retrieve_profile')
+@patch.object(views.api_client.company, 'retrieve_private_profile')
 def test_company_profile_description_exposes_api_result_to_form(
     mock_retrieve_profile, company_request, api_response_company_profile_200
 ):
@@ -661,7 +661,7 @@ def test_company_profile_description_exposes_api_result_to_form(
 
 
 @patch.object(views, 'has_company', Mock(return_value=True))
-@patch.object(views.api_client.company, 'retrieve_profile')
+@patch.object(views.api_client.company, 'retrieve_private_profile')
 def test_company_description_edit_handles_bad_api_response(
     mock_retrieve_profile, company_request, api_response_400
 ):
@@ -744,7 +744,7 @@ def test_company_profile_edit_api_client_failure(
 
 
 @patch.object(views, 'has_company', Mock(return_value=True))
-@patch.object(views.api_client.company, 'retrieve_profile')
+@patch.object(views.api_client.company, 'retrieve_private_profile')
 def test_company_profile_edit_calls_api(
     mock_retrieve_profile, company_request, api_response_company_profile_200
 ):
@@ -758,7 +758,7 @@ def test_company_profile_edit_calls_api(
 
 
 @patch.object(views, 'has_company', Mock(return_value=True))
-@patch.object(views.api_client.company, 'retrieve_profile')
+@patch.object(views.api_client.company, 'retrieve_private_profile')
 def test_company_profile_edit_exposes_api_result_to_form(
     mock_retrieve_profile, company_request, api_response_company_profile_200
 ):
@@ -772,7 +772,7 @@ def test_company_profile_edit_exposes_api_result_to_form(
 
 
 @patch.object(views, 'has_company', Mock(return_value=True))
-@patch.object(views.api_client.company, 'retrieve_profile')
+@patch.object(views.api_client.company, 'retrieve_private_profile')
 def test_company_profile_edit_handles_bad_api_response(
     mock_retrieve_profile, company_request, api_response_400
 ):
@@ -887,7 +887,7 @@ def test_supplier_company_profile_edit_create_api_success(
        Mock(return_value=False))
 @patch.object(views, 'has_company', Mock(return_value=True))
 @patch.object(views.api_client.company, 'update_profile')
-@patch('api_client.api_client.company.retrieve_profile')
+@patch('api_client.api_client.company.retrieve_private_profile')
 def test_supplier_company_profile_letter_already_sent_edit_create_api_success(
     mock_retrieve_profile, mock_update_profile,
     api_response_company_profile_letter_sent_200,
@@ -943,7 +943,7 @@ def test_supplier_company_profile_initial_address_from_profile(
 
 @patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
 @patch.object(views, 'has_company', Mock(return_value=True))
-@patch('api_client.api_client.company.retrieve_profile')
+@patch('api_client.api_client.company.retrieve_private_profile')
 def test_supplier_company_profile_initial_address_from_companies_house(
     mock_retrieve_profile, company_profile_edit_goto_step,
     company_profile_companies_house_data,
@@ -978,7 +978,7 @@ def test_supplier_company_profile_initial_data_contact_from_profile(
 
 @patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
 @patch.object(views, 'has_company', Mock(return_value=True))
-@patch('api_client.api_client.company.retrieve_profile')
+@patch('api_client.api_client.company.retrieve_private_profile')
 def test_supplier_company_profile_initial_contact_from_companies_house(
     mock_retrieve_profile, company_profile_edit_goto_step,
     company_profile_companies_house_data,
@@ -1242,3 +1242,54 @@ def test_supplier_social_links_edit_standalone_view_api_success(
         sso_user_id=sso_user.id,
         data=all_social_links_data,
     )
+
+
+def test_unsubscribe_feature_flag_off(settings, client):
+    settings.FEATURE_UNSUBSCRIBE_VIEW_ENABLED = False
+
+    response = client.get(reverse('unsubscribe'))
+
+    assert response.status_code == http.client.NOT_FOUND
+
+
+@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
+def test_unsubscribe_logged_in_user(client):
+    response = client.get(reverse('unsubscribe'))
+
+    view = views.EmailUnsubscribeView
+    assert response.status_code == http.client.OK
+    assert response.template_name == [view.template_name]
+
+
+def test_unsubscribe_anon_user(client):
+    response = client.get(reverse('unsubscribe'))
+
+    assert response.status_code == http.client.FOUND
+
+
+@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
+@patch.object(views.api_client.supplier, 'unsubscribe')
+def test_unsubscribe_api_failure(
+    mock_unsubscribe, api_response_400, client
+):
+    mock_unsubscribe.return_value = api_response_400
+
+    response = client.post(reverse('unsubscribe'))
+
+    view = views.EmailUnsubscribeView
+    assert response.status_code == http.client.OK
+    assert response.template_name == view.failure_template
+
+
+@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
+@patch.object(views.api_client.supplier, 'unsubscribe')
+def test_unsubscribe_api_success(
+    mock_unsubscribe, api_response_200, client
+):
+    mock_unsubscribe.return_value = api_response_200
+
+    response = client.post(reverse('unsubscribe'))
+
+    view = views.EmailUnsubscribeView
+    assert response.status_code == http.client.OK
+    assert response.template_name == view.success_template

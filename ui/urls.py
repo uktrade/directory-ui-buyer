@@ -18,6 +18,7 @@ from company.views import (
     SupplierCompanyProfileLogoEditView,
     SupplierCompanySocialLinksEditView,
     SupplierContactEditView,
+    EmailUnsubscribeView
 )
 from admin.proxy import AdminProxyView
 
@@ -27,29 +28,29 @@ cache_me = cache_page(60 * 1)
 
 urlpatterns = [
     url(
-        r"^admin/",
+        r'^admin/',
         AdminProxyView.as_view(),
-        name="admin_proxy"
+        name='admin_proxy'
     ),
     url(
-        r"^api-static/admin/",
+        r'^api-static/admin/',
         AdminProxyView.as_view(),
-        name="admin_proxy"
+        name='admin_proxy'
     ),
     url(
-        r"^$",
+        r'^$',
         DomesticLandingView.as_view(),
-        name="index"
+        name='index'
     ),
     url(
-        r"^register$",
+        r'^register$',
         EnrolmentInstructionsView.as_view(),
-        name="register-instructions"
+        name='register-instructions'
     ),
     url(
-        r"^register/(?P<step>.+)$",
+        r'^register/(?P<step>.+)$',
         EnrolmentView.as_view(url_name='register', done_step_name='finished'),
-        name="register"
+        name='register'
     ),
     url(
         r'^confirm-company-address$',
@@ -105,5 +106,10 @@ urlpatterns = [
         r'^company/case-study/edit/(?P<id>.+)?$',
         SupplierCaseStudyWizardView.as_view(),
         name='company-case-study-edit'
+    ),
+    url(
+        r'^unsubscribe/',
+        EmailUnsubscribeView.as_view(),
+        name='unsubscribe'
     ),
 ]

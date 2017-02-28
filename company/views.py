@@ -4,10 +4,12 @@ from formtools.wizard.views import SessionWizardView
 
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
+from django.http import Http404
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.utils.functional import cached_property
 from django.views.generic import TemplateView
+from django.views.generic.edit import FormView
 
 from api_client import api_client
 from company import forms, helpers
@@ -66,7 +68,7 @@ class UpdateCompanyProfileOnFormWizardDoneMixin:
 class GetCompanyProfileInitialFormDataMixin:
     def get_form_initial(self, step):
         sso_user_id = self.request.sso_user.id
-        response = api_client.company.retrieve_profile(sso_user_id)
+        response = api_client.company.retrieve_private_profile(sso_user_id)
         if not response.ok:
             response.raise_for_status()
         return response.json()
@@ -155,7 +157,7 @@ class SupplierCompanyProfileDetailView(SupplierCompanyBaseView, TemplateView):
     template_name = 'company-private-profile-detail.html'
 
     def get_context_data(self, **kwargs):
-        response = api_client.company.retrieve_profile(
+        response = api_client.company.retrieve_private_profile(
             sso_user_id=self.request.sso_user.id
         )
         if not response.ok:
@@ -398,3 +400,23 @@ class SupplierAddressEditView(
     def get_form_initial(self, step):
         sso_user_id = self.request.sso_user.id
         return helpers.get_contact_details(sso_user_id)
+
+
+class EmailUnsubscribeView(SSOLoginRequiredMixin, FormView):
+    form_class = forms.EmptyForm
+    template_name = 'email-unsubscribe.html'
+    success_template = 'email-unsubscribe-success.html'
+    failure_template = 'email-unsubscribe-error.html'
+
+    def dispatch(self, *args, **kwargs):
+        if not settings.FEATURE_UNSUBSCRIBE_VIEW_ENABLED:
+            raise Http404()
+        return super().dispatch(*args, **kwargs)
+
+    def form_valid(self, form):
+        response = api_client.supplier.unsubscribe(
+            sso_user_id=self.request.sso_user.id
+        )
+        if response.ok:
+            return TemplateResponse(self.request, self.success_template)
+        return TemplateResponse(self.request, self.failure_template)

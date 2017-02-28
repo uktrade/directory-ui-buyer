@@ -120,7 +120,7 @@ def get_public_profile_url(company_number):
 
 
 def get_company_profile(sso_id):
-    response = api_client.company.retrieve_profile(sso_id)
+    response = api_client.company.retrieve_private_profile(sso_id)
     if not response.ok:
         response.raise_for_status()
     return response.json()

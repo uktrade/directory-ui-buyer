@@ -148,7 +148,7 @@ class CaseStudyRichMediaForm(IndentedInvalidFieldsMixin, AutoFocusFieldMixin,
             'update_help_text': image_help_text_update,
             'create_label': 'Upload main image for this case study',
             'update_label': (
-                'Replace the main image for this case study (optional)',
+                'Replace the main image for this case study (optional)'
             )
         },
         {
@@ -471,8 +471,8 @@ class CompanyCodeVerificationForm(AutoFocusFieldMixin,
 
 
 class EmptyForm(forms.Form):
-    # django form tools expects a form for every step - even if we want it to
-    # simply be an interstitial page.
+    # some views expect a form, even if no data entry is required. This works
+    # around this requirement.
     pass
 
 
