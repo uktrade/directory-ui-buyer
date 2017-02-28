@@ -122,11 +122,14 @@ class DynamicHelptextFieldsMixin:
         for help_text_map in self.help_text_maps:
             field = self[help_text_map['field_name']]
             if self.initial.get(field.name):
+                help_text = help_text_map['update_help_text'].format(
+                    initial_value=self.initial.get(field.name)
+                )
+                field.help_text = help_text
                 field.label = help_text_map['update_label']
-                field.help_text = help_text_map['update_help_text']
             else:
-                field.label = help_text_map['create_label']
                 field.help_text = help_text_map['create_help_text']
+                field.label = help_text_map['create_label']
 
 
 class CaseStudyRichMediaForm(IndentedInvalidFieldsMixin, AutoFocusFieldMixin,
@@ -138,8 +141,9 @@ class CaseStudyRichMediaForm(IndentedInvalidFieldsMixin, AutoFocusFieldMixin,
         'results, upload an image at 1820 x 682 pixels.'
     )
     image_help_text_update = (
-        'Select a different image to replace the current one. ' +
-        image_help_text_create
+        'Select a different image to replace the '
+        '<a href="{initial_value}" target="_blank" alt="View current image">'
+        'current one</a>. ' + image_help_text_create
     )
     help_text_maps = [
         {
