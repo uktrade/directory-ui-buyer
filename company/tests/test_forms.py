@@ -156,7 +156,9 @@ def test_case_study_rich_media_image_one_update_help_text():
     expected_values = forms.CaseStudyRichMediaForm.help_text_maps[0]
 
     assert form['image_one'].label == expected_values['update_label']
-    assert form['image_one'].help_text == expected_values['update_help_text']
+    assert form['image_one'].help_text == (
+        expected_values['update_help_text'].format(initial_value='123')
+    )
 
 
 def test_case_study_rich_media_image_one_create_help_text():
@@ -172,7 +174,9 @@ def test_case_study_rich_media_image_two_update_help_text():
     expected_values = forms.CaseStudyRichMediaForm.help_text_maps[1]
 
     assert form['image_two'].label == expected_values['update_label']
-    assert form['image_two'].help_text == expected_values['update_help_text']
+    assert form['image_two'].help_text == (
+        expected_values['update_help_text'].format(initial_value='123')
+    )
 
 
 def test_case_study_rich_media_image_two_create_help_text():
@@ -188,7 +192,9 @@ def test_case_study_rich_media_image_three_update_help_text():
     expected_values = forms.CaseStudyRichMediaForm.help_text_maps[2]
 
     assert form['image_three'].label == expected_values['update_label']
-    assert form['image_three'].help_text == expected_values['update_help_text']
+    assert form['image_three'].help_text == (
+        expected_values['update_help_text'].format(initial_value='123')
+    )
 
 
 def test_case_study_rich_media_image_three_create_help_text():
