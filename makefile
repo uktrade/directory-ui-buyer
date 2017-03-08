@@ -136,10 +136,6 @@ smoke_tests:
 	cd $(mktemp -d) && \
 	git clone https://github.com/uktrade/directory-tests && \
 	cd directory-tests && \
-	pip install virtualenv && \
-	virtualenv venv && \
-	source venv/bin/activate && \
-	make requirements && \
-	make test_smoke_buyer
+	make docker_smoke_test
 
 .PHONY: build clean test_requirements docker_run docker_debug docker_webserver_bash docker_test debug_webserver debug_test debug heroku_deploy_dev heroku_deploy_demo
