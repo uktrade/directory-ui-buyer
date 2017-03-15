@@ -183,6 +183,12 @@ a .register-interest-btn {
     display: none;
     @media (max-width: 980px) {
       display: block;
+      .ipad-img-with-numbers {
+        text-align: center;
+        img {
+           max-width: 80%;
+        }
+      }
     }
   }
 }
