@@ -166,7 +166,8 @@
   padding: 22px;
 }
 
-.stone-label {
+.stone-label,
+.stone-label:focus {
   background: $stone;
   border-radius: 6px;
   color: $mid-grey;
