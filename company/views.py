@@ -415,7 +415,7 @@ class EmailUnsubscribeView(SSOLoginRequiredMixin, FormView):
 
     def form_valid(self, form):
         response = api_client.supplier.unsubscribe(
-            sso_user_id=self.request.sso_user.id
+            sso_id=self.request.sso_user.id
         )
         if response.ok:
             return TemplateResponse(self.request, self.success_template)

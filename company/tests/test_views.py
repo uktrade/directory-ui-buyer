@@ -1276,6 +1276,7 @@ def test_unsubscribe_api_failure(
 
     response = client.post(reverse('unsubscribe'))
 
+    mock_unsubscribe.assert_called_once_with(sso_id=1)
     view = views.EmailUnsubscribeView
     assert response.status_code == http.client.OK
     assert response.template_name == view.failure_template
@@ -1290,6 +1291,7 @@ def test_unsubscribe_api_success(
 
     response = client.post(reverse('unsubscribe'))
 
+    mock_unsubscribe.assert_called_once_with(sso_id=1)
     view = views.EmailUnsubscribeView
     assert response.status_code == http.client.OK
     assert response.template_name == view.success_template
