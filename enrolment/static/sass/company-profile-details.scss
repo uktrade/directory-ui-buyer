@@ -13,14 +13,6 @@
     margin-top: 0;
     margin-bottom: 10px;
   }
-  .company-profile-module-social-links {
-    border-left: 1px solid #dedede;
-    .ed-social-icon {
-      width: 20px;
-      margin-bottom: 2px;
-      margin-right: 5px;
-    }
-  }
   .company-profile-module-container {
     border: 1px solid #DFD5C5;
     margin-bottom: 20px;
@@ -35,12 +27,50 @@
   .company-profile-module-inner {
     padding: 20px;
     min-height: 135px;
-    h3 {
+    h2, h3 {
       font-weight: 100;
       margin-bottom: 20px;
     }
     .icon-pencil {
       margin-top: 4px;
+    }
+  }
+  .company-profile-module-description.span8,
+  .company-profile-module-details {
+    border-right: 1px solid #dedede;
+    left: 20px;
+    padding-left: 0;
+    position: relative;
+    .company-profile-module-inner {
+      padding-left: 0;
+      padding-bottom: 0;
+    }
+  }
+  
+  @media (max-width: 767px) {
+    .company-profile-module-details {
+      left: 0;
+    }
+  }
+  .company-profile-module-social-links,
+  .company-profile-module-facts {
+    border-left: 1px solid #dedede;
+    left: -1px;
+    margin-left: 20px;
+    padding-left: 21px;
+    position: relative;
+    @media (max-width: 767px) {
+      & {
+        border: none;
+        left: 0;
+        margin-left: 0;
+        padding-left: 20px;
+      }
+    }
+    .ed-social-icon {
+      margin-bottom: 2px;
+      margin-right: 5px;
+      width: 20px;
     }
   }
   ul {
