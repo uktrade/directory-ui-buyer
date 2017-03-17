@@ -46,7 +46,24 @@
       padding-bottom: 0;
     }
   }
-  
+  .company-profile-module-details {
+    a {
+      clear: both;
+      display: inline-block;
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    p {
+      clear: both;
+      padding-right: 3.5em;
+      position: relative;
+    }
+    .ed-pencil-edit-button-container {
+      position: absolute;
+    }
+  }
   @media (max-width: 767px) {
     .company-profile-module-details {
       left: 0;
