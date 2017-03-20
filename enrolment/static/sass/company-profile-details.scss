@@ -5,7 +5,14 @@
   margin-bottom: 40px;
   color: #4a4a4a;
 }
-
+.ed-pencil-edit-button-container {
+  color: #004F95;
+  font-family: "Roboto",arial,helvetica,sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  margin-left: 10px;
+  padding: 0 0 0 5px;
+}
 .company-profile-details-body {
   position: relative;
   h3 {
@@ -19,10 +26,6 @@
     li {
       list-style: initial;
     }
-  }
-  .ed-pencil-edit-button-container {
-    color: #004F95;
-    margin-left: 10px;
   }
   .company-profile-module-inner {
     padding: 20px;
