@@ -1,6 +1,7 @@
 import os
 
 from formtools.wizard.views import SessionWizardView
+from revproxy.views import ProxyView
 
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
@@ -420,3 +421,10 @@ class EmailUnsubscribeView(SSOLoginRequiredMixin, FormView):
         if response.ok:
             return TemplateResponse(self.request, self.success_template)
         return TemplateResponse(self.request, self.failure_template)
+
+
+class CompanyPrivateAPIViewProxy(ProxyView):
+    upstream = settings.API_CLIENT_BASE_URL
+    rewrite = (
+        (r'^supplier/(?P<sso_id>[0-9]+)/$', r'supplier/\1/company/'),
+    )

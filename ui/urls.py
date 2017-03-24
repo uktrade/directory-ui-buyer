@@ -7,6 +7,7 @@ from enrolment.views import (
     EnrolmentView,
 )
 from company.views import (
+    CompanyPrivateAPIViewProxy,
     SupplierAddressEditView,
     SupplierBasicInfoEditView,
     SupplierCaseStudyWizardView,
@@ -18,7 +19,7 @@ from company.views import (
     SupplierCompanyProfileLogoEditView,
     SupplierCompanySocialLinksEditView,
     SupplierContactEditView,
-    EmailUnsubscribeView
+    EmailUnsubscribeView,
 )
 from admin.proxy import AdminProxyView
 
@@ -111,5 +112,10 @@ urlpatterns = [
         r'^unsubscribe/',
         EmailUnsubscribeView.as_view(),
         name='unsubscribe'
+    ),
+    url(
+        r'^api/external/company/(?P<path>.*)$',
+        CompanyPrivateAPIViewProxy.as_view(),
+        name='api-external-company'
     ),
 ]
