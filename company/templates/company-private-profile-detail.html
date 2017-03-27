@@ -69,9 +69,7 @@
 
 		<div class="row-fluid cf">
 			<div class="span12 great-blue-bar ed-has-edit-button">
-				<h1 class="element-within company-name-title">
-					<span class="dont-break-out">{{company.name}}</span>
-				</h1>
+				<h1 class="company-name-title">{{company.name}}</h1>
 				<a class="ed-edit-button" href="{% url show_wizard_links|yesno:'company-edit,company-edit-key-facts' %}" style="top: 36px; right: 22px; color: white;">
 					<img src="{% static 'images/pencil-icon-white.png' %}" class="ed-icon-pencil" />
 					<strong>Edit</strong>
