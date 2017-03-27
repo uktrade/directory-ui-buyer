@@ -927,7 +927,6 @@ a.no-focus-highlight {
       font-size: 28px;
     }
   }
-
   .element-within {
     display: table-cell;
     float: none;
@@ -942,7 +941,22 @@ a.no-focus-highlight {
       color: $white;
     }
   }
+  .ed-edit-button {
+    right: 20px;
+    top: 16px;
+  }
+  &.ed-has-edit-button {
+    padding-right: 70px;
+  }
+  
   @media (max-width: 767px) {
+    &.ed-has-edit-button {
+      padding-right: 0;
+      padding-top: 20px;
+    }
+    .ed-edit-button {
+      top: 10px;
+    }
     .element-within {
       display: block;
     }
@@ -954,6 +968,7 @@ a.no-focus-highlight {
 }
 
 .ed-edit-button {
+  color: inherit;
   position: absolute;
 }
 
