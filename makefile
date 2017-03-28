@@ -8,7 +8,7 @@ test_requirements:
 	pip install -r requirements_test.txt
 
 API_CLIENT_ENV_VARS := API_CLIENT_KEY=debug API_CLIENT_BASE_URL=http://debug
-FLAKE8 := flake8 . --exclude=migrations
+FLAKE8 := flake8 . --exclude=migrations,.venv
 PYTEST := pytest . --cov=. --cov-config=.coveragerc --capture=no $(pytest_args)
 COLLECT_STATIC := python manage.py collectstatic --noinput
 
@@ -54,7 +54,8 @@ DOCKER_SET_DEBUG_ENV_VARS := \
 	export DIRECTORY_UI_BUYER_GOOGLE_TAG_MANAGER_ENV=&gtm_auth=kH9XolShYWhOJg8TA9bW_A&gtm_preview=env-32&gtm_cookies_win=x; \
 	export DIRECTORY_UI_BUYER_UTM_COOKIE_DOMAIN=.great.dev; \
 	export DIRECTORY_UI_BUYER_FEATURE_NEW_HEADER_FOOTER_ENABLED=true; \
-	export DIRECTORY_UI_BUYER_FEATURE_UNSUBSCRIBE_VIEW_ENABLED=true
+	export DIRECTORY_UI_BUYER_FEATURE_UNSUBSCRIBE_VIEW_ENABLED=true; \
+	export DIRECTORY_UI_BUYER_EXTERNAL_SECRET=debug
 
 
 DOCKER_REMOVE_ALL := \
@@ -109,7 +110,9 @@ DEBUG_SET_ENV_VARS := \
 	export GOOGLE_TAG_MANAGER_ENV=&gtm_auth=kH9XolShYWhOJg8TA9bW_A&gtm_preview=env-32&gtm_cookies_win=x; \
 	export UTM_COOKIE_DOMAIN=.great.dev; \
 	export FEATURE_NEW_HEADER_FOOTER_ENABLED=true; \
-	export FEATURE_UNSUBSCRIBE_VIEW_ENABLED=true
+	export FEATURE_UNSUBSCRIBE_VIEW_ENABLED=true; \
+	export EXTERNAL_SECRET=debug
+
 
 debug_webserver:
 	$(DEBUG_SET_ENV_VARS) && $(DJANGO_WEBSERVER)

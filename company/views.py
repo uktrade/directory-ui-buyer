@@ -1,11 +1,10 @@
 import os
 
 from formtools.wizard.views import SessionWizardView
-from revproxy.views import ProxyView
 
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
-from django.http import Http404
+from django.http import Http404, HttpResponseForbidden
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.utils.functional import cached_property
@@ -15,6 +14,8 @@ from django.views.generic.edit import FormView
 from api_client import api_client
 from company import forms, helpers
 from enrolment.helpers import has_company
+from proxy.views import BaseProxyView
+from signature.utils import SignatureRejection
 from sso.utils import SSOLoginRequiredMixin
 
 
@@ -423,8 +424,10 @@ class EmailUnsubscribeView(SSOLoginRequiredMixin, FormView):
         return TemplateResponse(self.request, self.failure_template)
 
 
-class CompanyPrivateAPIViewProxy(ProxyView):
+class CompanyPrivateAPIViewProxy(BaseProxyView):
     upstream = settings.API_CLIENT_BASE_URL
-    rewrite = (
-        (r'^supplier/(?P<sso_id>[0-9]+)/$', r'supplier/\1/company/'),
-    )
+
+    def dispatch(self, request, path):
+        if SignatureRejection.test_signature(request) is False:
+            return HttpResponseForbidden()
+        return super().dispatch(request, path)

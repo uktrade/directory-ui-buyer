@@ -22,6 +22,7 @@ BASE_DIR = os.path.dirname(PROJECT_ROOT)
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ["SECRET_KEY"]
+EXTERNAL_SECRET = os.environ["EXTERNAL_SECRET"]
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = bool(os.getenv("DEBUG", False))

@@ -1295,3 +1295,11 @@ def test_unsubscribe_api_success(
     view = views.EmailUnsubscribeView
     assert response.status_code == http.client.OK
     assert response.template_name == view.success_template
+
+
+def test_company_private_api_view_bad_signature(client):
+    url = reverse('api-external-company', kwargs={'path': 'supplier/2/'})
+
+    response = client.get(url)  # notice the absence of signature header
+
+    assert response.status_code == http.client.FORBIDDEN
