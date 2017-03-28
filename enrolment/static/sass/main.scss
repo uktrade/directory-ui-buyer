@@ -913,42 +913,20 @@ a.no-focus-highlight {
 
 .great-blue-bar {
   background: $great-blue;
-  display: table!important;
-  padding: 0 24px;
+  color: $white;
   h1, h2 {
-    font-weight: normal;
+    font-family: $font-heading;
+    font-size: 36px;
+    font-weight: 300;
+    line-height: 1.1em;
+    margin: 0;
+    padding: 16px 24px;
   }
   .company-name-title {
-    color: $white;
-
-    span {
-      display: block; /* Fallback for non-webkit */
-      display: -webkit-box;
-      margin: 20px 20px 20px 0;
-      line-height: 1.1;
-      -webkit-line-clamp: 1;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
     @media (max-width: 767px) {
       font-size: 28px;
-      width: 100%;
-      span {
-        display: block; /* Fallback for non-webkit */
-        display: -webkit-box;
-        max-width: 100%;
-        height: 28*1.4*1px; /* Fallback for non-webkit 39.2 */
-        margin: 20px 0;
-        line-height: 1.4;
-        -webkit-line-clamp: 1;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
     }
   }
-
   .element-within {
     display: table-cell;
     float: none;
@@ -963,7 +941,22 @@ a.no-focus-highlight {
       color: $white;
     }
   }
+  .ed-edit-button {
+    right: 20px;
+    top: 16px;
+  }
+  &.ed-has-edit-button {
+    padding-right: 70px;
+  }
+  
   @media (max-width: 767px) {
+    &.ed-has-edit-button {
+      padding-right: 0;
+      padding-top: 20px;
+    }
+    .ed-edit-button {
+      top: 10px;
+    }
     .element-within {
       display: block;
     }
@@ -978,6 +971,7 @@ a.no-focus-highlight {
 }
 
 .ed-edit-button {
+  color: inherit;
   position: absolute;
 }
 
