@@ -48,6 +48,12 @@
         {% include 'google_tag_manager_body.html' %}
         <script>document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');</script>
 
+        <div id="skiplink-container">
+            <div>
+                <a href="#content" class="skiplink">Skip to main content</a>
+            </div>
+        </div>
+				
         {% if features.FEATURE_NEW_HEADER_FOOTER_ENABLED %}
             {% include 'header.html' %}
         {% else %}
