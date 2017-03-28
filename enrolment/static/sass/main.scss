@@ -263,6 +263,12 @@ a.teal:focus {
   color: #ffffff;
 }
 
+#skiplink-container a.skiplink {
+  left: -9999em;
+  margin-top: 8px;
+  position: absolute;
+}
+
 .custom-hr {
   border-top: 0;
 }
