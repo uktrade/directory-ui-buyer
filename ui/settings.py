@@ -22,7 +22,6 @@ BASE_DIR = os.path.dirname(PROJECT_ROOT)
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ["SECRET_KEY"]
-EXTERNAL_SECRET = os.environ["EXTERNAL_SECRET"]
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = bool(os.getenv("DEBUG", False))
@@ -254,3 +253,7 @@ FEATURE_UNSUBSCRIBE_VIEW_ENABLED = (
 GOOGLE_TAG_MANAGER_ID = os.environ['GOOGLE_TAG_MANAGER_ID']
 GOOGLE_TAG_MANAGER_ENV = os.getenv('GOOGLE_TAG_MANAGER_ENV', '')
 UTM_COOKIE_DOMAIN = os.environ['UTM_COOKIE_DOMAIN']
+
+DIRECTORY_EXTERNAL_API_CLIENT_KEY = os.environ[
+    "DIRECTORY_EXTERNAL_API_CLIENT_KEY"
+]

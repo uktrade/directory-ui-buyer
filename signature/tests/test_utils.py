@@ -8,7 +8,7 @@ def test_has_permission_nonschema_invalid_signature(rf):
 
 def test_has_permission_nonschema_valid_signature(rf, settings):
     signature = SignatureRejection.generate_signature(
-        settings.EXTERNAL_SECRET, '/', b'',
+        settings.DIRECTORY_EXTERNAL_API_CLIENT_KEY, '/', b'',
     )
     request = rf.get('/', HTTP_X_SIGNATURE=signature)
     assert SignatureRejection.test_signature(request) is True

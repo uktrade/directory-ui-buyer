@@ -11,6 +11,7 @@ from revproxy.views import ProxyView
 
 class BaseProxyView(ProxyView):
     upstream = settings.API_CLIENT_BASE_URL
+    set_forwarded_host_header = True
 
     def __init__(self, *args, **kwargs):
         if self.upstream.endswith('/'):
@@ -68,7 +69,8 @@ class BaseProxyView(ProxyView):
         signature_header = self.get_signature_header(
             request_url=request_url, request_payload=request_payload
         )
-        self.request_headers["X-Forwarded-Host"] = request.get_host()
+        if self.set_forwarded_host_header:
+            self.request_headers["X-Forwarded-Host"] = request.get_host()
         self.request_headers = {**self.request_headers, **signature_header}
 
         try:

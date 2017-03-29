@@ -26,7 +26,7 @@ from admin.proxy import AdminProxyView
 
 
 cache_me = cache_page(60 * 1)
-required_get = require_http_methods(['GET'])
+require_get = require_http_methods(['GET'])
 
 
 urlpatterns = [
@@ -117,7 +117,7 @@ urlpatterns = [
     ),
     url(
         r'^api/external/company/supplier/(?P<sso_id>.+)/company/$',
-        required_get(company_proxies.CompanyPrivateAPIViewProxy.as_view()),
+        require_get(company_proxies.CompanyPrivateAPIViewProxy.as_view()),
         name='api-external-company'
     ),
 ]
