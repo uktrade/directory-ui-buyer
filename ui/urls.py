@@ -1,5 +1,6 @@
 from django.conf.urls import url
 from django.views.decorators.cache import cache_page
+from django.views.decorators.http import require_http_methods
 
 from enrolment.views import (
     DomesticLandingView,
@@ -18,12 +19,14 @@ from company.views import (
     SupplierCompanyProfileLogoEditView,
     SupplierCompanySocialLinksEditView,
     SupplierContactEditView,
-    EmailUnsubscribeView
+    EmailUnsubscribeView,
 )
+from company import proxy as company_proxies
 from admin.proxy import AdminProxyView
 
 
 cache_me = cache_page(60 * 1)
+require_get = require_http_methods(['GET'])
 
 
 urlpatterns = [
@@ -111,5 +114,10 @@ urlpatterns = [
         r'^unsubscribe/',
         EmailUnsubscribeView.as_view(),
         name='unsubscribe'
+    ),
+    url(
+        r'^api/external/company/supplier/(?P<sso_id>.+)/company/$',
+        require_get(company_proxies.CompanyPrivateAPIViewProxy.as_view()),
+        name='api-external-company'
     ),
 ]
