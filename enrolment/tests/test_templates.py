@@ -149,9 +149,9 @@ def test_header_logged_in():
         'sso_logout_url': 'logout.com',
     }
     html = render_to_string('header.html', context)
-    assert 'Login' not in html
+    assert 'Sign in' not in html
     assert context['sso_login_url'] not in html
-    assert 'Logout' in html
+    assert 'Sign out' in html
     assert context['sso_logout_url'] in html
 
 
@@ -162,9 +162,9 @@ def test_header_logged_out():
         'sso_logout_url': 'logout.com',
     }
     html = render_to_string('header.html', context)
-    assert 'Login' in html
+    assert 'Sign in' in html
     assert context['sso_login_url'] in html
-    assert 'Logout' not in html
+    assert 'Sign out' not in html
     assert context['sso_logout_url'] not in html
 
 
