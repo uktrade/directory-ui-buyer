@@ -2,7 +2,7 @@ from django.conf import settings
 from django.http import HttpResponseForbidden
 
 from proxy.views import BaseProxyView
-from signature.utils import SignatureRejection
+import signature
 
 
 class CompanyPrivateAPIViewProxy(BaseProxyView):
@@ -11,6 +11,6 @@ class CompanyPrivateAPIViewProxy(BaseProxyView):
     set_forwarded_host_header = False
 
     def dispatch(self, request, *args, **kwargs):
-        if SignatureRejection.test_signature(request) is False:
+        if signature.external_api_checker.test_signature(request) is False:
             return HttpResponseForbidden()
         return super().dispatch(request, path='', *args, **kwargs)
