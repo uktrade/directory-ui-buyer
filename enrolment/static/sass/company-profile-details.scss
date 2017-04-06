@@ -61,11 +61,15 @@
     }
     p {
       clear: both;
+      float: left;
+      max-width: 100%;
       padding-right: 3.5em;
       position: relative;
     }
     .ed-pencil-edit-button-container {
       position: absolute;
+      right: 0;
+      top: 0;
     }
   }
   @media (max-width: 767px) {

@@ -11,7 +11,7 @@
 
         <ul class="list-inline list-separators float--right navigation-login font-regular">
           {% if not sso_is_logged_in %}
-          <li class="float--left soft-half--right"><a class="link--white" href="{{ sso_login_url }}" title="Sign in"><i class="icon icon--left icon-sign-out"><span class="visuallyhidden">Sign in icon</span></i><span class="hide-mobile">Sign in</span></a></li>
+          <li class="float--left soft-half--right"><a class="link--white" href="{{ sso_login_url }}" title="Sign in"><i class="icon icon--left icon-sign-in"><span class="visuallyhidden">Sign in icon</span></i><span class="hide-mobile">Sign in</span></a></li>
           <li class="float--left soft-half--left hide-mobile"><a class="link--white" href="{{ sso_register_url }}" title="Register"><span>Register</span></a></li>
           {% else %}
           <li class="float--left soft-half--right"><a class="link--white" href="{{ sso_profile_url }}" title="Profile"><i class="icon icon--left icon-sign-out"><span class="visuallyhidden">Profile icon</span></i><span class="hide-mobile">Profile</span></a></li>
@@ -20,7 +20,7 @@
         </ul>
         <ul class="list-inline list-separators float--right navigation-login font-regular" id="sso-signout" style="display:none">
           {% if not sso_is_logged_in %}
-          <li class="float--left soft-half--right"><a class="link--white" href="{{ sso_login_url }}" title="Sign in"><i class="icon icon--left icon-sign-out"></i><span class="hide-mobile">Sign in</span></a></li>
+          <li class="float--left soft-half--right"><a class="link--white" href="{{ sso_login_url }}" title="Sign in"><i class="icon icon--left icon-sign-in"></i><span class="hide-mobile">Sign in</span></a></li>
           <li class="float--left soft-half--left hide-mobile"><a class="link--white" href="{{ sso_register_url }}" title="Register"><span>Register</span></a></li>
           {% else %}
           <li class="float--left soft-half--right"><a class="link--white" href="{{ sso_profile_url }}" title="Profile"><i class="icon icon--left icon-sign-out"></i><span class="hide-mobile">Profile</span></a></li>
