@@ -107,7 +107,10 @@
   }
   
   .start-form {
-    margin: 0 25px 75px 25px !important; /* counters over-specific rule targeting general forms */
+    margin-bottom: 75px !important; /* counters over-specific rule targeting general forms */
+    margin-left: 25px;
+    margin-right: 25px;
+    margin-top: 0;
   }
 }
 

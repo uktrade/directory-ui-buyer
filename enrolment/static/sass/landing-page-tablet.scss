@@ -1,0 +1,118 @@
+/* FAB Home (tablet only)
+ ************************/
+
+@media (max-width: 800px) {
+
+  .fabhome {
+    h1 {
+      font-size: 36px;
+      
+      .sub {
+        font-size: 20px;
+      }
+    }
+    
+    h2 {
+      font-size: 24px;
+    }
+  }
+  
+  .fact {
+    .figure {
+      width: 310px;
+    }
+  }
+  
+  .start-form {
+    margin-left: 15px;
+    margin-right: 15px;
+    padding: 25px 0;
+    
+    .button {
+      width: 35%;
+    }
+    
+    .text {
+      width: 60%;
+    }
+  }
+  
+  #content.fabhome {
+    background-position: 100% -270px;
+  }
+  
+  #fabhome-benefits {
+    margin: 0;
+    padding: 40px 20px 0 20px;
+    
+    p {
+      width: auto;
+    }
+    
+    ul {
+      width: 80%;
+    }
+  }
+  
+  #fabhome-intro {
+    .start-form {
+      padding: 25px;
+      
+      .button {
+        float: none;
+        margin: 20px 0;
+        padding: 15px 12px;
+        width: 100%;
+      }
+  
+      .text {
+        width: 100%;
+      }
+    }
+  }
+  
+  #fabhome-howto {
+    margin: 0;
+    
+    h2, ol {
+      margin: 0 20px;
+    }
+    
+    li {
+      background-position-y: 30px;
+      padding: 180px 15px 25px 0px;
+      width: 35%;
+      
+      span {
+        font-size: 14px;
+      }
+    }
+    
+    li::before {
+      font-size: 100px;
+      font-weight: 400;
+    }
+    
+    li:first-child {
+      width: 30%;
+    }
+    
+    strong {
+      font-size: 17px;
+    }
+  }
+  
+  #fabhome-screenshot-1 {
+    bottom: 160px;
+    right: 20px;
+    top: auto;
+    width: 18%;
+  }
+  
+  #fabhome-screenshot-2 {
+    bottom: 65px;
+    right: 50px;
+    top: auto;
+    width: 20%;
+  }
+}
