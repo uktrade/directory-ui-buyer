@@ -1,0 +1,9 @@
+{% load trans from i18n %}
+
+<form class="start-form">
+	<label>
+		<span class="label">{% trans "Enter your company name" %}</span>
+		<input class="text" type="text" placeholder="{% trans 'Company name' %}" />
+	</label>
+	<input class="button button-primary" type="submit" value="{% trans 'Get promoted' %}" />
+</form>

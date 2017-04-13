@@ -407,7 +407,7 @@ label, input, button, select, textarea {
 }
 
 body {
-  background-color: #fafafa;
+  background-color: $white;
   @media (max-width: 979px) {
     padding: 0;
     .container {
