@@ -30,10 +30,11 @@
   
   .fact {
     background-color: $white;
-    padding-top: 80px;
     
     .figure,
     .message {
+      display: block;
+      line-height: 1.1em;
       margin: 0;
       text-align: center;
       width: auto;
