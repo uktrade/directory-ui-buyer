@@ -1,0 +1,104 @@
+/* FAB Home (mobile only)
+ ************************/
+
+@media (max-width: 480px) {
+  
+  .fabhome {
+    h1 {
+      border-bottom: $grey-4 solid 1px;
+      color: inherit;
+      font-size: 30px; 
+      font-weight: 500;
+      padding-left: 0;
+      padding-right: 0;
+      text-shadow: none;
+      width: auto;
+      
+      .sub {
+        font-size: 18px;
+      }
+    }
+    
+    h2 {
+      font-size: 22px;
+    }
+    
+    .start-form {
+      margin: 0;
+      margin-bottom: 40px !important;
+    }
+  }
+  
+  .fact {
+    background-color: $white;
+    padding-top: 80px;
+    
+    .figure,
+    .message {
+      margin: 0;
+      text-align: center;
+      width: auto;
+    }
+  }
+  
+  .start-form {
+    label {
+      display: block;
+      margin-bottom: 25px;
+    }
+    
+    .button { 
+      float: none;
+      width: 100%;
+    }
+    
+    .text {
+      width: 100%;
+    }
+  }
+  
+  #content.fabhome {
+    background-image: none; 
+  }
+  
+  #fabhome-benefits {
+    li {
+      margin-right: 0;
+      width: auto;
+    }
+    
+    ul {
+      width: auto;
+    }
+  }
+  
+  #fabhome-howto {
+    li, li:first-child {
+      background-position-y: 0;
+      padding-top: 140px;
+      width: auto;
+    }
+    
+    .start-form {
+      margin: 0 5px;
+      padding: 25px 10px;
+    }
+  }
+  
+  #fabhome-intro {
+    background-color: $grey-1;
+    color: inherit;
+    margin: 0;
+    padding: 0 15px;
+    
+    .start-form {
+      background-color: transparent;
+      padding: 25px 0 0 0;
+    }
+  }
+  
+  #fabhome-screenshot-1,
+  #fabhome-screenshot-2 {
+    display: none;
+  }
+}
