@@ -183,18 +183,28 @@
   li {
     background-repeat: no-repeat;
     background-position: top center;
+    border-color: $white;
+    border-style: solid;
     counter-increment: li;
     color: $grey-3;
     float: left;
     font-size: 14px;
-    padding: 150px 25px 25px 25px;
-    width: 30%;
+    padding: 150px 0 25px 0;
+    position: relative;
+    width: 33%;
   }
   
   li:after {
-    background-image: url(images/FAB-steps-arrow.png);
+    background-image: url(images/FAB-steps-arrow-1.png);
     background-repeat: no-repeat;
-    background-position: left center;
+    background-position: 0 0;
+    content: " ";
+    display: block;
+    height: 80px;
+    left: -62px;
+    position: absolute;
+    top: 15px;
+    width: 50px;
   }
   
   li:before {
@@ -236,14 +246,17 @@
   
   .step1 {
     background-image: url(images/FAB-steps-icon-1.png);
+    border-width: 0 50px 0 0;
   }
   
   .step2 {
     background-image: url(images/FAB-steps-icon-2.png);
+    border-width: 0 25px 0 25px;
   }
   
   .step3 {
     background-image: url(images/FAB-steps-icon-3.png);
+    border-width: 0 0 0 50px;
   }
 }
 

@@ -73,14 +73,30 @@
   
   #fabhome-howto {
     li, li:first-child {
-      background-position-y: 0;
-      padding-top: 140px;
-      width: auto;
+      padding-top: 160px;
+      width: 100%;
+    }
+    
+    li:after {
+      background-image: url(images/FAB-steps-arrow-3.png);
+      height: 50px;
+      left: 50%;
+      margin-left: -40px;
+      top: -40px;
+      width: 80px;
+    }
+    
+    li::before {
+      top: -15px;
     }
     
     .start-form {
       margin: 0 5px;
       padding: 25px 10px;
+    }
+    
+    .step1, .step2, .step3 {
+      border-width: 0;
     }
   }
   
