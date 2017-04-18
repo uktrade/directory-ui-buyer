@@ -155,27 +155,10 @@ GOVUK.effects = (new function() {
   function Counter($target, end) {
     var COUNTER = this;
     var limit = Number(end.replace(/[^\d]/, ""));
-    var disabledScrollActivator = false; // In case element is not visible on start.
-    var done = false; // It's run one time only.
     
     this.start = function() {
-      var unique = GOVUK.utils.uniqueString();
-
-      if(!done) {
-        if(this.isVisible()) {
-          $(window).off("scroll.counter" + unique);
-          done = true;
-          activate();
-        }
-        else {
-          if(!disabledScrollActivator) {
-            disabledScrollActivator = true;
-            $(window).on("scroll.counter" + unique, function() {
-              COUNTER.start();
-            });
-          }
-        }
-      }
+      var effect = new ScrollIntoViewStart($target, activate, true);
+      effect.init();
     }
     
     this.increment = function(amount) {
@@ -189,16 +172,6 @@ GOVUK.effects = (new function() {
       else {
         $target.text(this.value);
       }
-    }
-    
-    /* Figure out if we can see enough of the element.
-     **/
-    this.isVisible = function() {
-      var visibleBase = window.scrollY + $(window).innerHeight();
-      var elementBase = $target.offset().top + $target.height();
-      // 40 is arbitrary number that should be small
-      // enough difference to guess element is visible. 
-      return elementBase - visibleBase < 40;
     }
     
     function activate() {
@@ -219,7 +192,50 @@ GOVUK.effects = (new function() {
     this.update();
   }
   
-
+  /* Delays an action until the passed element is expected 
+   * to be visible in the viewport.
+   * @$element (jQuery node) Element that should be visible
+   * @action (Function) What should happen if/when visible.
+   **/
+  function ScrollIntoViewStart($element, action) {
+    var disabledScrollActivator = false; // In case element is not visible on start.
+    var done = false; // It's run one time only.
+    var unique = GOVUK.utils.uniqueString();
+    
+    
+    // Test to see if can activate action.
+    function tryToRun() {
+      if(!done) {
+        if(isVisible()) {
+          $(window).off("scroll.event" + unique);
+          done = true;
+          action();
+        }
+        else {
+          if(!disabledScrollActivator) {
+            disabledScrollActivator = true;
+            $(window).on("scroll.event" + unique, function() {
+              tryToRun();
+            });
+          }
+        }
+      }
+    }
+    
+    // Figure out if we can see enough of the element.
+    function isVisible() {
+      var visibleBase = window.scrollY + $(window).innerHeight();
+      var elementBase = $element.offset().top + $element.height();
+      // 40 is arbitrary number that should be small
+      // enough difference to guess element is visible. 
+      return elementBase - visibleBase < 40;
+    }
+    
+    // Control kick off.
+    this.init = function() {
+      tryToRun();
+    }
+  }
   
   this.Counter = Counter;
 });
