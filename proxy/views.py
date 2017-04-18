@@ -1,12 +1,11 @@
-from hashlib import sha256
 import urllib3
-import urllib.parse as urlparse
 
 from django.conf import settings
 from django.shortcuts import redirect
 
 from revproxy.response import get_django_response
 from revproxy.views import ProxyView
+from ui import signature
 
 
 class BaseProxyView(ProxyView):
@@ -37,22 +36,8 @@ class BaseProxyView(ProxyView):
 
         return response
 
-    def get_signature_header(self, request_url, request_payload):
-        url = urlparse.urlsplit(request_url)
-        path = bytes(url.path, "utf-8")
-
-        if url.query:
-            path += bytes("?{}".format(url.query), "utf-8")
-
-        salt = bytes(settings.API_CLIENT_KEY, "utf-8")
-        body = request_payload or b""
-
-        if isinstance(body, str):
-            body = bytes(body, "utf-8")
-
-        signature = sha256(path + body + salt).hexdigest()
-
-        return {"X-Signature": signature}
+    def get_signature_header(self, url, body):
+        return signature.api_signer.get_signature_headers(url=url, body=body)
 
     def get_upstream(self):
         return super(BaseProxyView, self).get_upstream(path=None)
@@ -66,12 +51,12 @@ class BaseProxyView(ProxyView):
 
         self.log.debug("Request URL: %s", request_url)
 
-        signature_header = self.get_signature_header(
-            request_url=request_url, request_payload=request_payload
+        signature_headers = self.get_signature_header(
+            url=request_url, body=request_payload
         )
         if self.set_forwarded_host_header:
             self.request_headers["X-Forwarded-Host"] = request.get_host()
-        self.request_headers = {**self.request_headers, **signature_header}
+        self.request_headers = {**self.request_headers, **signature_headers}
 
         try:
             upstream_response = self.http.urlopen(
