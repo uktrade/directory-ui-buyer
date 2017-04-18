@@ -5,7 +5,7 @@ from django.shortcuts import redirect
 
 from revproxy.response import get_django_response
 from revproxy.views import ProxyView
-import signature
+from ui import signature
 
 
 class BaseProxyView(ProxyView):

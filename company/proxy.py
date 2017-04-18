@@ -2,7 +2,7 @@ from django.conf import settings
 from django.http import HttpResponseForbidden
 
 from proxy.views import BaseProxyView
-import signature
+from ui import signature
 
 
 class CompanyPrivateAPIViewProxy(BaseProxyView):

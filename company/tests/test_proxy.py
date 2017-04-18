@@ -6,7 +6,7 @@ import urllib3
 from django.core.urlresolvers import reverse
 
 
-@patch('signature.external_api_checker.test_signature')
+@patch('ui.signature.external_api_checker.test_signature')
 def test_company_private_api_view_bad_signature(mock_test_signature, client):
     mock_test_signature.return_value = False
 
@@ -17,7 +17,7 @@ def test_company_private_api_view_bad_signature(mock_test_signature, client):
     assert response.status_code == http.client.FORBIDDEN
 
 
-@patch('signature.external_api_checker.test_signature')
+@patch('ui.signature.external_api_checker.test_signature')
 def test_company_private_api_view_rejects_unsafe_methods(
     mock_test_signature, client
 ):
@@ -32,7 +32,7 @@ def test_company_private_api_view_rejects_unsafe_methods(
         assert response.status_code == http.client.METHOD_NOT_ALLOWED
 
 
-@patch('signature.external_api_checker.test_signature')
+@patch('ui.signature.external_api_checker.test_signature')
 @patch('urllib3.poolmanager.PoolManager.urlopen')
 def test_company_private_api_view_accepts_get(
     mock_urlopen, mock_test_signature, client
