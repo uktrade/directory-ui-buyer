@@ -17,6 +17,13 @@ GOVUK.utils = (new function() {
     var results = regex.exec(qs);
     return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
   }
+  
+  /* Try to dynamically generate a unique String value.
+   **/
+  this.uniqueString = function() {
+    return "_" + ((new Date().getTime()) + "_" + Math.random().toString()).replace(/[^\w]*/mig, "");
+  }
+  
 });
 
 /*
@@ -133,6 +140,92 @@ GOVUK.utm = (new function() {
   
 });
 
+/* 
+  General effects
+  ======================= */
+GOVUK.effects = (new function() {
+  
+  
+  /* Takes a target element and will populate with
+   * a count from zero (opts.start) to end. 
+   * @$target (jQuery node) Target element
+   * @end (Number) Limit of counter
+   * @options (Object) See defaults for what can be configured.
+   **/
+  function Counter($target, end) {
+    var COUNTER = this;
+    var limit = Number(end.replace(/[^\d]/, ""));
+    var disabledScrollActivator = false; // In case element is not visible on start.
+    var done = false; // It's run one time only.
+    
+    this.start = function() {
+      var unique = GOVUK.utils.uniqueString();
+
+      if(!done) {
+        if(this.isVisible()) {
+          $(window).off("scroll.counter" + unique);
+          done = true;
+          activate();
+        }
+        else {
+          if(!disabledScrollActivator) {
+            disabledScrollActivator = true;
+            $(window).on("scroll.counter" + unique, function() {
+              COUNTER.start();
+            });
+          }
+        }
+      }
+    }
+    
+    this.increment = function(amount) {
+      this.value += 33;
+    }
+    
+    this.update = function() {
+      if(this.value > 999) {
+        $target.text(String(this.value).replace(/(\d*)(\d{3})/, "$1,$2"));
+      }
+      else {
+        $target.text(this.value);
+      }
+    }
+    
+    /* Figure out if we can see enough of the element.
+     **/
+    this.isVisible = function() {
+      var visibleBase = window.scrollY + $(window).innerHeight();
+      var elementBase = $target.offset().top + $target.height();
+      // 40 is arbitrary number that should be small
+      // enough difference to guess element is visible. 
+      return elementBase - visibleBase < 40;
+    }
+    
+    function activate() {
+      var interval = setInterval(function() {
+      
+        COUNTER.increment();
+        COUNTER.update();
+      
+        if(COUNTER.value >= limit) {
+          clearInterval(interval);
+          COUNTER.value = limit;
+          COUNTER.update();
+        }
+      }, 10);
+    }
+
+    this.value = 1;
+    this.update();
+  }
+  
+
+  
+  this.Counter = Counter;
+});
+
+
+
 /* In test mode we don't want the code to 
  * run immediately because we have to compensate
  * for not having a browser environment first.
@@ -142,6 +235,7 @@ GOVUK.page = (new function() {
   // What to run on every page (called from <body>).
   this.init = function() {
     captureUtmValue();
+    setupFactCounterEffect();
   }
   
   /* Attempt to capture UTM information if we haven't already
@@ -152,5 +246,15 @@ GOVUK.page = (new function() {
     if(!captured && document.location.search.substring(1)) {
       GOVUK.utm.set();
     }
+  }
+  
+  /* Gets any fact element and turns into a dynamic
+   * counter effect to rapidly count up to the amount.
+   **/
+  function setupFactCounterEffect() {
+    var $fact = $(".fact");
+    var $figure = $fact.find(".figure");
+    var counter = new GOVUK.effects.Counter($figure, $figure.text());
+    counter.start();
   }
 });
