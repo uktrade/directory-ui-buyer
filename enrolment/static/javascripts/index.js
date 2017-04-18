@@ -157,8 +157,7 @@ GOVUK.effects = (new function() {
     var limit = Number(end.replace(/[^\d]/, ""));
     
     this.start = function() {
-      var effect = new ScrollIntoViewStart($target, activate, true);
-      effect.init();
+
     }
     
     this.increment = function(amount) {
@@ -176,10 +175,8 @@ GOVUK.effects = (new function() {
     
     function activate() {
       var interval = setInterval(function() {
-      
         COUNTER.increment();
         COUNTER.update();
-      
         if(COUNTER.value >= limit) {
           clearInterval(interval);
           COUNTER.value = limit;
@@ -188,8 +185,62 @@ GOVUK.effects = (new function() {
       }, 10);
     }
 
-    this.value = 1;
-    this.update();
+    // If element exists start the effect.
+    if($target.length) {
+      this.value = 1;
+      this.update();
+      (new ScrollIntoViewStart($target, activate, true)).init();
+    }
+  }
+  
+  /* Scrolls element into view if not already visible.
+   * @$element (jQuery node) Element to make visible
+   * @offset (Number) Added to current left position to hide element offscreen
+   * @leftToRight (Boolean) Whether elements come from left, or right.
+   **/
+  function SlideIntoView($element, offset, leftToRight) {
+    var property = leftToRight ? "left": "right";
+    var originalPosition = getPosition();
+    function update(pos) {
+      $element.css(property, pos + "px");
+    }
+    
+    function getPosition() {
+      return Number($element.css(property).replace("px", ""));
+    }
+    
+    function activate() {
+      var speed = 20;
+      var increment = 10;
+      var currentPosition = getPosition();
+      var interval = setInterval(function() {
+        if(originalPosition > currentPosition) {
+          currentPosition += increment;
+        }
+        else {
+          clearInterval(interval);
+          currentPosition = originalPosition;
+          $(window).on("resize", function() {
+            // Reset to fall back to stylesheet
+            // now we're done moving it.
+            $element.get(0).style[property] = ""; 
+          });
+        }
+        
+        update(String(currentPosition));
+      }, speed);
+      
+      $element.animate({
+        opacity: 1
+      });
+    }
+    
+    // If element exists, then initially set 
+    // it offscreen and start effect.
+    if($element.length) {
+      update(originalPosition - offset);
+      (new ScrollIntoViewStart($element, activate, true)).init();
+    }
   }
   
   /* Delays an action until the passed element is expected 
@@ -238,6 +289,7 @@ GOVUK.effects = (new function() {
   }
   
   this.Counter = Counter;
+  this.SlideIntoView = SlideIntoView;
 });
 
 
@@ -252,6 +304,7 @@ GOVUK.page = (new function() {
   this.init = function() {
     captureUtmValue();
     setupFactCounterEffect();
+    setupHomeScreenshotEffects();
   }
   
   /* Attempt to capture UTM information if we haven't already
@@ -270,7 +323,14 @@ GOVUK.page = (new function() {
   function setupFactCounterEffect() {
     var $fact = $(".fact");
     var $figure = $fact.find(".figure");
-    var counter = new GOVUK.effects.Counter($figure, $figure.text());
-    counter.start();
+    new GOVUK.effects.Counter($figure, $figure.text());
   }
+  
+  /* Find and apply a scroll in effect to specified elements.
+   **/
+  function setupHomeScreenshotEffects() {
+    new GOVUK.effects.SlideIntoView($("#fabhome-screenshot-1"), 350);
+    new GOVUK.effects.SlideIntoView($("#fabhome-screenshot-2"), 550);
+  }
+
 });
