@@ -156,42 +156,39 @@ GOVUK.effects = (new function() {
     var COUNTER = this;
     var limit = Number(end.replace(/[^\d]/, ""));
     
-    this.start = function() {
-
+    function increment() {
+      COUNTER.value += 33;
     }
     
-    this.increment = function(amount) {
-      this.value += 33;
-    }
-    
-    this.update = function() {
-      if(this.value > 999) {
-        $target.text(String(this.value).replace(/(\d*)(\d{3})/, "$1,$2"));
+    function update() {
+      if(COUNTER.value > 999) {
+        $target.text(String(COUNTER.value).replace(/(\d*)(\d{3})/, "$1,$2"));
       }
       else {
-        $target.text(this.value);
+        $target.text(COUNTER.value);
       }
     }
     
     function activate() {
       var interval = setInterval(function() {
-        COUNTER.increment();
-        COUNTER.update();
+        increment();
+        update();
         if(COUNTER.value >= limit) {
           clearInterval(interval);
           COUNTER.value = limit;
-          COUNTER.update();
+          update();
         }
       }, 10);
     }
 
     // If element exists start the effect.
     if($target.length) {
-      this.value = 1;
-      this.update();
+      COUNTER.value = 1;
+      update();
       (new ScrollIntoViewStart($target, activate, true)).init();
     }
   }
+  
   
   /* Scrolls element into view if not already visible.
    * @$element (jQuery node) Element to make visible
@@ -243,6 +240,7 @@ GOVUK.effects = (new function() {
     }
   }
   
+  
   /* Delays an action until the passed element is expected 
    * to be visible in the viewport.
    * @$element (jQuery node) Element that should be visible
@@ -287,6 +285,7 @@ GOVUK.effects = (new function() {
       tryToRun();
     }
   }
+  
   
   this.Counter = Counter;
   this.SlideIntoView = SlideIntoView;
