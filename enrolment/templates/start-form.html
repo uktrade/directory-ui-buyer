@@ -1,9 +1,9 @@
 {% load trans from i18n %}
 
-<form class="start-form">
-	<label>
+<form class="start-form" metod="post" action="{% url 'register' step='company-number' %}">
+	<label for="id_company_number">
 		<span class="label">{% trans "Enter your company number" %}</span>
-		<input class="text" type="text" placeholder="{% trans 'Companies House number' %}" />
+		<input name="company_number" class="text" type="text" placeholder="{% trans 'Companies House number' %}" />
 	</label>
 	<input class="button button-primary" type="submit" value="{% trans 'Get promoted' %}" />
 </form>
