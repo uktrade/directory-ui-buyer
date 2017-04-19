@@ -102,6 +102,7 @@ class CompanyExportStatusForm(AutoFocusFieldMixin, IndentedInvalidFieldsMixin,
         )
     )
 
+
 class InternationalBuyerForm(IndentedInvalidFieldsMixin,
                              forms.Form):
     PLEASE_SELECT_LABEL = 'Please select a sector'
