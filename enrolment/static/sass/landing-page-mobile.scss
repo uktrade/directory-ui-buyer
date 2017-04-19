@@ -1,0 +1,120 @@
+/* FAB Home (mobile only)
+ ************************/
+
+@media (max-width: 480px) {
+  
+  .fabhome {
+    h1 {
+      border-bottom: $grey-4 solid 1px;
+      color: inherit;
+      font-size: 30px; 
+      font-weight: 500;
+      padding-left: 0;
+      padding-right: 0;
+      text-shadow: none;
+      
+      .sub {
+        font-size: 18px;
+      }
+    }
+    
+    h2 {
+      font-size: 22px;
+    }
+    
+    .register-company-number-form {
+      margin: 0;
+      margin-bottom: 40px !important;
+    }
+  }
+  
+  .fact {
+    background-color: $white;
+    
+    .figure,
+    .message {
+      display: block;
+      line-height: 1.1em;
+      margin: 0;
+      text-align: center;
+      width: auto;
+    }
+  }
+  
+  .register-company-number-form {
+    label {
+      display: block;
+      margin-bottom: 25px;
+    }
+    
+    .button { 
+      float: none;
+      width: 100%;
+    }
+    
+    .text {
+      width: 100%;
+    }
+  }
+  
+  #content.fabhome {
+    background-image: none; 
+  }
+  
+  #fabhome-benefits {
+    li {
+      margin-right: 0;
+      width: auto;
+    }
+    
+    ul {
+      width: auto;
+    }
+  }
+  
+  #fabhome-howto {
+    li, li:first-child {
+      padding-top: 160px;
+      width: 100%;
+    }
+    
+    li:after {
+      background-image: url(images/FAB-steps-arrow-3.png);
+      height: 50px;
+      left: 50%;
+      margin-left: -40px;
+      top: -40px;
+      width: 80px;
+    }
+    
+    li::before {
+      top: -15px;
+    }
+    
+    .register-company-number-form {
+      margin: 0 5px;
+      padding: 25px 10px;
+    }
+    
+    .step1, .step2, .step3 {
+      border-width: 0;
+    }
+  }
+  
+  #fabhome-intro {
+    background-color: $grey-1;
+    color: inherit;
+    margin: 0;
+    padding: 0 15px;
+    
+    .register-company-number-form {
+      background-color: transparent;
+      padding: 25px 0 0 0;
+    }
+  }
+  
+  #fabhome-screenshot-1,
+  #fabhome-screenshot-2 {
+    display: none;
+  }
+}

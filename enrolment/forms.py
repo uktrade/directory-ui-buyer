@@ -48,15 +48,6 @@ class CompanyForm(AutoFocusFieldMixin, IndentedInvalidFieldsMixin, forms.Form):
         fillchar='0',
     )
 
-    terms_agreed = forms.BooleanField(
-        label=mark_safe(
-            'Tick this box to accept the '
-            '<a href="{url}" target="_blank">terms and '
-            'conditions</a> of the Find a Buyer service.'.format(
-                url=urls.TERMS_AND_CONDITIONS_URL)
-        )
-    )
-
     def clean_company_number(self):
         value = self.cleaned_data['company_number']
         # by this point the number passed `company_number.validarors`,
@@ -101,6 +92,14 @@ class CompanyExportStatusForm(AutoFocusFieldMixin, IndentedInvalidFieldsMixin,
         ),
         choices=choices.EXPORT_STATUSES,
         validators=[shared_validators.export_status_intention]
+    )
+    terms_agreed = forms.BooleanField(
+        label=mark_safe(
+            'Tick this box to accept the '
+            '<a href="{url}" target="_blank">terms and '
+            'conditions</a> of the Find a Buyer service.'.format(
+                url=urls.TERMS_AND_CONDITIONS_URL)
+        )
     )
 
 

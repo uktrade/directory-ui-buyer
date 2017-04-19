@@ -1,5 +1,6 @@
 {% extends './govuk_layout.html' %}
 {% load staticfiles %}
+{% load trans from i18n %}
 {% block css %}
 	<link href="{% static 'landing-page.css' %}" media="all" rel="stylesheet" />
 {% endblock %}
@@ -7,122 +8,58 @@
 Get seen by motivated overseas buyers
 {% endblock %}
 
+{% block css_layout_class %}
+fabhome
+{% endblock %}
+
 {% block content %}
-<div class="outer-container">
+	<section id="fabhome-intro" class="outer-container">
+		<h1 class="element-within company-name-title">
+			<span>{% trans "Be promoted internationally" %}</span>
+			<span class="sub">{% trans "with an international trade profile" %}</span>
+		</h1>
+		
+		{% include 'register-company-number-form.html' %}
+		
+		<p class="fact">
+			<span class="figure">5,368</span>
+			<span class="message">{% trans "International buyers are waiting for you" %}</span>
+		</p>
+	</section>
+	
+	<section id="fabhome-benefits" class="outer-container">
+		<h2 class="visuallyhidden">{% trans "Benefit of a trade profile" %}</h2>
+		<p>{% trans "Get an international trade profile that will:" %}</p>
+		<ul>
+			<li>{% trans "let international buyers get directly in touch with your company's sales team" %}</li>
+			<li>{% trans "showcase your company's outstanding projects and experience to give buyers insight into what you do" %}</li>
+			<li>{% trans "give your company international credibility by displaying independent data from Companies House" %}</li>
+			<li>{% trans "give companies looking to buy from your industry an easy way to find you" %}</li>
+		</ul>
 
-	<!-- Register block -->
-	<div class="ed-landing-page">
-		<div class="row-fluid">
-			<div class="span12 ed-landing-page-login-synopsis">
-				<p>Get a Find a Buyer profile to generate international sales leads</p>
-			</div>
-			<div class="span12 text--center">
-				<a class="" target="_self" href="{% url 'register-instructions' %}">
-					<div class="register-interest-btn aqua">Get your profile</div>
-				</a>
-			</div>
-			<div class="cf"></div>
-		</div>
-	</div>
-	<div class="cf"></div>
-
-	<!-- iPad image -->
-	<div class="ipad-image">
-		<h3 class="h3 text--center">
-			The place to let international buyers know all about your business
-		</h3>
-		<div class="ipad-img-container">
-			<div class="desktop-mode">
-
-				<div class="ipad-img-with-arrows">
-					<div class="top-left-text font-large">
-						Highlight the vital facts about your company to give buyers confidence to get in touch.
-					</div>
-					<div class="bottom-left-text font-large">
-						Show off your company's experience and outstanding projects to give potential buyers more insight.
-					</div>
-
-					<img class="" src="{% static 'images/registry-hero-profile-ipad.png' %}" alt="">
-
-					<div class="top-right-text font-large">
-						Get emails from international buyers straight to your sales or business development teams.
-					</div>
-					<div class="bottom-right-text font-large">
-						See relevant government-supported export development events where overseas buyers will be attending.
-					</div>
-				</div>
-			</div>
-			<div class="mobile-mode">
-				<div class="ipad-img-with-numbers">
-					<img class="" src="{% static 'images/registry-hero-profile-ipad-mobile.png' %}" alt="">
-				</div>
-				<div class="explanation-text-list">
-					<ol>
-						<li>
-							Highlight the vital facts about your company to give buyers confidence to get in touch.
-						</li>
-						<li>
-							Get emails from international buyers straight to your sales or business development teams.
-						</li>
-						<li>
-							Show off your company's experience and outstanding projects to give potential buyers more insight.
-						</li>
-						<li>
-							See relevant government-supported export development events where overseas buyers will be attending.
-						</li>
-					</ul>
-				</div>
-			</div>
-		</div>
-	</div>
-
-	<div class="row-fluid">
-		<div class="span12 push--bottom mid-blue-bar">
-			 <h2 class="h2 element-within company-sub-title">These great companies have already joined. <a target="_self" href="{% url 'register-instructions' %}">Join now</a></h2>
-		</div>
-	</div>
-	<div class="row-fluid hero-profiles">
-		<div class="span4 profile">
-			<div class="hero-profile-img-container">
-				<img class="" src="{% static 'images/immersive-profile.jpg' %}" alt="" />
-			</div>
-			<h4 class="h4">Immersive</h4>
-			<div class="font-large">
-				Immersive are a complete solution provider for audio-visual projects of any scale. Immersive are new media technology.
-				<p>
-					<br>
-					<a href="{{ supplier_profile_urls.immersive }}" target="_blank" class="link">Read more</a>
-				</p>
-			</div>
-		</div>
-
-		<div class="span4 profile">
-			<div class="hero-profile-img-container">
-				<img class="" src="{% static 'images/bac-profile.png' %}" alt="" />
-			</div>
-			<h4 class="h4">Briggs Automotive Company</h4>
-			<div class="font-large">
-				Briggs Automotive Company (BAC) Ltd is the British manufacturer behind the mono, the world's first and only road-legal, single-seat supercar.
-				<p>
-					<br>
-					<a href="{{ supplier_profile_urls.briggs }}" target="_blank" class="link">Read more</a>
-				</p>
-			</div>
-		</div>
-
-		<div class="span4 profile">
-			<div class="hero-profile-img-container">
-				<img class="" src="{% static 'images/blippar-profile.png' %}" alt="" />
-			</div>
-			<h4 class="h4">Blippar</h4>
-			<div class="font-large">
-				Blippar is the leading visual discovery app, harnessing augmented reality, image-recognition technology, and artificial intelligence to bring.
-				<p>
-					<br>
-					<a href="{{ supplier_profile_urls.blippar }}" target="_blank" class="link">Read more</a>
-				</p>
-			</div>
-		</div>
-	</div>
-</div>
+		<img id="fabhome-screenshot-1" src="{% static 'images/FAS-screenshot-list.png' %}" alt+"" />
+		<img id="fabhome-screenshot-2" src="{% static 'images/FAS-screenshot-profile.png' %}" alt="" />
+	</section>
+	
+	<section id="fabhome-howto" class="outer-container">
+		<h2>{% trans "Get your profile in 3 simple steps" %}</h2>
+		<ol>
+			<li class="step1">
+				<strong aria-describedby="step1desc">{% trans "Sign up" %}</strong>
+				<span id="step1desc">{% trans "Enter your company number to start building your trade profile." %}</span>
+			</li>
+			
+			<li class="step2">
+				<strong aria-describedby="step2desc">{% trans "Verify your account" %}</strong>
+				<span id="step2desc">{% trans "Ensure your company's security and give confidence to potential buyers." %}</span>
+			</li>
+			
+			<li class="step3">
+				<strong aria-describedby="step3desc">{% trans "Make a good impression" %}</strong>
+				<span id="step3desc">{% trans "Add examples of your company's work to show your business at its best." %}</span>
+			</li>
+		</ol>
+	
+		{% include 'register-company-number-form.html' %}
+	</section>
 {% endblock content %}
