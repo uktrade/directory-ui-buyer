@@ -7,7 +7,7 @@ clean:
 test_requirements:
 	pip install -r requirements_test.txt
 
-API_CLIENT_ENV_VARS := API_CLIENT_KEY=debug API_CLIENT_BASE_URL=http://debug
+API_CLIENT_ENV_VARS := API_SIGNATURE_SECRET=debug API_CLIENT_BASE_URL=http://debug
 FLAKE8 := flake8 . --exclude=migrations,.venv
 PYTEST := pytest . --cov=. --cov-config=.coveragerc --capture=no $(pytest_args)
 COLLECT_STATIC := python manage.py collectstatic --noinput
@@ -32,9 +32,9 @@ docker_run:
 
 DOCKER_SET_DEBUG_ENV_VARS := \
 	export DIRECTORY_UI_BUYER_API_CLIENT_CLASS_NAME=unit-test; \
-	export DIRECTORY_UI_BUYER_API_CLIENT_KEY=debug; \
+	export DIRECTORY_UI_BUYER_API_SIGNATURE_SECRET=debug; \
 	export DIRECTORY_UI_BUYER_API_CLIENT_BASE_URL=http://api.trade.great.dev:8000; \
-	export DIRECTORY_UI_BUYER_SSO_API_CLIENT_KEY=api_signature_debug; \
+	export DIRECTORY_UI_BUYER_SSO_SIGNATURE_SECRET=api_signature_debug; \
 	export DIRECTORY_UI_BUYER_SSO_API_CLIENT_BASE_URL=http://sso.trade.great.dev:8004/api/v1/; \
 	export DIRECTORY_UI_BUYER_SSO_LOGIN_URL=http://sso.trade.great.dev:8004/accounts/login/; \
 	export DIRECTORY_UI_BUYER_SSO_LOGOUT_URL=http://sso.trade.great.dev:8004/accounts/logout/?next=http://ui.trade.great.dev:8001; \
@@ -56,7 +56,7 @@ DOCKER_SET_DEBUG_ENV_VARS := \
 	export DIRECTORY_UI_BUYER_UTM_COOKIE_DOMAIN=.great.dev; \
 	export DIRECTORY_UI_BUYER_FEATURE_NEW_HEADER_FOOTER_ENABLED=true; \
 	export DIRECTORY_UI_BUYER_FEATURE_UNSUBSCRIBE_VIEW_ENABLED=true; \
-	export DIRECTORY_UI_BUYER_DIRECTORY_EXTERNAL_API_CLIENT_KEY=debug
+	export DIRECTORY_UI_BUYER_DIRECTORY_EXTERNAL_API_SIGNATURE_SECRET=debug
 
 
 DOCKER_REMOVE_ALL := \
@@ -92,9 +92,9 @@ DEBUG_SET_ENV_VARS := \
 	export PORT=8001; \
 	export SECRET_KEY=debug; \
 	export DEBUG=true ;\
-	export API_CLIENT_KEY=debug; \
+	export API_SIGNATURE_SECRET=debug; \
 	export API_CLIENT_BASE_URL=http://api.trade.great.dev:8000; \
-	export SSO_API_CLIENT_KEY=api_signature_debug; \
+	export SSO_SIGNATURE_SECRET=api_signature_debug; \
 	export SSO_API_CLIENT_BASE_URL=http://sso.trade.great.dev:8004/api/v1/; \
 	export SSO_LOGIN_URL=http://sso.trade.great.dev:8004/accounts/login/; \
 	export SSO_LOGOUT_URL=http://sso.trade.great.dev:8004/accounts/logout/?next=http://ui.trade.great.dev:8001; \
@@ -113,7 +113,7 @@ DEBUG_SET_ENV_VARS := \
 	export UTM_COOKIE_DOMAIN=.great.dev; \
 	export FEATURE_NEW_HEADER_FOOTER_ENABLED=true; \
 	export FEATURE_UNSUBSCRIBE_VIEW_ENABLED=true; \
-	export DIRECTORY_EXTERNAL_API_CLIENT_KEY=debug
+	export DIRECTORY_EXTERNAL_API_SIGNATURE_SECRET=debug
 
 
 debug_webserver:
