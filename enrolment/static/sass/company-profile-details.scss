@@ -57,6 +57,7 @@
     a {
       clear: both;
       display: inline-block;
+      line-height: 1.2em;
       max-width: 100%;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -348,11 +349,13 @@
 
 .ed-company-profile-logo-container {
   border: 1px solid #dedede;
+  line-height: 147px;
   min-width: 147px;
   min-height: 147px;
   img {
     max-height: 147px;
     max-width: 100%;
+    vertical-align: middle;
   }
 }
 
