@@ -12,4 +12,4 @@ git+https://github.com/uktrade/directory-validators.git@1.4.2#egg=directory_vali
 git+https://github.com/uktrade/directory-api-client.git@4.3.0#egg=directory_api_client
 git+https://github.com/uktrade/directory-sso-api-client.git@1.2.0#egg=directory_sso_api_client
 git+https://github.com/uktrade/directory-constants.git@2.0.0#egg=directory_constants
-git+https://github.com/uktrade/directory-signature-auth.git@0.1.0#egg=sigauth
+git+https://github.com/uktrade/directory-signature-auth.git@v0.1.1#egg=sigauth
