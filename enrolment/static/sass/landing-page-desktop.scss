@@ -1,4 +1,7 @@
+button,
 .button {
+  -webkit-appearance: none;
+  
   &-primary {
     background-color: $red-1;
     color: $white;
