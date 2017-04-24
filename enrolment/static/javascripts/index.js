@@ -207,7 +207,7 @@ GOVUK.effects = (new function() {
     }
     
     function activate() {
-      var speed = 20;
+      var speed = 10;
       var increment = 10;
       var currentPosition = getPosition();
       var interval = setInterval(function() {
@@ -303,7 +303,7 @@ GOVUK.page = (new function() {
   this.init = function() {
     captureUtmValue();
     setupFactCounterEffect();
-    setupHomeScreenshotEffects();
+    setupHomeScreenshotEffect();
   }
   
   /* Attempt to capture UTM information if we haven't already
@@ -325,11 +325,10 @@ GOVUK.page = (new function() {
     new GOVUK.effects.Counter($figure, $figure.text());
   }
   
-  /* Find and apply a scroll in effect to specified elements.
+  /* Find and apply a scroll in effect to specified element.
    **/
-  function setupHomeScreenshotEffects() {
-    new GOVUK.effects.SlideIntoView($("#fabhome-screenshot-1"), 350);
-    new GOVUK.effects.SlideIntoView($("#fabhome-screenshot-2"), 550);
+  function setupHomeScreenshotEffect() {
+    new GOVUK.effects.SlideIntoView($("#fabhome-screenshot"), 550);
   }
 
 });
