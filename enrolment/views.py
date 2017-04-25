@@ -1,5 +1,6 @@
 from formtools.wizard.views import NamedUrlSessionWizardView
 
+from django.conf import settings
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.views.generic import TemplateView
