@@ -10,7 +10,7 @@ button,
 
 .fact {
   margin: 0;
-  padding: 60px 0;
+  padding: 40px 0;
   position: relative;
   text-align: center;
   
@@ -137,8 +137,7 @@ button,
 #fabhome-benefits {
   background-color: $great-blue;
   overflow: hidden;
-  padding: 40px 40px 0 40px;
-  position: relative;
+  padding: 40px 0 0 0;
   min-height: 500px;
   z-index: 1;
   
@@ -173,6 +172,11 @@ button,
     overflow: hidden;
     width: 55%;
   }
+  
+  & > div {
+    padding: 0 25px;
+    position: relative;
+  }
 }
 
 #fabhome-howto {
@@ -180,7 +184,7 @@ button,
   padding: 40px 0 0 0;
   
   h2, ol {
-    margin: 0 40px;
+    margin: 0 25px;
     overflow: hidden;
   }
   
@@ -273,16 +277,9 @@ button,
   }
 }
 
-#fabhome-screenshot-1 {
+#fabhome-screenshot {
   position: absolute;
   right: 50px;
-  top: 25px;
-  width: 25%;
-}
-
-#fabhome-screenshot-2 {
-  position: absolute;
-  right: 160px;
-  top: 120px;
-  width: 25%;
+  top: -60px;
+  width: 35%;
 }
