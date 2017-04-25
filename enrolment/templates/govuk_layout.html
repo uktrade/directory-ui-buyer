@@ -55,7 +55,6 @@
         {% endif %}
 
         {% block sub_header %}
-				{% comment %}
             <section class="ed-hero-sub-header">
                 <div class="outer-container">
                     <div class="row-fluid">
@@ -71,13 +70,12 @@
                     <div class="clearfix"></div>
                 </div>
             </section>
-						{% endcomment %}
         {% endblock sub_header %}
 
-        <main id="content" class="{% block css_layout_class %}{% endblock css_layout_class %} enrolment-content">
+        <div id="content" class="enrolment-content">
             {% block content %}
             {% endblock content %}
-        </main>
+        </div>
         {% if features.FEATURE_NEW_HEADER_FOOTER_ENABLED %}
             {% include 'footer.html' %}
         {% else %}
