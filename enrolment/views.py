@@ -18,6 +18,19 @@ class DomesticLandingView(TemplateView):
             return [self.template_name]
         return ['landing-page-old.html']
 
+    @staticmethod
+    def get_supplier_profile_url(number):
+        return settings.SUPPLIER_PROFILE_URL.format(number=number)
+
+    def get_context_data(self):
+        context = super().get_context_data()
+        context['supplier_profile_urls'] = {
+            'immersive': self.get_supplier_profile_url('07723438'),
+            'blippar': self.get_supplier_profile_url('07446749'),
+            'briggs': self.get_supplier_profile_url('06836628'),
+        }
+        return context
+
 
 class EnrolmentInstructionsView(TemplateView):
     template_name = 'enrolment-instructions.html'
