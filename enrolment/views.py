@@ -12,6 +12,11 @@ from sso.utils import SSOLoginRequiredMixin
 class DomesticLandingView(TemplateView):
     template_name = 'landing-page.html'
 
+    def get_template_names(self):
+        if settings.NEW_LANDING_PAGE_FEATURE_ENABLED:
+            return [self.template_name]
+        return ['landing-page-old.html']
+
 
 class EnrolmentInstructionsView(TemplateView):
     template_name = 'enrolment-instructions.html'
