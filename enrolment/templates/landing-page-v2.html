@@ -1,0 +1,65 @@
+{% extends './govuk_layout.html' %}
+{% load staticfiles %}
+{% load trans from i18n %}
+{% block css %}
+	<link href="{% static 'landing-page.css' %}" media="all" rel="stylesheet" />
+{% endblock %}
+{% block hero_title %}
+Get seen by motivated overseas buyers
+{% endblock %}
+
+{% block css_layout_class %}
+fabhome
+{% endblock %}
+
+{% block content %}
+	<section id="fabhome-intro" class="outer-container">
+		<h1 class="element-within company-name-title">
+			<span>{% trans "Be promoted internationally" %}</span>
+			<span class="sub">{% trans "with an international trade profile" %}</span>
+		</h1>
+		
+		{% include 'register-company-number-form.html' %}
+		
+		<p class="fact">
+			<span class="figure">5,368</span>
+			<span class="message">{% trans "International buyers are waiting for you" %}</span>
+		</p>
+	</section>
+	
+	<section id="fabhome-benefits">
+		<div class="outer-container">
+			<h2 class="visuallyhidden">{% trans "Benefit of a trade profile" %}</h2>
+			<p>{% trans "Get an international trade profile that will:" %}</p>
+			<ul>
+				<li>{% trans "let international buyers get directly in touch with your company's sales team" %}</li>
+				<li>{% trans "showcase your company's outstanding projects and experience to give buyers insight into what you do" %}</li>
+				<li>{% trans "give your company international credibility by displaying independent data from Companies House" %}</li>
+				<li>{% trans "give companies looking to buy from your industry an easy way to find you" %}</li>
+			</ul>
+			<img id="fabhome-screenshot" src="{% static 'images/FAB-preview-FAS.png' %}" alt+"" />
+		</div>
+	</section>
+	
+	<section id="fabhome-howto" class="outer-container">
+		<h2>{% trans "Get your profile in 3 simple steps" %}</h2>
+		<ol>
+			<li class="step1">
+				<strong aria-describedby="step1desc">{% trans "Sign up" %}</strong>
+				<span id="step1desc">{% trans "Enter your company number to start building your trade profile." %}</span>
+			</li>
+			
+			<li class="step2">
+				<strong aria-describedby="step2desc">{% trans "Verify your account" %}</strong>
+				<span id="step2desc">{% trans "Ensure your company's security and give confidence to potential buyers." %}</span>
+			</li>
+			
+			<li class="step3">
+				<strong aria-describedby="step3desc">{% trans "Make a good impression" %}</strong>
+				<span id="step3desc">{% trans "Add examples of your company's work to show your business at its best." %}</span>
+			</li>
+		</ol>
+	
+		{% include 'register-company-number-form.html' %}
+	</section>
+{% endblock content %}
