@@ -1,5 +1,6 @@
 from formtools.wizard.views import NamedUrlSessionWizardView
 
+from django.conf import settings
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.views.generic import TemplateView
@@ -11,6 +12,24 @@ from sso.utils import SSOLoginRequiredMixin
 
 class DomesticLandingView(TemplateView):
     template_name = 'landing-page.html'
+
+    def get_template_names(self):
+        if settings.NEW_LANDING_PAGE_FEATURE_ENABLED:
+            return [self.template_name]
+        return ['landing-page-old.html']
+
+    @staticmethod
+    def get_supplier_profile_url(number):
+        return settings.SUPPLIER_PROFILE_URL.format(number=number)
+
+    def get_context_data(self):
+        context = super().get_context_data()
+        context['supplier_profile_urls'] = {
+            'immersive': self.get_supplier_profile_url('07723438'),
+            'blippar': self.get_supplier_profile_url('07446749'),
+            'briggs': self.get_supplier_profile_url('06836628'),
+        }
+        return context
 
 
 class EnrolmentInstructionsView(TemplateView):
