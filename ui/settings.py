@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     "enrolment",
     "company",
     "directory_constants",
+    "directory_header_footer",
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -66,7 +67,9 @@ TEMPLATES = [
             'context_processors': [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
-                'sso.context_processors.sso_user_processor',
+                'directory_header_footer.context_processors.sso_processor',
+                ('directory_header_footer.context_processors.'
+                 'header_footer_context_processor'),
                 'ui.context_processors.feature_flags',
                 'ui.context_processors.analytics',
             ],
@@ -243,12 +246,6 @@ API_CLIENT_CLASS = API_CLIENT_CLASSES[API_CLIENT_CLASS_NAME]
 
 COMPANIES_HOUSE_API_KEY = os.environ['COMPANIES_HOUSE_API_KEY']
 
-FEATURE_NEW_HEADER_FOOTER_ENABLED = (
-    os.getenv('FEATURE_NEW_HEADER_FOOTER_ENABLED') == 'true'
-)
-FEATURE_UNSUBSCRIBE_VIEW_ENABLED = (
-    os.getenv('FEATURE_UNSUBSCRIBE_VIEW_ENABLED') == 'true'
-)
 NEW_LANDING_PAGE_FEATURE_ENABLED = (
     os.getenv('NEW_LANDING_PAGE_FEATURE_ENABLED') == 'true'
 )
@@ -261,3 +258,9 @@ UTM_COOKIE_DOMAIN = os.environ['UTM_COOKIE_DOMAIN']
 DIRECTORY_EXTERNAL_API_SIGNATURE_SECRET = os.environ[
     "DIRECTORY_EXTERNAL_API_SIGNATURE_SECRET"
 ]
+
+HEADER_FOOTER_CONTACT_US_URL = os.getenv(
+    'HEADER_FOOTER_CONTACT_US_URL',
+    'https://contact-us.export.great.gov.uk/directory',
+)
+HEADER_FOOTER_CSS_ACTIVE_CLASSES = {'fab': True}

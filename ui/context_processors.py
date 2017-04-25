@@ -3,14 +3,7 @@ from django.conf import settings
 
 def feature_flags(request):
     return {
-        'features': {
-            'FEATURE_UNSUBSCRIBE_VIEW_ENABLED': (
-                settings.FEATURE_UNSUBSCRIBE_VIEW_ENABLED
-            ),
-            'FEATURE_NEW_HEADER_FOOTER_ENABLED': (
-                settings.FEATURE_NEW_HEADER_FOOTER_ENABLED
-            ),
-        }
+        'features': {}
     }
 
 

@@ -128,32 +128,6 @@ def test_company_profile_form_correct_title():
     assert 'Your company details' in html
 
 
-def test_header_logged_in():
-    context = {
-        'sso_is_logged_in': True,
-        'sso_login_url': 'login.com',
-        'sso_logout_url': 'logout.com',
-    }
-    html = render_to_string('header.html', context)
-    assert 'Sign in' not in html
-    assert context['sso_login_url'] not in html
-    assert 'Sign out' in html
-    assert context['sso_logout_url'] in html
-
-
-def test_header_logged_out():
-    context = {
-        'sso_is_logged_in': False,
-        'sso_login_url': 'login.com',
-        'sso_logout_url': 'logout.com',
-    }
-    html = render_to_string('header.html', context)
-    assert 'Sign in' in html
-    assert context['sso_login_url'] in html
-    assert 'Sign out' not in html
-    assert context['sso_logout_url'] not in html
-
-
 def test_google_tag_manager_project_id():
     context = {
         'analytics': {
@@ -189,36 +163,6 @@ def test_utm_cookie_domain():
     html = render_to_string('govuk_layout.html', context)
 
     assert '<meta id="utmCookieDomain" value=".thing.com" />' in html
-
-
-def test_shared_style_enabled():
-    context = {
-        'features': {
-            'FEATURE_NEW_HEADER_FOOTER_ENABLED': True,
-        }
-    }
-
-    html = render_to_string('govuk_layout.html', context)
-
-    assert render_to_string('header.html') in html
-    assert render_to_string('footer.html') in html
-    assert render_to_string('header_old.html') not in html
-    assert render_to_string('footer_old.html') not in html
-
-
-def test_shared_style_disabled():
-    context = {
-        'features': {
-            'FEATURE_NEW_HEADER_FOOTER_ENABLED': False,
-        }
-    }
-
-    html = render_to_string('govuk_layout.html', context)
-
-    assert render_to_string('header.html') not in html
-    assert render_to_string('footer.html') not in html
-    assert render_to_string('header_old.html') in html
-    assert render_to_string('footer_old.html') in html
 
 
 def test_enrolment_instructions_page_renders():
