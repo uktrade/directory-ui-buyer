@@ -276,6 +276,10 @@ a.teal:focus {
   font-size: 15px;
 }
 
+button, .button {
+  -webkit-appearance: none;
+}
+
 label, input, button, select, textarea {
   font-size: 18px;
   font-weight: 400;
