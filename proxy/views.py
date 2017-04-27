@@ -1,6 +1,7 @@
 import urllib3
 
 from django.conf import settings
+from django.http import HttpResponseForbidden
 from django.shortcuts import redirect
 
 from revproxy.response import get_django_response
@@ -78,3 +79,14 @@ class BaseProxyView(ProxyView):
             raise
         else:
             return upstream_response
+
+
+class BaseExternalAPIViewProxy(BaseProxyView):
+    upstream = settings.API_CLIENT_BASE_URL
+    # setting forwarded_host header cause image returned to use FAB's domain
+    set_forwarded_host_header = False
+
+    def dispatch(self, request, *args, **kwargs):
+        if signature.external_api_checker.test_signature(request) is False:
+            return HttpResponseForbidden()
+        return super().dispatch(request, path='', *args, **kwargs)

@@ -22,6 +22,7 @@ from company.views import (
     EmailUnsubscribeView,
 )
 from company import proxy as company_proxies
+from supplier import proxy as supplier_proxies
 from admin.proxy import AdminProxyView
 
 
@@ -119,5 +120,10 @@ urlpatterns = [
         r'^api/external/company/supplier/(?P<sso_id>.+)/company/$',
         require_get(company_proxies.CompanyPrivateAPIViewProxy.as_view()),
         name='api-external-company'
+    ),
+    url(
+        r'^api/external/supplier/(?P<sso_id>.+)/$',
+        require_get(supplier_proxies.SupplierExternalAPIViewProxy.as_view()),
+        name='api-external-supplier'
     ),
 ]
