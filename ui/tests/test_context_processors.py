@@ -7,17 +7,12 @@ def test_feature_flags_installed(settings):
     assert 'ui.context_processors.feature_flags' in processors
 
 
-def test_feature_returns_expected_features(rf, settings):
-    settings.FEATURE_UNSUBSCRIBE_VIEW_ENABLED = 1
-    settings.FEATURE_NEW_HEADER_FOOTER_ENABLED = 2
+def test_feature_returns_expected_features():
 
     actual = context_processors.feature_flags(None)
 
     assert actual == {
-        'features': {
-            'FEATURE_UNSUBSCRIBE_VIEW_ENABLED': 1,
-            'FEATURE_NEW_HEADER_FOOTER_ENABLED': 2
-        }
+        'features': {}
     }
 
 

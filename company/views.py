@@ -4,7 +4,6 @@ from formtools.wizard.views import SessionWizardView
 
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
-from django.http import Http404
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.utils.functional import cached_property
@@ -407,11 +406,6 @@ class EmailUnsubscribeView(SSOLoginRequiredMixin, FormView):
     template_name = 'email-unsubscribe.html'
     success_template = 'email-unsubscribe-success.html'
     failure_template = 'email-unsubscribe-error.html'
-
-    def dispatch(self, *args, **kwargs):
-        if not settings.FEATURE_UNSUBSCRIBE_VIEW_ENABLED:
-            raise Http404()
-        return super().dispatch(*args, **kwargs)
 
     def form_valid(self, form):
         response = api_client.supplier.unsubscribe(

@@ -1244,14 +1244,6 @@ def test_supplier_social_links_edit_standalone_view_api_success(
     )
 
 
-def test_unsubscribe_feature_flag_off(settings, client):
-    settings.FEATURE_UNSUBSCRIBE_VIEW_ENABLED = False
-
-    response = client.get(reverse('unsubscribe'))
-
-    assert response.status_code == http.client.NOT_FOUND
-
-
 @patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
 def test_unsubscribe_logged_in_user(client):
     response = client.get(reverse('unsubscribe'))
