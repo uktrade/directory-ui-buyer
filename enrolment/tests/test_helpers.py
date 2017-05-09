@@ -76,9 +76,9 @@ def test_has_company_404():
     assert helpers.has_company(sso_user_id=1) is False
 
 
-@patch.object(helpers, 'get_companies_house_profile')
+@patch.object(helpers.CompaniesHouseClient, 'retrieve_profile')
 def test_store_companies_house_profile_in_session_saves_in_session(
-    mock_get_companies_house_profile, client
+    mock_retrieve_profile, client
 ):
     data = {
         'date_of_creation': '2000-10-10',
@@ -89,34 +89,34 @@ def test_store_companies_house_profile_in_session_saves_in_session(
     response.status_code = http.client.OK
     response.json = lambda: data
     session = client.session
-    mock_get_companies_house_profile.return_value = response
+    mock_retrieve_profile.return_value = response
 
     helpers.store_companies_house_profile_in_session(session, '01234567')
 
-    mock_get_companies_house_profile.assert_called_once_with(number='01234567')
+    mock_retrieve_profile.assert_called_once_with(number='01234567')
     assert session[helpers.COMPANIES_HOUSE_PROFILE_SESSION_KEY] == data
     assert session.modified is True
 
 
-@patch.object(helpers, 'get_companies_house_profile')
+@patch.object(helpers.CompaniesHouseClient, 'retrieve_profile')
 def test_store_companies_house_profile_in_session_handles_bad_response(
-    mock_get_companies_house_profile, client
+    mock_retrieve_profile, client
 ):
     response = Response()
     response.status_code = http.client.BAD_REQUEST
 
     session = client.session
-    mock_get_companies_house_profile.return_value = response
+    mock_retrieve_profile.return_value = response
 
     with pytest.raises(HTTPError):
         helpers.store_companies_house_profile_in_session(session, '01234567')
 
 
 def test_companies_house_client_consumes_auth(settings):
-    settings.COMPANIES_HOUSE_API_KEY = 'ff'
+    helpers.CompaniesHouseClient.api_key = 'ff'
     with requests_mock.mock() as mock:
         mock.get('https://thing.com')
-        response = helpers.companies_house_client('https://thing.com')
+        response = helpers.CompaniesHouseClient.get('https://thing.com')
     expected = 'Basic ZmY6'  # base64 encoded ff
     assert response.request.headers['Authorization'] == expected
 
@@ -127,7 +127,7 @@ def test_companies_house_client_logs_unauth(caplog):
             'https://thing.com',
             status_code=http.client.UNAUTHORIZED,
         )
-        helpers.companies_house_client('https://thing.com')
+        helpers.CompaniesHouseClient.get('https://thing.com')
     log = caplog.records[0]
     assert log.levelname == 'ERROR'
     assert log.msg == helpers.MESSAGE_AUTH_FAILED
@@ -141,7 +141,7 @@ def test_get_companies_house_profile():
             status_code=http.client.OK,
             json=profile
         )
-        response = helpers.get_companies_house_profile('01234567')
+        response = helpers.CompaniesHouseClient.retrieve_profile('01234567')
     assert response.json() == profile
 
 
@@ -154,7 +154,7 @@ def test_get_companies_house_contact_details():
             status_code=http.client.OK,
             json=contact_details
         )
-        response = helpers.get_companies_house_office_address('01234567')
+        response = helpers.CompaniesHouseClient.retrieve_address('01234567')
     assert response.json() == contact_details
 
 

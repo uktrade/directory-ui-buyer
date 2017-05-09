@@ -5,7 +5,7 @@ from directory_validators.constants import choices
 from django.conf import settings
 
 from api_client import api_client
-from enrolment.helpers import get_companies_house_office_address
+from enrolment.helpers import CompaniesHouseClient
 
 
 EMPLOYEE_CHOICES = {key: value for key, value in choices.EMPLOYEES}
@@ -127,7 +127,7 @@ def get_company_profile(sso_id):
 
 
 def get_company_contact_details_from_companies_house(number):
-    response = get_companies_house_office_address(number)
+    response = CompaniesHouseClient.retrieve_address(number)
     if not response.ok:
         response.raise_for_status()
     return response.json()

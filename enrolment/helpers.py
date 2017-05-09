@@ -1,5 +1,6 @@
 import http
 import logging
+import urllib
 
 import requests
 
@@ -12,11 +13,6 @@ COMPANIES_HOUSE_PROFILE_SESSION_KEY = 'ch_profile'
 MESSAGE_AUTH_FAILED = 'Auth failed with Companies House'
 MESSAGE_NETWORK_ERROR = 'A network error occurred'
 COMPANIES_HOUSE_DATE_FORMAT = '%Y-%m-%d'
-COMPANY_PROFILE_URL = 'https://api.companieshouse.gov.uk/company/{number}'
-COMPANY_OFFICE_URL = (
-    'https://api.companieshouse.gov.uk/company/{number}/'
-    'registered-office-address'
-)
 
 
 logger = logging.getLogger(__name__)
@@ -25,7 +21,7 @@ companies_house_session = requests.Session()
 
 
 def store_companies_house_profile_in_session(session, company_number):
-    response = get_companies_house_profile(number=company_number)
+    response = CompaniesHouseClient.retrieve_profile(number=company_number)
     if not response.ok:
         response.raise_for_status()
     details = response.json()
@@ -63,22 +59,43 @@ def has_company(sso_user_id):
     return has_company
 
 
-def companies_house_client(url):
-    auth = requests.auth.HTTPBasicAuth(settings.COMPANIES_HOUSE_API_KEY, '')
-    response = companies_house_session.get(url=url, auth=auth)
-    if response.status_code == http.client.UNAUTHORIZED:
-        logger.error(MESSAGE_AUTH_FAILED)
-    return response
+class CompaniesHouseClient:
+    api_key = settings.COMPANIES_HOUSE_API_KEY
+    base_url = 'https://api.companieshouse.gov.uk'
+    endpoints = {
+        'profile': 'company/{number}',
+        'address': 'company/{number}/registered-office-address',
+        'search': 'search/companies',
+    }
 
+    @classmethod
+    def get_auth(cls):
+        return requests.auth.HTTPBasicAuth(cls.api_key, '')
 
-def get_companies_house_profile(number):
-    url = COMPANY_PROFILE_URL.format(number=number)
-    return companies_house_client(url)
+    @classmethod
+    def get(cls, url_path, data={}):
+        url = urllib.parse.urljoin(cls.base_url, url_path)
+        response = companies_house_session.get(
+            url=url, data=data, auth=cls.get_auth()
+        )
+        if response.status_code == http.client.UNAUTHORIZED:
+            logger.error(MESSAGE_AUTH_FAILED)
+        return response
 
+    @classmethod
+    def retrieve_profile(cls, number):
+        url = cls.endpoints['profile'].format(number=number)
+        return cls.get(url)
 
-def get_companies_house_office_address(number):
-    url = COMPANY_OFFICE_URL.format(number=number)
-    return companies_house_client(url)
+    @classmethod
+    def retrieve_address(cls, number):
+        url = cls.endpoints['address'].format(number=number)
+        return cls.get(url)
+
+    @classmethod
+    def search(cls, term):
+        url = cls.endpoints['search']
+        return cls.get(url, {'q': term})
 
 
 def get_company_date_of_creation_from_session(session):

@@ -3,6 +3,7 @@ from django.views.decorators.cache import cache_page
 from django.views.decorators.http import require_http_methods
 
 from enrolment.views import (
+    CompaniesHouseSearchApiView,
     DomesticLandingView,
     EnrolmentInstructionsView,
     EnrolmentView,
@@ -120,4 +121,10 @@ urlpatterns = [
         require_get(company_proxies.CompanyPrivateAPIViewProxy.as_view()),
         name='api-external-company'
     ),
+    url(
+        r'^api/internal/companies-house-search/$',
+        CompaniesHouseSearchApiView.as_view(),
+        name='api-internal-companies-house-search'
+    ),
+
 ]

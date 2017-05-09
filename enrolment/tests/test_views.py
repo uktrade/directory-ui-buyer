@@ -1,7 +1,7 @@
 import http
-import requests
 from unittest.mock import patch, Mock
 
+import requests
 import pytest
 
 from django.core.urlresolvers import reverse
@@ -76,6 +76,15 @@ def api_response_200(*args, **kwargs):
     response = requests.Response()
     response.status_code = http.client.OK
     return response
+
+
+@pytest.fixture
+def api_response_companies_house_search_200(api_response_200):
+    payload = {
+        'items': [{'name': 'Smashing corp'}]
+    }
+    api_response_200.json = lambda: payload
+    return api_response_200
 
 
 @pytest.fixture
@@ -224,3 +233,43 @@ def test_enrolment_logged_out_has_company_redirects(
          '?next=http%3A//testserver/register/' + step
     )
     mock_has_company.assert_not_called()
+
+
+def test_companies_house_search_feature_flag_disabled(client, settings):
+    settings.NEW_LANDING_PAGE_FEATURE_ENABLED = False
+
+    url = reverse('api-internal-companies-house-search')
+    response = client.get(url)
+
+    assert response.status_code == 404
+
+
+def test_companies_house_search_validation_error(client):
+    url = reverse('api-internal-companies-house-search')
+    response = client.get(url)  # notice absense of `term`
+
+    assert response.status_code == 400
+
+
+@patch('enrolment.helpers.CompaniesHouseClient.search')
+def test_companies_house_search_api_error(
+    mock_search, client, api_response_400
+):
+    mock_search.return_value = api_response_400
+    url = reverse('api-internal-companies-house-search')
+
+    with pytest.raises(requests.exceptions.HTTPError):
+        client.get(url, data={'term': 'thing'})
+
+
+@patch('enrolment.helpers.CompaniesHouseClient.search')
+def test_companies_house_search_api_success(
+    mock_search, client, api_response_companies_house_search_200
+):
+    mock_search.return_value = api_response_companies_house_search_200
+    url = reverse('api-internal-companies-house-search')
+
+    response = client.get(url, data={'term': 'thing'})
+
+    assert response.status_code == 200
+    assert response.content == b'[{"name": "Smashing corp"}]'

@@ -1,9 +1,10 @@
 from formtools.wizard.views import NamedUrlSessionWizardView
 
 from django.conf import settings
+from django.http import JsonResponse, Http404
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, View
 
 from api_client import api_client
 from enrolment import forms, helpers
@@ -114,3 +115,22 @@ class EnrolmentView(SSOLoginRequiredMixin, NamedUrlSessionWizardView):
         return super().get_context_data(
             form_labels=self.form_labels, *args, **kwargs
         )
+
+
+class CompaniesHouseSearchApiView(View):
+    form_class = forms.CompaniesHouseSearchForm
+
+    def dispatch(self, *args, **kwargs):
+        if not settings.NEW_LANDING_PAGE_FEATURE_ENABLED:
+            raise Http404()
+        return super().dispatch(*args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        form = self.form_class(data=request.GET)
+        if not form.is_valid():
+            return JsonResponse(form.errors, status=400)
+        api_response = helpers.CompaniesHouseClient.search(
+            term=form.cleaned_data['term']
+        )
+        api_response.raise_for_status()
+        return JsonResponse(api_response.json()['items'], safe=False)
