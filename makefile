@@ -9,7 +9,7 @@ test_requirements:
 
 API_CLIENT_ENV_VARS := API_SIGNATURE_SECRET=debug API_CLIENT_BASE_URL=http://debug
 FLAKE8 := flake8 . --exclude=migrations,.venv
-PYTEST := pytest . --cov=. --cov-config=.coveragerc --capture=no $(pytest_args)
+PYTEST := pytest . --cov-config=.coveragerc --capture=no $(pytest_args)
 COLLECT_STATIC := python manage.py collectstatic --noinput
 
 test:
@@ -102,7 +102,7 @@ DEBUG_SET_ENV_VARS := \
 	export SSO_REDIRECT_FIELD_NAME=next; \
 	export SSO_SESSION_COOKIE=debug_sso_session_cookie; \
 	export SESSION_COOKIE_SECURE=false; \
-	export COMPANIES_HOUSE_API_KEY=debug; \
+	export COMPANIES_HOUSE_API_KEY=Jf94CNSpa-p5nKiLipopAhMAgE4YW6eG4f3wIDP8; \
 	export FEATURE_PUBLIC_PROFILES_ENABLED=true; \
 	export SUPPLIER_CASE_STUDY_URL=http://supplier.trade.great.dev:8005/case-study/{id}; \
 	export SUPPLIER_PROFILE_LIST_URL=http://supplier.trade.great.dev:8005/suppliers?sectors={sectors}; \
