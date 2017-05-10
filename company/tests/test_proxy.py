@@ -6,18 +6,18 @@ import urllib3
 
 from django.core.urlresolvers import reverse
 
-data = (
+view_names = (
     ('api-external-company', ),
     ('api-external-supplier',)
 )
 
-ids = (
+test_names = (
     'external company view',
     'external supplier view'
 )
 
 
-@pytest.mark.parametrize(('view_name',), data, ids=ids)
+@pytest.mark.parametrize(('view_name',), view_names, ids=test_names)
 def test_proxy_api_view_bad_signature(view_name, client):
     with patch(
             'ui.signature.external_api_checker.test_signature'
@@ -31,7 +31,7 @@ def test_proxy_api_view_bad_signature(view_name, client):
         assert response.status_code == http.client.FORBIDDEN
 
 
-@pytest.mark.parametrize(('view_name',), data, ids=ids)
+@pytest.mark.parametrize(('view_name',), view_names, ids=test_names)
 def test_proxy_api_view_rejects_unsafe_methods(view_name, client):
     with patch(
             'ui.signature.external_api_checker.test_signature'
@@ -47,7 +47,7 @@ def test_proxy_api_view_rejects_unsafe_methods(view_name, client):
             assert response.status_code == http.client.METHOD_NOT_ALLOWED
 
 
-@pytest.mark.parametrize(('view_name',), data, ids=ids)
+@pytest.mark.parametrize(('view_name',), view_names, ids=test_names)
 def test_proxy_api_view_accepts_get(view_name, client):
     with patch(
             'ui.signature.external_api_checker.test_signature'
