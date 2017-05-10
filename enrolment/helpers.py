@@ -22,8 +22,7 @@ companies_house_session = requests.Session()
 
 def store_companies_house_profile_in_session(session, company_number):
     response = CompaniesHouseClient.retrieve_profile(number=company_number)
-    if not response.ok:
-        response.raise_for_status()
+    response.raise_for_status()
     details = response.json()
     session[COMPANIES_HOUSE_PROFILE_SESSION_KEY] = {
         'company_name': details['company_name'],

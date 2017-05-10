@@ -191,12 +191,10 @@ def test_company_export_status_form_validars():
 
 def test_serialize_enrolment_forms():
     actual = forms.serialize_enrolment_forms({
-        'name': 'Extreme Corp',
         'company_number': '01234567',
         'export_status': 'YES',
     })
     expected = {
-        'company_name': 'Extreme Corp',
         'company_number': '01234567',
         'export_status': 'YES',
     }

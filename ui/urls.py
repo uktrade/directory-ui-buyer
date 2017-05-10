@@ -6,6 +6,7 @@ from enrolment.views import (
     CompaniesHouseSearchApiView,
     DomesticLandingView,
     EnrolmentInstructionsView,
+    EnrolmentSingleStepView,
     EnrolmentView,
 )
 from company.views import (
@@ -50,6 +51,11 @@ urlpatterns = [
         r'^register$',
         EnrolmentInstructionsView.as_view(),
         name='register-instructions'
+    ),
+    url(
+        r'^register/single/$',
+        EnrolmentSingleStepView.as_view(),
+        name='register-single-step'
     ),
     url(
         r'^register/(?P<step>.+)$',
