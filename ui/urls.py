@@ -118,13 +118,17 @@ urlpatterns = [
     ),
     url(
         r'^api/external/company/supplier/(?P<sso_id>.+)/company/$',
-        require_get(company_proxies.CompanyPrivateAPIViewProxy.as_view()),
+        require_get(company_proxies.APIViewProxy.as_view()),
         name='api-external-company'
+    ),
+    url(
+        r'^api/external/supplier/(?P<sso_id>.+)/$',
+        require_get(company_proxies.APIViewProxy.as_view()),
+        name='api-external-supplier'
     ),
     url(
         r'^api/internal/companies-house-search/$',
         CompaniesHouseSearchApiView.as_view(),
         name='api-internal-companies-house-search'
     ),
-
 ]

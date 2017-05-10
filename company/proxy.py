@@ -5,7 +5,7 @@ from proxy.views import BaseProxyView
 from ui import signature
 
 
-class CompanyPrivateAPIViewProxy(BaseProxyView):
+class APIViewProxy(BaseProxyView):
     upstream = settings.API_CLIENT_BASE_URL
     # setting forwarded_host header cause image returned to use FAB's domain
     set_forwarded_host_header = False
