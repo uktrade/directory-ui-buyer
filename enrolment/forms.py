@@ -127,6 +127,10 @@ class InternationalBuyerForm(IndentedInvalidFieldsMixin,
     )
 
 
+class CompaniesHouseSearchForm(forms.Form):
+    term = forms.CharField()
+
+
 def serialize_enrolment_forms(cleaned_data):
     """
     Return the shape directory-api-client expects for enrolment.
