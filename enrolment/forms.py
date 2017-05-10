@@ -165,6 +165,17 @@ class CompaniesHouseSearchForm(forms.Form):
     term = forms.CharField()
 
 
+class CompanyNumberForm(IndentedInvalidFieldsMixin, forms.Form):
+    company_number = fields.PaddedCharField(
+        validators=helpers.halt_validation_on_failure(
+            shared_validators.company_number,
+            validators.company_unique,
+        ),
+        max_length=8,
+        fillchar='0',
+    )
+
+
 def serialize_enrolment_forms(cleaned_data):
     """
     Return the shape directory-api-client expects for enrolment.
