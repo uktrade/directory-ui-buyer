@@ -140,11 +140,170 @@ GOVUK.utm = (new function() {
   
 });
 
+
+/* 
+  General data storage and display methods
+  ======================================== */
+GOVUK.data = {}
+GOVUK.data.companiesHouse = (new function() {
+
+  /* Performs a lookup of companies by name.
+   **/
+  this.getByNameData = {}; // Stores results
+  this.getByNameRequest = null; // Allow access to request
+  this.getByName = function(params) {
+    if(this.getByNameRequest) this.getByNameRequest.abort();
+    this.getByNameRequest = $.ajax({
+      url: "/static/javascripts/src/mock-company-data.json",
+      data: params, //(company-number-company_number)
+      success: function(data) {
+        GOVUK.data.companiesHouse.getByNameData = data;
+      }
+    });
+    
+    return this.getByNameRequest;
+  }
+  
+});
+
+/* 
+  General effects
+  ======================= */
+GOVUK.components = (new function() {
+  
+  /* Performs a data lookup and displays multiple choice results
+   * to populate the input value (or specificed alternative field)
+   * with user choice. 
+   *
+   * @$input (jQuery node) Target input element
+   * @request (Function) Returns reference to the jqXHR requesting data
+   * @content (Function) Returns content to populate the dropdown 
+   *
+   * TODO - Add some Aria attributes...
+   **/
+  this.SelectiveLookup = SelectiveLookup;
+  function SelectiveLookup($input, request, content, options) {
+    var instance = this;
+    
+    // Configure options.
+    opts = $.extend({
+      lookupOnCharacter: 4, // (Integer) At what character input to trigger the request for data
+    }, options || {});
+    
+    // Some inner variable requirement.
+    instance._private = {
+      content: content,
+      request: request,
+      $display: $("<div class=\"SelectiveLookupDisplay\"></div>"),
+      $input: $input
+    }
+    
+    // Will not have arguments if being inherited for prototype
+    if(arguments.length >= 3) {
+      
+      // Bind main event.
+      $input.on("input.SelectiveLookup", function() {
+        var params = {};
+        if(this.value.length >= opts.lookupOnCharacter) {
+          params[this.name] = this.value;
+          instance.search(params);
+        }
+      });
+    
+      // Add display element
+      $(document.body).append(instance._private.$display);
+    
+      // Register the instance
+      SelectiveLookup.instances.push(this);
+    }
+    
+  }
+  
+  SelectiveLookup.prototype = {};
+  SelectiveLookup.prototype.bindContentEvents = function() {
+    var instance = this;
+    instance._private.$display.off("click.SelectiveLookupContent");
+    instance._private.$display.on("click.SelectiveLookupContent", function(event) {
+      instance._private.$input.val($(event.target).text());
+    });
+  }
+  SelectiveLookup.prototype.close = function() {
+    this._private.$display.css({
+      display: "none"
+    });
+  }  
+  SelectiveLookup.prototype.search = function(params) {
+    var instance = this;
+    instance._private.request(params).done(function() {
+      instance.setContent(instance._private.content());
+      instance.bindContentEvents();
+      instance.open();
+    });
+  }
+  SelectiveLookup.prototype.setContent = function(content) {
+    this._private.$display.empty().append(content);
+  }
+  SelectiveLookup.prototype.open = function() {
+    var position = this._private.$input.offset();
+    this._private.$display.css({
+      display: "block",
+      left: parseInt(position.left) + "px",
+      position: "absolute",
+      top: (parseInt(position.top) + this._private.$input.outerHeight()) + "px"
+    });
+  }
+  
+  
+  SelectiveLookup.instances = [];
+  SelectiveLookup.closeAll = function() {
+    for(var i=0; i<SelectiveLookup.instances.length; ++i) {
+      SelectiveLookup.instances[i].close();
+    }
+  }
+  
+  $(document.body).on("click.SelectiveLookupCloseAll", SelectiveLookup.closeAll);
+  
+  
+  /* Extends SelectiveLookup to perform specific requirements
+   * for Companies House company search by name, and resulting
+   * form field population.
+   **/
+  this.CompaniesHouseNameLookup = CompaniesHouseNameLookup;
+  function CompaniesHouseNameLookup(input, field) {
+    SelectiveLookup.call(this, 
+      $(input),
+      GOVUK.data.companiesHouse.getByName,
+      function() {
+        var data = GOVUK.data.companiesHouse.getByNameData;
+        var content = "<ul>";
+        if(data && data.items) {
+          for(var i=0; i<data.items.length; ++i) {
+            content += "<li data-company-number=\"" + data.items[i].company_number + "\">" + data.items[i].title + "</li>";
+          }
+        }
+        content += "</ul>";
+        return content;
+      }
+    );
+    
+    // Some inner variable requirement.
+    this._private.$field = $(field || input); // Allows a different form field to receive value.
+  }
+  CompaniesHouseNameLookup.prototype = new SelectiveLookup;
+  CompaniesHouseNameLookup.prototype.bindContentEvents = function() {
+    var instance = this;
+    instance._private.$display.off("click.SelectiveLookupContent");
+    instance._private.$display.on("click.SelectiveLookupContent", function(event) {
+      instance._private.$field.val($(event.target).attr("data-company-number"));
+    });
+  }
+});
+
+
 /* 
   General effects
   ======================= */
 GOVUK.effects = (new function() {
-  
   
   /* Takes a target element and will populate with
    * a count from zero (opts.start) to end. 
@@ -152,6 +311,7 @@ GOVUK.effects = (new function() {
    * @end (Number) Limit of counter
    * @options (Object) See defaults for what can be configured.
    **/
+  this.Counter = Counter;
   function Counter($target, end) {
     var COUNTER = this;
     var limit = Number(end.replace(/[^\d]/, ""));
@@ -194,7 +354,8 @@ GOVUK.effects = (new function() {
    * @$element (jQuery node) Element to make visible
    * @offset (Number) Added to current left position to hide element offscreen
    * @leftToRight (Boolean) Whether elements come from left, or right.
-   **/
+   **/ 
+  this.SlideIntoView = SlideIntoView;
   function SlideIntoView($element, offset, leftToRight) {
     var property = leftToRight ? "left": "right";
     var originalPosition = getPosition();
@@ -286,9 +447,6 @@ GOVUK.effects = (new function() {
     }
   }
   
-  
-  this.Counter = Counter;
-  this.SlideIntoView = SlideIntoView;
 });
 
 
@@ -304,6 +462,7 @@ GOVUK.page = (new function() {
     captureUtmValue();
     setupFactCounterEffect();
     setupHomeScreenshotEffect();
+    setupCompaniesHouseLookup();
   }
   
   /* Attempt to capture UTM information if we haven't already
@@ -329,6 +488,14 @@ GOVUK.page = (new function() {
    **/
   function setupHomeScreenshotEffect() {
     new GOVUK.effects.SlideIntoView($("#fabhome-screenshot"), 550);
+  }
+  
+  /* Add Companies House name lookup AJAX functionality.
+   **/
+  function setupCompaniesHouseLookup() {
+    $("input[name='company-number-company_number']").each(function() {
+      new GOVUK.components.CompaniesHouseNameLookup(this);
+    });
   }
 
 });
