@@ -207,8 +207,8 @@ class CompaniesHouseSearchApiView(View):
             raise Http404()
         return super().dispatch(*args, **kwargs)
 
-    def get(self, request, *args, **kwargs):
-        form = self.form_class(data=request.GET)
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(data=request.POST)
         if not form.is_valid():
             return JsonResponse(form.errors, status=400)
         api_response = helpers.CompaniesHouseClient.search(
