@@ -96,6 +96,12 @@ def api_response_400(*args, **kwargs):
 
 
 @pytest.fixture
+def api_response_validate_company_number_400(api_response_400):
+    api_response_400.json = lambda: {'number': ['Not good']}
+    return api_response_400
+
+
+@pytest.fixture
 def api_response_company_profile_no_sectors_200(api_response_200):
     response = api_response_200
     payload = {
@@ -370,3 +376,44 @@ def test_landing_page_context_sso_user_with_company(client):
     response = client.get(reverse('index'))
 
     assert response.context_data['user_has_company'] is True
+
+
+@patch('enrolment.helpers.has_company', Mock(return_value=True))
+@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
+def test_landing_page_submit_feature_flag_off(settings, client):
+    settings.NEW_LANDING_PAGE_FEATURE_ENABLED = False
+
+    response = client.post(reverse('index'))
+
+    assert response.status_code == 405
+
+
+@patch('api_client.api_client.company.validate_company_number')
+def test_landing_page_submit_invalid_form_shows_errors(
+    mock_company_unique, settings, client,
+    api_response_validate_company_number_400
+):
+    mock_company_unique.return_value = api_response_validate_company_number_400
+    settings.NEW_LANDING_PAGE_FEATURE_ENABLED = True
+
+    url = reverse('index')
+    params = {'company_number': '11111111'}
+    response = client.post(url, params)
+
+    assert response.status_code == 200
+    assert response.context['form'].errors == {'company_number': ['Not good']}
+
+
+@patch('enrolment.forms.validators.company_unique')
+def test_landing_page_submit_valid_form_redirects(
+    mock_company_unique, settings, client
+):
+    settings.NEW_LANDING_PAGE_FEATURE_ENABLED = True
+
+    url = reverse('index')
+    params = {'company_number': '11111111'}
+    response = client.post(url, params)
+
+    expected_url = '/register/single/?company_number=11111111'
+    assert response.status_code == 302
+    assert response.get('Location') == expected_url

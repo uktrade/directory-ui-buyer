@@ -1,7 +1,8 @@
 from formtools.wizard.views import NamedUrlSessionWizardView
 
+from django.core.urlresolvers import reverse
 from django.conf import settings
-from django.http import JsonResponse, Http404
+from django.http import JsonResponse, Http404, HttpResponseRedirect
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.views.generic import FormView, TemplateView, View
@@ -11,19 +12,33 @@ from enrolment import forms, helpers
 from sso.utils import SSOLoginRequiredMixin
 
 
-class DomesticLandingView(TemplateView):
+class DomesticLandingView(FormView):
     template_name = 'landing-page.html'
+    form_class = forms.CompanyNumberForm
+
+    @property
+    def http_method_names(self):
+        if not settings.NEW_LANDING_PAGE_FEATURE_ENABLED:
+            return ['get']
+        return ['get', 'post']
 
     def get_template_names(self):
         if settings.NEW_LANDING_PAGE_FEATURE_ENABLED:
             return [self.template_name]
         return ['landing-page-old.html']
 
+    def form_valid(self, form):
+        url = '{path}?company_number={number}'.format(
+            path=reverse('register-single-step'),
+            number=form.cleaned_data['company_number']
+        )
+        return HttpResponseRedirect(url)
+
     @staticmethod
     def get_supplier_profile_url(number):
         return settings.SUPPLIER_PROFILE_URL.format(number=number)
 
-    def get_context_data(self):
+    def get_context_data(self, **kwargs):
         sso_user = self.request.sso_user
         supplier_profile_urls = {
             'immersive': self.get_supplier_profile_url('07723438'),
@@ -33,6 +48,7 @@ class DomesticLandingView(TemplateView):
         return super().get_context_data(
             supplier_profile_urls=supplier_profile_urls,
             user_has_company=sso_user and helpers.has_company(sso_user.id),
+            **kwargs,
         )
 
 
