@@ -346,3 +346,27 @@ def test_enrolment_single_step_logged_in_has_company_redirects(
     assert response.status_code == http.client.FOUND
     assert response.get('Location') == reverse('company-detail')
     mock_has_company.assert_called_once_with(sso_user.id)
+
+
+@patch('sso.middleware.SSOUserMiddleware.process_request',
+       process_request_anon)
+def test_landing_page_context_no_sso_user(client):
+    response = client.get(reverse('index'))
+
+    assert response.context_data['user_has_company'] is None
+
+
+@patch('enrolment.helpers.has_company', Mock(return_value=False))
+@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
+def test_landing_page_context_sso_user_without_company(client):
+    response = client.get(reverse('index'))
+
+    assert response.context_data['user_has_company'] is False
+
+
+@patch('enrolment.helpers.has_company', Mock(return_value=True))
+@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
+def test_landing_page_context_sso_user_with_company(client):
+    response = client.get(reverse('index'))
+
+    assert response.context_data['user_has_company'] is True
