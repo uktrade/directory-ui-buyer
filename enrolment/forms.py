@@ -26,31 +26,15 @@ class AutoFocusFieldMixin:
         self.fields[first_field.name].widget.attrs['autofocus'] = 'autofocus'
 
 
-class CompanyForm(AutoFocusFieldMixin, IndentedInvalidFieldsMixin, forms.Form):
+class StoreCompaniesHouseProfileInSessionMixin:
 
     def __init__(self, session, *args, **kwargs):
         self.session = session
         super().__init__(*args, **kwargs)
 
-    company_number = fields.PaddedCharField(
-        label='Company number:',
-        help_text=mark_safe(
-            'This is the company number on your certificate of '
-            'incorporation. Find your company number from '
-            '<a href="{url}" target="_blank">Companies House'
-            '</a>.'.format(url=constants.COMPANIES_HOUSE_SEARCH_URL)
-        ),
-        validators=helpers.halt_validation_on_failure(
-            shared_validators.company_number,
-            validators.company_unique,
-        ),
-        max_length=8,
-        fillchar='0',
-    )
-
     def clean_company_number(self):
         value = self.cleaned_data['company_number']
-        # by this point the number passed `company_number.validarors`,
+        # by this point the number passed `company_number.validators`,
         # so we know at least the company is correct length and is unique
         try:
             # side effect: store company details in request session
@@ -72,6 +56,26 @@ class CompanyForm(AutoFocusFieldMixin, IndentedInvalidFieldsMixin, forms.Form):
         return value
 
 
+class CompanyForm(AutoFocusFieldMixin, IndentedInvalidFieldsMixin,
+                  StoreCompaniesHouseProfileInSessionMixin, forms.Form):
+
+    company_number = fields.PaddedCharField(
+        label='Company number:',
+        help_text=mark_safe(
+            'This is the company number on your certificate of '
+            'incorporation. Find your company number from '
+            '<a href="{url}" target="_blank">Companies House'
+            '</a>.'.format(url=constants.COMPANIES_HOUSE_SEARCH_URL)
+        ),
+        validators=helpers.halt_validation_on_failure(
+            shared_validators.company_number,
+            validators.company_unique,
+        ),
+        max_length=8,
+        fillchar='0',
+    )
+
+
 class CompanyNameForm(AutoFocusFieldMixin, IndentedInvalidFieldsMixin,
                       forms.Form):
     name = forms.CharField(
@@ -81,6 +85,7 @@ class CompanyNameForm(AutoFocusFieldMixin, IndentedInvalidFieldsMixin,
             "and re-enter your company's number."
         ),
         widget=forms.TextInput(attrs={'readonly': 'readonly'}),
+        required=False
     )
 
 
@@ -100,6 +105,35 @@ class CompanyExportStatusForm(AutoFocusFieldMixin, IndentedInvalidFieldsMixin,
             'conditions</a> of the Find a Buyer service.'.format(
                 url=urls.TERMS_AND_CONDITIONS_URL)
         )
+    )
+
+
+class EnrolmentSingleStepForm(AutoFocusFieldMixin, IndentedInvalidFieldsMixin,
+                              StoreCompaniesHouseProfileInSessionMixin,
+                              forms.Form):
+    export_status = forms.ChoiceField(
+        label=(
+            'Has your company sold products or services to overseas customers?'
+        ),
+        choices=choices.EXPORT_STATUSES,
+        validators=[shared_validators.export_status_intention]
+    )
+    terms_agreed = forms.BooleanField(
+        label=mark_safe(
+            'Tick this box to accept the '
+            '<a href="{url}" target="_blank">terms and '
+            'conditions</a> of the Find a Buyer service.'.format(
+                url=urls.TERMS_AND_CONDITIONS_URL)
+        )
+    )
+    company_number = fields.PaddedCharField(
+        validators=helpers.halt_validation_on_failure(
+            shared_validators.company_number,
+            validators.company_unique,
+        ),
+        max_length=8,
+        fillchar='0',
+        widget=forms.HiddenInput()
     )
 
 
@@ -144,7 +178,6 @@ def serialize_enrolment_forms(cleaned_data):
     """
 
     return {
-        'company_name': cleaned_data['name'],
         'company_number': cleaned_data['company_number'],
         'export_status': cleaned_data['export_status'],
     }

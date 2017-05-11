@@ -4,7 +4,7 @@ from django.conf import settings
 from django.http import JsonResponse, Http404
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
-from django.views.generic import TemplateView, View
+from django.views.generic import FormView, TemplateView, View
 
 from api_client import api_client
 from enrolment import forms, helpers
@@ -41,6 +41,65 @@ class EnrolmentInstructionsView(TemplateView):
         if sso_user and helpers.has_company(sso_user.id):
             return redirect('company-detail')
         return super().dispatch(request, *args, **kwargs)
+
+
+class EnrolmentSingleStepView(SSOLoginRequiredMixin, FormView):
+    form_class = forms.EnrolmentSingleStepForm
+    success_template = 'registered.html'
+    failure_template = 'enrolment-error.html'
+    template_name = 'export-status-form.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.sso_user is None:
+            return self.handle_no_permission()
+        elif helpers.has_company(request.sso_user.id):
+            return redirect('company-detail')
+        else:
+            return super(EnrolmentSingleStepView, self).dispatch(
+                request, *args, **kwargs
+            )
+
+    def serialize_form_data(self, form):
+        date_of_creation = helpers.get_company_date_of_creation_from_session(
+            self.request.session
+        )
+        company_name = helpers.get_company_name_from_session(
+            self.request.session
+        )
+        data = forms.serialize_enrolment_forms(form.cleaned_data)
+        data['sso_id'] = self.request.sso_user.id
+        data['company_email'] = self.request.sso_user.email
+        data['date_of_creation'] = date_of_creation
+        data['company_name'] = company_name
+        return data
+
+    def get_initial(self):
+        return {
+            'company_number': self.request.GET.get('company_number')
+        }
+
+    def get_form_kwargs(self, *args, **kwargs):
+        form_kwargs = super().get_form_kwargs(*args, **kwargs)
+        return {
+            **form_kwargs,
+            'session': self.request.session,
+        }
+
+    def form_valid(self, form):
+        data = self.serialize_form_data(form)
+        response = api_client.registration.send_form(data)
+        if response.ok:
+            template = self.success_template
+        else:
+            template = self.failure_template
+        return TemplateResponse(self.request, template)
+
+    def get_context_data(self, **kwargs):
+        return super().get_context_data(
+            wizard={'steps': {'step1': 1, 'count': 1}},
+            form_labels=[('exports', 'Export status')],
+            **kwargs,
+        )
 
 
 class EnrolmentView(SSOLoginRequiredMixin, NamedUrlSessionWizardView):
@@ -97,9 +156,13 @@ class EnrolmentView(SSOLoginRequiredMixin, NamedUrlSessionWizardView):
         date_of_creation = helpers.get_company_date_of_creation_from_session(
             self.request.session
         )
+        company_name = helpers.get_company_name_from_session(
+            self.request.session
+        )
         data['sso_id'] = self.request.sso_user.id
         data['company_email'] = self.request.sso_user.email
         data['date_of_creation'] = date_of_creation
+        data['company_name'] = company_name
         return data
 
     def done(self, *args, **kwags):

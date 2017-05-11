@@ -11,6 +11,7 @@ from enrolment.views import (
     api_client,
     EnrolmentView,
     EnrolmentInstructionsView,
+    EnrolmentSingleStepView,
 )
 from sso.utils import SSOUser
 
@@ -273,3 +274,75 @@ def test_companies_house_search_api_success(
 
     assert response.status_code == 200
     assert response.content == b'[{"name": "Smashing corp"}]'
+
+
+@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
+@patch('enrolment.helpers.has_company', Mock(return_value=False))
+@patch('enrolment.helpers.CompaniesHouseClient.retrieve_profile')
+@patch.object(api_client.registration, 'send_form')
+def test_enrolment_signle_form_complete_api_client_call(
+    mock_send_form, mock_retrieve_profile, client
+):
+    view_class = EnrolmentSingleStepView
+    mock_retrieve_profile.return_value = Mock(
+        json=lambda: {
+            'company_name': 'Jimbo corp',
+            'company_status': 'active',
+            'date_of_creation': '01/01/2016'
+        }
+    )
+    url = reverse('register-single-step')
+    get_payload = {'company_number': '1234567'}
+    post_payload = {
+        'company_number': '1234567',
+        'export_status': 'YES',
+        'terms_agreed': True
+    }
+    client.get(url, get_payload)
+    response = client.post(url, post_payload)
+
+    assert response.status_code == 200
+    assert response.template_name == view_class.success_template
+    assert mock_send_form.call_count == 1
+
+
+@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
+@patch('enrolment.helpers.has_company', Mock(return_value=False))
+@patch('enrolment.helpers.CompaniesHouseClient.retrieve_profile')
+@patch.object(api_client.registration, 'send_form')
+def test_enrolment_signle_form_api_client_fail(
+    mock_send_form, mock_retrieve_profile, client, api_response_400
+):
+    view_class = EnrolmentSingleStepView
+    mock_retrieve_profile.return_value = Mock(
+        json=lambda: {
+            'company_name': 'Jimbo corp',
+            'company_status': 'active',
+            'date_of_creation': '01/01/2016'
+        }
+    )
+    mock_send_form.return_value = api_response_400
+    url = reverse('register-single-step')
+    get_payload = {'company_number': '1234567'}
+    post_payload = {
+        'company_number': '1234567',
+        'export_status': 'YES',
+        'terms_agreed': True
+    }
+
+    client.get(url, get_payload)
+    response = client.post(url, post_payload)
+    assert response.template_name == view_class.failure_template
+
+
+@patch('enrolment.helpers.has_company', return_value=True)
+@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
+def test_enrolment_single_step_logged_in_has_company_redirects(
+    mock_has_company, client, sso_user
+):
+    url = reverse('register-single-step')
+    response = client.get(url)
+
+    assert response.status_code == http.client.FOUND
+    assert response.get('Location') == reverse('company-detail')
+    mock_has_company.assert_called_once_with(sso_user.id)
