@@ -151,11 +151,12 @@ GOVUK.data.companiesHouse = (new function() {
    **/
   this.getByNameData = {}; // Stores results
   this.getByNameRequest = null; // Allow access to request
-  this.getByName = function(params) {
+  this.getByName = function(term) {
     if(this.getByNameRequest) this.getByNameRequest.abort();
     this.getByNameRequest = $.ajax({
-      url: "/static/javascripts/src/mock-company-data.json",
-      data: params, //(company-number-company_number)
+      url: "/api/internal/companies-house-search/",
+      data: "term=" + term, // + "&csrftoken=" + GOVUK.cookie.get("foo"),
+      method: "GET",
       success: function(data) {
         GOVUK.data.companiesHouse.getByNameData = data;
       }
@@ -203,10 +204,8 @@ GOVUK.components = (new function() {
       
       // Bind main event.
       $input.on("input.SelectiveLookup", function() {
-        var params = {};
         if(this.value.length >= opts.lookupOnCharacter) {
-          params[this.name] = this.value;
-          instance.search(params);
+          instance.search(this.value);
         }
       });
     
@@ -215,6 +214,11 @@ GOVUK.components = (new function() {
     
       // Register the instance
       SelectiveLookup.instances.push(this);
+      
+      // A little necessary visual calculating.
+      $(window).on("resize", function() {
+        instance.setSizeAndPosition();
+      });
     }
     
   }
@@ -228,6 +232,7 @@ GOVUK.components = (new function() {
     });
   }
   SelectiveLookup.prototype.close = function() {
+    // TODO: Add Aria stuff...
     this._private.$display.css({
       display: "none"
     });
@@ -243,13 +248,20 @@ GOVUK.components = (new function() {
   SelectiveLookup.prototype.setContent = function(content) {
     this._private.$display.empty().append(content);
   }
-  SelectiveLookup.prototype.open = function() {
+  SelectiveLookup.prototype.setSizeAndPosition = function() {
     var position = this._private.$input.offset();
     this._private.$display.css({
-      display: "block",
       left: parseInt(position.left) + "px",
       position: "absolute",
-      top: (parseInt(position.top) + this._private.$input.outerHeight()) + "px"
+      top: (parseInt(position.top) + this._private.$input.outerHeight()) + "px",
+      width: this._private.$input.outerWidth() + "px"
+    });
+  }
+  SelectiveLookup.prototype.open = function() {
+    // TODO: Add Aria stuff...
+    this.setSizeAndPosition();
+    this._private.$display.css({
+      display: "block"
     });
   }
   
@@ -276,9 +288,9 @@ GOVUK.components = (new function() {
       function() {
         var data = GOVUK.data.companiesHouse.getByNameData;
         var content = "<ul>";
-        if(data && data.items) {
-          for(var i=0; i<data.items.length; ++i) {
-            content += "<li data-company-number=\"" + data.items[i].company_number + "\">" + data.items[i].title + "</li>";
+        if(data) {
+          for(var i=0; i<data.length; ++i) {
+            content += "<li data-company-number=\"" + data[i].company_number + "\">" + data[i].title + "</li>";
           }
         }
         content += "</ul>";
@@ -288,13 +300,16 @@ GOVUK.components = (new function() {
     
     // Some inner variable requirement.
     this._private.$field = $(field || input); // Allows a different form field to receive value.
+
   }
   CompaniesHouseNameLookup.prototype = new SelectiveLookup;
   CompaniesHouseNameLookup.prototype.bindContentEvents = function() {
     var instance = this;
     instance._private.$display.off("click.SelectiveLookupContent");
     instance._private.$display.on("click.SelectiveLookupContent", function(event) {
-      instance._private.$field.val($(event.target).attr("data-company-number"));
+      var $selected = $(event.target);
+      instance._private.$input.val($selected.text());
+      instance._private.$field.val($selected.attr("data-company-number"));
     });
   }
 });
@@ -493,8 +508,9 @@ GOVUK.page = (new function() {
   /* Add Companies House name lookup AJAX functionality.
    **/
   function setupCompaniesHouseLookup() {
-    $("input[name='company-number-company_number']").each(function() {
-      new GOVUK.components.CompaniesHouseNameLookup(this);
+    $(".register-company-number-form input[name='company_name']").each(function() {
+      var field = $("input[name='company_number']", this.form).get(0);
+      new GOVUK.components.CompaniesHouseNameLookup(this, field);
     });
   }
 
