@@ -281,9 +281,9 @@ GOVUK.components = (new function() {
    * form field population.
    **/
   this.CompaniesHouseNameLookup = CompaniesHouseNameLookup;
-  function CompaniesHouseNameLookup(input, field) {
+  function CompaniesHouseNameLookup($input, $field) {
     SelectiveLookup.call(this, 
-      $(input),
+      $input,
       GOVUK.data.companiesHouse.getByName,
       function() {
         var data = GOVUK.data.companiesHouse.getByNameData;
@@ -299,8 +299,7 @@ GOVUK.components = (new function() {
     );
     
     // Some inner variable requirement.
-    this._private.$field = $(field || input); // Allows a different form field to receive value.
-
+    this._private.$field = $field || $input; // Allows a different form field to receive value.
   }
   CompaniesHouseNameLookup.prototype = new SelectiveLookup;
   CompaniesHouseNameLookup.prototype.bindContentEvents = function() {
@@ -508,9 +507,22 @@ GOVUK.page = (new function() {
   /* Add Companies House name lookup AJAX functionality.
    **/
   function setupCompaniesHouseLookup() {
-    $(".register-company-number-form input[name='company_name']").each(function() {
-      var field = $("input[name='company_number']", this.form).get(0);
-      new GOVUK.components.CompaniesHouseNameLookup(this, field);
+    $(".register-company-number-form").each(function() {
+      var $input = $("input[name='company-number-company_number']", this);
+      var $field = $("<input type=\"hidden\" name=\"company_number\" />");
+      var $label = $(".label", this);
+      
+      // Some content updates.
+      $input.attr("placeholder", "Companies name");
+      $label.text("Enter your company name");
+      
+      // Some structural changes to form.
+      $input.attr("name", "company_name");
+      $("input[name='enrolment_view-current_step']", this).remove();
+      $(this).prepend($field);
+      
+      // Now apply JS lookup functionality.
+      new GOVUK.components.CompaniesHouseNameLookup($input, $field);
     });
   }
 

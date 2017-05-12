@@ -1,25 +1,13 @@
 {% load trans from i18n %}
 
-<noscript>
-	<form class="register-company-number-form" method="post" action="{% url 'register' step='company-number' %}">
-		<input name="enrolment_view-current_step" type="hidden" value="company-number">
-		<label for="id_company_number">
-			{{ form.company_number.errors }}
-			<span class="label">{% trans "Enter your Companies House number" %}</span>
-			<input name="company-number-company_number" class="text" type="text" placeholder="{% trans 'Companies House number' %}" />
-		</label>
-		<input class="button button-primary" type="submit" value="{% trans 'Get promoted' %}" />
-	</form>
-</noscript>
-
-<form class="register-company-number-form requires-javascript" method="post" action="">
-	<input name="company_number" type="hidden" value="">
-
+<form class="register-company-number-form" method="post" action="{% url 'register' step='company-number' %}">
+	<input name="enrolment_view-current_step" type="hidden" value="company-number">
 	<label>
 		{{ form.company_number.errors }}
-		<span class="label">{% trans "Enter your company name" %}</span>
-		<input name="company_name" class="text" type="text" placeholder="{% trans 'Companies name' %}" />
+		<span class="label">{% trans "Enter your Companies House number" %}</span>
+		<input name="company-number-company_number" class="text" type="text" placeholder="{% trans 'Companies House number' %}" />
 	</label>
 	<input class="button button-primary" type="submit" value="{% trans 'Get promoted' %}" />
 </form>
+
 
