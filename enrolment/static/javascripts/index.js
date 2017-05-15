@@ -146,38 +146,60 @@ GOVUK.utm = (new function() {
 /* 
   General data storage and services
   =================================== */
-GOVUK.data = {}
-GOVUK.data.companiesHouse = (new function() {
+GOVUK.data = (new function() {
 
-  /* Performs a lookup of companies by name.
-   **/
-  this.getByNameData = {}; // Stores results
-  this.getByNameRequest = null; // Allow access to request
-  this.getByName = function(term) {
-    if(this.getByNameRequest) this.getByNameRequest.abort();
-    this.getByNameRequest = $.ajax({
-      url: "/api/internal/companies-house-search/",
-      data: "term=" + term,
+  function Service(url, configuration) {
+    var service = this;
+    var config = $.extend({
+      url: url,
       method: "GET",
-      success: function(data) {
-        GOVUK.data.companiesHouse.getByNameData = data;
+      success: function(response) {
+        service.response = response;
       }
-    });
+    }, configuration || {});
     
-    return this.getByNameRequest;
+    var listeners = [];
+    var request; // Reference to active update request
+    
+    service.response = {}; // What we get back from an update
+    
+    /* Gets a fresh response
+     * @params (String) Specify params for GET or data for POST
+     **/
+    service.update = function(params) {
+      if(request) request.abort(); // abort if there's something in play
+      config.data = params || "";
+      request = $.ajax(config);
+      request.done(function() {
+        // Activate each listener task
+        for(var i=0; i<listeners.length; ++i) {
+          listeners[i]();
+        }
+      })
+    }
+    
+    /* Specify data processing task after response
+     * @task (Function) Do something after service.response has been updated
+     **/
+    service.listener = function(task) {
+      listeners.push(task);
+    }
   }
+
+  
+  // Create service to fetch Company from name lookup on Companies House API
+  this.getCompanyByName = new Service("/api/internal/companies-house-search/");
   
 });
 
 
 /* 
-  General effects
-  ======================= */
+  General reusable component classes
+  ==================================== */
 GOVUK.components = (new function() {
   
   /* Performs a data lookup and displays multiple choice results
-   * to populate the input value (or specificed alternative field)
-   * with user choice. 
+   * to populate the input value with user choice. 
    *
    * @$input (jQuery node) Target input element
    * @request (Function) Returns reference to the jqXHR requesting data
@@ -185,7 +207,7 @@ GOVUK.components = (new function() {
    * @options (Object) Allow some configurations
    **/
   this.SelectiveLookup = SelectiveLookup;
-  function SelectiveLookup($input, request, content, options) {
+  function SelectiveLookup($input, service, options) {
     var instance = this;
     var popupId = GOVUK.utils.uniqueString();
     
@@ -196,20 +218,26 @@ GOVUK.components = (new function() {
     
     // Some inner variable requirement.
     instance._private = {
-      content: content,
-      request: request, // Service that retrieves the data
+      service: service, // Service that retrieves and stores the data
       $display: $("<div class=\"SelectiveLookupDisplay\" id=\"" + popupId + "\"></div>"),
       $input: $input
     }
     
     // Will not have arguments if being inherited for prototype
-    if(arguments.length >= 3) {
+    if(arguments.length >= 2) {
       
       // Bind main event.
       $input.on("input.SelectiveLookup", function() {
         if(this.value.length >= opts.lookupOnCharacter) {
-          instance.search(this.value);
+          instance.search();
         }
+      });
+      
+      // Bind service update listener
+      instance._private.service.listener(function() {
+        instance.setContent();
+        instance.bindContentEvents();
+        instance.open();
       });
       
       // Add some accessibility support
@@ -229,7 +257,6 @@ GOVUK.components = (new function() {
         instance.setSizeAndPosition();
       });
     }
-    
   }
   
   SelectiveLookup.prototype = {};
@@ -244,15 +271,22 @@ GOVUK.components = (new function() {
     this._private.$display.css({ display: "none" });
     this._private.$input.attr("aria-expanded", "false");
   }  
-  SelectiveLookup.prototype.search = function(params) {
-    var instance = this;
-    instance._private.request(params).done(function() {
-      instance.setContent(instance._private.content());
-      instance.bindContentEvents();
-      instance.open();
-    });
+  SelectiveLookup.prototype.search = function() {
+   this._private.service.update(this.param());
   }
-  SelectiveLookup.prototype.setContent = function(content) {
+  SelectiveLookup.prototype.param = function() {
+    // Set param in separate function to allow easy override.
+    return this.$input.attr("name") + "=" + this.$input.value;
+  }
+  SelectiveLookup.prototype.setContent = function() {
+    var data = this._private.service.response;
+    var content = "<ul role=\"listbox\">";
+    if(data) {
+      for(var i=0; i<data.length; ++i) {
+        content += "<li role=\"option\" data-company-number=\"" + data[i].company_number + "\">" + data[i].title + "</li>";
+      }
+    }
+    content += "</ul>";
     this._private.$display.empty().append(content);
   }
   SelectiveLookup.prototype.setSizeAndPosition = function() {
@@ -291,20 +325,9 @@ GOVUK.components = (new function() {
   function CompaniesHouseNameLookup($input, $field) {
     SelectiveLookup.call(this, 
       $input,
-      GOVUK.data.companiesHouse.getByName,
-      function() {
-        var data = GOVUK.data.companiesHouse.getByNameData;
-        var content = "<ul role=\"listbox\">";
-        if(data) {
-          for(var i=0; i<data.length; ++i) {
-            content += "<li role=\"option\" data-company-number=\"" + data[i].company_number + "\">" + data[i].title + "</li>";
-          }
-        }
-        content += "</ul>";
-        return content;
-      }
+      GOVUK.data.getCompanyByName
     );
-    
+
     // Some inner variable requirement.
     this._private.$field = $field || $input; // Allows a different form field to receive value.
   }
@@ -317,6 +340,9 @@ GOVUK.components = (new function() {
       instance._private.$input.val($selected.text());
       instance._private.$field.val($selected.attr("data-company-number"));
     });
+  }
+  CompaniesHouseNameLookup.prototype.param = function() {
+    return "term=" + this._private.$input.val();
   }
 });
 
