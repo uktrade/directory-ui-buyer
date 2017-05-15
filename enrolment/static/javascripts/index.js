@@ -219,7 +219,7 @@ GOVUK.components = (new function() {
     // Some inner variable requirement.
     instance._private = {
       service: service, // Service that retrieves and stores the data
-      $display: $("<div class=\"SelectiveLookupDisplay\" id=\"" + popupId + "\"></div>"),
+      $list: $("<ul class=\"SelectiveLookupDisplay\" id=\"" + popupId + "\" role=\"listbox\"></ul>"),
       $input: $input
     }
     
@@ -232,6 +232,12 @@ GOVUK.components = (new function() {
           instance.search();
         }
       });
+      
+      // TODO: Bind events to allow keyboard navigation of component.
+      // 1. Input.on:click (if down) move focus to first list element
+      // 2. List.on:click (if up or down) move focus to next item or back to input
+      // 3. List.on:click (if Enter) activate current selection
+      // 4. List.on:click (if Esc) close list and focus on input
       
       // Bind service update listener
       instance._private.service.listener(function() {
@@ -247,7 +253,7 @@ GOVUK.components = (new function() {
       $input.attr("aria-owns", popupId);
     
       // Add display element
-      $(document.body).append(instance._private.$display);
+      $(document.body).append(instance._private.$list);
     
       // Register the instance
       SelectiveLookup.instances.push(this);
@@ -262,13 +268,13 @@ GOVUK.components = (new function() {
   SelectiveLookup.prototype = {};
   SelectiveLookup.prototype.bindContentEvents = function() {
     var instance = this;
-    instance._private.$display.off("click.SelectiveLookupContent");
-    instance._private.$display.on("click.SelectiveLookupContent", function(event) {
+    instance._private.$list.off("click.SelectiveLookupContent");
+    instance._private.$list.on("click.SelectiveLookupContent", function(event) {
       instance._private.$input.val($(event.target).text());
     });
   }
   SelectiveLookup.prototype.close = function() {
-    this._private.$display.css({ display: "none" });
+    this._private.$list.css({ display: "none" });
     this._private.$input.attr("aria-expanded", "false");
   }  
   SelectiveLookup.prototype.search = function() {
@@ -280,18 +286,17 @@ GOVUK.components = (new function() {
   }
   SelectiveLookup.prototype.setContent = function() {
     var data = this._private.service.response;
-    var content = "<ul role=\"listbox\">";
+    var $list = this._private.$list;
     if(data) {
+      $list.empty();
       for(var i=0; i<data.length; ++i) {
-        content += "<li role=\"option\" data-company-number=\"" + data[i].company_number + "\">" + data[i].title + "</li>";
+        $list.append("<li role=\"option\" data-company-number=\"" + data[i].company_number + "\">" + data[i].title + "</li>");
       }
     }
-    content += "</ul>";
-    this._private.$display.empty().append(content);
   }
   SelectiveLookup.prototype.setSizeAndPosition = function() {
     var position = this._private.$input.offset();
-    this._private.$display.css({
+    this._private.$list.css({
       left: parseInt(position.left) + "px",
       position: "absolute",
       top: (parseInt(position.top) + this._private.$input.outerHeight()) + "px",
@@ -300,7 +305,7 @@ GOVUK.components = (new function() {
   }
   SelectiveLookup.prototype.open = function() {
     this.setSizeAndPosition();
-    this._private.$display.css({ display: "block" });
+    this._private.$list.css({ display: "block" });
     this._private.$input.attr("aria-expanded", "true");
   }
   
@@ -334,8 +339,8 @@ GOVUK.components = (new function() {
   CompaniesHouseNameLookup.prototype = new SelectiveLookup;
   CompaniesHouseNameLookup.prototype.bindContentEvents = function() {
     var instance = this;
-    instance._private.$display.off("click.SelectiveLookupContent");
-    instance._private.$display.on("click.SelectiveLookupContent", function(event) {
+    instance._private.$list.off("click.SelectiveLookupContent");
+    instance._private.$list.on("click.SelectiveLookupContent", function(event) {
       var $selected = $(event.target);
       instance._private.$input.val($selected.text());
       instance._private.$field.val($selected.attr("data-company-number"));
