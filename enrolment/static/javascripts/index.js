@@ -155,7 +155,7 @@ GOVUK.data.companiesHouse = (new function() {
     if(this.getByNameRequest) this.getByNameRequest.abort();
     this.getByNameRequest = $.ajax({
       url: "/api/internal/companies-house-search/",
-      data: "term=" + term, // + "&csrftoken=" + GOVUK.cookie.get("foo"),
+      data: "term=" + term,
       method: "GET",
       success: function(data) {
         GOVUK.data.companiesHouse.getByNameData = data;
