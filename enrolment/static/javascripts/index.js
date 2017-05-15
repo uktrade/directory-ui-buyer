@@ -183,11 +183,11 @@ GOVUK.components = (new function() {
    * @request (Function) Returns reference to the jqXHR requesting data
    * @content (Function) Returns content to populate the dropdown 
    * @options (Object) Allow some configurations
-   * TODO - Add some Aria attributes...
    **/
   this.SelectiveLookup = SelectiveLookup;
   function SelectiveLookup($input, request, content, options) {
     var instance = this;
+    var popupId = GOVUK.utils.uniqueString();
     
     // Configure options.
     opts = $.extend({
@@ -197,8 +197,8 @@ GOVUK.components = (new function() {
     // Some inner variable requirement.
     instance._private = {
       content: content,
-      request: request,
-      $display: $("<div class=\"SelectiveLookupDisplay\"></div>"),
+      request: request, // Service that retrieves the data
+      $display: $("<div class=\"SelectiveLookupDisplay\" id=\"" + popupId + "\"></div>"),
       $input: $input
     }
     
@@ -211,6 +211,12 @@ GOVUK.components = (new function() {
           instance.search(this.value);
         }
       });
+      
+      // Add some accessibility support
+      $input.attr("aria-autocomplete", "list");
+      $input.attr("role", "combobox");
+      $input.attr("aria-expanded", "false");
+      $input.attr("aria-owns", popupId);
     
       // Add display element
       $(document.body).append(instance._private.$display);
@@ -235,10 +241,8 @@ GOVUK.components = (new function() {
     });
   }
   SelectiveLookup.prototype.close = function() {
-    // TODO: Add Aria stuff...
-    this._private.$display.css({
-      display: "none"
-    });
+    this._private.$display.css({ display: "none" });
+    this._private.$input.attr("aria-expanded", "false");
   }  
   SelectiveLookup.prototype.search = function(params) {
     var instance = this;
@@ -261,11 +265,9 @@ GOVUK.components = (new function() {
     });
   }
   SelectiveLookup.prototype.open = function() {
-    // TODO: Add Aria stuff...
     this.setSizeAndPosition();
-    this._private.$display.css({
-      display: "block"
-    });
+    this._private.$display.css({ display: "block" });
+    this._private.$input.attr("aria-expanded", "true");
   }
   
   
@@ -292,10 +294,10 @@ GOVUK.components = (new function() {
       GOVUK.data.companiesHouse.getByName,
       function() {
         var data = GOVUK.data.companiesHouse.getByNameData;
-        var content = "<ul>";
+        var content = "<ul role=\"listbox\">";
         if(data) {
           for(var i=0; i<data.length; ++i) {
-            content += "<li data-company-number=\"" + data[i].company_number + "\">" + data[i].title + "</li>";
+            content += "<li role=\"option\" data-company-number=\"" + data[i].company_number + "\">" + data[i].title + "</li>";
           }
         }
         content += "</ul>";
