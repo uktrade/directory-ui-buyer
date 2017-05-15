@@ -26,6 +26,7 @@ GOVUK.utils = (new function() {
   
 });
 
+
 /*
   Cookie methods
   ==============
@@ -95,6 +96,7 @@ GOVUK.cookie = (new function() {
 
 });
 
+
 /*
   UTM value storage
   =================
@@ -142,8 +144,8 @@ GOVUK.utm = (new function() {
 
 
 /* 
-  General data storage and display methods
-  ======================================== */
+  General data storage and services
+  =================================== */
 GOVUK.data = {}
 GOVUK.data.companiesHouse = (new function() {
 
@@ -167,6 +169,7 @@ GOVUK.data.companiesHouse = (new function() {
   
 });
 
+
 /* 
   General effects
   ======================= */
@@ -179,7 +182,7 @@ GOVUK.components = (new function() {
    * @$input (jQuery node) Target input element
    * @request (Function) Returns reference to the jqXHR requesting data
    * @content (Function) Returns content to populate the dropdown 
-   *
+   * @options (Object) Allow some configurations
    * TODO - Add some Aria attributes...
    **/
   this.SelectiveLookup = SelectiveLookup;
@@ -279,6 +282,8 @@ GOVUK.components = (new function() {
   /* Extends SelectiveLookup to perform specific requirements
    * for Companies House company search by name, and resulting
    * form field population.
+   * @$input (jQuery node) Target input element
+   * @$field (jQuery node) Alternative element to populate with selection value
    **/
   this.CompaniesHouseNameLookup = CompaniesHouseNameLookup;
   function CompaniesHouseNameLookup($input, $field) {
