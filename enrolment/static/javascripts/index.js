@@ -140,11 +140,184 @@ GOVUK.utm = (new function() {
   
 });
 
+
+/* 
+  General data storage and display methods
+  ======================================== */
+GOVUK.data = {}
+GOVUK.data.companiesHouse = (new function() {
+
+  /* Performs a lookup of companies by name.
+   **/
+  this.getByNameData = {}; // Stores results
+  this.getByNameRequest = null; // Allow access to request
+  this.getByName = function(term) {
+    if(this.getByNameRequest) this.getByNameRequest.abort();
+    this.getByNameRequest = $.ajax({
+      url: "/api/internal/companies-house-search/",
+      data: "term=" + term,
+      method: "GET",
+      success: function(data) {
+        GOVUK.data.companiesHouse.getByNameData = data;
+      }
+    });
+    
+    return this.getByNameRequest;
+  }
+  
+});
+
+/* 
+  General effects
+  ======================= */
+GOVUK.components = (new function() {
+  
+  /* Performs a data lookup and displays multiple choice results
+   * to populate the input value (or specificed alternative field)
+   * with user choice. 
+   *
+   * @$input (jQuery node) Target input element
+   * @request (Function) Returns reference to the jqXHR requesting data
+   * @content (Function) Returns content to populate the dropdown 
+   *
+   * TODO - Add some Aria attributes...
+   **/
+  this.SelectiveLookup = SelectiveLookup;
+  function SelectiveLookup($input, request, content, options) {
+    var instance = this;
+    
+    // Configure options.
+    opts = $.extend({
+      lookupOnCharacter: 4, // (Integer) At what character input to trigger the request for data
+    }, options || {});
+    
+    // Some inner variable requirement.
+    instance._private = {
+      content: content,
+      request: request,
+      $display: $("<div class=\"SelectiveLookupDisplay\"></div>"),
+      $input: $input
+    }
+    
+    // Will not have arguments if being inherited for prototype
+    if(arguments.length >= 3) {
+      
+      // Bind main event.
+      $input.on("input.SelectiveLookup", function() {
+        if(this.value.length >= opts.lookupOnCharacter) {
+          instance.search(this.value);
+        }
+      });
+    
+      // Add display element
+      $(document.body).append(instance._private.$display);
+    
+      // Register the instance
+      SelectiveLookup.instances.push(this);
+      
+      // A little necessary visual calculating.
+      $(window).on("resize", function() {
+        instance.setSizeAndPosition();
+      });
+    }
+    
+  }
+  
+  SelectiveLookup.prototype = {};
+  SelectiveLookup.prototype.bindContentEvents = function() {
+    var instance = this;
+    instance._private.$display.off("click.SelectiveLookupContent");
+    instance._private.$display.on("click.SelectiveLookupContent", function(event) {
+      instance._private.$input.val($(event.target).text());
+    });
+  }
+  SelectiveLookup.prototype.close = function() {
+    // TODO: Add Aria stuff...
+    this._private.$display.css({
+      display: "none"
+    });
+  }  
+  SelectiveLookup.prototype.search = function(params) {
+    var instance = this;
+    instance._private.request(params).done(function() {
+      instance.setContent(instance._private.content());
+      instance.bindContentEvents();
+      instance.open();
+    });
+  }
+  SelectiveLookup.prototype.setContent = function(content) {
+    this._private.$display.empty().append(content);
+  }
+  SelectiveLookup.prototype.setSizeAndPosition = function() {
+    var position = this._private.$input.offset();
+    this._private.$display.css({
+      left: parseInt(position.left) + "px",
+      position: "absolute",
+      top: (parseInt(position.top) + this._private.$input.outerHeight()) + "px",
+      width: this._private.$input.outerWidth() + "px"
+    });
+  }
+  SelectiveLookup.prototype.open = function() {
+    // TODO: Add Aria stuff...
+    this.setSizeAndPosition();
+    this._private.$display.css({
+      display: "block"
+    });
+  }
+  
+  
+  SelectiveLookup.instances = [];
+  SelectiveLookup.closeAll = function() {
+    for(var i=0; i<SelectiveLookup.instances.length; ++i) {
+      SelectiveLookup.instances[i].close();
+    }
+  }
+  
+  $(document.body).on("click.SelectiveLookupCloseAll", SelectiveLookup.closeAll);
+  
+  
+  /* Extends SelectiveLookup to perform specific requirements
+   * for Companies House company search by name, and resulting
+   * form field population.
+   **/
+  this.CompaniesHouseNameLookup = CompaniesHouseNameLookup;
+  function CompaniesHouseNameLookup($input, $field) {
+    SelectiveLookup.call(this, 
+      $input,
+      GOVUK.data.companiesHouse.getByName,
+      function() {
+        var data = GOVUK.data.companiesHouse.getByNameData;
+        var content = "<ul>";
+        if(data) {
+          for(var i=0; i<data.length; ++i) {
+            content += "<li data-company-number=\"" + data[i].company_number + "\">" + data[i].title + "</li>";
+          }
+        }
+        content += "</ul>";
+        return content;
+      }
+    );
+    
+    // Some inner variable requirement.
+    this._private.$field = $field || $input; // Allows a different form field to receive value.
+  }
+  CompaniesHouseNameLookup.prototype = new SelectiveLookup;
+  CompaniesHouseNameLookup.prototype.bindContentEvents = function() {
+    var instance = this;
+    instance._private.$display.off("click.SelectiveLookupContent");
+    instance._private.$display.on("click.SelectiveLookupContent", function(event) {
+      var $selected = $(event.target);
+      instance._private.$input.val($selected.text());
+      instance._private.$field.val($selected.attr("data-company-number"));
+    });
+  }
+});
+
+
 /* 
   General effects
   ======================= */
 GOVUK.effects = (new function() {
-  
   
   /* Takes a target element and will populate with
    * a count from zero (opts.start) to end. 
@@ -152,6 +325,7 @@ GOVUK.effects = (new function() {
    * @end (Number) Limit of counter
    * @options (Object) See defaults for what can be configured.
    **/
+  this.Counter = Counter;
   function Counter($target, end) {
     var COUNTER = this;
     var limit = Number(end.replace(/[^\d]/, ""));
@@ -194,7 +368,8 @@ GOVUK.effects = (new function() {
    * @$element (jQuery node) Element to make visible
    * @offset (Number) Added to current left position to hide element offscreen
    * @leftToRight (Boolean) Whether elements come from left, or right.
-   **/
+   **/ 
+  this.SlideIntoView = SlideIntoView;
   function SlideIntoView($element, offset, leftToRight) {
     var property = leftToRight ? "left": "right";
     var originalPosition = getPosition();
@@ -286,9 +461,6 @@ GOVUK.effects = (new function() {
     }
   }
   
-  
-  this.Counter = Counter;
-  this.SlideIntoView = SlideIntoView;
 });
 
 
@@ -304,6 +476,7 @@ GOVUK.page = (new function() {
     captureUtmValue();
     setupFactCounterEffect();
     setupHomeScreenshotEffect();
+    setupCompaniesHouseLookup();
   }
   
   /* Attempt to capture UTM information if we haven't already
@@ -329,6 +502,28 @@ GOVUK.page = (new function() {
    **/
   function setupHomeScreenshotEffect() {
     new GOVUK.effects.SlideIntoView($("#fabhome-screenshot"), 550);
+  }
+  
+  /* Add Companies House name lookup AJAX functionality.
+   **/
+  function setupCompaniesHouseLookup() {
+    $(".register-company-number-form").each(function() {
+      var $input = $("input[name='company-number-company_number']", this);
+      var $field = $("<input type=\"hidden\" name=\"company_number\" />");
+      var $label = $(".label", this);
+      
+      // Some content updates.
+      $input.attr("placeholder", "Companies name");
+      $label.text("Enter your company name");
+      
+      // Some structural changes to form.
+      $input.attr("name", "company_name");
+      $("input[name='enrolment_view-current_step']", this).remove();
+      $(this).prepend($field);
+      
+      // Now apply JS lookup functionality.
+      new GOVUK.components.CompaniesHouseNameLookup($input, $field);
+    });
   }
 
 });

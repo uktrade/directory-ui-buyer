@@ -1116,3 +1116,23 @@ a.ed-filled-button-primary {
     }
   }
 }
+
+/* Components
+ ******************/
+.SelectiveLookupDisplay {
+  background-color: $white;
+  border: $grey-2 solid 1px;
+  max-height: 221px;
+  overflow: scroll;
+  z-index: 2;
+  
+  li {
+    border-top: $grey-2 solid 1px;
+    padding: 10px 20px;
+    position: relative;
+    top: -1px;
+    &:hover {
+      background-color: $grey-1;
+    }
+  }
+}
