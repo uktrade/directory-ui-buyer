@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "revproxy",
     "formtools",
+    "corsheaders",
     "ui",
     "enrolment",
     "company",
@@ -49,6 +50,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE_CLASSES = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -264,3 +266,7 @@ HEADER_FOOTER_CONTACT_US_URL = os.getenv(
     'https://contact-us.export.great.gov.uk/directory',
 )
 HEADER_FOOTER_CSS_ACTIVE_CLASSES = {'fab': True}
+
+# CORS
+CORS_ORIGIN_ALLOW_ALL = os.getenv('CORS_ORIGIN_ALLOW_ALL') == 'true'
+CORS_ORIGIN_WHITELIST = os.getenv('CORS_ORIGIN_WHITELIST', '').split(',')
