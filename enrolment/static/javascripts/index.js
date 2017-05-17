@@ -237,42 +237,50 @@ GOVUK.components = (new function() {
         }
       });
       
-      // TODO: Bind events to allow keyboard navigation of component.
-      // 1. Input.on:click (if down) move focus to first list element
-      // 2. List.on:click (if up or down) move focus to next item or back to input
-      // 3. List.on:click (if Enter) activate current selection
-      // 4. List.on:click (if Esc) close list and focus on input
-      /*
-      +        event.which:
-      +        // 9 = Tab
-      +        // 13 = Enter
-      +        // 27 = Esc
-      +        // 38 = Up
-      +        // 40 = Down
-      */
-      
-      // Tab capture works better on keydown...
+      /* Bind events to allow keyboard navigation of component.
+       * Using keydown event because works better with Tab capture.
+       * Supports following keys:
+       * 9 = Tab
+       * 13 = Enter
+       * 27 = Esc
+       * 38 = Up
+       * 40 = Down
+       */
       $input.on("keydown.SelectiveLookup", function(e) {
         switch(e.which) {
           case 27: // Esc
             instance.close();
             break;
-          case  9: // Tab
-          case 40: // Down arrow
+            
+          // Tab or arrow from input to list
+          case  9: 
+          case 40: 
             if(!e.shiftKey) {
               e.preventDefault();
               instance._private.$list.find("li:first-child").focus();
             }
-          default: ;// Nothing.
         }
       });
       
+      // Arrow movement between list items
+      instance._private.$list.on("keydown", "li", function(e) {
+        var $current = $(e.target);
+        switch(e.which) {
+          case 38:
+            $current.prev("li").focus();
+            break;
+          case 40:
+            $current.next("li").focus();
+        }
+      });
+      
+      // Tab or arrow movement from list to input
       instance._private.$list.on("keydown", "li:first-child", function(e) {
         if(e.shiftKey && e.which === 9 || e.which === 38) {
           e.preventDefault();
           $input.focus();
         }
-      })
+      });
       
       // Bind service update listener
       instance._private.service.listener(function() {
