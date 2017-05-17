@@ -267,7 +267,13 @@ GOVUK.components = (new function() {
       instance._private.$list.on("keydown", "li", function(e) {
         var $current = $(e.target);
         switch(e.which) {
-          
+          // Prevent tabbing beyond list
+          case 9:
+            if($current.is(":last-child") && !e.shiftKey) {
+              e.preventDefault();
+            }
+            break;
+            
           // Arrow movement between list items
           case 38:
             e.preventDefault();
