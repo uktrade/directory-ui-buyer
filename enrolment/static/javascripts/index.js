@@ -218,8 +218,9 @@ GOVUK.components = (new function() {
     
     // Some inner variable requirement.
     instance._private = {
+      active: false, // State management to isolate the listener.
       service: service, // Service that retrieves and stores the data
-      $list: $("<ul class=\"SelectiveLookupDisplay\" id=\"" + popupId + "\" role=\"listbox\"></ul>"),
+      $list: $("<ul class=\"SelectiveLookupDisplay\" style=\"display:none;\" id=\"" + popupId + "\" role=\"listbox\"></ul>"),
       $input: $input
     }
     
@@ -228,6 +229,8 @@ GOVUK.components = (new function() {
       
       // Bind lookup event.
       $input.attr("autocomplete", "off"); // Because it interferes with results display. 
+      $input.on("focus", function() { instance._private.active = true; });
+      $input.on("blur", function() { instance._private.active = false; });
       $input.on("input.SelectiveLookup", function() {
         if(this.value.length >= opts.lookupOnCharacter) {
           instance.search();
@@ -240,12 +243,12 @@ GOVUK.components = (new function() {
       // 3. List.on:click (if Enter) activate current selection
       // 4. List.on:click (if Esc) close list and focus on input
       /*
-      +        // 40 = Down
-      +        // 38 = Up
-      +        // 27 = Esc
+      +        event.which:
       +        // 9 = Tab
       +        // 13 = Enter
-      +        console.log("Keydown = ", e.which);
+      +        // 27 = Esc
+      +        // 38 = Up
+      +        // 40 = Down
       */
       
       $input.on("keyup.SelectiveLookup", function(e) {
@@ -259,9 +262,11 @@ GOVUK.components = (new function() {
       
       // Bind service update listener
       instance._private.service.listener(function() {
-        instance.setContent();
-        instance.bindContentEvents();
-        instance.open();
+        if(instance._private.active) {
+          instance.setContent();
+          instance.bindContentEvents();
+          instance.open();
+        }
       });
       
       // Add some accessibility support
