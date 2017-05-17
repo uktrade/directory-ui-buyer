@@ -250,13 +250,20 @@ GOVUK.components = (new function() {
       +        // 38 = Up
       +        // 40 = Down
       */
-      
+      // Tab capture needs to be on keydown...
       $input.on("keydown.SelectiveLookup", function(e) {
+        if(e.which === 9) {
+          instance._private.$list.find("li").eq(0).focus();
+        }
+      });
+      
+      // ...Others work better on keyup.
+      $input.on("keyup.SelectiveLookup", function(e) {
         switch(e.which) {
-          case 27: 
+          case 27: // Esc
             instance.close();
             break;
-          case 9: 
+          case 40: // Down arrow
             instance._private.$list.find("li").eq(0).focus();
           default: ;// Nothing.
         }
