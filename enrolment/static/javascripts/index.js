@@ -293,7 +293,7 @@ GOVUK.components = (new function() {
     var instance = this;
     instance._private.$list.off("click.SelectiveLookupContent");
     instance._private.$list.on("click.SelectiveLookupContent", function(event) {
-      instance._private.$input.val($(event.target).text());
+      instance._private.$input.val($(event.target).find("[role='option']").text());
     });
   }
   SelectiveLookup.prototype.close = function() {
@@ -310,11 +310,14 @@ GOVUK.components = (new function() {
   SelectiveLookup.prototype.setContent = function() {
     var data = this._private.service.response;
     var $list = this._private.$list;
-    if(data) {
-      $list.empty();
+    $list.empty();
+    if(data && data.length) {
       for(var i=0; i<data.length; ++i) {
-        $list.append("<li role=\"option\" data-company-number=\"" + data[i].company_number + "\">" + data[i].title + "</li>");
+        $list.append("<li data-company-number=\"" + data[i].company_number + "\">" + data[i].title + "</li>");
       }
+    }
+    else {
+      $list.append("<li role=\"option\">No results found</li>");
     }
   }
   SelectiveLookup.prototype.setSizeAndPosition = function() {
@@ -365,8 +368,11 @@ GOVUK.components = (new function() {
     instance._private.$list.off("click.SelectiveLookupContent");
     instance._private.$list.on("click.SelectiveLookupContent", function(event) {
       var $selected = $(event.target);
-      instance._private.$input.val($selected.text());
-      instance._private.$field.val($selected.attr("data-company-number"));
+      var companyNumber = $selected.attr("data-company-number");
+      if(companyNumber) {
+        instance._private.$input.val($selected.text());
+        instance._private.$field.val($selected.attr("data-company-number"));
+      }
     });
   }
   CompaniesHouseNameLookup.prototype.param = function() {
