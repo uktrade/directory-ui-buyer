@@ -267,9 +267,11 @@ GOVUK.components = (new function() {
         var $current = $(e.target);
         switch(e.which) {
           case 38:
+            e.preventDefault();
             $current.prev("li").focus();
             break;
           case 40:
+            e.preventDefault();
             $current.next("li").focus();
         }
       });
