@@ -248,7 +248,9 @@ GOVUK.components = (new function() {
        */
       $input.on("keydown.SelectiveLookup", function(e) {
         switch(e.which) {
-          case 27: // Esc
+          
+          // Esc to close when on input
+          case 27: 
             instance.close();
             break;
             
@@ -262,10 +264,11 @@ GOVUK.components = (new function() {
         }
       });
       
-      // Arrow movement between list items
       instance._private.$list.on("keydown", "li", function(e) {
         var $current = $(e.target);
         switch(e.which) {
+          
+          // Arrow movement between list items
           case 38:
             e.preventDefault();
             $current.prev("li").focus();
@@ -273,6 +276,12 @@ GOVUK.components = (new function() {
           case 40:
             e.preventDefault();
             $current.next("li").focus();
+            break;
+            
+          // Esc to close when on list item (re-focus on input)
+          case 27:
+            instance.close();
+            $input.focus();
         }
       });
       
