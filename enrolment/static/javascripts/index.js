@@ -226,7 +226,8 @@ GOVUK.components = (new function() {
     // Will not have arguments if being inherited for prototype
     if(arguments.length >= 2) {
       
-      // Bind main event.
+      // Bind lookup event.
+      $input.attr("autocomplete", "off"); // Because it interferes with results display. 
       $input.on("input.SelectiveLookup", function() {
         if(this.value.length >= opts.lookupOnCharacter) {
           instance.search();
@@ -238,6 +239,23 @@ GOVUK.components = (new function() {
       // 2. List.on:click (if up or down) move focus to next item or back to input
       // 3. List.on:click (if Enter) activate current selection
       // 4. List.on:click (if Esc) close list and focus on input
+      /*
+      +        // 40 = Down
+      +        // 38 = Up
+      +        // 27 = Esc
+      +        // 9 = Tab
+      +        // 13 = Enter
+      +        console.log("Keydown = ", e.which);
+      */
+      
+      $input.on("keyup.SelectiveLookup", function(e) {
+        switch(e.which) {
+          case 27: 
+            instance.close();
+            break;
+          default: ;// Nothing.
+        }
+      });
       
       // Bind service update listener
       instance._private.service.listener(function() {
