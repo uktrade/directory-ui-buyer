@@ -382,11 +382,11 @@ GOVUK.effects = (new function() {
     }
     
     function activate() {
-      var speed = 10;
-      var increment = 10;
+      var speed = 50;
+      var increment = 100;
       var currentPosition = getPosition();
       var interval = setInterval(function() {
-        if(originalPosition > currentPosition) {
+        if(originalPosition > currentPosition + increment) {
           currentPosition += increment;
         }
         else {
@@ -401,10 +401,6 @@ GOVUK.effects = (new function() {
         
         update(String(currentPosition));
       }, speed);
-      
-      $element.animate({
-        opacity: 1
-      });
     }
     
     // If element exists, then initially set 
