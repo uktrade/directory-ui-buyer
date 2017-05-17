@@ -282,6 +282,11 @@ GOVUK.components = (new function() {
           case 27:
             instance.close();
             $input.focus();
+            break;
+            
+          // Enter key item selection  
+          case 13:
+            $current.click();
         }
       });
       
