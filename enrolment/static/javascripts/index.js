@@ -268,7 +268,7 @@ GOVUK.components = (new function() {
       });
       
       instance._private.$list.on("keydown", "li:first-child", function(e) {
-        if(e.shiftKey && e.which === 9) {
+        if(e.shiftKey && e.which === 9 || e.which === 38) {
           e.preventDefault();
           $input.focus();
         }
