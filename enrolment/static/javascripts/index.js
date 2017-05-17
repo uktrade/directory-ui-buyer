@@ -293,7 +293,10 @@ GOVUK.components = (new function() {
     var instance = this;
     instance._private.$list.off("click.SelectiveLookupContent");
     instance._private.$list.on("click.SelectiveLookupContent", function(event) {
-      instance._private.$input.val($(event.target).find("[role='option']").text());
+      var $eventTarget = $(event.target);
+      if($eventTarget.attr("data-value")) {
+        instance._private.$input.val($eventTarget.attr("data-value"));
+      }
     });
   }
   SelectiveLookup.prototype.close = function() {
@@ -307,13 +310,20 @@ GOVUK.components = (new function() {
     // Set param in separate function to allow easy override.
     return this.$input.attr("name") + "=" + this.$input.value;
   }
-  SelectiveLookup.prototype.setContent = function() {
+  /* Uses the data set on associated service to build HTML
+   * result output. Since data keys are quite likely to vary
+   * across services, you can pass through a mappingn object
+   * to avoid the default/expected key names.
+   * @datamapping (Object) Allow change of required key name
+   **/
+  SelectiveLookup.prototype.setContent = function(datamapping) {
     var data = this._private.service.response;
     var $list = this._private.$list;
+    var map = datamapping || { text: "text", value: "value" };
     $list.empty();
     if(data && data.length) {
       for(var i=0; i<data.length; ++i) {
-        $list.append("<li data-company-number=\"" + data[i].company_number + "\">" + data[i].title + "</li>");
+        $list.append("<li role=\"option\" data-value=\"" + data[i][map.value] + "\">" + data[i][map.text] + "</li>");
       }
     }
     else {
@@ -367,16 +377,21 @@ GOVUK.components = (new function() {
     var instance = this;
     instance._private.$list.off("click.SelectiveLookupContent");
     instance._private.$list.on("click.SelectiveLookupContent", function(event) {
-      var $selected = $(event.target);
-      var companyNumber = $selected.attr("data-company-number");
-      if(companyNumber) {
-        instance._private.$input.val($selected.text());
-        instance._private.$field.val($selected.attr("data-company-number"));
+      var $eventTarget = $(event.target);
+      if($eventTarget.attr("data-value")) {
+        instance._private.$input.val($eventTarget.text());
+        instance._private.$field.val($eventTarget.attr("data-value"));
       }
     });
   }
   CompaniesHouseNameLookup.prototype.param = function() {
     return "term=" + this._private.$input.val();
+  }
+  CompaniesHouseNameLookup.prototype.setContent = function() {
+    SelectiveLookup.prototype.setContent.call(this, {
+      text: "title",
+      value: "company_number"
+    });
   }
 });
 
