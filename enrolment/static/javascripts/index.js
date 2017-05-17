@@ -251,11 +251,13 @@ GOVUK.components = (new function() {
       +        // 40 = Down
       */
       
-      $input.on("keyup.SelectiveLookup", function(e) {
+      $input.on("keydown.SelectiveLookup", function(e) {
         switch(e.which) {
           case 27: 
             instance.close();
             break;
+          case 9: 
+            instance._private.$list.find("li").eq(0).focus();
           default: ;// Nothing.
         }
       });
@@ -323,7 +325,10 @@ GOVUK.components = (new function() {
     $list.empty();
     if(data && data.length) {
       for(var i=0; i<data.length; ++i) {
-        $list.append("<li role=\"option\" data-value=\"" + data[i][map.value] + "\">" + data[i][map.text] + "</li>");
+        // Note: 
+        // Only need to set a tabindex attribute to allow focus. 
+        // The value is not important here.
+        $list.append("<li role=\"option\" tabindex=\"1000\" data-value=\"" + data[i][map.value] + "\">" + data[i][map.text] + "</li>");
       }
     }
     else {
