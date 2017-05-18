@@ -257,7 +257,7 @@ GOVUK.components = (new function() {
           // Tab or arrow from input to list
           case  9: 
           case 40: 
-            if(!e.shiftKey) {
+            if(!e.shiftKey && instance._private.active) {
               e.preventDefault();
               instance._private.$list.find("li:first-child").focus();
             }
