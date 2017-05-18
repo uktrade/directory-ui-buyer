@@ -167,7 +167,7 @@ GOVUK.data = (new function() {
      * @params (String) Specify params for GET or data for POST
      **/
     service.update = function(params) {
-      if(request) request.abort(); // abort if there's something in play
+      if(request) request.abort(); // Cancels a currently active request
       config.data = params || "";
       request = $.ajax(config);
       request.done(function() {
