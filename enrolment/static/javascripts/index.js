@@ -344,8 +344,12 @@ GOVUK.components = (new function() {
     });
   }
   SelectiveLookup.prototype.close = function() {
-    this._private.$list.css({ display: "none" });
-    this._private.$input.attr("aria-expanded", "false");
+    var $input = this._private.$input;
+    if($input.attr("aria-expanded") === "true") {
+      this._private.$list.css({ display: "none" });
+      $input.attr("aria-expanded", "false");
+      $input.focus();
+    }
   }  
   SelectiveLookup.prototype.search = function() {
    this._private.service.update(this.param());
