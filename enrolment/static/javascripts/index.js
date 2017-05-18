@@ -26,6 +26,7 @@ GOVUK.utils = (new function() {
   
 });
 
+
 /*
   Cookie methods
   ==============
@@ -95,6 +96,7 @@ GOVUK.cookie = (new function() {
 
 });
 
+
 /*
   UTM value storage
   =================
@@ -142,49 +144,72 @@ GOVUK.utm = (new function() {
 
 
 /* 
-  General data storage and display methods
-  ======================================== */
-GOVUK.data = {}
-GOVUK.data.companiesHouse = (new function() {
+  General data storage and services
+  =================================== */
+GOVUK.data = (new function() {
 
-  /* Performs a lookup of companies by name.
-   **/
-  this.getByNameData = {}; // Stores results
-  this.getByNameRequest = null; // Allow access to request
-  this.getByName = function(term) {
-    if(this.getByNameRequest) this.getByNameRequest.abort();
-    this.getByNameRequest = $.ajax({
-      url: "/api/internal/companies-house-search/",
-      data: "term=" + term,
+  function Service(url, configuration) {
+    var service = this;
+    var config = $.extend({
+      url: url,
       method: "GET",
-      success: function(data) {
-        GOVUK.data.companiesHouse.getByNameData = data;
+      success: function(response) {
+        service.response = response;
       }
-    });
+    }, configuration || {});
     
-    return this.getByNameRequest;
+    var listeners = [];
+    var request; // Reference to active update request
+    
+    service.response = {}; // What we get back from an update
+    
+    /* Gets a fresh response
+     * @params (String) Specify params for GET or data for POST
+     **/
+    service.update = function(params) {
+      if(request) request.abort(); // Cancels a currently active request
+      config.data = params || "";
+      request = $.ajax(config);
+      request.done(function() {
+        // Activate each listener task
+        for(var i=0; i<listeners.length; ++i) {
+          listeners[i]();
+        }
+      })
+    }
+    
+    /* Specify data processing task after response
+     * @task (Function) Do something after service.response has been updated
+     **/
+    service.listener = function(task) {
+      listeners.push(task);
+    }
   }
+
+  
+  // Create service to fetch Company from name lookup on Companies House API
+  this.getCompanyByName = new Service("/api/internal/companies-house-search/");
   
 });
 
+
 /* 
-  General effects
-  ======================= */
+  General reusable component classes
+  ==================================== */
 GOVUK.components = (new function() {
   
   /* Performs a data lookup and displays multiple choice results
-   * to populate the input value (or specificed alternative field)
-   * with user choice. 
+   * to populate the input value with user choice. 
    *
    * @$input (jQuery node) Target input element
    * @request (Function) Returns reference to the jqXHR requesting data
    * @content (Function) Returns content to populate the dropdown 
-   *
-   * TODO - Add some Aria attributes...
+   * @options (Object) Allow some configurations
    **/
   this.SelectiveLookup = SelectiveLookup;
-  function SelectiveLookup($input, request, content, options) {
+  function SelectiveLookup($input, service, options) {
     var instance = this;
+    var popupId = GOVUK.utils.uniqueString();
     
     // Configure options.
     opts = $.extend({
@@ -193,24 +218,110 @@ GOVUK.components = (new function() {
     
     // Some inner variable requirement.
     instance._private = {
-      content: content,
-      request: request,
-      $display: $("<div class=\"SelectiveLookupDisplay\"></div>"),
+      active: false, // State management to isolate the listener.
+      service: service, // Service that retrieves and stores the data
+      $list: $("<ul class=\"SelectiveLookupDisplay\" style=\"display:none;\" id=\"" + popupId + "\" role=\"listbox\"></ul>"),
       $input: $input
     }
     
     // Will not have arguments if being inherited for prototype
-    if(arguments.length >= 3) {
+    if(arguments.length >= 2) {
       
-      // Bind main event.
+      // Bind lookup event.
+      $input.attr("autocomplete", "off"); // Because it interferes with results display. 
+      $input.on("focus.SelectiveLookup", function() { instance._private.active = true; });
+      $input.on("blur.SelectiveLookup", function() { instance._private.active = false; });
       $input.on("input.SelectiveLookup", function() {
         if(this.value.length >= opts.lookupOnCharacter) {
-          instance.search(this.value);
+          instance.search();
         }
       });
+      
+      /* Bind events to allow keyboard navigation of component.
+       * Using keydown event because works better with Tab capture.
+       * Supports following keys:
+       * 9 = Tab
+       * 13 = Enter
+       * 27 = Esc
+       * 38 = Up
+       * 40 = Down
+       */
+      $input.on("keydown.SelectiveLookup", function(e) {
+        switch(e.which) {
+          
+          // Esc to close when on input
+          case 27: 
+            instance.close();
+            break;
+            
+          // Tab or arrow from input to list
+          case  9: 
+          case 40: 
+            if(!e.shiftKey && instance._private.$input.attr("aria-expanded") === "true") {
+              e.preventDefault();
+              instance._private.$list.find("li:first-child").focus();
+            }
+        }
+      });
+      
+      instance._private.$list.on("keydown.SelectiveLookup", "li", function(e) {
+        var $current = $(e.target);
+        switch(e.which) {
+          // Prevent tabbing beyond list
+          case 9:
+            if($current.is(":last-child") && !e.shiftKey) {
+              e.preventDefault();
+            }
+            break;
+            
+          // Arrow movement between list items
+          case 38:
+            e.preventDefault();
+            $current.prev("li").focus();
+            break;
+          case 40:
+            e.preventDefault();
+            $current.next("li").focus();
+            break;
+            
+          // Esc to close when on list item (re-focus on input)
+          case 27:
+            instance.close();
+            $input.focus();
+            break;
+            
+          // Enter key item selection  
+          case 13:
+            e.preventDefault();
+            $current.click();
+        }
+      });
+      
+      // Tab or arrow movement from list to input
+      instance._private.$list.on("keydown.SelectiveLookup", "li:first-child", function(e) {
+        if(e.shiftKey && e.which === 9 || e.which === 38) {
+          e.preventDefault();
+          $input.focus();
+        }
+      });
+      
+      // Bind service update listener
+      instance._private.service.listener(function() {
+        if(instance._private.active) {
+          instance.setContent();
+          instance.bindContentEvents();
+          instance.open();
+        }
+      });
+      
+      // Add some accessibility support
+      $input.attr("aria-autocomplete", "list");
+      $input.attr("role", "combobox");
+      $input.attr("aria-expanded", "false");
+      $input.attr("aria-owns", popupId);
     
       // Add display element
-      $(document.body).append(instance._private.$display);
+      $(document.body).append(instance._private.$list);
     
       // Register the instance
       SelectiveLookup.instances.push(this);
@@ -220,37 +331,60 @@ GOVUK.components = (new function() {
         instance.setSizeAndPosition();
       });
     }
-    
   }
   
   SelectiveLookup.prototype = {};
   SelectiveLookup.prototype.bindContentEvents = function() {
     var instance = this;
-    instance._private.$display.off("click.SelectiveLookupContent");
-    instance._private.$display.on("click.SelectiveLookupContent", function(event) {
-      instance._private.$input.val($(event.target).text());
+    instance._private.$list.off("click.SelectiveLookupContent");
+    instance._private.$list.on("click.SelectiveLookupContent", function(event) {
+      var $eventTarget = $(event.target);
+      if($eventTarget.attr("data-value")) {
+        instance._private.$input.val($eventTarget.attr("data-value"));
+      }
     });
   }
   SelectiveLookup.prototype.close = function() {
-    // TODO: Add Aria stuff...
-    this._private.$display.css({
-      display: "none"
-    });
+    var $input = this._private.$input;
+    if($input.attr("aria-expanded") === "true") {
+      this._private.$list.css({ display: "none" });
+      $input.attr("aria-expanded", "false");
+      $input.focus();
+    }
   }  
-  SelectiveLookup.prototype.search = function(params) {
-    var instance = this;
-    instance._private.request(params).done(function() {
-      instance.setContent(instance._private.content());
-      instance.bindContentEvents();
-      instance.open();
-    });
+  SelectiveLookup.prototype.search = function() {
+   this._private.service.update(this.param());
   }
-  SelectiveLookup.prototype.setContent = function(content) {
-    this._private.$display.empty().append(content);
+  SelectiveLookup.prototype.param = function() {
+    // Set param in separate function to allow easy override.
+    return this._private.$input.attr("name") + "=" + this._private.$input.value;
+  }
+  /* Uses the data set on associated service to build HTML
+   * result output. Since data keys are quite likely to vary
+   * across services, you can pass through a mappingn object
+   * to avoid the default/expected key names.
+   * @datamapping (Object) Allow change of required key name
+   **/
+  SelectiveLookup.prototype.setContent = function(datamapping) {
+    var data = this._private.service.response;
+    var $list = this._private.$list;
+    var map = datamapping || { text: "text", value: "value" };
+    $list.empty();
+    if(data && data.length) {
+      for(var i=0; i<data.length; ++i) {
+        // Note: 
+        // Only need to set a tabindex attribute to allow focus. 
+        // The value is not important here.
+        $list.append("<li role=\"option\" tabindex=\"1000\" data-value=\"" + data[i][map.value] + "\">" + data[i][map.text] + "</li>");
+      }
+    }
+    else {
+      $list.append("<li role=\"option\">No results found</li>");
+    }
   }
   SelectiveLookup.prototype.setSizeAndPosition = function() {
     var position = this._private.$input.offset();
-    this._private.$display.css({
+    this._private.$list.css({
       left: parseInt(position.left) + "px",
       position: "absolute",
       top: (parseInt(position.top) + this._private.$input.outerHeight()) + "px",
@@ -258,11 +392,9 @@ GOVUK.components = (new function() {
     });
   }
   SelectiveLookup.prototype.open = function() {
-    // TODO: Add Aria stuff...
     this.setSizeAndPosition();
-    this._private.$display.css({
-      display: "block"
-    });
+    this._private.$list.css({ display: "block" });
+    this._private.$input.attr("aria-expanded", "true");
   }
   
   
@@ -279,36 +411,38 @@ GOVUK.components = (new function() {
   /* Extends SelectiveLookup to perform specific requirements
    * for Companies House company search by name, and resulting
    * form field population.
+   * @$input (jQuery node) Target input element
+   * @$field (jQuery node) Alternative element to populate with selection value
    **/
   this.CompaniesHouseNameLookup = CompaniesHouseNameLookup;
   function CompaniesHouseNameLookup($input, $field) {
     SelectiveLookup.call(this, 
       $input,
-      GOVUK.data.companiesHouse.getByName,
-      function() {
-        var data = GOVUK.data.companiesHouse.getByNameData;
-        var content = "<ul>";
-        if(data) {
-          for(var i=0; i<data.length; ++i) {
-            content += "<li data-company-number=\"" + data[i].company_number + "\">" + data[i].title + "</li>";
-          }
-        }
-        content += "</ul>";
-        return content;
-      }
+      GOVUK.data.getCompanyByName
     );
-    
+
     // Some inner variable requirement.
     this._private.$field = $field || $input; // Allows a different form field to receive value.
   }
   CompaniesHouseNameLookup.prototype = new SelectiveLookup;
   CompaniesHouseNameLookup.prototype.bindContentEvents = function() {
     var instance = this;
-    instance._private.$display.off("click.SelectiveLookupContent");
-    instance._private.$display.on("click.SelectiveLookupContent", function(event) {
-      var $selected = $(event.target);
-      instance._private.$input.val($selected.text());
-      instance._private.$field.val($selected.attr("data-company-number"));
+    instance._private.$list.off("click.SelectiveLookupContent");
+    instance._private.$list.on("click.SelectiveLookupContent", function(event) {
+      var $eventTarget = $(event.target);
+      if($eventTarget.attr("data-value")) {
+        instance._private.$input.val($eventTarget.text());
+        instance._private.$field.val($eventTarget.attr("data-value"));
+      }
+    });
+  }
+  CompaniesHouseNameLookup.prototype.param = function() {
+    return "term=" + this._private.$input.val();
+  }
+  CompaniesHouseNameLookup.prototype.setContent = function() {
+    SelectiveLookup.prototype.setContent.call(this, {
+      text: "title",
+      value: "company_number"
     });
   }
 });
