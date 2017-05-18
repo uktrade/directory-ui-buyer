@@ -352,7 +352,7 @@ GOVUK.components = (new function() {
   }
   SelectiveLookup.prototype.param = function() {
     // Set param in separate function to allow easy override.
-    return this.$input.attr("name") + "=" + this.$input.value;
+    return this._private.$input.attr("name") + "=" + this._private.$input.value;
   }
   /* Uses the data set on associated service to build HTML
    * result output. Since data keys are quite likely to vary
