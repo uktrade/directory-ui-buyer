@@ -229,8 +229,8 @@ GOVUK.components = (new function() {
       
       // Bind lookup event.
       $input.attr("autocomplete", "off"); // Because it interferes with results display. 
-      $input.on("focus", function() { instance._private.active = true; });
-      $input.on("blur", function() { instance._private.active = false; });
+      $input.on("focus.SelectiveLookup", function() { instance._private.active = true; });
+      $input.on("blur.SelectiveLookup", function() { instance._private.active = false; });
       $input.on("input.SelectiveLookup", function() {
         if(this.value.length >= opts.lookupOnCharacter) {
           instance.search();
@@ -264,7 +264,7 @@ GOVUK.components = (new function() {
         }
       });
       
-      instance._private.$list.on("keydown", "li", function(e) {
+      instance._private.$list.on("keydown.SelectiveLookup", "li", function(e) {
         var $current = $(e.target);
         switch(e.which) {
           // Prevent tabbing beyond list
@@ -297,7 +297,7 @@ GOVUK.components = (new function() {
       });
       
       // Tab or arrow movement from list to input
-      instance._private.$list.on("keydown", "li:first-child", function(e) {
+      instance._private.$list.on("keydown.SelectiveLookup", "li:first-child", function(e) {
         if(e.shiftKey && e.which === 9 || e.which === 38) {
           e.preventDefault();
           $input.focus();
