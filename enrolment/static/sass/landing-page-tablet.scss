@@ -43,7 +43,7 @@
   }
   
   #content.fabhome {
-    background-position: 100% -270px;
+    background-position: top center;
   }
   
   #fabhome-benefits {
@@ -108,9 +108,8 @@
   }
   
   #fabhome-screenshot {
-    bottom: 160px;
+    height: auto;
     right: 20px;
-    top: 80px;
     width: 25%;
   }
 }
