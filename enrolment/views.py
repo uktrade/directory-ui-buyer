@@ -1,14 +1,19 @@
-from formtools.wizard.views import NamedUrlSessionWizardView
+import http
 
 from django.core.urlresolvers import reverse
 from django.conf import settings
-from django.http import JsonResponse, Http404, HttpResponseRedirect
+from django.http import JsonResponse, Http404, HttpResponseBadRequest, \
+    HttpResponseRedirect
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.views.generic import FormView, TemplateView, View
+from django.forms import ValidationError
+
+from formtools.wizard.views import NamedUrlSessionWizardView
+import requests
 
 from api_client import api_client
-from enrolment import forms, helpers
+from enrolment import forms, helpers, validators
 from sso.utils import SSOLoginRequiredMixin
 
 
@@ -94,19 +99,49 @@ class EnrolmentView(SSOLoginRequiredMixin, NamedUrlSessionWizardView):
     def get_template_names(self):
         return [self.templates[self.steps.current]]
 
+    @staticmethod
+    def store_companies_house_profile_in_session_and_validate(
+            session, company_number
+    ):
+        try:
+            helpers.store_companies_house_profile_in_session(
+                session=session,
+                company_number=company_number,
+            )
+        except requests.exceptions.RequestException as error:
+            if error.response.status_code == http.client.NOT_FOUND:
+                raise ValidationError(
+                    'Company not found. Please check the number.'
+                )
+            else:
+                raise ValidationError(
+                    'Error. Please try again later.'
+                )
+        else:
+            company_status = helpers.get_company_status_from_session(
+                session
+            )
+            validators.company_active(company_status)
+
     def get_form_initial(self, step):
         if step == self.COMPANY:
-            company_number = helpers.get_company_number_from_request(
-                self.request
-            )
+            if not helpers.get_company_from_session(self.request.session):
 
-            if not company_number:
-                raise Http404()
+                company_number = self.request.GET.get('company_number')
+                if not company_number:
+                    raise Http404()
 
-            company = helpers.get_company_details_from_session(
-                self.request.session
-            )
-            return forms.get_company_form_initial_data(data=company)
+                try:
+                    self.store_companies_house_profile_in_session_and_validate(
+                        session=self.request.session,
+                        company_number=company_number
+                    )
+                except ValidationError as e:
+                    return HttpResponseBadRequest(e.message)
+
+                return forms.get_company_form_initial_data(
+                    data=helpers.get_company_from_session(self.request.session)
+                )
 
     def serialize_form_data(self):
         data = forms.serialize_enrolment_forms(self.get_all_cleaned_data())
@@ -116,8 +151,12 @@ class EnrolmentView(SSOLoginRequiredMixin, NamedUrlSessionWizardView):
         company_name = helpers.get_company_name_from_session(
             self.request.session
         )
+        company_number = helpers.get_company_number_from_session(
+            self.request.session
+        )
         data['sso_id'] = self.request.sso_user.id
         data['company_email'] = self.request.sso_user.email
+        data['company_number'] = company_number
         data['date_of_creation'] = date_of_creation
         data['company_name'] = company_name
         return data

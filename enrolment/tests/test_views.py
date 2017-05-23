@@ -5,6 +5,7 @@ import re
 from django.core.urlresolvers import reverse
 
 import requests
+from requests.exceptions import RequestException
 import pytest
 
 from enrolment import forms, helpers
@@ -14,6 +15,15 @@ from enrolment.views import (
     EnrolmentInstructionsView,
 )
 from sso.utils import SSOUser
+
+
+MOCK_COMPANIES_HOUSE_API_COMPANY_PROFILE = {
+    'company_name': 'company_name',
+    'company_status': 'active',
+    'date_of_creation': 'date_of_creation',
+    'company_number': 12345678,
+    'registered_office_address': 'registered_office_address'
+}
 
 
 @pytest.fixture
@@ -199,16 +209,25 @@ def test_enrolment_form_complete_api_client_fail(company_request):
     assert response.template_name == EnrolmentView.failure_template
 
 
-@patch.object(helpers, 'get_company_name_from_session',
-              Mock(return_value='Example corp'))
+@patch(
+    'enrolment.helpers.get_company_from_companies_house',
+    Mock(return_value=MOCK_COMPANIES_HOUSE_API_COMPANY_PROFILE)
+)
 @patch('enrolment.helpers.has_company', Mock(return_value=False))
 @patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
 def test_enrolment_views_use_correct_template(client):
-    view_class = EnrolmentView
-    for step_name, form in view_class.form_list:
-        response = client.get(reverse('register', kwargs={'step': step_name}))
+    for step_name, form in EnrolmentView.form_list:
 
-        assert response.template_name == [view_class.templates[step_name]]
+        query_params = {}
+        if step_name == 'company':
+            query_params = {'company_number': 12345678}
+
+        response = client.get(
+            reverse('register', kwargs={'step': step_name}),
+            query_params
+        )
+
+        assert response.template_name == [EnrolmentView.templates[step_name]]
 
 
 @patch('enrolment.helpers.has_company', return_value=True)
@@ -320,16 +339,6 @@ def test_landing_page_context_sso_user_with_company(client):
     assert response.context_data['user_has_company'] is True
 
 
-@patch('enrolment.helpers.has_company', Mock(return_value=True))
-@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
-def test_landing_page_submit_feature_flag_off(settings, client):
-    settings.NEW_LANDING_PAGE_FEATURE_ENABLED = False
-
-    response = client.post(reverse('index'))
-
-    assert response.status_code == 405
-
-
 @patch('api_client.api_client.company.validate_company_number')
 def test_landing_page_submit_invalid_form_shows_errors(
     mock_company_unique, settings, client,
@@ -359,3 +368,89 @@ def test_landing_page_submit_valid_form_redirects(
     expected_url = '/register/company?company_number=11111111'
     assert response.status_code == 302
     assert response.get('Location') == expected_url
+
+
+@patch(
+    'enrolment.helpers.get_company_from_companies_house',
+    Mock(return_value=MOCK_COMPANIES_HOUSE_API_COMPANY_PROFILE)
+)
+@patch('enrolment.helpers.has_company', Mock(return_value=False))
+@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
+def test_company_enrolment_step_caches_profile(client):
+    client.get(
+        reverse('register', kwargs={'step': 'company'}),
+        {'company_number': 12345678}
+    )
+
+    assert client.session[helpers.COMPANIES_HOUSE_PROFILE_SESSION_KEY] == {
+        'company_name': 'company_name',
+        'company_status': 'active',
+        'date_of_creation': 'date_of_creation',
+        'company_number': '12345678',
+        'registered_office_address': 'registered_office_address'
+    }
+
+
+@patch('enrolment.helpers.has_company', Mock(return_value=False))
+@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
+def test_company_enrolment_step_handles_api_company_not_found(client):
+
+    with patch('enrolment.helpers.get_company_from_companies_house') as mock:
+        mock.side_effect = RequestException(
+            response=Mock(status_code=http.client.NOT_FOUND),
+            request=Mock(),
+        )
+
+        response = client.get(
+            reverse('register', kwargs={'step': 'company'}),
+            {'company_number': 12345678}
+        )
+
+    import ipdb
+    ipdb.set_trace()
+
+    assert response
+
+
+# @patch.object(helpers, 'store_companies_house_profile_in_session')
+# @patch.object(validators, 'company_active', Mock())
+# def test_company_form_handles_api_error(
+#     mock_store_companies_house_profile_in_session, client
+# ):
+#     exception = RequestException(
+#         response=Mock(status_code=http.client.INTERNAL_SERVER_ERROR),
+#         request=Mock(),
+#     )
+#     mock_store_companies_house_profile_in_session.side_effect = exception
+#     session = client.session
+#     data = {
+#         'company_number': '01234567',
+#         'terms_agreed': True,
+#     }
+
+#     form = forms.CompanyForm(data=data, session=session)
+
+#     assert form.is_valid() is False
+
+#     form.errors['company_number'] == [forms.MESSAGE_TRY_AGAIN_LATER]
+
+
+# @patch.object(helpers, 'store_companies_house_profile_in_session', Mock())
+# @patch.object(helpers, 'get_company_status_from_session',
+#               Mock(return_value='active'))
+# @patch.object(validators, 'company_active')
+# def test_company_form_handles_company_active_validation(
+#     mock_company_active, client
+# ):
+#     session = client.session
+#     data = {
+#         'company_number': '01234567',
+#         'company_name': 'foo',
+#         'company_address': 'bar'
+#     }
+
+#     form = forms.CompanyForm(data=data, session=session)
+
+#     assert form.is_valid() is True
+
+#     mock_company_active.assert_called_once_with('active')

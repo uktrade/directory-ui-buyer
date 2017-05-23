@@ -1,17 +1,11 @@
-import http
+from django import forms
+from django.utils.safestring import mark_safe
+
 from directory_validators import enrolment as shared_validators
 from directory_validators.constants import choices
 from directory_constants.constants import urls
 
-import requests
-
-from django import forms
-from django.utils.safestring import mark_safe
-
 from enrolment import fields, helpers, validators, constants
-
-MESSAGE_COMPANY_NOT_FOUND = 'Company not found. Please check the number.'
-MESSAGE_TRY_AGAIN_LATER = 'Error. Please try again later.'
 
 
 class IndentedInvalidFieldsMixin:
@@ -25,40 +19,11 @@ class AutoFocusFieldMixin:
         self.fields[first_field.name].widget.attrs['autofocus'] = 'autofocus'
 
 
-class StoreCompaniesHouseProfileInSessionMixin:
-
-    def __init__(self, session, *args, **kwargs):
-        self.session = session
-        super().__init__(*args, **kwargs)
-
-    def clean_company_number(self):
-        value = self.cleaned_data['company_number']
-        # by this point the number passed `company_number.validators`,
-        # so we know at least the company is correct length and is unique
-        try:
-            # side effect: store company details in request session
-            helpers.store_companies_house_profile_in_session(
-                session=self.session,
-                company_number=value,
-            )
-        except requests.exceptions.RequestException as error:
-            if error.response.status_code == http.client.NOT_FOUND:
-                raise forms.ValidationError(MESSAGE_COMPANY_NOT_FOUND)
-            else:
-                raise forms.ValidationError(MESSAGE_TRY_AGAIN_LATER)
-        else:
-            company_status = helpers.get_company_status_from_session(
-                self.session
-            )
-            # side effect: can raise ValidationError
-            validators.company_active(company_status)
-        return value
-
-
-class CompanyForm(AutoFocusFieldMixin,
-                  IndentedInvalidFieldsMixin,
-                  StoreCompaniesHouseProfileInSessionMixin,
-                  forms.Form):
+class CompanyForm(
+    AutoFocusFieldMixin,
+    IndentedInvalidFieldsMixin,
+    forms.Form
+):
     company_name = forms.CharField()
     company_number = fields.PaddedCharField(
         label='Company number:',
@@ -78,8 +43,9 @@ class CompanyForm(AutoFocusFieldMixin,
     company_address = forms.CharField()
 
 
-class CompanyExportStatusForm(AutoFocusFieldMixin, IndentedInvalidFieldsMixin,
-                              forms.Form):
+class CompanyExportStatusForm(
+    AutoFocusFieldMixin, IndentedInvalidFieldsMixin, forms.Form
+):
     export_status = forms.ChoiceField(
         label=(
             'Has your company sold products or services to overseas customers?'
@@ -97,37 +63,7 @@ class CompanyExportStatusForm(AutoFocusFieldMixin, IndentedInvalidFieldsMixin,
     )
 
 
-class EnrolmentSingleStepForm(AutoFocusFieldMixin, IndentedInvalidFieldsMixin,
-                              StoreCompaniesHouseProfileInSessionMixin,
-                              forms.Form):
-    export_status = forms.ChoiceField(
-        label=(
-            'Has your company sold products or services to overseas customers?'
-        ),
-        choices=choices.EXPORT_STATUSES,
-        validators=[shared_validators.export_status_intention]
-    )
-    terms_agreed = forms.BooleanField(
-        label=mark_safe(
-            'Tick this box to accept the '
-            '<a href="{url}" target="_blank">terms and '
-            'conditions</a> of the Find a Buyer service.'.format(
-                url=urls.TERMS_AND_CONDITIONS_URL)
-        )
-    )
-    company_number = fields.PaddedCharField(
-        validators=helpers.halt_validation_on_failure(
-            shared_validators.company_number,
-            validators.company_unique,
-        ),
-        max_length=8,
-        fillchar='0',
-        widget=forms.HiddenInput()
-    )
-
-
-class InternationalBuyerForm(IndentedInvalidFieldsMixin,
-                             forms.Form):
+class InternationalBuyerForm(IndentedInvalidFieldsMixin, forms.Form):
     PLEASE_SELECT_LABEL = 'Please select a sector'
     TERMS_CONDITIONS_MESSAGE = ('Tick the box to confirm you agree to '
                                 'the terms and conditions.')
