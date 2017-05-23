@@ -356,6 +356,6 @@ def test_landing_page_submit_valid_form_redirects(
     params = {'company_number': '11111111'}
     response = client.post(url, params)
 
-    expected_url = '/register/single/?company_number=11111111'
+    expected_url = '/register/company?company_number=11111111'
     assert response.status_code == 302
     assert response.get('Location') == expected_url

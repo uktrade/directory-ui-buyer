@@ -8,8 +8,7 @@ import requests
 from django import forms
 from django.utils.safestring import mark_safe
 
-from enrolment import fields, helpers, validators
-
+from enrolment import fields, helpers, validators, constants
 
 MESSAGE_COMPANY_NOT_FOUND = 'Company not found. Please check the number.'
 MESSAGE_TRY_AGAIN_LATER = 'Error. Please try again later.'
@@ -60,17 +59,23 @@ class CompanyForm(AutoFocusFieldMixin,
                   IndentedInvalidFieldsMixin,
                   StoreCompaniesHouseProfileInSessionMixin,
                   forms.Form):
-    name = forms.CharField(
-        label='Company details:',
-        help_text=(
-            "Confirm that this is your company, "
-            "or go back to select a different company"
+    company_name = forms.CharField()
+    company_number = fields.PaddedCharField(
+        label='Company number:',
+        help_text=mark_safe(
+            'This is the company number on your certificate of '
+            'incorporation. Find your company number from '
+            '<a href="{url}" target="_blank">Companies House'
+            '</a>.'.format(url=constants.COMPANIES_HOUSE_SEARCH_URL)
         ),
-        widget=forms.TextInput(attrs={'readonly': 'readonly'}),
-        required=False
+        validators=helpers.halt_validation_on_failure(
+            shared_validators.company_number,
+            validators.company_unique,
+        ),
+        max_length=8,
+        fillchar='0',
     )
-    number = forms.CharField()
-    address = forms.CharField()
+    company_address = forms.CharField()
 
 
 class CompanyExportStatusForm(AutoFocusFieldMixin, IndentedInvalidFieldsMixin,

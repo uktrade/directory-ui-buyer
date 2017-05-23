@@ -83,7 +83,8 @@ def test_company_form_caches_profile(
     session = client.session
     data = {
         'company_number': '01234567',
-        'terms_agreed': True,
+        'company_name': 'foo',
+        'company_address': 'bar'
     }
 
     form = forms.CompanyForm(data=data, session=session)
@@ -153,7 +154,8 @@ def test_company_form_handles_company_active_validation(
     session = client.session
     data = {
         'company_number': '01234567',
-        'terms_agreed': True,
+        'company_name': 'foo',
+        'company_address': 'bar'
     }
 
     form = forms.CompanyForm(data=data, session=session)
@@ -216,10 +218,16 @@ def test_serialize_international_buyer_forms():
 
 
 def test_get_company_name_form_initial_data():
-    actual = forms.get_company_name_form_initial_data(
-        name='Example'
+    actual = forms.get_company_form_initial_data(
+        data={
+            'company_name': 'Example',
+            'company_number': 1234,
+            'registered_office_address': {'foo': 'bar'}
+        }
     )
     expected = {
-        'name': 'Example'
+        'name': 'Example',
+        'number': 1234,
+        'address': {'foo': 'bar'}
     }
     assert actual == expected

@@ -132,9 +132,12 @@ class EnrolmentView(SSOLoginRequiredMixin, NamedUrlSessionWizardView):
         return TemplateResponse(self.request, template)
 
     def get_context_data(self, *args, **kwargs):
-        return super().get_context_data(
+        ctx = super().get_context_data(
             form_labels=self.form_labels, *args, **kwargs
         )
+        if self.storage.current_step == self.COMPANY:
+            pass
+        return ctx
 
 
 class CompaniesHouseSearchApiView(View):
