@@ -282,23 +282,8 @@ def test_companies_house_search_api_success(
     assert response.content == b'[{"name": "Smashing corp"}]'
 
 
-@patch('enrolment.helpers.has_company', return_value=True)
-@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
-def test_enrolment_single_step_logged_in_has_company_redirects(
-    mock_has_company, client, sso_user
-):
-    url = reverse('register-single-step')
-    response = client.get(url)
-
-    assert response.status_code == http.client.FOUND
-    assert response.get('Location') == reverse('company-detail')
-    mock_has_company.assert_called_once_with(sso_user.id)
-
-
-@patch(
-    'sso.middleware.SSOUserMiddleware.process_request',
-    process_request_anon
-)
+@patch('sso.middleware.SSOUserMiddleware.process_request',
+       process_request_anon)
 def test_landing_page_context_no_sso_user(client):
     response = client.get(reverse('index'))
 

@@ -84,6 +84,7 @@ def test_store_companies_house_profile_in_session_saves_in_session(
         'date_of_creation': '2000-10-10',
         'company_name': 'Example corp',
         'company_status': 'active',
+        'registered_office_address': {'foo': 'bar'}
     }
     response = Response()
     response.status_code = http.client.OK
@@ -161,7 +162,7 @@ def test_get_companies_house_contact_details():
 def test_get_company_date_of_creation_from_session(client):
     session = client.session
     key = helpers.COMPANIES_HOUSE_PROFILE_SESSION_KEY
-    session[key] = {'date_of_creation': '2000-10-10'}
+    session[key] = {'company': {'date_of_creation': '2000-10-10'}}
 
     actual = helpers.get_company_date_of_creation_from_session(session)
 
@@ -171,7 +172,7 @@ def test_get_company_date_of_creation_from_session(client):
 def test_get_company_name_from_session(client):
     session = client.session
     key = helpers.COMPANIES_HOUSE_PROFILE_SESSION_KEY
-    session[key] = {'company_name': 'Example corp'}
+    session[key] = {'company': {'company_name': 'Example corp'}}
 
     assert helpers.get_company_name_from_session(session) == 'Example corp'
 
@@ -179,6 +180,6 @@ def test_get_company_name_from_session(client):
 def test_get_company_status_from_session(client):
     session = client.session
     key = helpers.COMPANIES_HOUSE_PROFILE_SESSION_KEY
-    session[key] = {'company_status': 'active'}
+    session[key] = {'company': {'company_status': 'active'}}
 
     assert helpers.get_company_status_from_session(session) == 'active'
