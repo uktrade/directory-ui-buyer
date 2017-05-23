@@ -57,36 +57,18 @@ class StoreCompaniesHouseProfileInSessionMixin:
 
 
 class CompanyForm(AutoFocusFieldMixin, IndentedInvalidFieldsMixin,
-                  StoreCompaniesHouseProfileInSessionMixin, forms.Form):
-
-    company_number = fields.PaddedCharField(
-        label='Company number:',
-        help_text=mark_safe(
-            'This is the company number on your certificate of '
-            'incorporation. Find your company number from '
-            '<a href="{url}" target="_blank">Companies House'
-            '</a>.'.format(url=constants.COMPANIES_HOUSE_SEARCH_URL)
-        ),
-        validators=helpers.halt_validation_on_failure(
-            shared_validators.company_number,
-            validators.company_unique,
-        ),
-        max_length=8,
-        fillchar='0',
-    )
-
-
-class CompanyNameForm(AutoFocusFieldMixin, IndentedInvalidFieldsMixin,
-                      forms.Form):
+                         StoreCompaniesHouseProfileInSessionMixin, forms.Form):
     name = forms.CharField(
-        label='Company name:',
+        label='Company details:',
         help_text=(
-            "If this is not your company then click back in your browser "
-            "and re-enter your company's number."
+            "Confirm that this is your company, "
+            "or go back to select a different company"
         ),
         widget=forms.TextInput(attrs={'readonly': 'readonly'}),
         required=False
     )
+    number = forms.CharField()
+    address = forms.CharField()
 
 
 class CompanyExportStatusForm(AutoFocusFieldMixin, IndentedInvalidFieldsMixin,
@@ -211,9 +193,9 @@ def serialize_international_buyer_forms(cleaned_data):
     }
 
 
-def get_company_name_form_initial_data(name):
+def get_company_form_initial_data(data):
     """
-    Returns the shape of initial data that CompanyNameForm expects.
+    Returns the shape of initial data that CompanyForm expects.
 
     @param {str} name
     @returns dict
@@ -221,5 +203,7 @@ def get_company_name_form_initial_data(name):
     """
 
     return {
-        'name': name,
+        'name': data['company_name'],
+        'number': data['company_number'],
+        'address': data['registered_office_address']
     }

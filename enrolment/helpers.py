@@ -7,7 +7,7 @@ import requests
 from django.conf import settings
 
 from api_client import api_client
-
+from enrolment.validators import company_unique
 
 COMPANIES_HOUSE_PROFILE_SESSION_KEY = 'ch_profile'
 MESSAGE_AUTH_FAILED = 'Auth failed with Companies House'
@@ -20,15 +20,31 @@ logger = logging.getLogger(__name__)
 companies_house_session = requests.Session()
 
 
-def store_companies_house_profile_in_session(session, company_number):
+def get_company_number_from_request(request):
+    company_number = request.GET.get('compay_number')
+    if company_number:
+        if company_unique(company_number):
+            return company_number
+    return None
+
+
+def get_company_from_companies_house(company_number):
     response = CompaniesHouseClient.retrieve_profile(number=company_number)
     response.raise_for_status()
-    details = response.json()
-    session[COMPANIES_HOUSE_PROFILE_SESSION_KEY] = {
+    return response.json()
+
+
+def store_companies_house_profile_in_session(session, company_number):
+    details = get_company_from_companies_house(company_number)
+    company = {
         'company_name': details['company_name'],
         'company_status': details['company_status'],
         'date_of_creation': details['date_of_creation'],
+        'company_number': company_number,
+        'registered_office_address': details['registered_office_address']
+
     }
+    session[COMPANIES_HOUSE_PROFILE_SESSION_KEY]['company'] = company
     session.modified = True
 
 
@@ -98,12 +114,22 @@ class CompaniesHouseClient:
 
 
 def get_company_date_of_creation_from_session(session):
-    return session[COMPANIES_HOUSE_PROFILE_SESSION_KEY]['date_of_creation']
+    return session[
+        COMPANIES_HOUSE_PROFILE_SESSION_KEY
+    ]['company']['date_of_creation']
 
 
 def get_company_name_from_session(session):
-    return session[COMPANIES_HOUSE_PROFILE_SESSION_KEY]['company_name']
+    return session[
+        COMPANIES_HOUSE_PROFILE_SESSION_KEY
+    ]['company']['company_name']
 
 
 def get_company_status_from_session(session):
-    return session[COMPANIES_HOUSE_PROFILE_SESSION_KEY]['company_status']
+    return session[
+        COMPANIES_HOUSE_PROFILE_SESSION_KEY
+    ]['company']['company_status']
+
+
+def get_company_details_from_session(session):
+    return session[COMPANIES_HOUSE_PROFILE_SESSION_KEY]['company']

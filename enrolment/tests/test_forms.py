@@ -32,7 +32,7 @@ def auto_focus_field_autofocus():
 
 def test_auto_focus_mixin_installed():
     FormClasses = [
-        forms.CompanyNameForm,
+        forms.CompanyForm,
         forms.CompanyForm,
         forms.CompanyExportStatusForm,
     ]
@@ -42,7 +42,7 @@ def test_auto_focus_mixin_installed():
 
 def test_indent_invalid_mixin_installed():
     FormClasses = [
-        forms.CompanyNameForm,
+        forms.CompanyForm,
         forms.CompanyForm,
         forms.CompanyExportStatusForm,
         forms.InternationalBuyerForm,
