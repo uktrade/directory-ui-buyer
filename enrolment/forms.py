@@ -8,7 +8,7 @@ import requests
 from django import forms
 from django.utils.safestring import mark_safe
 
-from enrolment import constants, fields, helpers, validators
+from enrolment import fields, helpers, validators
 
 
 MESSAGE_COMPANY_NOT_FOUND = 'Company not found. Please check the number.'
@@ -56,8 +56,10 @@ class StoreCompaniesHouseProfileInSessionMixin:
         return value
 
 
-class CompanyForm(AutoFocusFieldMixin, IndentedInvalidFieldsMixin,
-                         StoreCompaniesHouseProfileInSessionMixin, forms.Form):
+class CompanyForm(AutoFocusFieldMixin,
+                  IndentedInvalidFieldsMixin,
+                  StoreCompaniesHouseProfileInSessionMixin,
+                  forms.Form):
     name = forms.CharField(
         label='Company details:',
         help_text=(
