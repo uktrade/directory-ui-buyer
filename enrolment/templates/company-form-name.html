@@ -1,2 +1,50 @@
-{% extends "form-wrapper.html" %}
-{% block form_title %}Your company's name{% endblock%}
+{% extends './govuk_layout.html' %}
+{% load staticfiles %}
+
+{% load i18n %}
+{% block head %}{{ wizard.form.media }}{% endblock %}
+{% block sub_header %}{# prevent the subheader from showing on form pages #}{% endblock %}
+
+{% block content %}
+	<section class="outer-container">
+		<h1>Confirm that this is your company</h1>
+		
+		{% comment %} 
+		Currently calling a static file to fake content until get updated code from BE
+		{% endcomment %}
+		{% include 'retrieved-company-details.html' %}
+		
+		<form id="company-details-confirmation" action="" method="post" enctype="multipart/form-data">
+			{% csrf_token %}
+			<p>Confirm that this is your company, or go back to select a different company.</p>
+			{{ wizard.management_form }}
+			{% if wizard.form.forms %}
+				{{ wizard.form.management_form }}
+				{% for form in wizard.form.forms %}
+					{{ form }}
+				{% endfor %}
+			{% else %}
+				{% for hidden in form.hidden_fields %}
+				    {{ hidden }}
+				{% endfor %}
+				{% for field in form.visible_fields %}
+					{% comment %} 
+						Errors not part of current design being implemented but expect to be on next variant so leaving in for now.
+						The field is being served by pythong files but is not required in design. Should actually be changed
+						to an input:hidden so currently using CSS to hide and preserve functionality.  
+					{% endcomment %}
+					<p class="{{ field.css_classes }}" style="display:none;">{{ field.errors }}</p>
+					<div style="display:block; height:1px; visibility:hidden;">{{ field }}</div>
+				{% endfor %}
+			{% endif %}
+			
+			{% if wizard.steps.step1 != wizard.steps.count %}
+				<input class="button button-primary" type="submit" value="{% block button_next_label %}Confirm{% endblock%}"/>
+			{% endif %}
+			
+			{% if wizard.steps.prev %}
+				<button name="wizard_goto_step" class="link back-link" type="submit" value="{{ wizard.steps.prev }}">Back to previous step</button>
+			{% endif %}
+		</form>
+	</section>
+{%endblock content %}
