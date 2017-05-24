@@ -84,6 +84,8 @@ def test_store_companies_house_profile_in_session_saves_in_session(
         'date_of_creation': '2000-10-10',
         'company_name': 'Example corp',
         'company_status': 'active',
+        'company_number': '01234567',
+        'registered_office_address': {'foo': 'bar'}
     }
     response = Response()
     response.status_code = http.client.OK

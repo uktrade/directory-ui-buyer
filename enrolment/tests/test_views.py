@@ -3,18 +3,29 @@ from unittest.mock import patch, Mock
 import re
 
 from django.core.urlresolvers import reverse
+from django.forms import ValidationError
 
 import requests
+from requests.exceptions import RequestException
 import pytest
 
 from enrolment import forms, helpers
+from enrolment.validators import MESSAGE_COMPANY_NOT_ACTIVE
 from enrolment.views import (
     api_client,
     EnrolmentView,
     EnrolmentInstructionsView,
-    EnrolmentSingleStepView,
 )
 from sso.utils import SSOUser
+
+
+MOCK_COMPANIES_HOUSE_API_COMPANY_PROFILE = {
+    'company_name': 'company_name',
+    'company_status': 'active',
+    'date_of_creation': 'date_of_creation',
+    'company_number': 12345678,
+    'registered_office_address': {'line1': 'foo', 'line2': 'bar'}
+}
 
 
 @pytest.fixture
@@ -200,16 +211,25 @@ def test_enrolment_form_complete_api_client_fail(company_request):
     assert response.template_name == EnrolmentView.failure_template
 
 
-@patch.object(helpers, 'get_company_name_from_session',
-              Mock(return_value='Example corp'))
+@patch(
+    'enrolment.helpers.get_company_from_companies_house',
+    Mock(return_value=MOCK_COMPANIES_HOUSE_API_COMPANY_PROFILE)
+)
 @patch('enrolment.helpers.has_company', Mock(return_value=False))
 @patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
 def test_enrolment_views_use_correct_template(client):
-    view_class = EnrolmentView
-    for step_name, form in view_class.form_list:
-        response = client.get(reverse('register', kwargs={'step': step_name}))
+    for step_name, form in EnrolmentView.form_list:
 
-        assert response.template_name == [view_class.templates[step_name]]
+        query_params = {}
+        if step_name == 'company':
+            query_params = {'company_number': 12345678}
+
+        response = client.get(
+            reverse('register', kwargs={'step': step_name}),
+            query_params
+        )
+
+        assert response.template_name == [EnrolmentView.templates[step_name]]
 
 
 @patch('enrolment.helpers.has_company', return_value=True)
@@ -283,82 +303,8 @@ def test_companies_house_search_api_success(
     assert response.content == b'[{"name": "Smashing corp"}]'
 
 
-@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
-@patch('enrolment.helpers.has_company', Mock(return_value=False))
-@patch('enrolment.helpers.CompaniesHouseClient.retrieve_profile')
-@patch.object(api_client.registration, 'send_form')
-def test_enrolment_signle_form_complete_api_client_call(
-    mock_send_form, mock_retrieve_profile, client
-):
-    view_class = EnrolmentSingleStepView
-    mock_retrieve_profile.return_value = Mock(
-        json=lambda: {
-            'company_name': 'Jimbo corp',
-            'company_status': 'active',
-            'date_of_creation': '01/01/2016'
-        }
-    )
-    url = reverse('register-single-step')
-    get_payload = {'company_number': '1234567'}
-    post_payload = {
-        'company_number': '1234567',
-        'export_status': 'YES',
-        'terms_agreed': True
-    }
-    client.get(url, get_payload)
-    response = client.post(url, post_payload)
-
-    assert response.status_code == 200
-    assert response.template_name == view_class.success_template
-    assert mock_send_form.call_count == 1
-
-
-@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
-@patch('enrolment.helpers.has_company', Mock(return_value=False))
-@patch('enrolment.helpers.CompaniesHouseClient.retrieve_profile')
-@patch.object(api_client.registration, 'send_form')
-def test_enrolment_signle_form_api_client_fail(
-    mock_send_form, mock_retrieve_profile, client, api_response_400
-):
-    view_class = EnrolmentSingleStepView
-    mock_retrieve_profile.return_value = Mock(
-        json=lambda: {
-            'company_name': 'Jimbo corp',
-            'company_status': 'active',
-            'date_of_creation': '01/01/2016'
-        }
-    )
-    mock_send_form.return_value = api_response_400
-    url = reverse('register-single-step')
-    get_payload = {'company_number': '1234567'}
-    post_payload = {
-        'company_number': '1234567',
-        'export_status': 'YES',
-        'terms_agreed': True
-    }
-
-    client.get(url, get_payload)
-    response = client.post(url, post_payload)
-    assert response.template_name == view_class.failure_template
-
-
-@patch('enrolment.helpers.has_company', return_value=True)
-@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
-def test_enrolment_single_step_logged_in_has_company_redirects(
-    mock_has_company, client, sso_user
-):
-    url = reverse('register-single-step')
-    response = client.get(url)
-
-    assert response.status_code == http.client.FOUND
-    assert response.get('Location') == reverse('company-detail')
-    mock_has_company.assert_called_once_with(sso_user.id)
-
-
-@patch(
-    'sso.middleware.SSOUserMiddleware.process_request',
-    process_request_anon
-)
+@patch('sso.middleware.SSOUserMiddleware.process_request',
+       process_request_anon)
 def test_landing_page_context_no_sso_user(client):
     response = client.get(reverse('index'))
 
@@ -395,16 +341,6 @@ def test_landing_page_context_sso_user_with_company(client):
     assert response.context_data['user_has_company'] is True
 
 
-@patch('enrolment.helpers.has_company', Mock(return_value=True))
-@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
-def test_landing_page_submit_feature_flag_off(settings, client):
-    settings.NEW_LANDING_PAGE_FEATURE_ENABLED = False
-
-    response = client.post(reverse('index'))
-
-    assert response.status_code == 405
-
-
 @patch('api_client.api_client.company.validate_company_number')
 def test_landing_page_submit_invalid_form_shows_errors(
     mock_company_unique, settings, client,
@@ -431,6 +367,108 @@ def test_landing_page_submit_valid_form_redirects(
     params = {'company_number': '11111111'}
     response = client.post(url, params)
 
-    expected_url = '/register/single/?company_number=11111111'
+    expected_url = '/register/company?company_number=11111111'
     assert response.status_code == 302
     assert response.get('Location') == expected_url
+
+
+@patch(
+    'enrolment.helpers.get_company_from_companies_house',
+    Mock(return_value=MOCK_COMPANIES_HOUSE_API_COMPANY_PROFILE)
+)
+@patch('enrolment.helpers.has_company', Mock(return_value=False))
+@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
+def test_company_enrolment_step_caches_profile(client):
+    client.get(
+        reverse('register', kwargs={'step': 'company'}),
+        {'company_number': 12345678}
+    )
+
+    assert client.session[helpers.COMPANIES_HOUSE_PROFILE_SESSION_KEY] == {
+        'company_name': 'company_name',
+        'company_status': 'active',
+        'date_of_creation': 'date_of_creation',
+        'company_number': '12345678',
+        'registered_office_address': {'line1': 'foo', 'line2': 'bar'}
+    }
+
+
+@patch('enrolment.helpers.has_company', Mock(return_value=False))
+@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
+def test_company_enrolment_step_handles_api_company_not_found(client):
+
+    with patch('enrolment.helpers.get_company_from_companies_house') as mock:
+        mock.side_effect = RequestException(
+            response=Mock(status_code=http.client.NOT_FOUND),
+            request=Mock(),
+        )
+
+        response = client.get(
+            reverse('register', kwargs={'step': 'company'}),
+            {'company_number': 12345678}
+        )
+
+    assert "Company not found" in str(response.content)
+
+
+@patch('enrolment.helpers.has_company', Mock(return_value=False))
+@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
+def test_company_enrolment_step_handles_api_company_error(client):
+
+    with patch('enrolment.helpers.get_company_from_companies_house') as mock:
+        mock.side_effect = RequestException(
+            response=Mock(status_code=500),
+            request=Mock(),
+        )
+
+        response = client.get(
+            reverse('register', kwargs={'step': 'company'}),
+            {'company_number': 12345678}
+        )
+    assert 'Error. Please try again later.' in str(response.content)
+
+
+@patch('enrolment.helpers.has_company', Mock(return_value=False))
+@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
+@patch('enrolment.helpers.store_companies_house_profile_in_session', Mock())
+def test_company_enrolment_step_company_number_not_provided(client):
+    response = client.get(reverse('register', kwargs={'step': 'company'}))
+    assert 'Company number not provided.' in str(response.content)
+
+
+@patch('enrolment.helpers.has_company', Mock(return_value=False))
+@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
+@patch('enrolment.helpers.store_companies_house_profile_in_session',
+       Mock())
+@patch('enrolment.helpers.get_company_status_from_session',
+       Mock(return_value='not active'))
+def test_company_enrolment_step_handles_company_not_active(client):
+
+    with patch('enrolment.validators.company_active') as mock:
+        mock.side_effect = ValidationError(MESSAGE_COMPANY_NOT_ACTIVE)
+
+        response = client.get(
+            reverse('register', kwargs={'step': 'company'}),
+            {'company_number': 12345678}
+        )
+
+    assert MESSAGE_COMPANY_NOT_ACTIVE in str(response.content)
+
+
+@patch('enrolment.helpers.has_company', Mock(return_value=False))
+@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
+@patch('enrolment.helpers.store_companies_house_profile_in_session',
+       Mock())
+@patch('enrolment.helpers.get_company_status_from_session',
+       Mock(return_value='active'))
+def test_company_enrolment_step_handles_company_already_registered(client):
+
+    with patch('enrolment.validators.company_unique') as mock:
+        mock.side_effect = ValidationError('Company already exists')
+
+        response = client.get(
+            reverse('register', kwargs={'step': 'company'}),
+            {'company_number': 12345678}
+        )
+
+    assert 'Company already exists' in str(response.content)
