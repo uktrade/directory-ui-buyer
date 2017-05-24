@@ -451,7 +451,7 @@ def test_company_enrolment_step_handles_company_not_active(client):
 
 @patch('enrolment.helpers.has_company', Mock(return_value=False))
 @patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
-def test_company_enrolment_step_handles_company_already_registred(client):
+def test_company_enrolment_step_handles_company_already_registered(client):
 
     with patch('enrolment.validators.company_status') as mock:
         mock.side_effect = ValidationError('Company already exists')
