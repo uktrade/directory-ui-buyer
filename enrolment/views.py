@@ -2,10 +2,9 @@ import http
 
 from django.core.urlresolvers import reverse
 from django.conf import settings
-from django.http import JsonResponse, Http404, HttpResponseBadRequest, \
-    HttpResponseRedirect
+from django.http import JsonResponse, Http404, HttpResponseRedirect
 from django.shortcuts import redirect
-from django.template.response import TemplateResponse
+from django.template.response import TemplateResponse, SimpleTemplateResponse
 from django.views.generic import FormView, TemplateView, View
 from django.forms import ValidationError
 
@@ -123,25 +122,32 @@ class EnrolmentView(SSOLoginRequiredMixin, NamedUrlSessionWizardView):
             )
             validators.company_active(company_status)
 
+    def get(self, *args, **kwargs):
+        step_url = kwargs.get('step', None)
+
+        if step_url == self.COMPANY:
+            company_number = self.request.GET.get('company_number')
+            if not company_number:
+                raise Http404()
+
+            try:
+                self.store_companies_house_profile_in_session_and_validate(
+                    session=self.request.session,
+                    company_number=company_number
+                )
+            except ValidationError as error:
+                return SimpleTemplateResponse(
+                    'company-form-error.html',
+                    {'validation_error': error.message},
+                )
+
+        return super().get(*args, **kwargs)
+
     def get_form_initial(self, step):
         if step == self.COMPANY:
-            if not helpers.get_company_from_session(self.request.session):
-
-                company_number = self.request.GET.get('company_number')
-                if not company_number:
-                    raise Http404()
-
-                try:
-                    self.store_companies_house_profile_in_session_and_validate(
-                        session=self.request.session,
-                        company_number=company_number
-                    )
-                except ValidationError as e:
-                    return HttpResponseBadRequest(e.message)
-
-                return forms.get_company_form_initial_data(
-                    data=helpers.get_company_from_session(self.request.session)
-                )
+            return forms.get_company_form_initial_data(
+                data=helpers.get_company_from_session(self.request.session)
+            )
 
     def serialize_form_data(self):
         data = forms.serialize_enrolment_forms(self.get_all_cleaned_data())
@@ -174,8 +180,6 @@ class EnrolmentView(SSOLoginRequiredMixin, NamedUrlSessionWizardView):
         ctx = super().get_context_data(
             form_labels=self.form_labels, *args, **kwargs
         )
-        if self.storage.current_step == self.COMPANY:
-            pass
         return ctx
 
 

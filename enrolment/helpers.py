@@ -108,6 +108,12 @@ def get_company_date_of_creation_from_session(session):
     ]['date_of_creation']
 
 
+def get_company_number_from_session(session):
+    return session[
+        COMPANIES_HOUSE_PROFILE_SESSION_KEY
+    ]['company_number']
+
+
 def get_company_name_from_session(session):
     return session[
         COMPANIES_HOUSE_PROFILE_SESSION_KEY
@@ -120,5 +126,5 @@ def get_company_status_from_session(session):
     ]['company_status']
 
 
-def get_company_details_from_session(session):
-    return session[COMPANIES_HOUSE_PROFILE_SESSION_KEY]
+def get_company_from_session(session):
+    return session.get(COMPANIES_HOUSE_PROFILE_SESSION_KEY)

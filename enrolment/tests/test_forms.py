@@ -61,13 +61,6 @@ def test_company_form_fields():
     assert field.fillchar == '0'
 
 
-def test_company_form_validators():
-    field = forms.CompanyForm(data={}).fields['company_number']
-    inner_validators = field.validators[0].inner_validators
-    assert shared_validators.company_number in inner_validators
-    assert validators.company_unique in inner_validators
-
-
 def test_international_form_missing_data():
     form = forms.InternationalBuyerForm(data={})
 
@@ -96,11 +89,9 @@ def test_company_export_status_form_validars():
 
 def test_serialize_enrolment_forms():
     actual = forms.serialize_enrolment_forms({
-        'company_number': '01234567',
         'export_status': 'YES',
     })
     expected = {
-        'company_number': '01234567',
         'export_status': 'YES',
     }
     assert actual == expected
@@ -125,12 +116,12 @@ def test_get_company_name_form_initial_data():
         data={
             'company_name': 'Example',
             'company_number': 1234,
-            'registered_office_address': {'foo': 'bar'}
+            'registered_office_address': {'line1': 'foo', 'line2': 'bar'}
         }
     )
     expected = {
-        'name': 'Example',
-        'number': 1234,
-        'address': {'foo': 'bar'}
+        'company_name': 'Example',
+        'company_number': 1234,
+        'company_address': 'foo, bar'
     }
     assert actual == expected

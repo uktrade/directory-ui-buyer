@@ -5,7 +5,7 @@ from directory_validators import enrolment as shared_validators
 from directory_validators.constants import choices
 from directory_constants.constants import urls
 
-from enrolment import fields, helpers, validators, constants
+from enrolment import fields, helpers, validators
 
 
 class IndentedInvalidFieldsMixin:
@@ -24,23 +24,24 @@ class CompanyForm(
     IndentedInvalidFieldsMixin,
     forms.Form
 ):
-    company_name = forms.CharField()
+    company_name = forms.CharField(
+        label='Company name:',
+        help_text=(
+            "If this is not your company then click back in your browser "
+            "and re-enter your company."
+        ),
+        widget=forms.TextInput(attrs={'readonly': 'readonly'}),
+    )
     company_number = fields.PaddedCharField(
         label='Company number:',
-        help_text=mark_safe(
-            'This is the company number on your certificate of '
-            'incorporation. Find your company number from '
-            '<a href="{url}" target="_blank">Companies House'
-            '</a>.'.format(url=constants.COMPANIES_HOUSE_SEARCH_URL)
-        ),
-        validators=helpers.halt_validation_on_failure(
-            shared_validators.company_number,
-            validators.company_unique,
-        ),
+        widget=forms.TextInput(attrs={'readonly': 'readonly'}),
         max_length=8,
         fillchar='0',
     )
-    company_address = forms.CharField()
+    company_address = forms.CharField(
+        label='Company registered office address:',
+        widget=forms.TextInput(attrs={'readonly': 'readonly'}),
+    )
 
 
 class CompanyExportStatusForm(
@@ -107,14 +108,12 @@ def serialize_enrolment_forms(cleaned_data):
 
     @param {dict} cleaned_data - All the fields in
         `CompanyForm`,
-        `CompanyNameForm`, and
         `CompanyExportStatusForm`
     @returns dict
 
     """
 
     return {
-        'company_number': cleaned_data['company_number'],
         'export_status': cleaned_data['export_status'],
     }
 
@@ -146,7 +145,9 @@ def get_company_form_initial_data(data):
     """
 
     return {
-        'name': data['company_name'],
-        'number': data['company_number'],
-        'address': data['registered_office_address']
+        'company_name': data['company_name'],
+        'company_number': data['company_number'],
+        'company_address': ", ".join(
+            data['registered_office_address'].values()
+        )
     }

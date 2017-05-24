@@ -22,7 +22,7 @@ MOCK_COMPANIES_HOUSE_API_COMPANY_PROFILE = {
     'company_status': 'active',
     'date_of_creation': 'date_of_creation',
     'company_number': 12345678,
-    'registered_office_address': 'registered_office_address'
+    'registered_office_address': {'line1': 'foo', 'line2': 'bar'}
 }
 
 
@@ -387,7 +387,7 @@ def test_company_enrolment_step_caches_profile(client):
         'company_status': 'active',
         'date_of_creation': 'date_of_creation',
         'company_number': '12345678',
-        'registered_office_address': 'registered_office_address'
+        'registered_office_address': {'line1': 'foo', 'line2': 'bar'}
     }
 
 
@@ -406,51 +406,27 @@ def test_company_enrolment_step_handles_api_company_not_found(client):
             {'company_number': 12345678}
         )
 
-    import ipdb
-    ipdb.set_trace()
-
-    assert response
+    assert "Company not found" in str(response.content)
 
 
-# @patch.object(helpers, 'store_companies_house_profile_in_session')
-# @patch.object(validators, 'company_active', Mock())
-# def test_company_form_handles_api_error(
-#     mock_store_companies_house_profile_in_session, client
-# ):
-#     exception = RequestException(
-#         response=Mock(status_code=http.client.INTERNAL_SERVER_ERROR),
-#         request=Mock(),
-#     )
-#     mock_store_companies_house_profile_in_session.side_effect = exception
-#     session = client.session
-#     data = {
-#         'company_number': '01234567',
-#         'terms_agreed': True,
-#     }
+@patch('enrolment.helpers.has_company', Mock(return_value=False))
+@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
+def test_company_enrolment_step_handles_api_company_error(client):
 
-#     form = forms.CompanyForm(data=data, session=session)
+    with patch('enrolment.helpers.get_company_from_companies_house') as mock:
+        mock.side_effect = RequestException(
+            response=Mock(status_code=500),
+            request=Mock(),
+        )
 
-#     assert form.is_valid() is False
-
-#     form.errors['company_number'] == [forms.MESSAGE_TRY_AGAIN_LATER]
+        response = client.get(
+            reverse('register', kwargs={'step': 'company'}),
+            {'company_number': 12345678}
+        )
+    assert 'Error. Please try again later.' in str(response.content)
 
 
-# @patch.object(helpers, 'store_companies_house_profile_in_session', Mock())
-# @patch.object(helpers, 'get_company_status_from_session',
-#               Mock(return_value='active'))
-# @patch.object(validators, 'company_active')
-# def test_company_form_handles_company_active_validation(
-#     mock_company_active, client
-# ):
-#     session = client.session
-#     data = {
-#         'company_number': '01234567',
-#         'company_name': 'foo',
-#         'company_address': 'bar'
-#     }
-
-#     form = forms.CompanyForm(data=data, session=session)
-
-#     assert form.is_valid() is True
-
-#     mock_company_active.assert_called_once_with('active')
+def test_company_enrolment_step_return_404_if_not_company_number(client):
+    url = reverse('register', kwargs={'step': 'company'}),
+    response = client.get(url, {'company_number': None})
+    assert response.status_code == 404
