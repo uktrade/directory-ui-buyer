@@ -428,14 +428,20 @@ def test_company_enrolment_step_handles_api_company_error(client):
     assert 'Error. Please try again later.' in str(response.content)
 
 
-def test_company_enrolment_step_return_404_if_not_company_number(client):
-    url = reverse('register', kwargs={'step': 'company'}),
-    response = client.get(url, {'company_number': None})
+@patch('enrolment.helpers.has_company', Mock(return_value=False))
+@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
+@patch('enrolment.helpers.store_companies_house_profile_in_session', Mock())
+def test_company_enrolment_step_company_number_not_provided(client):
+    response = client.get(reverse('register', kwargs={'step': 'company'}))
     assert 'Company number not provided.' in str(response.content)
 
 
 @patch('enrolment.helpers.has_company', Mock(return_value=False))
 @patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
+@patch('enrolment.helpers.store_companies_house_profile_in_session',
+       Mock())
+@patch('enrolment.helpers.get_company_status_from_session',
+       Mock(return_value='not active'))
 def test_company_enrolment_step_handles_company_not_active(client):
 
     with patch('enrolment.validators.company_active') as mock:
@@ -451,9 +457,13 @@ def test_company_enrolment_step_handles_company_not_active(client):
 
 @patch('enrolment.helpers.has_company', Mock(return_value=False))
 @patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
+@patch('enrolment.helpers.store_companies_house_profile_in_session',
+       Mock())
+@patch('enrolment.helpers.get_company_status_from_session',
+       Mock(return_value='active'))
 def test_company_enrolment_step_handles_company_already_registered(client):
 
-    with patch('enrolment.validators.company_status') as mock:
+    with patch('enrolment.validators.company_unique') as mock:
         mock.side_effect = ValidationError('Company already exists')
 
         response = client.get(
