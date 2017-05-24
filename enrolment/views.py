@@ -39,17 +39,21 @@ class DomesticLandingView(FormView):
         return settings.SUPPLIER_PROFILE_URL.format(number=number)
 
     def get_context_data(self, **kwargs):
-        sso_user = self.request.sso_user
-        supplier_profile_urls = {
+        context = super().get_context_data(**kwargs)
+
+        context['user_has_company'] = (
+            self.request.sso_user and helpers.has_company(
+                self.request.sso_user.id
+            )
+        )
+        context['supplier_profile_urls'] = {
             'immersive': self.get_supplier_profile_url('07723438'),
             'blippar': self.get_supplier_profile_url('07446749'),
             'briggs': self.get_supplier_profile_url('06836628'),
         }
-        return super().get_context_data(
-            supplier_profile_urls=supplier_profile_urls,
-            user_has_company=sso_user and helpers.has_company(sso_user.id),
-            **kwargs,
-        )
+        context['buyers_waiting_number'] = settings.BUYERS_WAITING_NUMBER
+
+        return context
 
 
 class EnrolmentInstructionsView(TemplateView):

@@ -269,3 +269,6 @@ HEADER_FOOTER_CSS_ACTIVE_CLASSES = {'fab': True}
 # CORS
 CORS_ORIGIN_ALLOW_ALL = os.getenv('CORS_ORIGIN_ALLOW_ALL') == 'true'
 CORS_ORIGIN_WHITELIST = os.getenv('CORS_ORIGIN_WHITELIST', '').split(',')
+
+# Landing page 'International buyers are waiting for you' number
+BUYERS_WAITING_NUMBER = os.getenv('BUYERS_WAITING_NUMBER', '5,368')
