@@ -1,12 +1,5 @@
 /* Registration
  *******************/
-h1 {
-  border-bottom: $grey-4 solid 1px;
-  font-size: 32px;
-  font-weight: 500;
-  margin-bottom: 40px;
-  padding-bottom: 20px;
-}
 
 .back-link,
 .back-link:hover {
@@ -17,6 +10,16 @@ h1 {
 .error {
   color: $red-1;
   font-weight: bold;
+}
+
+.registration {
+  h1 {
+    border-bottom: $grey-4 solid 1px;
+    font-size: 32px;
+    font-weight: 500;
+    margin-bottom: 40px;
+    padding-bottom: 20px;
+  }  
 }
 
 .retrieved-company-details {
