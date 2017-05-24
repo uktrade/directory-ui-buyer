@@ -27,6 +27,7 @@ class DomesticLandingView(FormView):
         return ['landing-page-old.html']
 
     def form_valid(self, form):
+
         url = '{path}?company_number={number}'.format(
             path=reverse('register',  kwargs={'step': 'company'}),
             number=form.cleaned_data['company_number']
@@ -121,6 +122,7 @@ class EnrolmentView(SSOLoginRequiredMixin, NamedUrlSessionWizardView):
                 session
             )
             validators.company_active(company_status)
+            validators.company_unique(company_status)
 
     def get(self, *args, **kwargs):
         step_url = kwargs.get('step', None)

@@ -439,7 +439,7 @@ def test_company_enrolment_step_return_404_if_not_company_number(client):
 def test_company_enrolment_step_handles_company_not_active(client):
 
     with patch('enrolment.validators.company_active') as mock:
-        mock.side_effect = ValidationError('foo')
+        mock.side_effect = ValidationError(MESSAGE_COMPANY_NOT_ACTIVE)
 
         response = client.get(
             reverse('register', kwargs={'step': 'company'}),
@@ -447,3 +447,18 @@ def test_company_enrolment_step_handles_company_not_active(client):
         )
 
     assert MESSAGE_COMPANY_NOT_ACTIVE in str(response.content)
+
+
+@patch('enrolment.helpers.has_company', Mock(return_value=False))
+@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
+def test_company_enrolment_step_handles_company_not_active(client):
+
+    with patch('enrolment.validators.company_status') as mock:
+        mock.side_effect = ValidationError('Company already exists')
+
+        response = client.get(
+            reverse('register', kwargs={'step': 'company'}),
+            {'company_number': 12345678}
+        )
+
+    assert 'Company already exists' in str(response.content)
