@@ -3,12 +3,14 @@ from unittest.mock import patch, Mock
 import re
 
 from django.core.urlresolvers import reverse
+from django.forms import ValidationError
 
 import requests
 from requests.exceptions import RequestException
 import pytest
 
 from enrolment import forms, helpers
+from enrolment.validators import MESSAGE_COMPANY_NOT_ACTIVE
 from enrolment.views import (
     api_client,
     EnrolmentView,
@@ -429,4 +431,19 @@ def test_company_enrolment_step_handles_api_company_error(client):
 def test_company_enrolment_step_return_404_if_not_company_number(client):
     url = reverse('register', kwargs={'step': 'company'}),
     response = client.get(url, {'company_number': None})
-    assert response.status_code == 404
+    assert 'Company number not provided.' in str(response.content)
+
+
+@patch('enrolment.helpers.has_company', Mock(return_value=False))
+@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
+def test_company_enrolment_step_handles_company_not_active(client):
+
+    with patch('enrolment.validators.company_active') as mock:
+        mock.side_effect = ValidationError('foo')
+
+        response = client.get(
+            reverse('register', kwargs={'step': 'company'}),
+            {'company_number': 12345678}
+        )
+
+    assert MESSAGE_COMPANY_NOT_ACTIVE in str(response.content)

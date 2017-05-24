@@ -128,7 +128,10 @@ class EnrolmentView(SSOLoginRequiredMixin, NamedUrlSessionWizardView):
         if step_url == self.COMPANY:
             company_number = self.request.GET.get('company_number')
             if not company_number:
-                raise Http404()
+                return SimpleTemplateResponse(
+                    'company-form-error.html',
+                    {'validation_error': 'Company number not provided.'},
+                )
 
             try:
                 self.store_companies_house_profile_in_session_and_validate(
