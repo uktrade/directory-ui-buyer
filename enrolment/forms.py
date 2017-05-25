@@ -96,7 +96,7 @@ class CompanyNumberForm(IndentedInvalidFieldsMixin, forms.Form):
         validators=helpers.halt_validation_on_failure(
             shared_validators.company_number,
             validators.company_unique,
-            validators.company_number_active,
+            validators.company_number_present_and_active,
         ),
         max_length=8,
         fillchar='0',

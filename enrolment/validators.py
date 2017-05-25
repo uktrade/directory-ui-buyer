@@ -4,11 +4,15 @@ import http
 
 from django.forms import ValidationError
 
+from requests.exceptions import RequestException
+
 from api_client import api_client
 from enrolment import helpers
 
 
 MESSAGE_COMPANY_NOT_ACTIVE = 'Company not active.'
+MESSAGE_COMPANY_NOT_FOUND = 'Company not found. Please check the number.'
+MESSAGE_COMPANY_ERROR = 'Error. Please try again later.'
 
 
 def company_unique(value):
@@ -23,9 +27,18 @@ def company_active(value):
         raise ValidationError(MESSAGE_COMPANY_NOT_ACTIVE)
 
 
-def company_number_active(value):
-    company = helpers.get_company_from_companies_house(company_number=value)
-    company_active(company['company_status'])
+def company_number_present_and_active(value):
+    try:
+        company = helpers.get_company_from_companies_house(
+            company_number=value
+        )
+    except RequestException as error:
+        if error.response.status_code == http.client.NOT_FOUND:
+            raise ValidationError(MESSAGE_COMPANY_NOT_FOUND)
+        else:
+            raise ValidationError(MESSAGE_COMPANY_ERROR)
+    else:
+        company_active(company['company_status'])
 
 
 def email_address(value):
