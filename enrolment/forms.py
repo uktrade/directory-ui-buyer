@@ -148,7 +148,9 @@ def format_registered_office_address(address):
         'region'
     ]
 
-    return ", ".join(field for field in fields if address.get(field))
+    return ", ".join(
+        address[field] for field in fields if address.get(field)
+    )
 
 
 def get_company_form_initial_data(data):
