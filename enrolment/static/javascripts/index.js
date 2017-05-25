@@ -1,6 +1,6 @@
 var GOVUK = {};
 
-/* 
+/*
   General utility methods
   ======================= */
 GOVUK.utils = (new function() {
@@ -17,13 +17,13 @@ GOVUK.utils = (new function() {
     var results = regex.exec(qs);
     return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
   }
-  
+
   /* Try to dynamically generate a unique String value.
    **/
   this.uniqueString = function() {
     return "_" + ((new Date().getTime()) + "_" + Math.random().toString()).replace(/[^\w]*/mig, "");
   }
-  
+
 });
 
 
@@ -63,10 +63,10 @@ GOVUK.cookie = (new function() {
     if (document.location.protocol == 'https:'){
       str += "; Secure";
     }
-    
+
     document.cookie = str;
   }
-  
+
  /* Read a cookie
   * @name (String) Name of cookie to read.
   **/
@@ -108,7 +108,7 @@ GOVUK.cookie = (new function() {
 */
 GOVUK.utm = (new function() {
   var utils = GOVUK.utils;
-  
+
   this.set = function() {
     // params = [utm_campaign|utm_content|utm_medium|utm_source\utm_term]
     var params = document.location.search.match(/utm_[a-z]+/g) || [];
@@ -116,11 +116,11 @@ GOVUK.utm = (new function() {
     var config = { days: 7 };
     var data = {};
     var json, value;
-    
+
     if(domain) {
       config.domain = domain.getAttribute("value");
     }
-    
+
     // 1. Does not add empty values.
     for(var i=0; i<params.length; ++i) {
       value = utils.getParameterByName(params[i]);
@@ -128,7 +128,7 @@ GOVUK.utm = (new function() {
         data[params[i]] = value;
       }
     }
-    
+
     json = JSON.stringify(data);
     if(json.length > 2) { // ie. not empty
       GOVUK.cookie.set("ed_utm", json, config);
@@ -139,11 +139,11 @@ GOVUK.utm = (new function() {
     var cookie = GOVUK.cookie.get("ed_utm");
     return cookie ? JSON.parse(cookie) : null;
   }
-  
+
 });
 
 
-/* 
+/*
   General data storage and services
   =================================== */
 GOVUK.data = (new function() {
@@ -157,12 +157,12 @@ GOVUK.data = (new function() {
         service.response = response;
       }
     }, configuration || {});
-    
+
     var listeners = [];
     var request; // Reference to active update request
-    
+
     service.response = {}; // What we get back from an update
-    
+
     /* Gets a fresh response
      * @params (String) Specify params for GET or data for POST
      **/
@@ -177,7 +177,7 @@ GOVUK.data = (new function() {
         }
       })
     }
-    
+
     /* Specify data processing task after response
      * @task (Function) Do something after service.response has been updated
      **/
@@ -186,36 +186,36 @@ GOVUK.data = (new function() {
     }
   }
 
-  
+
   // Create service to fetch Company from name lookup on Companies House API
   this.getCompanyByName = new Service("/api/internal/companies-house-search/");
-  
+
 });
 
 
-/* 
+/*
   General reusable component classes
   ==================================== */
 GOVUK.components = (new function() {
-  
+
   /* Performs a data lookup and displays multiple choice results
-   * to populate the input value with user choice. 
+   * to populate the input value with user choice.
    *
    * @$input (jQuery node) Target input element
    * @request (Function) Returns reference to the jqXHR requesting data
-   * @content (Function) Returns content to populate the dropdown 
+   * @content (Function) Returns content to populate the dropdown
    * @options (Object) Allow some configurations
    **/
   this.SelectiveLookup = SelectiveLookup;
   function SelectiveLookup($input, service, options) {
     var instance = this;
     var popupId = GOVUK.utils.uniqueString();
-    
+
     // Configure options.
     opts = $.extend({
       lookupOnCharacter: 4, // (Integer) At what character input to trigger the request for data
     }, options || {});
-    
+
     // Some inner variable requirement.
     instance._private = {
       active: false, // State management to isolate the listener.
@@ -223,12 +223,12 @@ GOVUK.components = (new function() {
       $list: $("<ul class=\"SelectiveLookupDisplay\" style=\"display:none;\" id=\"" + popupId + "\" role=\"listbox\"></ul>"),
       $input: $input
     }
-    
+
     // Will not have arguments if being inherited for prototype
     if(arguments.length >= 2) {
-      
+
       // Bind lookup event.
-      $input.attr("autocomplete", "off"); // Because it interferes with results display. 
+      $input.attr("autocomplete", "off"); // Because it interferes with results display.
       $input.on("focus.SelectiveLookup", function() { instance._private.active = true; });
       $input.on("blur.SelectiveLookup", function() { instance._private.active = false; });
       $input.on("input.SelectiveLookup", function() {
@@ -236,7 +236,7 @@ GOVUK.components = (new function() {
           instance.search();
         }
       });
-      
+
       /* Bind events to allow keyboard navigation of component.
        * Using keydown event because works better with Tab capture.
        * Supports following keys:
@@ -248,22 +248,22 @@ GOVUK.components = (new function() {
        */
       $input.on("keydown.SelectiveLookup", function(e) {
         switch(e.which) {
-          
+
           // Esc to close when on input
-          case 27: 
+          case 27:
             instance.close();
             break;
-            
+
           // Tab or arrow from input to list
-          case  9: 
-          case 40: 
+          case  9:
+          case 40:
             if(!e.shiftKey && instance._private.$input.attr("aria-expanded") === "true") {
               e.preventDefault();
               instance._private.$list.find("li:first-child").focus();
             }
         }
       });
-      
+
       instance._private.$list.on("keydown.SelectiveLookup", "li", function(e) {
         var $current = $(e.target);
         switch(e.which) {
@@ -273,7 +273,7 @@ GOVUK.components = (new function() {
               e.preventDefault();
             }
             break;
-            
+
           // Arrow movement between list items
           case 38:
             e.preventDefault();
@@ -283,20 +283,20 @@ GOVUK.components = (new function() {
             e.preventDefault();
             $current.next("li").focus();
             break;
-            
+
           // Esc to close when on list item (re-focus on input)
           case 27:
             instance.close();
             $input.focus();
             break;
-            
-          // Enter key item selection  
+
+          // Enter key item selection
           case 13:
             e.preventDefault();
             $current.click();
         }
       });
-      
+
       // Tab or arrow movement from list to input
       instance._private.$list.on("keydown.SelectiveLookup", "li:first-child", function(e) {
         if(e.shiftKey && e.which === 9 || e.which === 38) {
@@ -304,7 +304,7 @@ GOVUK.components = (new function() {
           $input.focus();
         }
       });
-      
+
       // Bind service update listener
       instance._private.service.listener(function() {
         if(instance._private.active) {
@@ -313,26 +313,26 @@ GOVUK.components = (new function() {
           instance.open();
         }
       });
-      
+
       // Add some accessibility support
       $input.attr("aria-autocomplete", "list");
       $input.attr("role", "combobox");
       $input.attr("aria-expanded", "false");
       $input.attr("aria-owns", popupId);
-    
+
       // Add display element
       $(document.body).append(instance._private.$list);
-    
+
       // Register the instance
       SelectiveLookup.instances.push(this);
-      
+
       // A little necessary visual calculating.
       $(window).on("resize", function() {
         instance.setSizeAndPosition();
       });
     }
   }
-  
+
   SelectiveLookup.prototype = {};
   SelectiveLookup.prototype.bindContentEvents = function() {
     var instance = this;
@@ -351,7 +351,7 @@ GOVUK.components = (new function() {
       $input.attr("aria-expanded", "false");
       $input.focus();
     }
-  }  
+  }
   SelectiveLookup.prototype.search = function() {
    this._private.service.update(this.param());
   }
@@ -372,8 +372,8 @@ GOVUK.components = (new function() {
     $list.empty();
     if(data && data.length) {
       for(var i=0; i<data.length; ++i) {
-        // Note: 
-        // Only need to set a tabindex attribute to allow focus. 
+        // Note:
+        // Only need to set a tabindex attribute to allow focus.
         // The value is not important here.
         $list.append("<li role=\"option\" tabindex=\"1000\" data-value=\"" + data[i][map.value] + "\">" + data[i][map.text] + "</li>");
       }
@@ -396,18 +396,18 @@ GOVUK.components = (new function() {
     this._private.$list.css({ display: "block" });
     this._private.$input.attr("aria-expanded", "true");
   }
-  
-  
+
+
   SelectiveLookup.instances = [];
   SelectiveLookup.closeAll = function() {
     for(var i=0; i<SelectiveLookup.instances.length; ++i) {
       SelectiveLookup.instances[i].close();
     }
   }
-  
+
   $(document.body).on("click.SelectiveLookupCloseAll", SelectiveLookup.closeAll);
-  
-  
+
+
   /* Extends SelectiveLookup to perform specific requirements
    * for Companies House company search by name, and resulting
    * form field population.
@@ -416,7 +416,7 @@ GOVUK.components = (new function() {
    **/
   this.CompaniesHouseNameLookup = CompaniesHouseNameLookup;
   function CompaniesHouseNameLookup($input, $field) {
-    SelectiveLookup.call(this, 
+    SelectiveLookup.call(this,
       $input,
       GOVUK.data.getCompanyByName
     );
@@ -448,13 +448,13 @@ GOVUK.components = (new function() {
 });
 
 
-/* 
+/*
   General effects
   ======================= */
 GOVUK.effects = (new function() {
-  
+
   /* Takes a target element and will populate with
-   * a count from zero (opts.start) to end. 
+   * a count from zero (opts.start) to end.
    * @$target (jQuery node) Target element
    * @end (Number) Limit of counter
    * @options (Object) See defaults for what can be configured.
@@ -463,11 +463,11 @@ GOVUK.effects = (new function() {
   function Counter($target, end) {
     var COUNTER = this;
     var limit = Number(end.replace(/[^\d]/, ""));
-    
+
     function increment() {
       COUNTER.value += 33;
     }
-    
+
     function update() {
       if(COUNTER.value > 999) {
         $target.text(String(COUNTER.value).replace(/(\d*)(\d{3})/, "$1,$2"));
@@ -476,7 +476,7 @@ GOVUK.effects = (new function() {
         $target.text(COUNTER.value);
       }
     }
-    
+
     function activate() {
       var interval = setInterval(function() {
         increment();
@@ -496,13 +496,13 @@ GOVUK.effects = (new function() {
       (new ScrollIntoViewStart($target, activate, true)).init();
     }
   }
-  
-  
+
+
   /* Scrolls element into view if not already visible.
    * @$element (jQuery node) Element to make visible
    * @offset (Number) Added to current left position to hide element offscreen
    * @leftToRight (Boolean) Whether elements come from left, or right.
-   **/ 
+   **/
   this.SlideIntoView = SlideIntoView;
   function SlideIntoView($element, offset, leftToRight) {
     var property = leftToRight ? "left": "right";
@@ -510,11 +510,11 @@ GOVUK.effects = (new function() {
     function update(pos) {
       $element.css(property, pos + "px");
     }
-    
+
     function getPosition() {
       return Number($element.css(property).replace("px", ""));
     }
-    
+
     function activate() {
       var speed = 50;
       var increment = 100;
@@ -529,24 +529,24 @@ GOVUK.effects = (new function() {
           $(window).on("resize", function() {
             // Reset to fall back to stylesheet
             // now we're done moving it.
-            $element.get(0).style[property] = ""; 
+            $element.get(0).style[property] = "";
           });
         }
-        
+
         update(String(currentPosition));
       }, speed);
     }
-    
-    // If element exists, then initially set 
+
+    // If element exists, then initially set
     // it offscreen and start effect.
     if($element.length) {
       update(originalPosition - offset);
       (new ScrollIntoViewStart($element, activate, true)).init();
     }
   }
-  
-  
-  /* Delays an action until the passed element is expected 
+
+
+  /* Delays an action until the passed element is expected
    * to be visible in the viewport.
    * @$element (jQuery node) Element that should be visible
    * @action (Function) What should happen if/when visible.
@@ -555,8 +555,8 @@ GOVUK.effects = (new function() {
     var disabledScrollActivator = false; // In case element is not visible on start.
     var done = false; // It's run one time only.
     var unique = GOVUK.utils.uniqueString();
-    
-    
+
+
     // Test to see if can activate action.
     function tryToRun() {
       if(!done) {
@@ -575,32 +575,32 @@ GOVUK.effects = (new function() {
         }
       }
     }
-    
+
     // Figure out if we can see enough of the element.
     function isVisible() {
       var visibleBase = window.scrollY + $(window).innerHeight();
       var elementBase = $element.offset().top + $element.height();
       // 40 is arbitrary number that should be small
-      // enough difference to guess element is visible. 
+      // enough difference to guess element is visible.
       return elementBase - visibleBase < 40;
     }
-    
+
     // Control kick off.
     this.init = function() {
       tryToRun();
     }
   }
-  
+
 });
 
 
 
-/* In test mode we don't want the code to 
+/* In test mode we don't want the code to
  * run immediately because we have to compensate
  * for not having a browser environment first.
- **/ 
+ **/
 GOVUK.page = (new function() {
-  
+
   // What to run on every page (called from <body>).
   this.init = function() {
     captureUtmValue();
@@ -608,7 +608,7 @@ GOVUK.page = (new function() {
     setupHomeScreenshotEffect();
     setupCompaniesHouseLookup();
   }
-  
+
   /* Attempt to capture UTM information if we haven't already
    * got something and querystring is not empty.
    **/
@@ -618,7 +618,7 @@ GOVUK.page = (new function() {
       GOVUK.utm.set();
     }
   }
-  
+
   /* Gets any fact element and turns into a dynamic
    * counter effect to rapidly count up to the amount.
    **/
@@ -627,13 +627,13 @@ GOVUK.page = (new function() {
     var $figure = $fact.find(".figure");
     new GOVUK.effects.Counter($figure, $figure.text());
   }
-  
+
   /* Find and apply a scroll in effect to specified element.
    **/
   function setupHomeScreenshotEffect() {
     new GOVUK.effects.SlideIntoView($("#fabhome-screenshot"), 550);
   }
-  
+
   /* Add Companies House name lookup AJAX functionality.
    **/
   function setupCompaniesHouseLookup() {
@@ -642,19 +642,16 @@ GOVUK.page = (new function() {
       var $input = $("input[name='company-number-company_number']", this);
       var $field = $("<input type=\"hidden\" name=\"company_number\" />");
       var $label = $(".label", this);
-      // Posting to the current page to run validation.
-      // Server will redirect to the single step enrolment form if validation passes.
-      $(this).attr("action", "");
 
       // Some content updates.
       $input.attr("placeholder", "Companies name");
       $label.text("Enter your company name");
-      
+
       // Some structural changes to form.
       $input.attr("name", "company_name");
       $("input[name='enrolment_view-current_step']", this).remove();
       $(this).prepend($field);
-      
+
       // Now apply JS lookup functionality.
       new GOVUK.components.CompaniesHouseNameLookup($input, $field);
     });
