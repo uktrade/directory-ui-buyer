@@ -367,17 +367,48 @@ def test_landing_page_submit_invalid_form_shows_errors(
     assert response.context['form'].errors == {'company_number': ['Not good']}
 
 
-@patch('enrolment.forms.validators.company_unique')
-def test_landing_page_submit_valid_form_redirects(
-    mock_company_unique, settings, client
-):
-    settings.NEW_LANDING_PAGE_FEATURE_ENABLED = True
-
+@patch(
+    'enrolment.helpers.get_company_from_companies_house',
+    Mock(return_value={
+        'company_name': 'company_name',
+        'company_status': 'inactive',
+        'date_of_creation': 'date_of_creation',
+        'company_number': '12345678',
+        'registered_office_address': {
+            'address_line_1': 'address_line_1',
+            'address_line_2': 'address_line_2',
+            'care_of': 'care_of',
+            'country': 'country',
+            'locality': 'locality',
+            'po_box': 'po_box',
+            'postal_code': 'postal_code',
+            'premises': 'premises',
+            'region': 'region'
+        }
+    })
+)
+@patch('enrolment.helpers.has_company', Mock(return_value=False))
+@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
+def test_landing_page_submit_company_not_active(client):
     url = reverse('index')
-    params = {'company_number': '11111111'}
+    params = {'company_number': '12345678'}
     response = client.post(url, params)
 
-    expected_url = '/register/company?company_number=11111111'
+    assert response.context['form'].errors == {
+        'company_number': [MESSAGE_COMPANY_NOT_ACTIVE]
+    }
+
+
+@patch(
+    'enrolment.helpers.get_company_from_companies_house',
+    Mock(return_value=MOCK_COMPANIES_HOUSE_API_COMPANY_PROFILE)
+)
+def test_landing_page_submit_valid_form_redirects(client):
+    url = reverse('index')
+    params = {'company_number': '12345678'}
+    response = client.post(url, params)
+
+    expected_url = '/register/company?company_number=12345678'
     assert response.status_code == 302
     assert response.get('Location') == expected_url
 
