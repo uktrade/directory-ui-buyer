@@ -221,7 +221,8 @@ GOVUK.components = (new function() {
       active: false, // State management to isolate the listener.
       service: service, // Service that retrieves and stores the data
       $list: $("<ul class=\"SelectiveLookupDisplay\" style=\"display:none;\" id=\"" + popupId + "\" role=\"listbox\"></ul>"),
-      $input: $input
+      $input: $input,
+      timer: null
     }
     
     // Will not have arguments if being inherited for prototype
@@ -232,8 +233,14 @@ GOVUK.components = (new function() {
       $input.on("focus.SelectiveLookup", function() { instance._private.active = true; });
       $input.on("blur.SelectiveLookup", function() { instance._private.active = false; });
       $input.on("input.SelectiveLookup", function() {
+        if(instance._private.timer) {
+          clearTimeout(instance._private.timer);
+        }
+        
         if(this.value.length >= opts.lookupOnCharacter) {
-          instance.search();
+          instance._private.timer = setTimeout(function() {
+            instance.search()
+          }, 500);
         }
       });
       
