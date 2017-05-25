@@ -15,9 +15,12 @@
   }
 }
 
-.error {
-  color: $red-1;
-  font-weight: bold;
+.errors {
+  li, p {
+    color: $red-1;
+    font-weight: bold;
+    margin-bottom: 1em;
+  }
 }
 
 .link,

@@ -416,6 +416,7 @@ GOVUK.components = (new function() {
    **/
   this.CompaniesHouseNameLookup = CompaniesHouseNameLookup;
   function CompaniesHouseNameLookup($input, $field) {
+    var instance = this;
     SelectiveLookup.call(this, 
       $input,
       GOVUK.data.getCompanyByName
@@ -423,13 +424,31 @@ GOVUK.components = (new function() {
 
     // Some inner variable requirement.
     this._private.$field = $field || $input; // Allows a different form field to receive value.
+    this._private.$form = $input.parents("form");
+    this._private.$errors = $(".errors", this._private.$form);
+    
+    // Custom error handling.
+    this._private.$form.on("submit.CompaniesHouseNameLookup", function(e) {
+      // If no input or no company selected
+      if(instance._private.$field.val() === "") {
+        e.preventDefault();
+        instance._private.$errors.append("<p>Check that you entered the company name correctly and select the matching company name from the list.</p>");
+      }
+    });
+    
+    // Clear previously shown errors.
+    this._private.$input.on("focus.CompaniesHouseNameLookup", function(e) {
+      instance._private.$errors.empty();
+    });
   }
   CompaniesHouseNameLookup.prototype = new SelectiveLookup;
   CompaniesHouseNameLookup.prototype.bindContentEvents = function() {
     var instance = this;
     instance._private.$list.off("click.SelectiveLookupContent");
-    instance._private.$list.on("click.SelectiveLookupContent", function(event) {
+    instance._private.$list.on("click.CompaniesHouseNameLookup", function(event) {
       var $eventTarget = $(event.target);
+      
+      // Try to set company number value.
       if($eventTarget.attr("data-value")) {
         instance._private.$input.val($eventTarget.text());
         instance._private.$field.val($eventTarget.attr("data-value"));
