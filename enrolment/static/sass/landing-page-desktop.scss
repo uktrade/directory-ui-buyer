@@ -190,51 +190,53 @@ button,
     overflow: hidden;
   }
   
-  li {
-    background-repeat: no-repeat;
-    background-position: top center;
-    border-color: $white;
-    border-style: solid;
-    counter-increment: li;
-    color: $grey-3;
-    float: left;
-    font-size: 14px;
-    padding: 150px 0 25px 0;
-    position: relative;
-    width: 33%;
-  }
+  ol {
+    li {
+      background-repeat: no-repeat;
+      background-position: top center;
+      border-color: $white;
+      border-style: solid;
+      counter-increment: li;
+      color: $grey-3;
+      float: left;
+      font-size: 14px;
+      padding: 150px 0 25px 0;
+      position: relative;
+      width: 33%;
+    }
   
-  li:after {
-    background-image: url(images/FAB-steps-arrow-1.png);
-    background-repeat: no-repeat;
-    background-position: 0 0;
-    content: " ";
-    display: block;
-    height: 80px;
-    left: -62px;
-    position: absolute;
-    top: 15px;
-    width: 50px;
-  }
+    li:after {
+      background-image: url(images/FAB-steps-arrow-1.png);
+      background-repeat: no-repeat;
+      background-position: 0 0;
+      content: " ";
+      display: block;
+      height: 80px;
+      left: -62px;
+      position: absolute;
+      top: 15px;
+      width: 50px;
+    }
   
-  li:before {
-    color: $grey-4;
-    content: counter(li) " ";
-    float: left;
-    font-size: 134px;
-    font-weight: 500;
-    line-height: 110px;
-    margin-right: 10px;
-    position: relative;
-    top: -5px;
-  }
+    li:before {
+      color: $grey-4;
+      content: counter(li) " ";
+      float: left;
+      font-size: 134px;
+      font-weight: 500;
+      line-height: 110px;
+      margin-right: 10px;
+      position: relative;
+      top: -5px;
+    }
   
-  li:first-child:after {
-    background-image: none;
-  }
+    li:first-child:after {
+      background-image: none;
+    }
   
-  li:first-child:before {
-    margin-right: 0;
+    li:first-child:before {
+      margin-right: 0;
+    }
   }
   
   span {

@@ -78,28 +78,30 @@
       margin: 0 20px;
     }
     
-    li {
-      background-position-y: 30px;
-      padding: 180px 0 25px 0;
-      width: 35%;
+    ol {
+      li {
+        background-position-y: 30px;
+        padding: 180px 0 25px 0;
+        width: 35%;
       
-      span {
-        font-size: 14px;
+        span {
+          font-size: 14px;
+        }
       }
-    }
     
-    li:after {
-      background-image: url(images/FAB-steps-arrow-2.png);
-      top: 55px;
-    }
+      li:after {
+        background-image: url(images/FAB-steps-arrow-2.png);
+        top: 55px;
+      }
     
-    li::before {
-      font-size: 100px;
-      font-weight: 400;
-    }
+      li::before {
+        font-size: 100px;
+        font-weight: 400;
+      }
     
-    li:first-child {
-      width: 30%;
+      li:first-child {
+        width: 30%;
+      }
     }
     
     strong {
