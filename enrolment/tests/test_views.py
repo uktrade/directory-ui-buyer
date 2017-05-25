@@ -23,8 +23,18 @@ MOCK_COMPANIES_HOUSE_API_COMPANY_PROFILE = {
     'company_name': 'company_name',
     'company_status': 'active',
     'date_of_creation': 'date_of_creation',
-    'company_number': 12345678,
-    'registered_office_address': {'line1': 'foo', 'line2': 'bar'}
+    'company_number': '12345678',
+    'registered_office_address': {
+        'address_line_1': 'address_line_1',
+        'address_line_2': 'address_line_2',
+        'care_of': 'care_of',
+        'country': 'country',
+        'locality': 'locality',
+        'po_box': 'po_box',
+        'postal_code': 'postal_code',
+        'premises': 'premises',
+        'region': 'region'
+    }
 }
 
 
@@ -384,13 +394,9 @@ def test_company_enrolment_step_caches_profile(client):
         {'company_number': 12345678}
     )
 
-    assert client.session[helpers.COMPANIES_HOUSE_PROFILE_SESSION_KEY] == {
-        'company_name': 'company_name',
-        'company_status': 'active',
-        'date_of_creation': 'date_of_creation',
-        'company_number': '12345678',
-        'registered_office_address': {'line1': 'foo', 'line2': 'bar'}
-    }
+    assert client.session[
+        helpers.COMPANIES_HOUSE_PROFILE_SESSION_KEY
+    ] == MOCK_COMPANIES_HOUSE_API_COMPANY_PROFILE
 
 
 @patch('enrolment.helpers.has_company', Mock(return_value=False))
