@@ -663,26 +663,22 @@ GOVUK.page = (new function() {
   /* Add Companies House name lookup AJAX functionality.
    **/
   function setupCompaniesHouseLookup() {
-    // TODO: refactor ED-1411
     $(".register-company-number-form").each(function() {
-      var $input = $("input[name='company-number-company_number']", this);
-      var $field = $("<input type=\"hidden\" name=\"company_number\" />");
+      var $companyNumber = $("input[name='company_number']", this);
+      var $companyName = $("<input type=\"text\" name=\"company_name\" class=\"text\" />");
       var $label = $(".label", this);
-      // Posting to the current page to run validation.
-      // Server will redirect to the single step enrolment form if validation passes.
-      $(this).attr("action", "");
 
       // Some content updates.
-      $input.attr("placeholder", "Companies name");
+      $companyName.attr("placeholder", "Companies name");
       $label.text("Enter your company name");
       
       // Some structural changes to form.
-      $input.attr("name", "company_name");
-      $("input[name='enrolment_view-current_step']", this).remove();
-      $(this).prepend($field);
+      $companyNumber.attr("type", "hidden");
+      $companyNumber.removeClass("text");
+      $companyNumber.after($companyName);
       
       // Now apply JS lookup functionality.
-      new GOVUK.components.CompaniesHouseNameLookup($input, $field);
+      new GOVUK.components.CompaniesHouseNameLookup($companyName, $companyNumber);
     });
   }
 
