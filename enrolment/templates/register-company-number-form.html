@@ -1,7 +1,7 @@
 {% load trans from i18n %}
 
-<form class="register-company-number-form" method="post" action="{% url 'register' step='company-number' %}">
-	<input name="enrolment_view-current_step" type="hidden" value="company-number">
+<form class="register-company-number-form" method="post" action="{% url 'register' step='company' %}">
+	<input name="enrolment_view-current_step" type="hidden" value="company">
 	<div class="errors">
 		{{ form.company_number.errors }}
 	</div>
