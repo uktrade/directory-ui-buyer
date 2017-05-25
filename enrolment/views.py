@@ -110,13 +110,9 @@ class EnrolmentView(SSOLoginRequiredMixin, NamedUrlSessionWizardView):
             )
         except RequestException as error:
             if error.response.status_code == http.client.NOT_FOUND:
-                raise ValidationError(
-                    'Company not found. Please check the number.'
-                )
+                raise ValidationError(validators.MESSAGE_COMPANY_NOT_FOUND)
             else:
-                raise ValidationError(
-                    'Error. Please try again later.'
-                )
+                raise ValidationError(validators.MESSAGE_COMPANY_ERROR)
         else:
             company_status = helpers.get_company_status_from_session(
                 session

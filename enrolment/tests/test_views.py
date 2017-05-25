@@ -6,11 +6,15 @@ from django.core.urlresolvers import reverse
 from django.forms import ValidationError
 
 import requests
-from requests.exceptions import RequestException
+from requests.exceptions import RequestException, HTTPError
 import pytest
 
 from enrolment import forms, helpers
-from enrolment.validators import MESSAGE_COMPANY_NOT_ACTIVE
+from enrolment.validators import (
+    MESSAGE_COMPANY_NOT_ACTIVE,
+    MESSAGE_COMPANY_NOT_FOUND,
+    MESSAGE_COMPANY_ERROR
+)
 from enrolment.views import (
     api_client,
     EnrolmentView,
@@ -396,6 +400,42 @@ def test_landing_page_submit_company_not_active(client):
 
     assert response.context['form'].errors == {
         'company_number': [MESSAGE_COMPANY_NOT_ACTIVE]
+    }
+
+
+@patch(
+    'enrolment.helpers.get_company_from_companies_house',
+    Mock(side_effect=HTTPError(
+        response=Mock(status_code=http.client.INTERNAL_SERVER_ERROR))
+    )
+)
+@patch('enrolment.helpers.has_company', Mock(return_value=False))
+@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
+def test_landing_page_submit_companies_house_server_error(client):
+    url = reverse('index')
+    params = {'company_number': '12345678'}
+    response = client.post(url, params)
+
+    assert response.context['form'].errors == {
+        'company_number': [MESSAGE_COMPANY_ERROR]
+    }
+
+
+@patch(
+    'enrolment.helpers.get_company_from_companies_house',
+    Mock(side_effect=HTTPError(
+        response=Mock(status_code=http.client.NOT_FOUND))
+    )
+)
+@patch('enrolment.helpers.has_company', Mock(return_value=False))
+@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
+def test_landing_page_submit_company_not_found(client):
+    url = reverse('index')
+    params = {'company_number': '12345678'}
+    response = client.post(url, params)
+
+    assert response.context['form'].errors == {
+        'company_number': [MESSAGE_COMPANY_NOT_FOUND]
     }
 
 
