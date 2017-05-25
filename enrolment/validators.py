@@ -5,6 +5,7 @@ import http
 from django.forms import ValidationError
 
 from api_client import api_client
+from enrolment import helpers
 
 
 MESSAGE_COMPANY_NOT_ACTIVE = 'Company not active.'
@@ -20,6 +21,11 @@ def company_unique(value):
 def company_active(value):
     if value != 'active':
         raise ValidationError(MESSAGE_COMPANY_NOT_ACTIVE)
+
+
+def company_number_active(value):
+    company = helpers.get_company_from_companies_house(company_number=value)
+    company_active(company['company_status'])
 
 
 def email_address(value):
