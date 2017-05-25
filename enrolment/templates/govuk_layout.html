@@ -28,10 +28,21 @@
         {% block css %}
             <link href="{% static 'main.css' %}" media="all" rel="stylesheet" />
         {% endblock %}
+        <style type="text/css">
+            .js-disabled-only {
+                display: none;
+            }
+        </style>
         <noscript>
-            <style>
+            <style type="text/css">
                 .navigation-toggle {
                     display: block;
+                }
+                .js-disabled-only {
+                    display: block;
+                }
+                .js-enabled-only {
+                    display: none;
                 }
             </style>
         </noscript>
