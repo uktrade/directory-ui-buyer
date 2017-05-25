@@ -9,7 +9,7 @@ from django.views.generic import FormView, TemplateView, View
 from django.forms import ValidationError
 
 from formtools.wizard.views import NamedUrlSessionWizardView
-import requests
+from requests.exceptions import RequestException
 
 from api_client import api_client
 from enrolment import forms, helpers, validators
@@ -108,7 +108,7 @@ class EnrolmentView(SSOLoginRequiredMixin, NamedUrlSessionWizardView):
                 session=session,
                 company_number=company_number,
             )
-        except requests.exceptions.RequestException as error:
+        except RequestException as error:
             if error.response.status_code == http.client.NOT_FOUND:
                 raise ValidationError(
                     'Company not found. Please check the number.'

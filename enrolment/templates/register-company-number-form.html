@@ -1,7 +1,6 @@
 {% load trans from i18n %}
 
-<form class="register-company-number-form" method="post" action="{% url 'register' step='company' %}">
-	<input name="enrolment_view-current_step" type="hidden" value="company">
+<form class="register-company-number-form" method="post" action="{% url 'index' %}">
 	<label>
 		{{ form.company_number.errors }}
 		<span class="label">{% trans "Enter your Companies House number" %}</span>
