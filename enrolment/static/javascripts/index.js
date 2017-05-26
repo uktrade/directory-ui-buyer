@@ -657,7 +657,10 @@ GOVUK.page = (new function() {
   /* Find and apply a scroll in effect to specified element.
    **/
   function setupHomeScreenshotEffect() {
-    new GOVUK.effects.SlideIntoView($("#fabhome-screenshot"), 550);
+    var $homeScreenshot = $("#fabhome-screenshot");
+    if($homeScreenshot.length) {
+      new GOVUK.effects.SlideIntoView($homeScreenshot, 550);
+    }
   }
 
   /* Add Companies House name lookup AJAX functionality.
