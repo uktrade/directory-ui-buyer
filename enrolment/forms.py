@@ -96,6 +96,7 @@ class CompanyNumberForm(IndentedInvalidFieldsMixin, forms.Form):
         validators=helpers.halt_validation_on_failure(
             shared_validators.company_number,
             validators.company_unique,
+            validators.company_number_present_and_active,
         ),
         max_length=8,
         fillchar='0',
@@ -135,6 +136,24 @@ def serialize_international_buyer_forms(cleaned_data):
     }
 
 
+def format_registered_office_address(address):
+    fields = [
+        'address_line_1',
+        'address_line_2',
+        'care_of',
+        'country',
+        'locality',
+        'po_box',
+        'postal_code',
+        'premises',
+        'region'
+    ]
+
+    return ", ".join(
+        address[field] for field in fields if address.get(field)
+    )
+
+
 def get_company_form_initial_data(data):
     """
     Returns the shape of initial data that CompanyForm expects.
@@ -147,7 +166,7 @@ def get_company_form_initial_data(data):
     return {
         'company_name': data['company_name'],
         'company_number': data['company_number'],
-        'company_address': ", ".join(
-            data['registered_office_address'].values()
+        'company_address': format_registered_office_address(
+            data['registered_office_address']
         )
     }

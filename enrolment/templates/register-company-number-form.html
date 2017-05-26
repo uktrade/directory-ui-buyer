@@ -1,9 +1,8 @@
 {% load trans from i18n %}
 
-<form class="register-company-number-form" method="post" action="{% url 'register' step='company' %}">
-	<div class="errors">
-		{{ form.company_number.errors }}
-	</div>
+{# company number lookup. shows only when js is turned off#}
+<form class="js-disabled-only register-company-number-form" method="post" action="{% url 'index' %}">
+	{{ form.company_number.errors }}
 	<label>
 		<span class="label">{% trans "Enter your Companies House number" %}</span>
 		<input name="company_number" class="text" type="text" placeholder="{% trans 'Companies House number' %}" />
@@ -11,4 +10,16 @@
 	<input class="button button-cta" type="submit" value="{% trans 'Get promoted' %}" />
 </form>
 
+{# company name lookup. shows only when js is turned on #}
+<form class="js-enabled-only register-company-number-form" method="post" action="{% url 'index' %}">
+	<div class="errors">
+		{{ form.company_number.errors }}
+	</div>
+	<label>
+		<span class="label">{% trans "Enter your company name" %}</span>
+		<input name="company_name" class="text" type="text" placeholder="{% trans 'Company name' %}" />
+	</label>
+	<input type="hidden" name="company_number" />
+	<input class="button button-cta" type="submit" value="{% trans 'Get promoted' %}" />
+</form>
 

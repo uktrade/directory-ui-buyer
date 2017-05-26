@@ -116,12 +116,25 @@ def test_get_company_name_form_initial_data():
         data={
             'company_name': 'Example',
             'company_number': 1234,
-            'registered_office_address': {'line1': 'foo', 'line2': 'bar'}
+            'registered_office_address': {
+                'address_line_1': 'address_line_1',
+                'address_line_2': 'address_line_2',
+                'care_of': 'care_of',
+                'country': 'country',
+                'locality': 'locality',
+                'po_box': 'po_box',
+                'postal_code': 'postal_code',
+                'premises': 'premises',
+                'region': 'region'
+            }
         }
     )
     expected = {
         'company_name': 'Example',
         'company_number': 1234,
-        'company_address': 'foo, bar'
+        'company_address': (
+            'address_line_1, address_line_2, care_of, country, '
+            'locality, po_box, postal_code, premises, region'
+        )
     }
     assert actual == expected

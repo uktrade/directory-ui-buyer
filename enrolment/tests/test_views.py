@@ -6,11 +6,15 @@ from django.core.urlresolvers import reverse
 from django.forms import ValidationError
 
 import requests
-from requests.exceptions import RequestException
+from requests.exceptions import RequestException, HTTPError
 import pytest
 
 from enrolment import forms, helpers
-from enrolment.validators import MESSAGE_COMPANY_NOT_ACTIVE
+from enrolment.validators import (
+    MESSAGE_COMPANY_NOT_ACTIVE,
+    MESSAGE_COMPANY_NOT_FOUND,
+    MESSAGE_COMPANY_ERROR
+)
 from enrolment.views import (
     api_client,
     EnrolmentView,
@@ -23,8 +27,18 @@ MOCK_COMPANIES_HOUSE_API_COMPANY_PROFILE = {
     'company_name': 'company_name',
     'company_status': 'active',
     'date_of_creation': 'date_of_creation',
-    'company_number': 12345678,
-    'registered_office_address': {'line1': 'foo', 'line2': 'bar'}
+    'company_number': '12345678',
+    'registered_office_address': {
+        'address_line_1': 'address_line_1',
+        'address_line_2': 'address_line_2',
+        'care_of': 'care_of',
+        'country': 'country',
+        'locality': 'locality',
+        'po_box': 'po_box',
+        'postal_code': 'postal_code',
+        'premises': 'premises',
+        'region': 'region'
+    }
 }
 
 
@@ -357,17 +371,84 @@ def test_landing_page_submit_invalid_form_shows_errors(
     assert response.context['form'].errors == {'company_number': ['Not good']}
 
 
-@patch('enrolment.forms.validators.company_unique')
-def test_landing_page_submit_valid_form_redirects(
-    mock_company_unique, settings, client
-):
-    settings.NEW_LANDING_PAGE_FEATURE_ENABLED = True
-
+@patch(
+    'enrolment.helpers.get_company_from_companies_house',
+    Mock(return_value={
+        'company_name': 'company_name',
+        'company_status': 'inactive',
+        'date_of_creation': 'date_of_creation',
+        'company_number': '12345678',
+        'registered_office_address': {
+            'address_line_1': 'address_line_1',
+            'address_line_2': 'address_line_2',
+            'care_of': 'care_of',
+            'country': 'country',
+            'locality': 'locality',
+            'po_box': 'po_box',
+            'postal_code': 'postal_code',
+            'premises': 'premises',
+            'region': 'region'
+        }
+    })
+)
+@patch('enrolment.helpers.has_company', Mock(return_value=False))
+@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
+def test_landing_page_submit_company_not_active(client):
     url = reverse('index')
-    params = {'company_number': '11111111'}
+    params = {'company_number': '12345678'}
     response = client.post(url, params)
 
-    expected_url = '/register/company?company_number=11111111'
+    assert response.context['form'].errors == {
+        'company_number': [MESSAGE_COMPANY_NOT_ACTIVE]
+    }
+
+
+@patch(
+    'enrolment.helpers.get_company_from_companies_house',
+    Mock(side_effect=HTTPError(
+        response=Mock(status_code=http.client.INTERNAL_SERVER_ERROR))
+    )
+)
+@patch('enrolment.helpers.has_company', Mock(return_value=False))
+@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
+def test_landing_page_submit_companies_house_server_error(client):
+    url = reverse('index')
+    params = {'company_number': '12345678'}
+    response = client.post(url, params)
+
+    assert response.context['form'].errors == {
+        'company_number': [MESSAGE_COMPANY_ERROR]
+    }
+
+
+@patch(
+    'enrolment.helpers.get_company_from_companies_house',
+    Mock(side_effect=HTTPError(
+        response=Mock(status_code=http.client.NOT_FOUND))
+    )
+)
+@patch('enrolment.helpers.has_company', Mock(return_value=False))
+@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
+def test_landing_page_submit_company_not_found(client):
+    url = reverse('index')
+    params = {'company_number': '12345678'}
+    response = client.post(url, params)
+
+    assert response.context['form'].errors == {
+        'company_number': [MESSAGE_COMPANY_NOT_FOUND]
+    }
+
+
+@patch(
+    'enrolment.helpers.get_company_from_companies_house',
+    Mock(return_value=MOCK_COMPANIES_HOUSE_API_COMPANY_PROFILE)
+)
+def test_landing_page_submit_valid_form_redirects(client):
+    url = reverse('index')
+    params = {'company_number': '12345678'}
+    response = client.post(url, params)
+
+    expected_url = '/register/company?company_number=12345678'
     assert response.status_code == 302
     assert response.get('Location') == expected_url
 
@@ -384,13 +465,9 @@ def test_company_enrolment_step_caches_profile(client):
         {'company_number': 12345678}
     )
 
-    assert client.session[helpers.COMPANIES_HOUSE_PROFILE_SESSION_KEY] == {
-        'company_name': 'company_name',
-        'company_status': 'active',
-        'date_of_creation': 'date_of_creation',
-        'company_number': '12345678',
-        'registered_office_address': {'line1': 'foo', 'line2': 'bar'}
-    }
+    assert client.session[
+        helpers.COMPANIES_HOUSE_PROFILE_SESSION_KEY
+    ] == MOCK_COMPANIES_HOUSE_API_COMPANY_PROFILE
 
 
 @patch('enrolment.helpers.has_company', Mock(return_value=False))
