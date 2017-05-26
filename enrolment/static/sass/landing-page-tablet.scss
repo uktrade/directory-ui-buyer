@@ -81,7 +81,7 @@
     ol {
       li {
         background-position-y: 30px;
-        padding: 180px 0 25px 0;
+        padding-top: 25%;
         width: 35%;
       
         span {
@@ -91,7 +91,7 @@
     
       li:after {
         background-image: url(images/FAB-steps-arrow-2.png);
-        top: 55px;
+        top: 16%;
       }
     
       li::before {
@@ -113,5 +113,25 @@
     height: auto;
     right: 20px;
     width: 25%;
+  }
+}
+
+
+/* (custom sizing tweaks only)
+ ******************************/
+
+@media (max-width: 640px) {
+  #fabhome-howto {
+    ol {
+      li {
+        &::before {
+          font-size: 75px;
+        }
+      }
+    }
+    
+    strong {
+      font-size: 15px;
+    }
   }
 }
