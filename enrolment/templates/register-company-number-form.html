@@ -2,7 +2,9 @@
 
 {# company number lookup. shows only when js is turned off#}
 <form class="js-disabled-only register-company-number-form" method="post" action="{% url 'index' %}">
-	{{ form.company_number.errors }}
+	<div class="errors">
+		{{ form.company_number.errors }}
+	</div>
 	<label>
 		<span class="label">{% trans "Enter your Companies House number" %}</span>
 		<input name="company_number" class="text" type="text" placeholder="{% trans 'Companies House number' %}" />
