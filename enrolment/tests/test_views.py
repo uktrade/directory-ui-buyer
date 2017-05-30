@@ -515,8 +515,46 @@ def test_company_enrolment_step_company_number_not_provided(client):
 
 @patch('enrolment.helpers.has_company', Mock(return_value=False))
 @patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
-@patch('enrolment.helpers.store_companies_house_profile_in_session',
-       Mock())
+@patch('enrolment.helpers.store_companies_house_profile_in_session', Mock())
+@patch('enrolment.helpers.get_company_status_from_session',
+       Mock(return_value='active'))
+@patch('enrolment.helpers.get_company_from_session',
+       Mock(return_value=MOCK_COMPANIES_HOUSE_API_COMPANY_PROFILE))
+@patch('enrolment.helpers.get_company_number_from_session')
+def test_company_enrolment_step_company_number_in_session_cache(
+        mock_get_company_number_from_session,
+        client):
+
+    mock_get_company_number_from_session.return_value = 12345678
+    response = client.get(reverse('register', kwargs={'step': 'company'}))
+
+    assert mock_get_company_number_from_session.called
+    assert '12345678' in str(response.content)
+
+
+@patch('enrolment.helpers.has_company', Mock(return_value=False))
+@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
+@patch('enrolment.helpers.store_companies_house_profile_in_session', Mock())
+@patch('enrolment.helpers.get_company_status_from_session',
+       Mock(return_value='active'))
+@patch('enrolment.helpers.get_company_from_session',
+       Mock(return_value=MOCK_COMPANIES_HOUSE_API_COMPANY_PROFILE))
+@patch('enrolment.helpers.get_company_number_from_session')
+def test_company_enrolment_step_company_number_queryparam_and_session_cache(
+        mock_get_company_number_from_session,
+        client):
+
+    mock_get_company_number_from_session.return_value = 87654321
+    response = client.get(reverse('register', kwargs={'step': 'company'}),
+                          {'company_number': 12345678})
+
+    assert not mock_get_company_number_from_session.called
+    assert '12345678' in str(response.content)
+
+
+@patch('enrolment.helpers.has_company', Mock(return_value=False))
+@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
+@patch('enrolment.helpers.store_companies_house_profile_in_session', Mock())
 @patch('enrolment.helpers.get_company_status_from_session',
        Mock(return_value='not active'))
 def test_company_enrolment_step_handles_company_not_active(client):
