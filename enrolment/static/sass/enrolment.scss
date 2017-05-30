@@ -34,7 +34,9 @@ $asset-path: '../';
       line-height: 1;
     }
   }
-
+  .cancel-button {
+    color: #4A4A4F;
+  }
 }
 
 @media (max-width: 992px) {
