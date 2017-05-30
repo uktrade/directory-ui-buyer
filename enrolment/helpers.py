@@ -109,9 +109,9 @@ def get_company_date_of_creation_from_session(session):
 
 
 def get_company_number_from_session(session):
-    return session[
-        COMPANIES_HOUSE_PROFILE_SESSION_KEY
-    ]['company_number']
+    return session.get(
+        COMPANIES_HOUSE_PROFILE_SESSION_KEY, {}
+    ).get('company_number')
 
 
 def get_company_name_from_session(session):

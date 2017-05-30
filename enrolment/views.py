@@ -120,10 +120,16 @@ class EnrolmentView(SSOLoginRequiredMixin, NamedUrlSessionWizardView):
             validators.company_active(company_status)
             validators.company_unique(company_number)
 
+    def get_company_number(self):
+        return self.request.GET.get(
+            'company_number') or helpers.get_company_number_from_session(
+            self.request.session
+        )
+
     def get(self, *args, **kwargs):
         step_url = kwargs.get('step', None)
         if step_url == self.COMPANY:
-            company_number = self.request.GET.get('company_number')
+            company_number = self.get_company_number()
             if not company_number:
                 return SimpleTemplateResponse(
                     'company-form-error.html',
