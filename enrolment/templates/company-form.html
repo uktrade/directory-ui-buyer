@@ -1,3 +1,6 @@
 {% extends "form-wrapper.html" %}
 {% block form_title %}Create your company’s profile{% endblock%}
 {% block button_next_label %}Confirm{% endblock%}
+{% block extra_buttons %}
+	<a href="{% url 'index' %}" class="register-btn button cancel-button" target="_self">Cancel</a>
+{% endblock %}
