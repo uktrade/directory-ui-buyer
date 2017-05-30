@@ -227,7 +227,7 @@ GOVUK.components = (new function() {
 
     // Will not have arguments if being inherited for prototype
     if(arguments.length >= 2) {
-
+      
       // Bind lookup event.
       $input.attr("autocomplete", "off"); // Because it interferes with results display.
       $input.on("focus.SelectiveLookup", function() { instance._private.active = true; });
@@ -666,7 +666,7 @@ GOVUK.page = (new function() {
   /* Add Companies House name lookup AJAX functionality.
    **/
   function setupCompaniesHouseLookup() {
-    $(".register-company-number-form").each(function() {
+    $(".register-company-number-form.js-enabled-only").each(function() {
       var $companyNumber = $("input[name='company_number']", this);
       var $companyName = $("input[name='company_name']", this);
       
