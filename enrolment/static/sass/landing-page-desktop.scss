@@ -185,22 +185,24 @@ button,
   background-color: $white;
   padding: 40px 0 0 0;
   
-  h2, ol {
-    margin: 0 25px;
-    overflow: hidden;
+  h2 {
+    margin: 0 25px 40px 25px;
   }
   
   ol {
+    margin: 0 25px;
+    overflow: hidden;
     li {
-      background-repeat: no-repeat;
       background-position: top center;
+      background-repeat: no-repeat;
+      background-size: 65%;
       border-color: $white;
       border-style: solid;
       counter-increment: li;
       color: $grey-3;
       float: left;
-      font-size: 14px;
-      padding: 150px 0 25px 0;
+      font-size: 16px;
+      padding: 22% 0 25px 0;
       position: relative;
       width: 33%;
     }
@@ -214,7 +216,7 @@ button,
       height: 80px;
       left: -62px;
       position: absolute;
-      top: 15px;
+      top: 15%;
       width: 50px;
     }
   
@@ -257,17 +259,17 @@ button,
   }
   
   .step1 {
-    background-image: url(images/FAB-steps-icon-1.png);
+    background-image: url(images/Register-FAB.svg);
     border-width: 0 50px 0 0;
   }
   
   .step2 {
-    background-image: url(images/FAB-steps-icon-2.png);
+    background-image: url(images/Verify-FAB.svg);
     border-width: 0 25px 0 25px;
   }
   
   .step3 {
-    background-image: url(images/FAB-steps-icon-3.png);
+    background-image: url(images/FAB-impression.svg);
     border-width: 0 0 0 50px;
   }
 }
