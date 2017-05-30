@@ -410,6 +410,15 @@ label, input, button, select, textarea {
   }
 }
 
+h1 {
+  font-size: 48px;
+  font-weight: 400;
+  line-height: 50px;
+}
+h2 {
+  font-size: 26px;
+}
+
 body {
   background-color: $white;
   @media (max-width: 979px) {
@@ -419,14 +428,6 @@ body {
       padding: 0 20px;
       width: 100%;
     }
-  }
-  h1 {
-    font-size: 48px;
-    font-weight: 400;
-    line-height: 50px;
-  }
-  h2 {
-    font-size: 26px;
   }
 
   @media (min-width: 979px) {
@@ -1117,31 +1118,6 @@ a.ed-filled-button-primary {
   }
 }
 
-/* Components
- ******************/
-.SelectiveLookupDisplay {
-  background-color: $white;
-  border: $grey-2 solid 1px;
-  max-height: 221px;
-  overflow: scroll;
-  z-index: 2;
-  
-  li {
-    border-top: $grey-2 solid 1px;
-    padding: 10px 20px;
-    position: relative;
-    top: -1px;
-    &:focus {
-      border-color: $focus;
-      border-style: solid;
-      border-width: 4px 3px 3px 3px;
-      box-shadow: none;
-      outline: 0;
-      padding: 7px 17px;
-      -webkit-box-shadow: none;
-    }
-    &:hover {
-      background-color: $grey-1;
-    }
-  }
-}
+@import 'general.scss';
+@import 'registration.scss';
+@import 'components.scss';

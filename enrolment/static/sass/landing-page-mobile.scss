@@ -73,22 +73,24 @@
   }
   
   #fabhome-howto {
-    li, li:first-child {
-      padding-top: 160px;
-      width: 100%;
-    }
+    ol {
+      li, li:first-child {
+        padding-top: 160px;
+        width: 100%;
+      }
     
-    li:after {
-      background-image: url(images/FAB-steps-arrow-3.png);
-      height: 50px;
-      left: 50%;
-      margin-left: -40px;
-      top: -40px;
-      width: 80px;
-    }
+      li:after {
+        background-image: url(images/FAB-steps-arrow-3.png);
+        height: 50px;
+        left: 50%;
+        margin-left: -40px;
+        top: -40px;
+        width: 80px;
+      }
     
-    li::before {
-      top: -15px;
+      li::before {
+        top: -15px;
+      }
     }
     
     .register-company-number-form {

@@ -221,7 +221,8 @@ GOVUK.components = (new function() {
       active: false, // State management to isolate the listener.
       service: service, // Service that retrieves and stores the data
       $list: $("<ul class=\"SelectiveLookupDisplay\" style=\"display:none;\" id=\"" + popupId + "\" role=\"listbox\"></ul>"),
-      $input: $input
+      $input: $input,
+      timer: null
     }
 
     // Will not have arguments if being inherited for prototype
@@ -232,8 +233,14 @@ GOVUK.components = (new function() {
       $input.on("focus.SelectiveLookup", function() { instance._private.active = true; });
       $input.on("blur.SelectiveLookup", function() { instance._private.active = false; });
       $input.on("input.SelectiveLookup", function() {
+        if(instance._private.timer) {
+          clearTimeout(instance._private.timer);
+        }
+        
         if(this.value.length >= opts.lookupOnCharacter) {
-          instance.search();
+          instance._private.timer = setTimeout(function() {
+            instance.search()
+          }, 500);
         }
       });
 
@@ -416,6 +423,7 @@ GOVUK.components = (new function() {
    **/
   this.CompaniesHouseNameLookup = CompaniesHouseNameLookup;
   function CompaniesHouseNameLookup($input, $field) {
+    var instance = this;
     SelectiveLookup.call(this,
       $input,
       GOVUK.data.getCompanyByName
@@ -423,13 +431,31 @@ GOVUK.components = (new function() {
 
     // Some inner variable requirement.
     this._private.$field = $field || $input; // Allows a different form field to receive value.
+    this._private.$form = $input.parents("form");
+    this._private.$errors = $(".errors", this._private.$form);
+    
+    // Custom error handling.
+    this._private.$form.on("submit.CompaniesHouseNameLookup", function(e) {
+      // If no input or no company selected
+      if(instance._private.$field.val() === "") {
+        e.preventDefault();
+        instance._private.$errors.append("<p>Check that you entered the company name correctly and select the matching company name from the list.</p>");
+      }
+    });
+    
+    // Clear previously shown errors.
+    this._private.$input.on("focus.CompaniesHouseNameLookup", function(e) {
+      instance._private.$errors.empty();
+    });
   }
   CompaniesHouseNameLookup.prototype = new SelectiveLookup;
   CompaniesHouseNameLookup.prototype.bindContentEvents = function() {
     var instance = this;
     instance._private.$list.off("click.SelectiveLookupContent");
-    instance._private.$list.on("click.SelectiveLookupContent", function(event) {
+    instance._private.$list.on("click.CompaniesHouseNameLookup", function(event) {
       var $eventTarget = $(event.target);
+      
+      // Try to set company number value.
       if($eventTarget.attr("data-value")) {
         instance._private.$input.val($eventTarget.text());
         instance._private.$field.val($eventTarget.attr("data-value"));
@@ -631,16 +657,21 @@ GOVUK.page = (new function() {
   /* Find and apply a scroll in effect to specified element.
    **/
   function setupHomeScreenshotEffect() {
-    new GOVUK.effects.SlideIntoView($("#fabhome-screenshot"), 550);
+    var $homeScreenshot = $("#fabhome-screenshot");
+    if($homeScreenshot.length) {
+      new GOVUK.effects.SlideIntoView($homeScreenshot, 550);
+    }
   }
 
   /* Add Companies House name lookup AJAX functionality.
    **/
   function setupCompaniesHouseLookup() {
     $(".register-company-number-form").each(function() {
-      var $input = $("#id_company_name");
-      var $field = $("#id_company_number");
-      new GOVUK.components.CompaniesHouseNameLookup($input, $field);
+      var $companyNumber = $("input[name='company_number']", this);
+      var $companyName = $("input[name='company_name']", this);
+      
+      // Apply JS lookup functionality.
+      new GOVUK.components.CompaniesHouseNameLookup($companyName, $companyNumber);
     });
   }
 

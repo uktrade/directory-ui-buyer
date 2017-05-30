@@ -1,0 +1,60 @@
+
+/* General
+ *******************/
+.button-primary {
+  background-color: $mid-blue;
+  color: $white;
+  padding: 12px 50px;
+  -webkit-appearance: none;
+
+  &:active {
+    background-color: $aqua;
+  }
+  &:hover {
+    background-color: $blue-1;
+  }
+}
+
+.errors {
+  li, p {
+    color: $red-1;
+    font-weight: bold;
+    margin-bottom: 1em;
+  }
+}
+
+.link,
+.back-link {
+  background-color: transparent;
+  border: none;
+  font-size: 16px;
+  margin: 0;
+  padding: 0;
+  
+  &:before {
+    content: "<";
+    margin-right: 5px;
+  }
+}
+
+.ul {
+  /* 
+  Tag as class used to compensate for these 
+  styles not being added earlier in project 
+  */
+  
+  li {
+    margin: 0 0 1em 15px;
+    padding-left: 30px;
+    position: relative;
+  
+    &:before {
+      color: inherit;
+      content: ".";
+      font-size: 40px;
+      left: 0;
+      position: absolute;
+      top: -10px;
+    }
+  }
+}
