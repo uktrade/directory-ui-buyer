@@ -19,8 +19,9 @@ fabhome
 			<span>{% trans "Be promoted internationally" %}</span>
 			<span class="sub">{% trans "with an international trade profile" %}</span>
 		</h1>
-
-		{% include 'register-company-number-form.html' %}
+		<div {% if user_has_company %}style="visibility: hidden;"{% endif %}>
+			{% include 'register-company-number-form.html' %}
+		</div>
 
 		<p class="fact">
 			<span class="figure">{{ buyers_waiting_number }}</span>
@@ -61,6 +62,8 @@ fabhome
 			</li>
 		</ol>
 
-		{% include 'register-company-number-form.html' %}
+		<div {% if user_has_company %}style="visibility: hidden;"{% endif %}>
+			{% include 'register-company-number-form.html' %}
+		</div>
 	</section>
 {% endblock content %}
