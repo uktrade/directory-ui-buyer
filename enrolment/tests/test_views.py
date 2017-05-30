@@ -528,7 +528,7 @@ def test_company_enrolment_step_company_number_in_session_cache(
     mock_get_company_number_from_session.return_value = 12345678
     response = client.get(reverse('register', kwargs={'step': 'company'}))
 
-    mock_get_company_number_from_session.assert_called()
+    assert mock_get_company_number_from_session.called
     assert '12345678' in str(response.content)
 
 
