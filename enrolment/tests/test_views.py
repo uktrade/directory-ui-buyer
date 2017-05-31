@@ -288,7 +288,7 @@ def test_companies_house_search_feature_flag_disabled(client, settings):
 
 def test_companies_house_search_validation_error(client):
     url = reverse('api-internal-companies-house-search')
-    response = client.get(url)  # notice absense of `term`
+    response = client.post(url)  # notice absense of `term`
 
     assert response.status_code == 400
 
@@ -301,7 +301,7 @@ def test_companies_house_search_api_error(
     url = reverse('api-internal-companies-house-search')
 
     with pytest.raises(requests.exceptions.HTTPError):
-        client.get(url, data={'term': 'thing'})
+        client.post(url, data={'term': 'thing'})
 
 
 @patch('enrolment.helpers.CompaniesHouseClient.search')
@@ -311,7 +311,7 @@ def test_companies_house_search_api_success(
     mock_search.return_value = api_response_companies_house_search_200
     url = reverse('api-internal-companies-house-search')
 
-    response = client.get(url, data={'term': 'thing'})
+    response = client.post(url, data={'term': 'thing'})
 
     assert response.status_code == 200
     assert response.content == b'[{"name": "Smashing corp"}]'

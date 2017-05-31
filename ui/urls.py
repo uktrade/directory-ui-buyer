@@ -1,5 +1,6 @@
 from django.conf.urls import url
 from django.views.decorators.http import require_http_methods
+from django.views.decorators.csrf import csrf_protect
 
 from enrolment.views import (
     CompaniesHouseSearchApiView,
@@ -126,7 +127,7 @@ urlpatterns = [
     ),
     url(
         r'^api/internal/companies-house-search/$',
-        CompaniesHouseSearchApiView.as_view(),
+        csrf_protect(CompaniesHouseSearchApiView.as_view()),
         name='api-internal-companies-house-search'
     ),
 ]
