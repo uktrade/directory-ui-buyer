@@ -71,6 +71,23 @@ button,
 }
 
 
+/* Down arrow effect (CSS without images)
+ *****************************************/
+#fabhome-howto-lookup-area:before,
+#fabhome-intro:after {
+  border-color: $great-blue;
+  border-style: solid;
+  border-top-color: $white;
+  border-width: 40px 40px 0px 40px;
+  bottom: -40px;
+  content: " ";
+  display: block;
+  left: 50%;
+  margin-left: -40px;
+  position: absolute;
+}
+
+
 /* FAB Home
  ***********************/
 .fabhome {
@@ -257,10 +274,19 @@ button,
 #fabhome-howto-lookup-area {
   background-color: $grey-1;
   padding-top: 40px;
+  position: relative;
   
   .register-company-number-form {
     border-radius: 0;
     padding-bottom: 50px;
+  }
+  
+  &:before {
+    border-bottom-color: $grey-1;
+    border-left-color: $grey-1;
+    border-right-color: $grey-1;
+    bottom: initial;
+    top: 0;
   }
 }
 
