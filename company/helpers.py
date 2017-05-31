@@ -66,6 +66,7 @@ def get_company_list_from_response(response):
 def format_company_details(details):
     date_of_creation = format_date_of_creation(details.get('date_of_creation'))
     case_studies = map(format_case_study, details['supplier_case_studies'])
+    keywords = details['keywords']
     return {
         'website': details['website'],
         'description': details['description'],
@@ -75,7 +76,7 @@ def format_company_details(details):
         'sectors': pair_sector_values_with_label(details['sectors']),
         'logo': details['logo'],
         'name': details['name'],
-        'keywords': tokenize_keywords(details['keywords']),
+        'keywords': tokenize_keywords(keywords) if keywords else [],
         'employees': get_employees_label(details['employees']),
         'supplier_case_studies': list(case_studies),
         'modified': format_date_modified(details['modified']),
