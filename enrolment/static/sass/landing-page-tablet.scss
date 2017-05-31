@@ -47,6 +47,10 @@
   }
   
   #fabhome-benefits {
+    li {
+      width: 74%;
+    }
+    
     p {
       width: auto;
     }
@@ -96,7 +100,6 @@
     
       li::before {
         font-size: 100px;
-        font-weight: 400;
       }
     
       li:first-child {
@@ -111,7 +114,7 @@
   
   #fabhome-screenshot {
     height: auto;
-    right: 20px;
+    right: 40px;
     width: 25%;
   }
 }

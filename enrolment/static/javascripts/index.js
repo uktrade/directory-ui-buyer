@@ -524,54 +524,6 @@ GOVUK.effects = (new function() {
   }
 
 
-  /* Scrolls element into view if not already visible.
-   * @$element (jQuery node) Element to make visible
-   * @offset (Number) Added to current left position to hide element offscreen
-   * @leftToRight (Boolean) Whether elements come from left, or right.
-   **/
-  this.SlideIntoView = SlideIntoView;
-  function SlideIntoView($element, offset, leftToRight) {
-    var property = leftToRight ? "left": "right";
-    var originalPosition = getPosition();
-    function update(pos) {
-      $element.css(property, pos + "px");
-    }
-
-    function getPosition() {
-      return Number($element.css(property).replace("px", ""));
-    }
-
-    function activate() {
-      var speed = 50;
-      var increment = 100;
-      var currentPosition = getPosition();
-      var interval = setInterval(function() {
-        if(originalPosition > currentPosition + increment) {
-          currentPosition += increment;
-        }
-        else {
-          clearInterval(interval);
-          currentPosition = originalPosition;
-          $(window).on("resize", function() {
-            // Reset to fall back to stylesheet
-            // now we're done moving it.
-            $element.get(0).style[property] = "";
-          });
-        }
-
-        update(String(currentPosition));
-      }, speed);
-    }
-
-    // If element exists, then initially set
-    // it offscreen and start effect.
-    if($element.length) {
-      update(originalPosition - offset);
-      (new ScrollIntoViewStart($element, activate, true)).init();
-    }
-  }
-
-
   /* Delays an action until the passed element is expected
    * to be visible in the viewport.
    * @$element (jQuery node) Element that should be visible
@@ -631,7 +583,6 @@ GOVUK.page = (new function() {
   this.init = function() {
     captureUtmValue();
     setupFactCounterEffect();
-    setupHomeScreenshotEffect();
     setupCompaniesHouseLookup();
   }
 
@@ -652,15 +603,6 @@ GOVUK.page = (new function() {
     var $fact = $(".fact");
     var $figure = $fact.find(".figure");
     new GOVUK.effects.Counter($figure, $figure.text());
-  }
-
-  /* Find and apply a scroll in effect to specified element.
-   **/
-  function setupHomeScreenshotEffect() {
-    var $homeScreenshot = $("#fabhome-screenshot");
-    if($homeScreenshot.length) {
-      new GOVUK.effects.SlideIntoView($homeScreenshot, 550);
-    }
   }
 
   /* Add Companies House name lookup AJAX functionality.
