@@ -18,7 +18,6 @@ from enrolment.validators import (
 from enrolment.views import (
     api_client,
     EnrolmentView,
-    EnrolmentInstructionsView,
 )
 from sso.utils import SSOUser
 
@@ -163,34 +162,6 @@ def api_response_company_profile_no_date_of_creation_200(api_response_200):
     return response
 
 
-def test_enrolment_instructions_view_handles_no_sso_user(anon_request):
-    response = EnrolmentInstructionsView.as_view()(anon_request)
-
-    assert response.template_name == [EnrolmentInstructionsView.template_name]
-    assert response.status_code == http.client.OK
-
-
-@patch('enrolment.helpers.has_company', return_value=True)
-def test_enrolment_instructions_view_handles_sso_user_with_company(
-    mock_has_company, sso_request, sso_user
-):
-    response = EnrolmentInstructionsView.as_view()(sso_request)
-
-    mock_has_company.assert_called_once_with(sso_user.id)
-    assert response.status_code == http.client.FOUND
-    assert response.get('Location') == reverse('company-detail')
-
-
-@patch.object(helpers, 'has_company', return_value=False)
-def test_enrolment_instructions_view_handles_sso_user_without_company(
-    mock_has_company, sso_user, sso_request
-):
-    response = EnrolmentInstructionsView.as_view()(sso_request)
-
-    assert response.template_name == [EnrolmentInstructionsView.template_name]
-    assert response.status_code == http.client.OK
-
-
 @patch('enrolment.helpers.has_company', Mock(return_value=True))
 @patch.object(EnrolmentView, 'get_all_cleaned_data', return_value={})
 @patch.object(forms, 'serialize_enrolment_forms')
@@ -277,15 +248,6 @@ def test_enrolment_logged_out_has_company_redirects(
     mock_has_company.assert_not_called()
 
 
-def test_companies_house_search_feature_flag_disabled(client, settings):
-    settings.NEW_LANDING_PAGE_FEATURE_ENABLED = False
-
-    url = reverse('api-internal-companies-house-search')
-    response = client.get(url)
-
-    assert response.status_code == 404
-
-
 def test_companies_house_search_validation_error(client):
     url = reverse('api-internal-companies-house-search')
     response = client.get(url)  # notice absense of `term`
@@ -361,7 +323,6 @@ def test_landing_page_submit_invalid_form_shows_errors(
     api_response_validate_company_number_400
 ):
     mock_company_unique.return_value = api_response_validate_company_number_400
-    settings.NEW_LANDING_PAGE_FEATURE_ENABLED = True
 
     url = reverse('index')
     params = {'company_number': '11111111'}

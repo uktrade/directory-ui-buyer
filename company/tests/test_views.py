@@ -153,8 +153,6 @@ def all_company_profile_data():
         'keywords': 'Nice, Great',
         'employees': choices.EMPLOYEES[1][0],
         'sectors': [choices.COMPANY_CLASSIFICATIONS[1][0]],
-        'email_full_name': 'Jeremy',
-        'email_address': 'test@example.com',
         'postal_full_name': 'Jeremy',
         'address_line_1': '123 Fake Street',
         'address_line_2': 'Fakeville',
@@ -260,22 +258,13 @@ def company_profile_sectors_standalone_data(
 
 
 @pytest.fixture
-def company_profile_contact_data(all_company_profile_data):
-    view = views.SupplierCompanyProfileEditView
-    data = all_company_profile_data
-    return {
-        'supplier_company_profile_edit_view-current_step': view.CONTACT,
-        view.CONTACT + '-email_address': data['email_address'],
-        view.CONTACT + '-email_full_name': data['email_full_name'],
-    }
-
-
-@pytest.fixture
-def company_profile_contact_standalone_data(company_profile_contact_data):
-    data = company_profile_contact_data
+def company_profile_contact_standalone_data():
     step = views.SupplierContactEditView.CONTACT
-    data['supplier_contact_edit_view-current_step'] = step
-    return data
+    return {
+        'supplier_contact_edit_view-current_step': step,
+        step + '-email_address': 'test@example.com',
+        step + '-email_full_name': 'test',
+    }
 
 
 @pytest.fixture
@@ -334,15 +323,13 @@ def address_verification_end_to_end(client, address_verification_address_data):
 def company_profile_edit_end_to_end(
     client, company_profile_address_data,
     company_profile_basic_data, company_profile_classification_data,
-    company_profile_contact_data, company_profile_send_confirm_data,
-    api_response_200
+    company_profile_send_confirm_data, api_response_200
 ):
     # loop over each step in the supplier case study wizard and post valid data
     view = views.SupplierCompanyProfileEditView
     data_step_pairs = [
         [view.BASIC, company_profile_basic_data],
         [view.CLASSIFICATION, company_profile_classification_data],
-        [view.CONTACT, company_profile_contact_data],
         [view.ADDRESS, company_profile_address_data],
         [view.ADDRESS_CONFIRM, company_profile_send_confirm_data],
     ]
@@ -359,14 +346,13 @@ def company_profile_edit_end_to_end(
 def company_profile_letter_already_sent_edit_end_to_end(
     client, company_profile_address_data,
     company_profile_basic_data, company_profile_classification_data,
-    company_profile_contact_data, api_response_200
+    api_response_200
 ):
     # loop over each step in the supplier case study wizard and post valid data
     view = views.SupplierCompanyProfileEditView
     data_step_pairs = [
         [view.BASIC, company_profile_basic_data],
         [view.CLASSIFICATION, company_profile_classification_data],
-        [view.CONTACT, company_profile_contact_data],
         [view.ADDRESS, company_profile_address_data],
     ]
 
@@ -382,7 +368,7 @@ def company_profile_letter_already_sent_edit_end_to_end(
 def company_profile_edit_goto_step(
     client, company_profile_address_data,
     company_profile_basic_data, company_profile_classification_data,
-    company_profile_contact_data, company_profile_send_confirm_data,
+    company_profile_send_confirm_data,
     api_response_200
 ):
     # loop over each step in the supplier case study wizard and post valid data
@@ -390,7 +376,6 @@ def company_profile_edit_goto_step(
     data_step_pairs = [
         [view.BASIC, company_profile_basic_data],
         [view.CLASSIFICATION, company_profile_classification_data],
-        [view.CONTACT, company_profile_contact_data],
         [view.ADDRESS, company_profile_address_data],
         [view.ADDRESS_CONFIRM, company_profile_send_confirm_data]
     ]
@@ -794,7 +779,7 @@ def test_supplier_company_redirect_non_verified_company(sso_request):
         response = ViewClass.as_view()(sso_request)
 
         assert response.status_code == http.client.FOUND
-        assert response.get('Location') == reverse('register-instructions')
+        assert response.get('Location') == reverse('index')
 
 
 @patch.object(views, 'has_company', Mock(return_value=True))
@@ -964,41 +949,6 @@ def test_supplier_company_profile_initial_address_from_companies_house(
 
 @patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
 @patch.object(views, 'has_company', Mock(return_value=True))
-def test_supplier_company_profile_initial_data_contact_from_profile(
-    company_profile_edit_goto_step, retrieve_profile_data
-):
-    expected = retrieve_profile_data
-
-    response = company_profile_edit_goto_step(
-        step=views.SupplierCompanyProfileEditView.CONTACT
-    )
-
-    assert response.context_data['form'].initial == expected
-
-
-@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
-@patch.object(views, 'has_company', Mock(return_value=True))
-@patch('api_client.api_client.company.retrieve_private_profile')
-def test_supplier_company_profile_initial_contact_from_companies_house(
-    mock_retrieve_profile, company_profile_edit_goto_step,
-    company_profile_companies_house_data,
-    api_response_company_profile_no_contact_details
-):
-    mock_retrieve_profile.return_value = (
-        api_response_company_profile_no_contact_details
-    )
-
-    expected = company_profile_companies_house_data
-
-    response = company_profile_edit_goto_step(
-        step=views.SupplierCompanyProfileEditView.CONTACT
-    )
-
-    assert response.context_data['form'].initial == expected
-
-
-@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
-@patch.object(views, 'has_company', Mock(return_value=True))
 def test_supplier_company_profile_initial_data_basic(
     company_profile_edit_goto_step, retrieve_profile_data
 ):
@@ -1147,7 +1097,7 @@ def test_supplier_contact_edit_standalone_view_api_success(
     mock_update_profile.assert_called_once_with(
         sso_user_id=sso_user.id,
         data={
-            'email_full_name': 'Jeremy',
+            'email_full_name': 'test',
             'email_address': 'test@example.com',
         }
     )

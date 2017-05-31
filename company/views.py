@@ -215,7 +215,7 @@ class SupplierCompanyProfileEditView(
         return helpers.get_company_profile(self.request.sso_user.id)
 
     def get_form_initial(self, step):
-        if step  == self.ADDRESS:
+        if step == self.ADDRESS:
             sso_user_id = self.request.sso_user.id
             return helpers.get_contact_details(sso_user_id)
         return self.company_profile
@@ -232,7 +232,6 @@ class SupplierCompanyProfileEditView(
         if self.condition_show_address():
             return TemplateResponse(self.request, self.templates[self.SENT])
         return super().handle_profile_update_success()
-
 
 
 class SupplierCompanyProfileLogoEditView(
