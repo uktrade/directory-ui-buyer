@@ -290,11 +290,12 @@
 								<img src="{% static 'images/pencil-icon.png' %}" class="ed-icon-pencil" />
 								<strong>Edit</strong>
 							</a>
-							{% if company.keywords %}
-								<p>{{company.keywords}}</p>
-							{% else %}
+							{% for keyword in company.keywords %}
+								{% if not forloop.first %}<span> </span>{% endif %}
+								<a href="{{ SUPPLIER_SEARCH_URL }}?term={{ keyword }}" targe="_blank" class="ed-keyword">{{ keyword }}</a>
+							{% empty %}
 								<p><a href="{% url show_wizard_links|yesno:'company-edit,company-edit-key-facts' %}">Add keywords</a></p>
-							{% endif %}
+							{% endfor %}
 						</div>
 					</div>
 				</div>
