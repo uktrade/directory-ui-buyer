@@ -43,27 +43,31 @@ fabhome
 		</div>
 	</section>
 
-	<section id="fabhome-howto" class="outer-container">
-		<h2>{% trans "Get your profile in 3 simple steps" %}</h2>
-		<ol>
-			<li class="step1">
-				<strong aria-describedby="step1desc">{% trans "Sign up" %}</strong>
-				<span id="step1desc">{% trans "Enter your company number to start building your trade profile." %}</span>
-			</li>
+	<section id="fabhome-howto">
+		<div class="outer-container">
+			<h2>{% trans "Get your profile in 3 simple steps" %}</h2>
+			<ol>
+				<li class="step1">
+					<strong aria-describedby="step1desc">{% trans "Sign up" %}</strong>
+					<span id="step1desc">{% trans "Enter your company number to start building your trade profile." %}</span>
+				</li>
 
-			<li class="step2">
-				<strong aria-describedby="step2desc">{% trans "Verify your account" %}</strong>
-				<span id="step2desc">{% trans "Ensure your company's security and give confidence to potential buyers." %}</span>
-			</li>
+				<li class="step2">
+					<strong aria-describedby="step2desc">{% trans "Verify your account" %}</strong>
+					<span id="step2desc">{% trans "Ensure your company's security and give confidence to potential buyers." %}</span>
+				</li>
 
-			<li class="step3">
-				<strong aria-describedby="step3desc">{% trans "Make a good impression" %}</strong>
-				<span id="step3desc">{% trans "Add examples of your company's work to show your business at its best." %}</span>
-			</li>
-		</ol>
+				<li class="step3">
+					<strong aria-describedby="step3desc">{% trans "Make a good impression" %}</strong>
+					<span id="step3desc">{% trans "Add examples of your company's work to show your business at its best." %}</span>
+				</li>
+			</ol>
+		</div>
 
-		<div {% if user_has_company %}style="visibility: hidden;"{% endif %}>
-			{% include 'register-company-number-form.html' %}
+		<div id="fabhome-howto-lookup-area" {% if user_has_company %}style="visibility: hidden;"{% endif %}>
+			<div class="outer-container">
+				{% include 'register-company-number-form.html' %}
+			</div>
 		</div>
 	</section>
 {% endblock content %}
