@@ -145,10 +145,10 @@ button,
     color: inherit;
     float: left;
     font-size: 18px;
-    margin: 40px 30px 0 0;
+    margin: 0 0 20px 10px;
     padding-left: 30px;
     position: relative;
-    width: 40%;
+    width: 72%;
     
     &:before {
       color: inherit;
@@ -164,7 +164,7 @@ button,
     font-size: 32px;
     font-weight: 400;
     line-height: 1.2em;
-    margin: 50px 0;
+    margin: 50px 0 30px 0;
     width: 53%;
   }
   
@@ -284,7 +284,8 @@ button,
 }
 
 #fabhome-screenshot {
-  bottom: 0px;
+  bottom: 15px;
+  max-width: 295px;
   position: absolute;
-  right: 8%;
+  right: 10%;
 }
