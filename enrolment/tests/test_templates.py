@@ -165,11 +165,6 @@ def test_utm_cookie_domain():
     assert '<meta id="utmCookieDomain" value=".thing.com" />' in html
 
 
-def test_enrolment_instructions_page_renders():
-    # confirm the template renders without error
-    render_to_string('enrolment-instructions.html')
-
-
 def test_templates_render_successfully():
 
     template_list = []

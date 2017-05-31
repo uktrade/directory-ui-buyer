@@ -411,13 +411,10 @@ def test_company_profile_form_accepts_valid_data():
 
 
 def test_serialize_company_profile_forms():
-
     actual = forms.serialize_company_profile_forms({
         'address_line_1': '123 Fake Street',
         'address_line_2': 'Fakeville',
         'country': 'GB',
-        'email_address': 'Jeremy@example.com',
-        'email_full_name': 'Jeremy email',
         'employees': '1-10',
         'keywords': 'Jolly good exporter.',
         'locality': 'London',
@@ -437,8 +434,6 @@ def test_serialize_company_profile_forms():
         'address_line_1': '123 Fake Street',
         'address_line_2': 'Fakeville',
         'country': 'GB',
-        'email_address': 'Jeremy@example.com',
-        'email_full_name': 'Jeremy email',
         'locality': 'London',
         'po_box': '124',
         'postal_code': 'E14 9IX',

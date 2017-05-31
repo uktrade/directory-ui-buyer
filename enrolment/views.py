@@ -2,10 +2,10 @@ import http
 
 from django.core.urlresolvers import reverse
 from django.conf import settings
-from django.http import JsonResponse, Http404, HttpResponseRedirect
+from django.http import JsonResponse, HttpResponseRedirect
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse, SimpleTemplateResponse
-from django.views.generic import FormView, TemplateView, View
+from django.views.generic import FormView, View
 from django.forms import ValidationError
 
 from formtools.wizard.views import NamedUrlSessionWizardView
@@ -20,11 +20,6 @@ class DomesticLandingView(FormView):
     template_name = 'landing-page.html'
     form_class = forms.CompanyNumberForm
     http_method_names = ['get', 'post']
-
-    def get_template_names(self):
-        if settings.NEW_LANDING_PAGE_FEATURE_ENABLED:
-            return [self.template_name]
-        return ['landing-page-old.html']
 
     def form_valid(self, form):
 
@@ -54,16 +49,6 @@ class DomesticLandingView(FormView):
         context['buyers_waiting_number'] = settings.BUYERS_WAITING_NUMBER
 
         return context
-
-
-class EnrolmentInstructionsView(TemplateView):
-    template_name = 'enrolment-instructions.html'
-
-    def dispatch(self, request, *args, **kwargs):
-        sso_user = request.sso_user
-        if sso_user and helpers.has_company(sso_user.id):
-            return redirect('company-detail')
-        return super().dispatch(request, *args, **kwargs)
 
 
 class EnrolmentView(SSOLoginRequiredMixin, NamedUrlSessionWizardView):
@@ -167,7 +152,8 @@ class EnrolmentView(SSOLoginRequiredMixin, NamedUrlSessionWizardView):
             self.request.session
         )
         data['sso_id'] = self.request.sso_user.id
-        data['company_email'] = self.request.sso_user.email
+        data['company_email'] = self.request.sso_user.email  # user
+        data['contact_email_address'] = self.request.sso_user.email  # company
         data['company_number'] = company_number
         data['date_of_creation'] = date_of_creation
         data['company_name'] = company_name
@@ -191,11 +177,6 @@ class EnrolmentView(SSOLoginRequiredMixin, NamedUrlSessionWizardView):
 
 class CompaniesHouseSearchApiView(View):
     form_class = forms.CompaniesHouseSearchForm
-
-    def dispatch(self, *args, **kwargs):
-        if not settings.NEW_LANDING_PAGE_FEATURE_ENABLED:
-            raise Http404()
-        return super().dispatch(*args, **kwargs)
 
     def get(self, request, *args, **kwargs):
         form = self.form_class(data=request.GET)

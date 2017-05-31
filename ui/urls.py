@@ -1,10 +1,10 @@
 from django.conf.urls import url
 from django.views.decorators.http import require_http_methods
+from django.views.generic import RedirectView
 
 from enrolment.views import (
     CompaniesHouseSearchApiView,
     DomesticLandingView,
-    EnrolmentInstructionsView,
     EnrolmentView,
 )
 from company.views import (
@@ -43,11 +43,6 @@ urlpatterns = [
         r'^$',
         DomesticLandingView.as_view(),
         name='index'
-    ),
-    url(
-        r'^register$',
-        EnrolmentInstructionsView.as_view(),
-        name='register-instructions'
     ),
     url(
         r'^register/(?P<step>.+)$',
@@ -128,5 +123,11 @@ urlpatterns = [
         r'^api/internal/companies-house-search/$',
         CompaniesHouseSearchApiView.as_view(),
         name='api-internal-companies-house-search'
+    ),
+
+    # first step of enrolment was /register. It's moved to the landing page
+    url(
+        r'^register$',
+        RedirectView.as_view(pattern_name='index'),
     ),
 ]
