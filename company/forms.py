@@ -521,8 +521,7 @@ def serialize_company_profile_forms(cleaned_data):
 
     @param {dict} cleaned_data - All the fields in `CompanyBasicInfoForm`
                                  `CompanyLogoForm`,
-                                 `CompanyClassificationForm`,
-                                 `CompanyContactDetailsForm`, and
+                                 `CompanyClassificationForm`, and
                                  `CompanyAddressVerificationForm`.
     @returns dict
 
@@ -537,8 +536,6 @@ def serialize_company_profile_forms(cleaned_data):
         'address_line_1': cleaned_data['address_line_1'],
         'address_line_2': cleaned_data['address_line_2'],
         'country': cleaned_data['country'],
-        'email_address': cleaned_data['email_address'],
-        'email_full_name': cleaned_data['email_full_name'],
         'locality': cleaned_data['locality'],
         'po_box': cleaned_data['po_box'],
         'postal_code': cleaned_data['postal_code'],

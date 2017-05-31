@@ -5,7 +5,7 @@ from django.conf import settings
 from django.http import JsonResponse, Http404, HttpResponseRedirect
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse, SimpleTemplateResponse
-from django.views.generic import FormView, TemplateView, View
+from django.views.generic import FormView, View
 from django.forms import ValidationError
 
 from formtools.wizard.views import NamedUrlSessionWizardView
@@ -54,16 +54,6 @@ class DomesticLandingView(FormView):
         context['buyers_waiting_number'] = settings.BUYERS_WAITING_NUMBER
 
         return context
-
-
-class EnrolmentInstructionsView(TemplateView):
-    template_name = 'enrolment-instructions.html'
-
-    def dispatch(self, request, *args, **kwargs):
-        sso_user = request.sso_user
-        if sso_user and helpers.has_company(sso_user.id):
-            return redirect('company-detail')
-        return super().dispatch(request, *args, **kwargs)
 
 
 class EnrolmentView(SSOLoginRequiredMixin, NamedUrlSessionWizardView):

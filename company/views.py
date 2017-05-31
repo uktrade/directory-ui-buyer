@@ -23,7 +23,8 @@ class SupplierCompanyBaseView(SSOLoginRequiredMixin):
             return self.handle_no_permission()
         else:
             if not has_company(self.request.sso_user.id):
-                return redirect('register-instructions')
+                # the landing page has an input box for enrolling the company
+                return redirect('index')
             else:
                 return super(SupplierCompanyBaseView, self).dispatch(
                     request, *args, **kwargs
@@ -177,21 +178,18 @@ class SupplierCompanyProfileEditView(
     ADDRESS = 'address'
     BASIC = 'basic'
     CLASSIFICATION = 'classification'
-    CONTACT = 'contact'
     ADDRESS_CONFIRM = 'confirm'
     SENT = 'sent'
 
     form_list = (
         (BASIC, forms.CompanyBasicInfoForm),
         (CLASSIFICATION, forms.CompanyClassificationForm),
-        (CONTACT, forms.CompanyContactDetailsForm),
         (ADDRESS, forms.CompanyAddressVerificationForm),
         (ADDRESS_CONFIRM, forms.EmptyForm),
     )
     templates = {
         BASIC: 'company-profile-form.html',
         CLASSIFICATION: 'company-profile-form-classification.html',
-        CONTACT: 'company-profile-form-contact.html',
         ADDRESS: 'company-profile-form-address.html',
         ADDRESS_CONFIRM: 'company-profile-address-confirm-send.html',
         SENT: 'company-profile-form-letter-sent.html',
@@ -199,7 +197,6 @@ class SupplierCompanyProfileEditView(
     form_labels = (
         (BASIC, 'Basic'),
         (CLASSIFICATION, 'Industries'),
-        (CONTACT, 'Contact'),
         (ADDRESS, 'Address'),
         (ADDRESS_CONFIRM, 'Confirm'),
     )
@@ -218,7 +215,7 @@ class SupplierCompanyProfileEditView(
         return helpers.get_company_profile(self.request.sso_user.id)
 
     def get_form_initial(self, step):
-        if step in [self.ADDRESS, self.CONTACT]:
+        if step  == self.ADDRESS:
             sso_user_id = self.request.sso_user.id
             return helpers.get_contact_details(sso_user_id)
         return self.company_profile
@@ -235,6 +232,7 @@ class SupplierCompanyProfileEditView(
         if self.condition_show_address():
             return TemplateResponse(self.request, self.templates[self.SENT])
         return super().handle_profile_update_success()
+
 
 
 class SupplierCompanyProfileLogoEditView(
