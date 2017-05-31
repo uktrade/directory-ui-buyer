@@ -1,6 +1,7 @@
 import datetime
 
 from directory_validators.constants import choices
+from directory_validators.helpers import tokenize_keywords
 
 from django.conf import settings
 
@@ -74,7 +75,7 @@ def format_company_details(details):
         'sectors': pair_sector_values_with_label(details['sectors']),
         'logo': details['logo'],
         'name': details['name'],
-        'keywords': details['keywords'],
+        'keywords': tokenize_keywords(details['keywords']),
         'employees': get_employees_label(details['employees']),
         'supplier_case_studies': list(case_studies),
         'modified': format_date_modified(details['modified']),

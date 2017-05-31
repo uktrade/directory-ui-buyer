@@ -156,16 +156,15 @@ class SupplierCompanyProfileDetailView(SupplierCompanyBaseView, TemplateView):
     template_name = 'company-private-profile-detail.html'
 
     def get_context_data(self, **kwargs):
-        response = api_client.company.retrieve_private_profile(
-            sso_user_id=self.request.sso_user.id
-        )
-        if not response.ok:
-            response.raise_for_status()
+        sso_user_id = self.request.sso_user.id
+        response = api_client.company.retrieve_private_profile(sso_user_id)
+        response.raise_for_status()
         profile = helpers.get_company_profile_from_response(response)
         show_wizard_links = not forms.is_optional_profile_values_set(profile)
         return {
             'company': profile,
             'show_wizard_links': show_wizard_links,
+            'SUPPLIER_SEARCH_URL': settings.SUPPLIER_SEARCH_URL,
         }
 
 

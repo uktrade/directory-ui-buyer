@@ -8,7 +8,7 @@ test_requirements:
 	pip install -r requirements_test.txt
 
 API_CLIENT_ENV_VARS := API_SIGNATURE_SECRET=debug API_CLIENT_BASE_URL=http://debug
-FLAKE8 := flake8 . --exclude=migrations,.venv
+FLAKE8 := flake8 . --exclude=migrations,.venv,node_modules
 PYTEST := pytest . --cov=. --cov-config=.coveragerc --capture=no $(pytest_args)
 COLLECT_STATIC := python manage.py collectstatic --noinput
 
@@ -56,7 +56,8 @@ DOCKER_SET_DEBUG_ENV_VARS := \
 	export DIRECTORY_UI_BUYER_UTM_COOKIE_DOMAIN=.great.dev; \
 	export DIRECTORY_UI_BUYER_DIRECTORY_EXTERNAL_API_SIGNATURE_SECRET=debug; \
 	export DIRECTORY_UI_BUYER_NEW_LANDING_PAGE_FEATURE_ENABLED=true;\
-	export DIRECTORY_UI_BUYER_CORS_ORIGIN_ALLOW_ALL=true
+	export DIRECTORY_UI_BUYER_CORS_ORIGIN_ALLOW_ALL=true; \
+	export DIRECTORY_UI_BUYER_SUPPLIER_SEARCH_URL=http://supplier.trade.great.dev:8005
 
 
 DOCKER_REMOVE_ALL := \
@@ -113,7 +114,8 @@ DEBUG_SET_ENV_VARS := \
 	export UTM_COOKIE_DOMAIN=.great.dev; \
 	export DIRECTORY_EXTERNAL_API_SIGNATURE_SECRET=debug; \
 	export NEW_LANDING_PAGE_FEATURE_ENABLED=true; \
-	export CORS_ORIGIN_ALLOW_ALL=true
+	export CORS_ORIGIN_ALLOW_ALL=true; \
+	export SUPPLIER_SEARCH_URL=http://supplier.trade.great.dev:8005
 
 
 debug_webserver:
