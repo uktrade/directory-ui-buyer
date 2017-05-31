@@ -29,8 +29,6 @@
   }
   
   .register-company-number-form {
-    margin-left: 15px;
-    margin-right: 15px;
     padding: 25px 0;
     
     .button {
@@ -109,6 +107,13 @@
     
     strong {
       font-size: 17px;
+    }
+  }
+  
+  #fabhome-howto-lookup-area {
+    .register-company-number-form {
+      margin-left: 25px;
+      margin-right: 25px;
     }
   }
   
