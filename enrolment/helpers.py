@@ -2,11 +2,16 @@ import http
 import logging
 import urllib
 
-import requests
-
 from django.conf import settings
+from django.forms import ValidationError
+from django.template.response import SimpleTemplateResponse
+
+import requests
+from requests.exceptions import RequestException
 
 from api_client import api_client
+from enrolment import validators
+
 
 COMPANIES_HOUSE_PROFILE_SESSION_KEY = 'ch_profile'
 MESSAGE_AUTH_FAILED = 'Auth failed with Companies House'
@@ -37,16 +42,16 @@ def store_companies_house_profile_in_session(session, company_number):
     session.modified = True
 
 
-def halt_validation_on_failure(*validators):
+def halt_validation_on_failure(*all_validators):
     """
     Django runs all validators on a field and shows all errors. Sometimes this
     is undesirable: we may want the validators to stop on the first error.
 
     """
     def inner(value):
-        for validator in validators:
+        for validator in all_validators:
             validator(value)
-    inner.inner_validators = validators
+    inner.inner_validators = all_validators
     return [inner]
 
 
@@ -128,3 +133,31 @@ def get_company_status_from_session(session):
 
 def get_company_from_session(session):
     return session.get(COMPANIES_HOUSE_PROFILE_SESSION_KEY)
+
+
+def store_companies_house_profile_in_session_and_validate(
+        session, company_number
+):
+    try:
+        store_companies_house_profile_in_session(
+            session=session,
+            company_number=company_number,
+        )
+    except RequestException as error:
+        if error.response.status_code == http.client.NOT_FOUND:
+            raise ValidationError(validators.MESSAGE_COMPANY_NOT_FOUND)
+        else:
+            raise ValidationError(validators.MESSAGE_COMPANY_ERROR)
+    else:
+        company_status = get_company_status_from_session(
+            session
+        )
+        validators.company_active(company_status)
+        validators.company_unique(company_number)
+
+
+def get_error_response(error_message):
+    return SimpleTemplateResponse(
+        'enrolment-error.html',
+        {'validation_error': error_message},
+    )
