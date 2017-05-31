@@ -133,7 +133,10 @@ def test_company_profile_details_renders_sectors():
 def test_company_profile_details_renders_keywords():
     template_name = 'company-private-profile-detail.html'
     html = render_to_string(template_name, default_context)
-    assert default_context['company']['keywords'] in html
+
+    assert default_context['company']['keywords']
+    for keyword in default_context['company']['keywords']:
+        assert keyword in html
 
 
 def test_company_private_profile_details_renders_standalone_edit_links():

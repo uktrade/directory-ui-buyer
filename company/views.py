@@ -156,7 +156,7 @@ class SupplierCompanyProfileDetailView(SupplierCompanyBaseView, TemplateView):
     template_name = 'company-private-profile-detail.html'
 
     def get_context_data(self, **kwargs):
-        sso_user_id=self.request.sso_user.id
+        sso_user_id = self.request.sso_user.id
         response = api_client.company.retrieve_private_profile(sso_user_id)
         response.raise_for_status()
         profile = helpers.get_company_profile_from_response(response)
