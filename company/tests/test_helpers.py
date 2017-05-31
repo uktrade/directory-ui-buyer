@@ -210,3 +210,12 @@ def test_chunk_list_empty():
     input_list = []
     expected_list = []
     assert helpers.chunk_list(input_list, 3) == expected_list
+
+
+def test_format_company_details_handles_keywords_empty(retrieve_profile_data):
+    for value in ['', None, []]:
+        retrieve_profile_data['keywords'] = value
+
+        formatted = helpers.format_company_details(retrieve_profile_data)
+
+        assert formatted['keywords'] == []

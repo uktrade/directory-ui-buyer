@@ -57,7 +57,7 @@ DOCKER_SET_DEBUG_ENV_VARS := \
 	export DIRECTORY_UI_BUYER_DIRECTORY_EXTERNAL_API_SIGNATURE_SECRET=debug; \
 	export DIRECTORY_UI_BUYER_NEW_LANDING_PAGE_FEATURE_ENABLED=true;\
 	export DIRECTORY_UI_BUYER_CORS_ORIGIN_ALLOW_ALL=true; \
-	export DIRECTORY_UI_BUYER_SUPPLIER_SEARCH_URL=http://supplier.trade.great.dev:8005
+	export DIRECTORY_UI_BUYER_SUPPLIER_SEARCH_URL=http://supplier.trade.great.dev:8005/search
 
 
 DOCKER_REMOVE_ALL := \
@@ -115,7 +115,7 @@ DEBUG_SET_ENV_VARS := \
 	export DIRECTORY_EXTERNAL_API_SIGNATURE_SECRET=debug; \
 	export NEW_LANDING_PAGE_FEATURE_ENABLED=true; \
 	export CORS_ORIGIN_ALLOW_ALL=true; \
-	export SUPPLIER_SEARCH_URL=http://supplier.trade.great.dev:8005
+	export SUPPLIER_SEARCH_URL=http://supplier.trade.great.dev:8005/search
 
 
 debug_webserver:

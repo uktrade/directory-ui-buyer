@@ -291,8 +291,7 @@
 								<strong>Edit</strong>
 							</a>
 							{% for keyword in company.keywords %}
-								{% if not forloop.first %}<span> </span>{% endif %}
-								<a href="{{ SUPPLIER_SEARCH_URL }}?term={{ keyword }}" targe="_blank" class="ed-keyword">{{ keyword }}</a>
+								<a href="{{ SUPPLIER_SEARCH_URL }}?term={{ keyword }}" target="_self" class="ed-keyword">{{ keyword }}</a>{% if not forloop.last %}, {% endif %}
 							{% empty %}
 								<p><a href="{% url show_wizard_links|yesno:'company-edit,company-edit-key-facts' %}">Add keywords</a></p>
 							{% endfor %}
