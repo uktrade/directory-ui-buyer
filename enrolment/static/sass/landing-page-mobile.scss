@@ -21,10 +21,6 @@
     h2 {
       font-size: 22px;
     }
-    
-    .register-company-number-form {
-      margin-bottom: 40px !important;
-    }
   }
   
   .fact {
@@ -85,6 +81,7 @@
     
       li:after {
         background-image: url(images/FAB-steps-arrow-3.png);
+        background-size: auto;
         height: 50px;
         left: 50%;
         margin-left: -40px;
@@ -115,6 +112,7 @@
     
     .register-company-number-form {
       background-color: transparent;
+      margin-bottom: 40px !important;
       margin-left: 0;
       margin-right: 0;
       padding: 25px 0 0 0;

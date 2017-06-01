@@ -114,7 +114,6 @@ button,
   }
   
   .register-company-number-form {
-    margin-bottom: 75px !important; /* counters over-specific rule targeting general forms */
     margin-top: 0;
   }
 }
@@ -211,9 +210,10 @@ button,
     }
   
     li:after {
-      background-image: url(images/FAB-steps-arrow-1.png);
-      background-repeat: no-repeat;
+      background-image: url(images/dotted_arrow.svg);
       background-position: 0 0;
+      background-repeat: no-repeat;
+      background-size: 45px;
       content: " ";
       display: block;
       height: 80px;
@@ -230,7 +230,7 @@ button,
       font-size: 134px;
       font-weight: 500;
       line-height: 110px;
-      margin-right: 10px;
+      margin-right: 20px;
       position: relative;
       top: -5px;
     }
@@ -278,7 +278,7 @@ button,
   
   .register-company-number-form {
     border-radius: 0;
-    padding-bottom: 50px;
+    padding-bottom: 75px;
   }
   
   &:before {
@@ -296,6 +296,7 @@ button,
   
   .register-company-number-form {
     background-color: rgba(250,250,250,0.87);
+    margin-bottom: 75px !important; /* counters over-specific rule targeting general forms */
     margin-left: 25px;
     margin-right: 25px;
   }

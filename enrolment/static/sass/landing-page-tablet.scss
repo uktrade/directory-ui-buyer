@@ -80,7 +80,6 @@
       li {
         background-position-y: 30px;
         padding-top: 25%;
-        width: 35%;
       
         span {
           font-size: 14px;
@@ -88,16 +87,11 @@
       }
     
       li:after {
-        background-image: url(images/FAB-steps-arrow-2.png);
         top: 16%;
       }
     
       li::before {
         font-size: 100px;
-      }
-    
-      li:first-child {
-        width: 30%;
       }
     }
     
