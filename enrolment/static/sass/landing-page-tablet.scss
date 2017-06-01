@@ -72,22 +72,11 @@
   }
   
   #fabhome-howto {
-    h2, ol {
-      margin: 0 20px;
-    }
-    
     ol {
       li {
-        background-position-y: 30px;
-        padding-top: 25%;
-      
         span {
           font-size: 14px;
         }
-      }
-    
-      li:after {
-        top: 16%;
       }
     
       li::before {
