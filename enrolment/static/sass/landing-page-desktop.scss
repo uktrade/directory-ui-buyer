@@ -234,13 +234,21 @@ button,
       background-image: none;
     }
   
-    li:first-child:before {
-      margin-right: 0;
+    li:first-child {
+      span {
+        padding-left: 75px;
+      }
+      
+      strong:before {
+        margin-right: 0;
+      }
     }
-  }
-  
-  span {
-    display: block;
+    
+    span {
+      display: block;
+      padding-left: 93px;
+      padding-right: 15px;
+    }
   }
   
   strong {
