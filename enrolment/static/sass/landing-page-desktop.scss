@@ -211,9 +211,10 @@ button,
     }
   
     li:after {
-      background-image: url(images/FAB-steps-arrow-1.png);
-      background-repeat: no-repeat;
+      background-image: url(images/dotted_arrow.svg);
       background-position: 0 0;
+      background-repeat: no-repeat;
+      background-size: 45px;
       content: " ";
       display: block;
       height: 80px;
