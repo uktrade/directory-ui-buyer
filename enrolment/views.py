@@ -193,11 +193,13 @@ class SubmitEnrolmentView(SSOLoginRequiredMixin, View):
         response = api_client.registration.send_form(
             self.get_enrolment_data(export_status=export_status)
         )
-        if response.ok:
-            template = self.success_template
+        if not response.ok:
+            response = TemplateResponse(self.request, self.failure_template)
+        elif settings.FEATURE_SYNCHRONOUS_PROFILE_CREATION:
+            response = redirect('company-edit')
         else:
-            template = self.failure_template
-        return TemplateResponse(self.request, template)
+            response = TemplateResponse(self.request, self.success_template)
+        return response
 
 
 class CompaniesHouseSearchApiView(View):
