@@ -87,30 +87,6 @@ def test_company_export_status_form_validars():
     assert validator in field.validators
 
 
-def test_serialize_enrolment_forms():
-    actual = forms.serialize_enrolment_forms({
-        'export_status': 'YES',
-    })
-    expected = {
-        'export_status': 'YES',
-    }
-    assert actual == expected
-
-
-def test_serialize_international_buyer_forms():
-    actual = forms.serialize_international_buyer_forms({
-        'full_name': 'Jim Example',
-        'email_address': 'jim@example.com',
-        'sector': 'AEROSPACE',
-    })
-    expected = {
-        'name': 'Jim Example',
-        'email': 'jim@example.com',
-        'sector': 'AEROSPACE',
-    }
-    assert actual == expected
-
-
 def test_get_company_name_form_initial_data():
     actual = forms.get_company_form_initial_data(
         data={

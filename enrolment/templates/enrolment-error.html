@@ -1,11 +1,4 @@
 {% extends 'enrolment-base.html' %}
 
-{% block sub_header %}{# prevent the subheader from showing on form pages #}{% endblock %}
-{% block formarea %}
-	<div class="outer-container">
-		<h1>There was a problem completing your enrolment.</h1>
-		<p>
-			Please try again.
-		</p>
-	</div>
-{%endblock formarea %}
+{% block hero_title %}There was a problem creating your profile.{% endblock %}
+{% block hero_text %}{{ validation_error }}{% endblock %}

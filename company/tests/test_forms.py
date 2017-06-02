@@ -371,8 +371,9 @@ def test_company_profile_form_required_fields():
 
     assert valid is False
     assert form.errors['name'] == [REQUIRED_MESSAGE]
-    assert form.errors['website'] == [REQUIRED_MESSAGE]
     assert form.errors['keywords'] == [REQUIRED_MESSAGE]
+    assert form.errors['employees'] == [REQUIRED_MESSAGE]
+    assert 'website' not in form.errors
 
 
 def test_company_profile_form_keywords_validator():

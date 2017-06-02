@@ -9,7 +9,7 @@ import requests
 from requests.exceptions import RequestException, HTTPError
 import pytest
 
-from enrolment import forms, helpers
+from enrolment import helpers
 from enrolment.validators import (
     MESSAGE_COMPANY_NOT_ACTIVE,
     MESSAGE_COMPANY_NOT_FOUND,
@@ -18,6 +18,7 @@ from enrolment.validators import (
 from enrolment.views import (
     api_client,
     EnrolmentView,
+    SubmitEnrolmentView
 )
 from sso.utils import SSOUser
 
@@ -162,38 +163,40 @@ def api_response_company_profile_no_date_of_creation_200(api_response_200):
     return response
 
 
-@patch('enrolment.helpers.has_company', Mock(return_value=True))
-@patch.object(EnrolmentView, 'get_all_cleaned_data', return_value={})
-@patch.object(forms, 'serialize_enrolment_forms')
-@patch.object(api_client.registration, 'send_form')
-def test_enrolment_form_complete_api_client_call(mock_send_form,
-                                                 mock_serialize_forms,
-                                                 sso_request):
-    view = EnrolmentView()
-    view.request = sso_request
-    mock_serialize_forms.return_value = data = {'field': 'value'}
-    view.done()
-    mock_send_form.assert_called_once_with(data)
-
-
-@patch('enrolment.helpers.has_company', Mock(return_value=True))
-@patch.object(EnrolmentView, 'serialize_form_data', Mock(return_value={}))
+@patch(
+    'enrolment.helpers.get_company_from_companies_house',
+    Mock(return_value=MOCK_COMPANIES_HOUSE_API_COMPANY_PROFILE)
+)
+@patch('enrolment.helpers.has_company', Mock(return_value=False))
+@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
 @patch.object(api_client.registration, 'send_form', api_response_200)
-def test_enrolment_form_complete_api_client_success(sso_request):
-    view = EnrolmentView()
-    view.request = sso_request
-    response = view.done()
-    assert response.template_name == EnrolmentView.success_template
+def test_submit_enrolment_api_client_success(client):
+    response = client.get(
+        reverse('register-submit'),
+        {
+            'company_number': '12345678',
+            'export_status': 'ONE_TWO_YEARS_AGO'
+        }
+    )
+    assert response.template_name == SubmitEnrolmentView.success_template
 
 
-@patch('enrolment.helpers.has_company', Mock(return_value=True))
-@patch.object(EnrolmentView, 'serialize_form_data', Mock(return_value={}))
+@patch(
+    'enrolment.helpers.get_company_from_companies_house',
+    Mock(return_value=MOCK_COMPANIES_HOUSE_API_COMPANY_PROFILE)
+)
+@patch('enrolment.helpers.has_company', Mock(return_value=False))
+@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
 @patch.object(api_client.registration, 'send_form', api_response_400)
-def test_enrolment_form_complete_api_client_fail(company_request):
-    view = EnrolmentView()
-    view.request = company_request
-    response = view.done()
-    assert response.template_name == EnrolmentView.failure_template
+def test_submit_enrolment_api_client_fail(client):
+    response = client.get(
+        reverse('register-submit'),
+        {
+            'company_number': '12345678',
+            'export_status': 'ONE_TWO_YEARS_AGO'
+        }
+    )
+    assert response.template_name == SubmitEnrolmentView.failure_template
 
 
 @patch(
@@ -233,17 +236,16 @@ def test_enrolment_logged_in_has_company_redirects(
 @patch('enrolment.helpers.has_company', return_value=False)
 @patch('sso.middleware.SSOUserMiddleware.process_request',
        process_request_anon)
-def test_enrolment_logged_out_has_company_redirects(
+def test_submit_enrolment_logged_out_has_company_redirects(
     mock_has_company, client
 ):
-    step = EnrolmentView.COMPANY
-    url = reverse('register', kwargs={'step': step})
+    url = reverse('register-submit')
     response = client.get(url)
 
     assert response.status_code == http.client.FOUND
     assert response.get('Location') == (
          'http://sso.trade.great.dev:8004/accounts/signup/'
-         '?next=http%3A//testserver/register/' + step
+         '?next=http%3A//testserver/register-submit'
     )
     mock_has_company.assert_not_called()
 
@@ -548,3 +550,159 @@ def test_company_enrolment_step_handles_company_already_registered(client):
         )
 
     assert 'Company already exists' in str(response.content)
+
+
+@patch(
+    'enrolment.helpers.get_company_from_companies_house',
+    Mock(return_value=MOCK_COMPANIES_HOUSE_API_COMPANY_PROFILE)
+)
+@patch('enrolment.helpers.has_company', Mock(return_value=False))
+@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
+def test_submit_enrolment_caches_profile(client):
+    client.get(
+        reverse('register-submit'),
+        {
+            'company_number': '12345678',
+            'export_status': 'ONE_TWO_YEARS_AGO'
+        }
+    )
+
+    assert client.session[
+        helpers.COMPANIES_HOUSE_PROFILE_SESSION_KEY
+    ] == MOCK_COMPANIES_HOUSE_API_COMPANY_PROFILE
+
+
+@patch('enrolment.helpers.has_company', Mock(return_value=False))
+@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
+def test_submit_enrolment_handles_api_company_not_found(client):
+
+    with patch('enrolment.helpers.get_company_from_companies_house') as mock:
+        mock.side_effect = RequestException(
+            response=Mock(status_code=http.client.NOT_FOUND),
+            request=Mock(),
+        )
+
+        response = client.get(
+            reverse('register-submit'),
+            {
+                'company_number': '12345678',
+                'export_status': 'ONE_TWO_YEARS_AGO'
+            }
+        )
+
+    assert "Company not found" in str(response.content)
+
+
+@patch('enrolment.helpers.has_company', Mock(return_value=False))
+@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
+def test_submit_enrolment_handles_api_company_error(client):
+
+    with patch('enrolment.helpers.get_company_from_companies_house') as mock:
+        mock.side_effect = RequestException(
+            response=Mock(status_code=500),
+            request=Mock(),
+        )
+
+        response = client.get(
+            reverse('register-submit'),
+            {
+                'company_number': '12345678',
+                'export_status': 'ONE_TWO_YEARS_AGO'
+            }
+        )
+    assert 'Error. Please try again later.' in str(response.content)
+
+
+@patch('enrolment.helpers.has_company', Mock(return_value=False))
+@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
+@patch('enrolment.helpers.store_companies_house_profile_in_session', Mock())
+def test_submit_enrolment_company_number_not_provided(client):
+    response = client.get(
+        reverse('register-submit'),
+        {
+            'export_status': 'ONE_TWO_YEARS_AGO'
+        }
+    )
+    assert 'Company number not provided.' in str(response.content)
+
+
+@patch('enrolment.helpers.has_company', Mock(return_value=False))
+@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
+@patch('enrolment.helpers.store_companies_house_profile_in_session', Mock())
+def test_submit_enrolment_export_status_not_provided(client):
+    response = client.get(
+        reverse('register-submit'),
+        {
+            'company_number': '12345678',
+        }
+    )
+    assert 'Export status not provided.' in str(response.content)
+
+
+@patch('enrolment.helpers.has_company', Mock(return_value=False))
+@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
+@patch('enrolment.helpers.store_companies_house_profile_in_session', Mock())
+@patch('enrolment.helpers.get_company_status_from_session',
+       Mock(return_value='not active'))
+def test_submit_enrolment_handles_company_not_active(client):
+
+    with patch('enrolment.validators.company_active') as mock:
+        mock.side_effect = ValidationError(MESSAGE_COMPANY_NOT_ACTIVE)
+
+        response = client.get(
+            reverse('register-submit'),
+            {
+                'company_number': '12345678',
+                'export_status': 'ONE_TWO_YEARS_AGO'
+            }
+        )
+
+    assert MESSAGE_COMPANY_NOT_ACTIVE in str(response.content)
+
+
+@patch('enrolment.helpers.has_company', Mock(return_value=False))
+@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
+@patch('enrolment.helpers.store_companies_house_profile_in_session',
+       Mock())
+@patch('enrolment.helpers.get_company_status_from_session',
+       Mock(return_value='active'))
+def test_submit_enrolment_handles_company_already_registered(client):
+
+    with patch('enrolment.validators.company_unique') as mock:
+        mock.side_effect = ValidationError('Company already exists')
+
+        response = client.get(
+            reverse('register-submit'),
+            {
+                'company_number': '12345678',
+                'export_status': 'ONE_TWO_YEARS_AGO'
+            }
+        )
+
+    assert 'Company already exists' in str(response.content)
+
+
+@patch(
+    'enrolment.helpers.has_company', Mock(return_value=False)
+)
+@patch(
+    'enrolment.helpers.get_company_number_from_session',
+    Mock(return_value='12345678')
+)
+@patch.object(
+    EnrolmentView, 'get_all_cleaned_data', return_value={
+        'export_status': 'ONE_TWO_YEARS_AGO'
+    }
+)
+def test_enrolment_form_complete_redirects_to_submit_enrolment(
+    sso_request
+):
+    view = EnrolmentView()
+    view.request = sso_request
+    response = view.done()
+
+    assert response.status_code == 302
+    assert response.url == (
+        '/register-submit?company_number=12345678&'
+        'export_status=ONE_TWO_YEARS_AGO'
+    )
