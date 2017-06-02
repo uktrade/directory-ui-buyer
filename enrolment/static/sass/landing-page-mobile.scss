@@ -9,8 +9,8 @@
       color: inherit;
       font-size: 30px; 
       font-weight: 500;
-      padding-left: 0;
-      padding-right: 0;
+      padding-left: 15px;
+      padding-right: 15px;
       text-shadow: none;
       
       .sub {
@@ -54,6 +54,7 @@
   
   #content.fabhome {
     background-image: none; 
+    padding-top: 0;
   }
   
   #fabhome-benefits {
@@ -134,14 +135,17 @@
     background-color: $grey-1;
     color: inherit;
     margin: 0;
-    padding: 0 15px;
     
     .register-company-number-form {
       background-color: transparent;
-      margin-bottom: 40px !important;
-      margin-left: 0;
-      margin-right: 0;
+      margin-bottom: 30px !important;
+      margin-left: 15px;
+      margin-right: 15px;
       padding: 25px 0 0 0;
+      
+      label {
+        margin-bottom: 10px;
+      }
     }
   }
   
