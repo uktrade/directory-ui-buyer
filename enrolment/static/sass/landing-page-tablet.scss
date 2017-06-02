@@ -56,6 +56,37 @@
     }
   }
   
+  #fabhome-howto {
+    ol {
+      li {
+        span {
+          font-size: 14px;
+        }
+       
+        &:before {
+          font-size: 100px;
+        }
+        
+        &:first-child {
+          span {
+            padding-left: 62px;
+          }
+        }
+      }
+      
+      span {
+        padding-left: 83px;
+      }
+    }
+    
+    strong {
+      font-size: 17px;
+      &:before {
+        font-size: 110px;
+      }
+    }
+  }
+  
   #fabhome-intro {
     .register-company-number-form {
       .button {
@@ -68,35 +99,6 @@
       .text {
         width: 100%;
       }
-    }
-  }
-  
-  #fabhome-howto {
-    h2, ol {
-      margin: 0 20px;
-    }
-    
-    ol {
-      li {
-        background-position-y: 30px;
-        padding-top: 25%;
-      
-        span {
-          font-size: 14px;
-        }
-      }
-    
-      li:after {
-        top: 16%;
-      }
-    
-      li::before {
-        font-size: 100px;
-      }
-    }
-    
-    strong {
-      font-size: 17px;
     }
   }
   
@@ -113,16 +115,31 @@
 
 @media (max-width: 640px) {
   #fabhome-howto {
+
+  }
+}
+
+
+@media (max-width: 560px) {
+  #fabhome-howto {
     ol {
-      li {
-        &::before {
-          font-size: 75px;
+      li:first-child {
+        span {
+          padding-left: 57px;
         }
+      }
+      
+      span {
+        padding-left: 67px;
       }
     }
     
     strong {
       font-size: 15px;
+      &::before {
+        font-size: 100px;
+        margin-right: 10px;
+      }
     }
   }
 }

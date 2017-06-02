@@ -193,37 +193,71 @@ button,
   ol {
     margin: 0 25px;
     overflow: hidden;
+    padding-bottom: 25px;
   
     li {
-      background-position: top center;
-      background-repeat: no-repeat;
-      background-size: 65%;
       border-color: $white;
       border-style: solid;
       counter-increment: li;
       color: $grey-3;
       float: left;
       font-size: 16px;
-      padding: 22% 0 25px 0;
       position: relative;
       width: 33%;
+      
+      &:before {
+        background-position: top center;
+        background-repeat: no-repeat;
+        background-size: 60%;
+        content: " ";
+        display: block;
+        margin-bottom: 40px;
+        padding-top: 60%;
+      }
     }
   
     li:after {
       background-image: url(images/dotted_arrow.svg);
-      background-position: 0 0;
+      background-position: center;
       background-repeat: no-repeat;
-      background-size: 45px;
+      background-size: 100%;
       content: " ";
       display: block;
-      height: 80px;
-      left: -62px;
+      padding-top: 60%;
       position: absolute;
-      top: 15%;
-      width: 50px;
+      right: 94%;
+      top: 0;
+      width: 12%;
     }
   
-    li:before {
+    li:first-child:after {
+      background-image: none;
+    }
+  
+    li:first-child {
+      span {
+        padding-left: 75px;
+      }
+      
+      strong:before {
+        margin-right: 0;
+      }
+    }
+    
+    span {
+      display: block;
+      padding-left: 93px;
+      padding-right: 15px;
+    }
+  }
+  
+  strong {
+    display: block;
+    font-size: 20px;
+    font-weight: 400;
+    margin-bottom: 5px;
+  
+    &:before {
       color: $grey-4;
       content: counter(li) " ";
       float: left;
@@ -234,38 +268,19 @@ button,
       position: relative;
       top: -5px;
     }
-  
-    li:first-child:after {
-      background-image: none;
-    }
-  
-    li:first-child:before {
-      margin-right: 0;
-    }
   }
   
-  span {
-    display: block;
-  }
-  
-  strong {
-    display: block;
-    font-size: 20px;
-    font-weight: 400;
-    margin-bottom: 5px;
-  }
-  
-  .step1 {
+  .step1:before {
     background-image: url(images/Register-FAB.svg);
     border-width: 0 50px 0 0;
   }
   
-  .step2 {
+  .step2:before {
     background-image: url(images/Verify-FAB.svg);
     border-width: 0 25px 0 25px;
   }
   
-  .step3 {
+  .step3:before {
     background-image: url(images/FAB-impression.svg);
     border-width: 0 0 0 50px;
   }
