@@ -72,25 +72,44 @@
   }
   
   #fabhome-howto {
+    h2 {
+      margin-bottom: 25px;
+    }
+    
     ol {
       li, li:first-child {
         background-size: 50%;
-        padding-top: 65%;
+        margin-bottom: 20px;
+        width: 100%;
+        
+        span {
+          font-size: 16px;
+          margin-bottom: 20px;
+        }
+      }
+    
+      li:after,
+      li:first-child:after  {
+        background-image: url(images/FAB-steps-arrow-3.png);
+        background-position: top center;
+        background-size: auto;
+        height: 52px;
+        padding: 0;
+        position: static;
         width: 100%;
       }
     
-      li:after {
-        background-image: url(images/FAB-steps-arrow-3.png);
-        background-size: auto;
-        height: 50px;
-        left: 50%;
-        margin-left: -40px;
-        top: -40px;
-        width: 80px;
+      li:before {
+        background-size: 40%;
+        margin-bottom: 25px;
+        padding-top: 40%;
       }
+    }
     
-      li::before {
-        top: -15px;
+    strong {
+      font-size: 24px;
+      &:before {
+        top: -20px;
       }
     }
     
@@ -101,6 +120,13 @@
     
     .step1, .step2, .step3 {
       border-width: 0;
+    }
+    
+    .step3 {
+      margin-bottom: 0;
+      &:after {
+        display: none;
+      }
     }
   }
   
