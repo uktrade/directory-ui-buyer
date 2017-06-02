@@ -29,8 +29,6 @@
   }
   
   .register-company-number-form {
-    padding: 25px 0;
-    
     .button {
       width: 35%;
     }
@@ -58,10 +56,39 @@
     }
   }
   
+  #fabhome-howto {
+    ol {
+      li {
+        span {
+          font-size: 14px;
+        }
+       
+        &:before {
+          font-size: 100px;
+        }
+        
+        &:first-child {
+          span {
+            padding-left: 62px;
+          }
+        }
+      }
+      
+      span {
+        padding-left: 83px;
+      }
+    }
+    
+    strong {
+      font-size: 17px;
+      &:before {
+        font-size: 110px;
+      }
+    }
+  }
+  
   #fabhome-intro {
     .register-company-number-form {
-      padding: 25px;
-      
       .button {
         float: none;
         margin: 20px 0;
@@ -72,48 +99,6 @@
       .text {
         width: 100%;
       }
-    }
-  }
-  
-  #fabhome-howto {
-    h2, ol {
-      margin: 0 20px;
-    }
-    
-    ol {
-      li {
-        background-position-y: 30px;
-        padding-top: 25%;
-        width: 35%;
-      
-        span {
-          font-size: 14px;
-        }
-      }
-    
-      li:after {
-        background-image: url(images/FAB-steps-arrow-2.png);
-        top: 16%;
-      }
-    
-      li::before {
-        font-size: 100px;
-      }
-    
-      li:first-child {
-        width: 30%;
-      }
-    }
-    
-    strong {
-      font-size: 17px;
-    }
-  }
-  
-  #fabhome-howto-lookup-area {
-    .register-company-number-form {
-      margin-left: 25px;
-      margin-right: 25px;
     }
   }
   
@@ -130,16 +115,31 @@
 
 @media (max-width: 640px) {
   #fabhome-howto {
+
+  }
+}
+
+
+@media (max-width: 560px) {
+  #fabhome-howto {
     ol {
-      li {
-        &::before {
-          font-size: 75px;
+      li:first-child {
+        span {
+          padding-left: 57px;
         }
+      }
+      
+      span {
+        padding-left: 67px;
       }
     }
     
     strong {
       font-size: 15px;
+      &::before {
+        font-size: 100px;
+        margin-right: 10px;
+      }
     }
   }
 }
