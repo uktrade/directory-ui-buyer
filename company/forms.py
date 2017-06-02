@@ -260,11 +260,13 @@ class CompanyBasicInfoForm(AutoFocusFieldMixin, IndentedInvalidFieldsMixin,
         max_length=255,
     )
     website = forms.URLField(
+        label='Website (optional):',
         max_length=255,
         help_text=(
             'The website address must start with either http:// or '
             'https://'
-        )
+        ),
+        required=False,
     )
     keywords = forms.CharField(
         label=(
