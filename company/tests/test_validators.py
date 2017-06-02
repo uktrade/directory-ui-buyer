@@ -39,9 +39,9 @@ def test_not_contain_email_does_contains_email():
         for value_template in value_templates:
             value = value_template.format(email=email)
             with pytest.raises(forms.ValidationError):
-                validators.not_contains_email(value)
+                validators.does_not_contain_email(value)
 
 
 def test_not_contain_email_does_not_contain_email():
-    assert validators.not_contains_email('Thing') is None
-    assert validators.not_contains_email('') is None
+    assert validators.does_not_contain_email('Thing') is None
+    assert validators.does_not_contain_email('') is None

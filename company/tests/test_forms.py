@@ -116,8 +116,12 @@ def test_serialize_case_study_forms_file_images():
 
 
 def test_case_study_basic_info_validators():
-    field = forms.CaseStudyBasicInfoForm.base_fields['keywords']
-    assert shared_validators.keywords_word_limit in field.validators
+    fields = forms.CaseStudyBasicInfoForm().fields
+    for field in [fields['short_summary'], fields['description']]:
+        assert validators.does_not_contain_email in field.validators
+    assert (
+        shared_validators.keywords_word_limit in fields['keywords'].validators
+    )
 
 
 def test_case_study_form_required_fields():
@@ -347,6 +351,12 @@ def test_company_description_form_field_lengths():
 
     assert form.fields['description'].max_length == 2000
     assert form.fields['summary'].max_length == 250
+
+
+def test_company_description_form_field_validators():
+    fields = forms.CompanyDescriptionForm().fields
+    for field in [fields['summary'], fields['description']]:
+        assert validators.does_not_contain_email in field.validators
 
 
 def test_company_description_form_accepts_valid_data():

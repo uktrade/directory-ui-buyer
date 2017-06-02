@@ -17,6 +17,6 @@ def verify_with_code(sso_id):
     return inner
 
 
-def not_contains_email(value):
+def does_not_contain_email(value):
     if '@' in value:
         raise ValidationError(MESSAGE_REMOVE_EMAIL)

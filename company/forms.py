@@ -67,7 +67,7 @@ class CaseStudyBasicInfoForm(IndentedInvalidFieldsMixin, AutoFocusFieldMixin,
             ' appear on your main trade profile page.'
         ),
         max_length=200,
-        validators=[validators.not_contains_email],
+        validators=[validators.does_not_contain_email],
         widget=forms.Textarea,
     )
     description = forms.CharField(
@@ -78,7 +78,7 @@ class CaseStudyBasicInfoForm(IndentedInvalidFieldsMixin, AutoFocusFieldMixin,
             'company to an international business audience.'
         ),
         max_length=1000,
-        validators=[validators.not_contains_email],
+        validators=[validators.does_not_contain_email],
         widget=forms.Textarea,
     )
     sector = forms.ChoiceField(
@@ -300,14 +300,14 @@ class CompanyDescriptionForm(AutoFocusFieldMixin, IndentedInvalidFieldsMixin,
         help_text='Maximum 250 characters.',
         max_length=250,
         widget=forms.Textarea,
-        validators=[validators.not_contains_email],
+        validators=[validators.does_not_contain_email],
     )
     description = forms.CharField(
         widget=forms.Textarea,
         label='Describe your business to overseas buyers:',
         help_text='Maximum 2,000 characters.',
         max_length=2000,
-        validators=[validators.not_contains_email],
+        validators=[validators.does_not_contain_email],
     )
 
 
