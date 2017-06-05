@@ -1237,3 +1237,31 @@ def test_unsubscribe_api_success(
     view = views.EmailUnsubscribeView
     assert response.status_code == http.client.OK
     assert response.template_name == view.success_template
+
+
+def test_robots(client):
+    response = client.get(reverse('robots'))
+
+    assert response.status_code == 200
+    assert b'Disallow: /errors/image-too-large/' in response.content
+
+
+def test_request_payload_too_large(client):
+    expected_template_name = views.RequestPaylodTooLargeErrorView.template_name
+
+    response = client.get(
+        reverse('request-payload-too-large'),
+        {},
+        HTTP_REFERER='thing.com',
+    )
+
+    assert response.status_code == 200
+    assert response.template_name == [expected_template_name]
+
+
+def test_image_too_large_with_referrer(client):
+    # notice absence of the referrer header
+    response = client.get(reverse('request-payload-too-large'))
+
+    assert response.status_code == 302
+    assert response.get('Location') == reverse('index')

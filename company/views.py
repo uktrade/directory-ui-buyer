@@ -410,3 +410,14 @@ class EmailUnsubscribeView(SSOLoginRequiredMixin, FormView):
         if response.ok:
             return TemplateResponse(self.request, self.success_template)
         return TemplateResponse(self.request, self.failure_template)
+
+
+class RequestPaylodTooLargeErrorView(TemplateView):
+    template_name = 'image-too-large.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        # the template has a "click here to go back to the form". We get the
+        # url from the referer header.
+        if 'HTTP_REFERER' not in request.META:
+            return redirect('index')
+        return super().dispatch(request, *args, **kwargs)

@@ -1,6 +1,6 @@
 from django.conf.urls import url
 from django.views.decorators.http import require_http_methods
-from django.views.generic import RedirectView
+from django.views.generic import RedirectView, TemplateView
 
 from enrolment.views import (
     CompaniesHouseSearchApiView,
@@ -21,6 +21,7 @@ from company.views import (
     SupplierCompanySocialLinksEditView,
     SupplierContactEditView,
     EmailUnsubscribeView,
+    RequestPaylodTooLargeErrorView,
 )
 from company import proxy as company_proxies
 from admin.proxy import AdminProxyView
@@ -129,6 +130,19 @@ urlpatterns = [
         r'^api/internal/companies-house-search/$',
         CompaniesHouseSearchApiView.as_view(),
         name='api-internal-companies-house-search'
+    ),
+
+    url(
+        r'^errors/image-too-large/$',
+        RequestPaylodTooLargeErrorView.as_view(),
+        name='request-payload-too-large'
+    ),
+    url(
+        r"^robots\.txt$",
+        TemplateView.as_view(
+            template_name='robots.txt', content_type='text/plain'
+        ),
+        name='robots'
     ),
 
     # first step of enrolment was /register. It's moved to the landing page
