@@ -55,9 +55,9 @@ DOCKER_SET_DEBUG_ENV_VARS := \
 	export DIRECTORY_UI_BUYER_GOOGLE_TAG_MANAGER_ENV=&gtm_auth=kH9XolShYWhOJg8TA9bW_A&gtm_preview=env-32&gtm_cookies_win=x; \
 	export DIRECTORY_UI_BUYER_UTM_COOKIE_DOMAIN=.great.dev; \
 	export DIRECTORY_UI_BUYER_DIRECTORY_EXTERNAL_API_SIGNATURE_SECRET=debug; \
-	export DIRECTORY_UI_BUYER_NEW_LANDING_PAGE_FEATURE_ENABLED=true;\
 	export DIRECTORY_UI_BUYER_CORS_ORIGIN_ALLOW_ALL=true; \
-	export DIRECTORY_UI_BUYER_SUPPLIER_SEARCH_URL=http://supplier.trade.great.dev:8005/search
+	export DIRECTORY_UI_BUYER_SUPPLIER_SEARCH_URL=http://supplier.trade.great.dev:8005/search; \
+	export DIRECTORY_UI_BUYER_FEATURE_SYNCHRONOUS_PROFILE_CREATION=true
 
 
 DOCKER_REMOVE_ALL := \
@@ -113,9 +113,9 @@ DEBUG_SET_ENV_VARS := \
 	export GOOGLE_TAG_MANAGER_ENV=&gtm_auth=kH9XolShYWhOJg8TA9bW_A&gtm_preview=env-32&gtm_cookies_win=x; \
 	export UTM_COOKIE_DOMAIN=.great.dev; \
 	export DIRECTORY_EXTERNAL_API_SIGNATURE_SECRET=debug; \
-	export NEW_LANDING_PAGE_FEATURE_ENABLED=true; \
 	export CORS_ORIGIN_ALLOW_ALL=true; \
-	export SUPPLIER_SEARCH_URL=http://supplier.trade.great.dev:8005/search
+	export SUPPLIER_SEARCH_URL=http://supplier.trade.great.dev:8005/search; \
+	export FEATURE_SYNCHRONOUS_PROFILE_CREATION=true
 
 
 debug_webserver:

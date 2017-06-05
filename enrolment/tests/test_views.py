@@ -170,7 +170,8 @@ def api_response_company_profile_no_date_of_creation_200(api_response_200):
 @patch('enrolment.helpers.has_company', Mock(return_value=False))
 @patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
 @patch.object(api_client.registration, 'send_form', api_response_200)
-def test_submit_enrolment_api_client_success(client):
+def test_submit_enrolment_api_client_success_asynchronous(client, settings):
+    settings.FEATURE_SYNCHRONOUS_PROFILE_CREATION = False
     response = client.get(
         reverse('register-submit'),
         {
@@ -179,6 +180,26 @@ def test_submit_enrolment_api_client_success(client):
         }
     )
     assert response.template_name == SubmitEnrolmentView.success_template
+
+
+@patch(
+    'enrolment.helpers.get_company_from_companies_house',
+    Mock(return_value=MOCK_COMPANIES_HOUSE_API_COMPANY_PROFILE)
+)
+@patch('enrolment.helpers.has_company', Mock(return_value=False))
+@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
+@patch.object(api_client.registration, 'send_form', api_response_200)
+def test_submit_enrolment_api_client_success_synchronous(client, settings):
+    settings.FEATURE_SYNCHRONOUS_PROFILE_CREATION = True
+    response = client.get(
+        reverse('register-submit'),
+        {
+            'company_number': '12345678',
+            'export_status': 'ONE_TWO_YEARS_AGO'
+        }
+    )
+    assert response.status_code == 302
+    assert response.get('Location') == reverse('company-edit')
 
 
 @patch(
