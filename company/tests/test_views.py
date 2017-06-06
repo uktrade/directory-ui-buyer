@@ -1128,7 +1128,7 @@ def test_supplier_sectors_edit_standalone_view_api_success(
     mock_update_profile.assert_called_once_with(
         sso_user_id=sso_user.id,
         data={
-            'sectors': [choices.COMPANY_CLASSIFICATIONS[1][0]]
+            'sectors': [choices.COMPANY_CLASSIFICATIONS[1]]
         }
     )
 

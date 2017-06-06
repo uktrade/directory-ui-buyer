@@ -330,13 +330,13 @@ class CompanyLogoForm(AutoFocusFieldMixin, IndentedInvalidFieldsMixin,
 
 class CompanyClassificationForm(AutoFocusFieldMixin,
                                 IndentedInvalidFieldsMixin, forms.Form):
-    sectors = forms.MultipleChoiceField(
+    sectors = forms.ChoiceField(
         label=(
             'What sectors is your company interested in working in? '
             'Choose no more than 10 sectors.'
         ),
         choices=choices.COMPANY_CLASSIFICATIONS,
-        widget=forms.CheckboxSelectMultiple(),
+        widget=forms.RadioSelect(),
         validators=[shared_validators.sector_choice_limit]
     )
 
