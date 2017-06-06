@@ -453,6 +453,30 @@ def test_landing_page_submit_valid_form_redirects(client):
     'enrolment.helpers.get_company_from_companies_house',
     Mock(return_value=MOCK_COMPANIES_HOUSE_API_COMPANY_PROFILE)
 )
+def test_confirm_company_resets_storage(client):
+    company_number = '12345678'
+
+    with patch(
+        'formtools.wizard.storage.session.SessionStorage.reset'
+    ) as storage_reset:
+        params = {'company_number': company_number}
+        response = client.post(reverse('index'), params)
+
+        expected_url = '/register/company?company_number={}'.format(
+            company_number
+        )
+        assert response.status_code == 302
+        assert response.get('Location') == expected_url
+
+        response = client.get(response.get('Location'))
+
+        storage_reset.assert_called_once_with()
+
+
+@patch(
+    'enrolment.helpers.get_company_from_companies_house',
+    Mock(return_value=MOCK_COMPANIES_HOUSE_API_COMPANY_PROFILE)
+)
 @patch('enrolment.helpers.has_company', Mock(return_value=False))
 @patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
 def test_company_enrolment_step_caches_profile(client):
@@ -544,7 +568,6 @@ def test_company_enrolment_step_company_number_queryparam_and_session_cache(
     response = client.get(reverse('register', kwargs={'step': 'company'}),
                           {'company_number': 12345678})
 
-    assert not mock_get_company_number_from_session.called
     assert '12345678' in str(response.content)
 
 
