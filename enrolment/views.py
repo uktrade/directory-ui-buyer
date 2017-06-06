@@ -91,10 +91,13 @@ class EnrolmentView(NamedUrlSessionWizardView):
         else:
             return company_number
 
-    def get(self, *args, **kwargs):
-        step_url = kwargs.get('step', None)
-        if step_url == self.COMPANY:
+    def get_form_initial(self, step):
+        if step == self.COMPANY:
             try:
+                # Reset form storage to avoid reusing previously picked
+                # company in case user went back to landing page
+                # self.storage.reset()
+
                 helpers.store_companies_house_profile_in_session_and_validate(
                     session=self.request.session,
                     company_number=self.get_company_number()
@@ -103,11 +106,6 @@ class EnrolmentView(NamedUrlSessionWizardView):
                 return helpers.get_error_response(
                     error_message=error.message
                 )
-
-        return super().get(*args, **kwargs)
-
-    def get_form_initial(self, step):
-        if step == self.COMPANY:
             return forms.get_company_form_initial_data(
                 data=helpers.get_company_from_session(self.request.session)
             )
