@@ -10,6 +10,9 @@ from formtools.wizard.views import NamedUrlSessionWizardView
 
 from api_client import api_client
 from enrolment import forms, helpers
+from enrolment.helpers import (
+    store_companies_house_profile_in_session_and_validate
+)
 from sso.utils import SSOLoginRequiredMixin
 
 COMPANY_NUMBER_NOT_PROVIDED_ERROR = 'Company number not provided.'
@@ -92,13 +95,26 @@ class EnrolmentView(NamedUrlSessionWizardView):
             return company_number
 
     def get(self, *args, **kwargs):
-        step_url = kwargs.get('step', None)
-        if step_url == self.COMPANY:
+        if kwargs.get('step') == self.COMPANY:
             try:
-                helpers.store_companies_house_profile_in_session_and_validate(
-                    session=self.request.session,
-                    company_number=self.get_company_number()
+                # If the user already performed company lookup and went back
+                # to landing page to request a different company
+                # we need to reset form wizard storage and update session
+
+                stored_number = helpers.get_company_number_from_session(
+                    self.request.session
                 )
+                requested_number = self.get_company_number()
+
+                if stored_number != requested_number:
+                    # Reset form storage to avoid reusing previous company
+                    self.storage.reset()
+
+                    # Set new company in session
+                    store_companies_house_profile_in_session_and_validate(
+                        session=self.request.session,
+                        company_number=requested_number
+                    )
             except ValidationError as error:
                 return helpers.get_error_response(
                     error_message=error.message
