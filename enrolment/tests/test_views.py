@@ -322,6 +322,16 @@ def test_landing_page_context_no_sso_user(client):
     assert response.context_data['user_has_company'] is None
 
 
+@patch('enrolment.helpers.has_company', Mock(return_value=True))
+@patch('sso.middleware.SSOUserMiddleware.process_request',
+       process_request)
+def test_landing_page_sso_user_with_company_redirects_to_detail(client):
+    response = client.get(reverse('index'))
+
+    assert response.status_code == 302
+    assert response.get('Location') == reverse('company-detail')
+
+
 @patch(
     'sso.middleware.SSOUserMiddleware.process_request',
     process_request_anon
@@ -342,14 +352,6 @@ def test_landing_page_context_sso_user_without_company(client):
     response = client.get(reverse('index'))
 
     assert response.context_data['user_has_company'] is False
-
-
-@patch('enrolment.helpers.has_company', Mock(return_value=True))
-@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
-def test_landing_page_context_sso_user_with_company(client):
-    response = client.get(reverse('index'))
-
-    assert response.context_data['user_has_company'] is True
 
 
 @patch('api_client.api_client.company.validate_company_number')

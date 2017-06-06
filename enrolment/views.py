@@ -24,6 +24,14 @@ class DomesticLandingView(FormView):
     form_class = forms.CompanyNumberForm
     http_method_names = ['get', 'post']
 
+    def dispatch(self, request, *args, **kwargs):
+        if request.sso_user and helpers.has_company(request.sso_user.id):
+            return redirect('company-detail')
+        else:
+            return super(DomesticLandingView, self).dispatch(
+                request, *args, **kwargs
+            )
+
     def form_valid(self, form):
 
         url = '{path}?company_number={number}'.format(
