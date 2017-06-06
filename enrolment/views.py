@@ -158,6 +158,7 @@ class SubmitEnrolmentView(SSOLoginRequiredMixin, View):
         return {
             'sso_id': self.request.sso_user.id,
             'company_email': self.request.sso_user.email,
+            'contact_email_address': self.request.sso_user.email,
             'company_number': company_number,
             'date_of_creation': date_of_creation,
             'company_name': company_name,
