@@ -333,7 +333,6 @@ class CompanyClassificationForm(AutoFocusFieldMixin,
     sectors = forms.ChoiceField(
         label=(
             'What sectors is your company interested in working in? '
-            'Choose no more than 10 sectors.'
         ),
         choices=choices.COMPANY_CLASSIFICATIONS,
     )
