@@ -152,7 +152,7 @@ def all_company_profile_data():
         'website': 'http://www.example.com',
         'keywords': 'Nice, Great',
         'employees': choices.EMPLOYEES[1][0],
-        'sectors': [choices.COMPANY_CLASSIFICATIONS[1][0]],
+        'sectors': choices.COMPANY_CLASSIFICATIONS[1][0],
         'postal_full_name': 'Jeremy',
         'address_line_1': '123 Fake Street',
         'address_line_2': 'Fakeville',
@@ -851,8 +851,11 @@ def test_company_profile_logo_api_client_failure(
 @patch.object(views, 'has_company', Mock(return_value=True))
 @patch.object(views.api_client.company, 'update_profile')
 def test_supplier_company_profile_edit_create_api_success(
-    mock_update_profile, company_profile_edit_end_to_end, sso_user,
-    all_company_profile_data, api_response_200
+        mock_update_profile,
+        company_profile_edit_end_to_end,
+        sso_user,
+        all_company_profile_data,
+        api_response_200
 ):
     mock_update_profile.return_value = api_response_200
     view = views.SupplierCompanyProfileEditView
@@ -1117,19 +1120,38 @@ def test_supplier_sectors_edit_standalone_initial_data(
 @patch.object(views, 'has_company', Mock(return_value=True))
 @patch.object(views.api_client.company, 'update_profile')
 def test_supplier_sectors_edit_standalone_view_api_success(
-    mock_update_profile, client, company_profile_sectors_standalone_data,
-    api_response_200, sso_user,
+        mock_update_profile, client,
+        company_profile_sectors_standalone_data,
+        api_response_200,
+        sso_user,
 ):
     mock_update_profile.return_value = api_response_200
 
     url = reverse('company-edit-sectors')
     client.post(url, company_profile_sectors_standalone_data)
-
     mock_update_profile.assert_called_once_with(
         sso_user_id=sso_user.id,
-        data={
-            'sectors': [choices.COMPANY_CLASSIFICATIONS[1]]
-        }
+        data={'sectors': 'AGRICULTURE_HORTICULTURE_AND_FISHERIES'}
+    )
+
+
+@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
+@patch.object(views, 'has_company', Mock(return_value=True))
+@patch.object(views.api_client.company, 'update_profile')
+def test_supplier_sectors_edit_standalone_view_api_multiple_sectors(
+        mock_update_profile, client,
+        company_profile_sectors_standalone_data,
+        api_response_200,
+        sso_user,
+):
+    mock_update_profile.return_value = api_response_200
+
+    url = reverse('company-edit-sectors')
+    data =
+    client.post(url, company_profile_sectors_standalone_data)
+    mock_update_profile.assert_called_once_with(
+        sso_user_id=sso_user.id,
+        data={'sectors': 'AGRICULTURE_HORTICULTURE_AND_FISHERIES'}
     )
 
 

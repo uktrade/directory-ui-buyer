@@ -396,11 +396,6 @@ def test_company_profile_form_url_validator():
     assert isinstance(field.validators[0], URLValidator)
 
 
-def test_company_classification_form_sectors_validator():
-    field = forms.CompanyClassificationForm.base_fields['sectors']
-    assert shared_validators.sector_choice_limit in field.validators
-
-
 def test_company_profile_form_accepts_valid_data():
     data = {
         'name': 'Amazon UK',

@@ -336,8 +336,6 @@ class CompanyClassificationForm(AutoFocusFieldMixin,
             'Choose no more than 10 sectors.'
         ),
         choices=choices.COMPANY_CLASSIFICATIONS,
-        widget=forms.RadioSelect(),
-        validators=[shared_validators.sector_choice_limit]
     )
 
 
