@@ -152,7 +152,7 @@ def all_company_profile_data():
         'website': 'http://www.example.com',
         'keywords': 'Nice, Great',
         'employees': choices.EMPLOYEES[1][0],
-        'sectors': choices.COMPANY_CLASSIFICATIONS[1][0],
+        'sectors': [choices.COMPANY_CLASSIFICATIONS[1][0]],
         'postal_full_name': 'Jeremy',
         'address_line_1': '123 Fake Street',
         'address_line_2': 'Fakeville',
@@ -750,7 +750,7 @@ def test_company_profile_edit_exposes_api_result_to_form(
     mock_retrieve_profile.return_value = api_response_company_profile_200
     view = views.SupplierCompanyProfileEditView.as_view()
     expected = api_response_company_profile_200.json()
-
+    expected['sectors'] = expected['sectors'][0]
     response = view(company_request)
 
     assert response.context_data['form'].initial == expected
@@ -959,7 +959,9 @@ def test_supplier_company_profile_initial_data_basic(
         step=views.SupplierCompanyProfileEditView.BASIC
     )
 
-    assert response.context_data['form'].initial == retrieve_profile_data
+    expected = retrieve_profile_data
+    expected['sectors'] = expected['sectors'][0]
+    assert response.context_data['form'].initial == expected
 
 
 @patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
@@ -985,8 +987,9 @@ def test_supplier_company_profile_initial_data_classification(
     response = company_profile_edit_goto_step(
         step=views.SupplierCompanyProfileEditView.CLASSIFICATION
     )
-
-    assert response.context_data['form'].initial == retrieve_profile_data
+    expected = retrieve_profile_data
+    expected['sectors'] = expected['sectors'][0]
+    assert response.context_data['form'].initial == expected
 
 
 @patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
@@ -1131,7 +1134,7 @@ def test_supplier_sectors_edit_standalone_view_api_success(
     client.post(url, company_profile_sectors_standalone_data)
     mock_update_profile.assert_called_once_with(
         sso_user_id=sso_user.id,
-        data={'sectors': 'AGRICULTURE_HORTICULTURE_AND_FISHERIES'}
+        data={'sectors': ['AGRICULTURE_HORTICULTURE_AND_FISHERIES']}
     )
 
 
@@ -1147,11 +1150,10 @@ def test_supplier_sectors_edit_standalone_view_api_multiple_sectors(
     mock_update_profile.return_value = api_response_200
 
     url = reverse('company-edit-sectors')
-    data =
     client.post(url, company_profile_sectors_standalone_data)
     mock_update_profile.assert_called_once_with(
         sso_user_id=sso_user.id,
-        data={'sectors': 'AGRICULTURE_HORTICULTURE_AND_FISHERIES'}
+        data={'sectors': ['AGRICULTURE_HORTICULTURE_AND_FISHERIES']}
     )
 
 

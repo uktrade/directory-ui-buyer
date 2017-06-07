@@ -428,14 +428,14 @@ def test_serialize_company_profile_forms():
         'po_box': '124',
         'postal_code': 'E14 9IX',
         'postal_full_name': 'Jeremy postal',
-        'sectors': ['1', '2'],
+        'sectors': '1',
         'website': 'http://example.com',
     })
     expected = {
         'keywords': 'Jolly good exporter.',
         'employees': '1-10',
         'name': 'Example ltd.',
-        'sectors': ['1', '2'],
+        'sectors': ['1'],
         'website': 'http://example.com',
         'address_line_1': '123 Fake Street',
         'address_line_2': 'Fakeville',
@@ -485,10 +485,10 @@ def test_serialize_company_basic_info_form():
 
 def test_serialize_company_sectors_form():
     data = {
-        'sectors': ['one', 'two']
+        'sectors': 'one'
     }
     expected = {
-        'sectors': ['one', 'two']
+        'sectors': ['one']
     }
     assert forms.serialize_company_sectors_form(data) == expected
 
