@@ -53,7 +53,7 @@ def test_form_wrapper_finish_button():
     }
     html = render_to_string('form-wrapper.html', context)
     assert 'value="Next"' not in html
-    assert 'value="Register"' in html
+    assert 'value="Continue"' in html
 
 
 def test_company_profile_form_supports_file_upload():
