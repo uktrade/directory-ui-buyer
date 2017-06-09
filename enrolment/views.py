@@ -91,34 +91,28 @@ class EnrolmentView(NamedUrlSessionWizardView):
     def get_template_names(self):
         return [self.templates[self.steps.current]]
 
-    def get_company_number(self):
-        company_number = self.request.GET.get(
-            'company_number') or helpers.get_company_number_from_session(
-            self.request.session
+    def get_requested_number(self):
+        company_number = (
+            self.request.GET.get('company_number') or
+            helpers.get_company_number_from_session(self.request.session)
         )
-
         if not company_number:
             raise ValidationError(COMPANY_NUMBER_NOT_PROVIDED_ERROR)
         else:
             return company_number
 
     def get(self, *args, **kwargs):
+        stored_number = helpers.get_company_number_from_session(
+            self.request.session
+        )
         if kwargs.get('step') == self.COMPANY:
             try:
-                # If the user already performed company lookup and went back
-                # to landing page to request a different company
-                # we need to reset form wizard storage and update session
-
-                stored_number = helpers.get_company_number_from_session(
-                    self.request.session
-                )
-                requested_number = self.get_company_number()
-
+                requested_number = self.get_requested_number()
                 if stored_number != requested_number:
-                    # Reset form storage to avoid reusing previous company
+                    # If the user already performed company lookup and went
+                    # back to landing page to request a different company
+                    # we need to reset form wizard storage and update session
                     self.storage.reset()
-
-                    # Set new company in session
                     store_companies_house_profile_in_session_and_validate(
                         session=self.request.session,
                         company_number=requested_number
@@ -127,7 +121,11 @@ class EnrolmentView(NamedUrlSessionWizardView):
                 return helpers.get_error_response(
                     error_message=error.message
                 )
-
+        elif kwargs.get('step') == self.STATUS:
+            # status step is dependant on using having specified a company, so
+            # if company is not selected send the user back to the start
+            if not stored_number:
+                return redirect('index')
         return super().get(*args, **kwargs)
 
     def get_form_initial(self, step):
