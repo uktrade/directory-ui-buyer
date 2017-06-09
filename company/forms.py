@@ -330,14 +330,12 @@ class CompanyLogoForm(AutoFocusFieldMixin, IndentedInvalidFieldsMixin,
 
 class CompanyClassificationForm(AutoFocusFieldMixin,
                                 IndentedInvalidFieldsMixin, forms.Form):
-    sectors = forms.MultipleChoiceField(
+    sectors = forms.ChoiceField(
         label=(
             'What sectors is your company interested in working in? '
-            'Choose no more than 10 sectors.'
         ),
         choices=choices.COMPANY_CLASSIFICATIONS,
-        widget=forms.CheckboxSelectMultiple(),
-        validators=[shared_validators.sector_choice_limit]
+        widget=forms.RadioSelect(),
     )
 
 
@@ -538,7 +536,7 @@ def serialize_company_profile_forms(cleaned_data):
         'website': cleaned_data['website'],
         'keywords': cleaned_data['keywords'],
         'employees': cleaned_data['employees'],
-        'sectors': cleaned_data['sectors'],
+        'sectors': [cleaned_data['sectors']],
         'address_line_1': cleaned_data['address_line_1'],
         'address_line_2': cleaned_data['address_line_2'],
         'country': cleaned_data['country'],
@@ -605,7 +603,7 @@ def serialize_company_sectors_form(cleaned_data):
     """
 
     return {
-        'sectors': cleaned_data['sectors'],
+        'sectors': [cleaned_data['sectors']],
     }
 
 

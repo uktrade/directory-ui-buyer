@@ -1118,6 +1118,12 @@ a.ed-filled-button-primary {
   }
 }
 
+.ed-form-classification-container {
+  input[type='radio'] {
+    height: 16px;
+    width: 16px;
+  }
+}
 @import 'general.scss';
 @import 'registration.scss';
 @import 'components.scss';
