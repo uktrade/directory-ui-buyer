@@ -531,8 +531,19 @@ def test_company_enrolment_step_handles_api_company_error(client):
 @patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
 @patch('enrolment.helpers.store_companies_house_profile_in_session', Mock())
 def test_company_enrolment_step_company_number_not_provided(client):
-    response = client.get(reverse('register', kwargs={'step': 'company'}))
+    url = reverse('register', kwargs={'step': EnrolmentView.COMPANY})
+    response = client.get(url)
     assert 'Company number not provided.' in str(response.content)
+
+
+@patch('enrolment.helpers.has_company', Mock(return_value=False))
+@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
+def test_company_enrolment_status_step_session_empty(client):
+    url = reverse('register', kwargs={'step': EnrolmentView.STATUS})
+    response = client.get(url)
+
+    assert response.status_code == 302
+    assert response.get('Location') == reverse('index')
 
 
 @patch('enrolment.helpers.has_company', Mock(return_value=False))
