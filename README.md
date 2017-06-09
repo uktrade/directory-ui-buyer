@@ -7,6 +7,10 @@ This is the repo for Find A Buyer (FAB) - the Department for International Trade
 
 [![CircleCI](https://circleci.com/gh/uktrade/directory-ui-buyer/tree/master.svg?style=svg)](https://circleci.com/gh/uktrade/directory-ui-buyer/tree/master)
 
+## Coverage
+
+[![Coverage Status](https://coveralls.io/repos/github/uktrade/directory-ui-buyer/badge.svg?branch=master)](https://coveralls.io/github/uktrade/directory-ui-buyer?branch=master)
+
 ## Development 
 
 The back-end framework is Django 1.9. The front-end uses minimal Javascript. The motivation for this is for accessibility reasons, to reduce technical complexity, and reduce cross-browser compatibility issues. Therefore most front-end work will be HTML and SASS/CSS development.

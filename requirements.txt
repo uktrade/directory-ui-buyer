@@ -9,6 +9,7 @@ whitenoise==3.1
 phonenumberslite==7.7.4
 pillow==4.0.0
 django-cors-headers==2.0.2
+python-coveralls==2.9.1
 git+https://github.com/uktrade/directory-validators.git@v2.0.0#egg=directory_validators
 git+https://github.com/uktrade/directory-api-client.git@4.3.0#egg=directory_api_client
 git+https://github.com/uktrade/directory-sso-api-client.git@1.2.0#egg=directory_sso_api_client
