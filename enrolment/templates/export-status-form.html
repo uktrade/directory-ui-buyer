@@ -2,6 +2,7 @@
 {% load external_url from constants_tags %}
 {% load no_export_intention from enrolment_tags %}
 {% block form_title %}Your company's previous exports{% endblock%}
+{% block button_finish_label %}Continue{% endblock%}
 {% block formarea %}
     {% if form|no_export_intention %}
         <h1>Try our other business services</h1>
