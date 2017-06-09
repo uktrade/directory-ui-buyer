@@ -212,7 +212,10 @@ class SupplierCompanyProfileEditView(
 
     @cached_property
     def company_profile(self):
-        return helpers.get_company_profile(self.request.sso_user.id)
+        profile = helpers.get_company_profile(self.request.sso_user.id)
+        if profile['sectors']:
+            profile['sectors'] = profile['sectors'][0]
+        return profile
 
     def get_form_initial(self, step):
         if step == self.ADDRESS:

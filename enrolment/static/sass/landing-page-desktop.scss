@@ -82,15 +82,19 @@ button,
   bottom: -40px;
   content: " ";
   display: block;
+  height: 40px;
   left: 50%;
   margin-left: -40px;
   position: absolute;
+  width: 40px;
 }
 
 
 /* FAB Home
  ***********************/
 .fabhome {
+  display: block;
+  
   h1 {
     color: inherit;
     font-size: 48px;
