@@ -9,7 +9,7 @@ This is the repo for Find A Buyer (FAB) - the Department for International Trade
 
 ## Coverage
 
-[![Coverage Status](https://coveralls.io/repos/github/uktrade/directory-ui-buyer/badge.svg?branch=master)](https://coveralls.io/github/uktrade/directory-ui-buyer?branch=master)
+[![codecov](https://codecov.io/gh/uktrade/directory-ui-buyer/branch/master/graph/badge.svg)](https://codecov.io/gh/uktrade/directory-ui-buyer)
 
 ## Development 
 

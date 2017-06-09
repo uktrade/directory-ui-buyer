@@ -2,7 +2,7 @@
 
 pip install -r requirements_test.txt --src /usr/local/src
 make test
-if [ "$COVERALLS_REPO_TOKEN" != "" ]
+if [ "$CODECOV_REPO_TOKEN" != "" ]
 then
-   coveralls
+   codecov --token=$CODECOV_REPO_TOKEN
 fi
