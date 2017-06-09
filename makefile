@@ -59,7 +59,6 @@ DOCKER_SET_DEBUG_ENV_VARS := \
 	export DIRECTORY_UI_BUYER_SUPPLIER_SEARCH_URL=http://supplier.trade.great.dev:8005/search; \
 	export DIRECTORY_UI_BUYER_FEATURE_SYNCHRONOUS_PROFILE_CREATION=true
 
-
 DOCKER_REMOVE_ALL := \
 	docker ps -a | \
 	grep directoryui_ | \
