@@ -1124,6 +1124,16 @@ a.ed-filled-button-primary {
     width: 16px;
   }
 }
+
+#account-create-information {
+  li {
+    font-size: 18px;
+    color: #4a4a4a;
+    margin-bottom: 5px;
+  }
+}
+
 @import 'general.scss';
 @import 'registration.scss';
 @import 'components.scss';
+
