@@ -21,7 +21,7 @@
 
 {% block formarea %}
 	<form action="" method="post" enctype="multipart/form-data">
-		<div class="connections-platform-form {% block container_class %}{% endblock %}">
+		<div class="{% block container_class %}connections-platform-form{% endblock %}">
 			{% block form_subtitle %}{% endblock form_subtitle %}
 			{% csrf_token %}
 			<div class="input-field-container">
@@ -47,6 +47,7 @@
 					{% endfor %}
 				{% endif %}
 			</div>
+			{% block extra_form_footer %}{% endblock extra_form_footer %}
 			<div>
 				{% if wizard.steps.prev %}
 					<button name="wizard_goto_step" class="button-hyperlink link ed-form-back-button" type="submit" value="{{ wizard.steps.prev }}">< Back to previous step</button>
