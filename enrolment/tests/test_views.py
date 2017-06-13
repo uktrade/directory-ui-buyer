@@ -332,20 +332,6 @@ def test_landing_page_sso_user_with_company_redirects_to_detail(client):
     assert response.get('Location') == reverse('company-detail')
 
 
-@patch(
-    'sso.middleware.SSOUserMiddleware.process_request',
-    process_request_anon
-)
-def test_landing_page_buyers_waiting_number(settings, client):
-    settings.BUYERS_WAITING_NUMBER = '1,000,000,000'
-    response = client.get(reverse('index'))
-
-    assert re.search(
-        settings.BUYERS_WAITING_NUMBER + r'.*buyers are waiting for you',
-        str(response.content)
-    )
-
-
 @patch('enrolment.helpers.has_company', Mock(return_value=False))
 @patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
 def test_landing_page_context_sso_user_without_company(client):
