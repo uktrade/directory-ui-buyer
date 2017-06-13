@@ -1,8 +1,11 @@
 {% extends "form-wrapper.html" %}
 {% load external_url from constants_tags %}
 {% load no_export_intention from enrolment_tags %}
+
 {% block form_title %}Your company's previous exports{% endblock%}
+{% block button_finish_label %}Continue{% endblock%}
 {% block container_class %}{% endblock %}
+
 {% block extra_form_footer %}
     {% if not sso_user %}
         <div id="account-create-information">
