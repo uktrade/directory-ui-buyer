@@ -24,19 +24,6 @@
     }
   }
   
-  .fact {
-    background-color: $white;
-    
-    .figure,
-    .message {
-      display: block;
-      line-height: 1.1em;
-      margin: 0;
-      text-align: center;
-      width: auto;
-    }
-  }
-  
   .register-company-number-form {
     label {
       display: block;
@@ -133,16 +120,25 @@
   }
   
   #fabhome-intro {
-    background-color: $grey-1;
     color: inherit;
     margin: 0;
     
+    h1 {
+      background-color: $grey-1;
+    }
+    
+    .message {
+      font-size: 36px;
+      letter-spacing: -0.7px;
+      padding: 40px 15px;
+    }
+    
     .register-company-number-form {
-      background-color: transparent;
-      margin-bottom: 30px !important;
-      margin-left: 15px;
-      margin-right: 15px;
-      padding: 25px 0 0 0;
+      background-color: $grey-1;
+      margin-bottom: 0 !important;
+      margin-left: 0;
+      margin-right: 0;
+      padding: 25px 15px 40px 15px;
       
       label {
         margin-bottom: 10px;

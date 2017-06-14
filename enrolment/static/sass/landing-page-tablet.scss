@@ -18,12 +18,6 @@
     }
   }
   
-  .fact {
-    .figure {
-      width: 310px;
-    }
-  }
-  
   .outer-container {
     margin: 0;
   }
@@ -88,7 +82,13 @@
   }
   
   #fabhome-intro {
+    .message {
+      padding: 40px 60px;
+    }
+    
     .register-company-number-form {
+      margin-bottom: 40px !important; /* counters over-specific rule targeting general forms */
+      
       .button {
         float: none;
         margin: 20px 0;
@@ -112,13 +112,6 @@
 
 /* (custom sizing tweaks only)
  ******************************/
-
-@media (max-width: 640px) {
-  #fabhome-howto {
-
-  }
-}
-
 
 @media (max-width: 560px) {
   #fabhome-howto {
