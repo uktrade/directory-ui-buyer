@@ -196,7 +196,7 @@ class SupplierCompanyProfileEditView(
     }
     form_labels = (
         (BASIC, 'Basic'),
-        (CLASSIFICATION, 'Industries'),
+        (CLASSIFICATION, 'Industry'),
         (ADDRESS, 'Address'),
         (ADDRESS_CONFIRM, 'Confirm'),
     )
