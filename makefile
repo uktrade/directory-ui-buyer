@@ -56,8 +56,7 @@ DOCKER_SET_DEBUG_ENV_VARS := \
 	export DIRECTORY_UI_BUYER_UTM_COOKIE_DOMAIN=.great.dev; \
 	export DIRECTORY_UI_BUYER_DIRECTORY_EXTERNAL_API_SIGNATURE_SECRET=debug; \
 	export DIRECTORY_UI_BUYER_CORS_ORIGIN_ALLOW_ALL=true; \
-	export DIRECTORY_UI_BUYER_SUPPLIER_SEARCH_URL=http://supplier.trade.great.dev:8005/search; \
-	export DIRECTORY_UI_BUYER_FEATURE_SYNCHRONOUS_PROFILE_CREATION=true
+	export DIRECTORY_UI_BUYER_SUPPLIER_SEARCH_URL=http://supplier.trade.great.dev:8005/search
 
 DOCKER_REMOVE_ALL := \
 	docker ps -a | \
@@ -113,8 +112,7 @@ DEBUG_SET_ENV_VARS := \
 	export UTM_COOKIE_DOMAIN=.great.dev; \
 	export DIRECTORY_EXTERNAL_API_SIGNATURE_SECRET=debug; \
 	export CORS_ORIGIN_ALLOW_ALL=true; \
-	export SUPPLIER_SEARCH_URL=http://supplier.trade.great.dev:8005/search; \
-	export FEATURE_SYNCHRONOUS_PROFILE_CREATION=true
+	export SUPPLIER_SEARCH_URL=http://supplier.trade.great.dev:8005/search
 
 
 debug_webserver:
