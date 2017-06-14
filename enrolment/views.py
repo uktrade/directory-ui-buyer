@@ -57,7 +57,6 @@ class DomesticLandingView(FormView):
             'blippar': self.get_supplier_profile_url('07446749'),
             'briggs': self.get_supplier_profile_url('06836628'),
         }
-        context['buyers_waiting_number'] = settings.BUYERS_WAITING_NUMBER
 
         return context
 
