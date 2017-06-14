@@ -332,7 +332,7 @@ class CompanyClassificationForm(AutoFocusFieldMixin,
                                 IndentedInvalidFieldsMixin, forms.Form):
     sectors = forms.ChoiceField(
         label=(
-            'What sectors is your company interested in working in? '
+            'What sector is your company interested in working in? '
         ),
         choices=choices.COMPANY_CLASSIFICATIONS,
         widget=forms.RadioSelect(),
