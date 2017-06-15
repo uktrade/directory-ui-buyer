@@ -14,6 +14,7 @@ supplier_context = {
         'email': 'email@example.com',
     }
 }
+MUST_CREATE_ACCOUNT_LABEL = 'you must create a great.gov.uk account'
 
 
 def test_company_description_form_cancel_button():
@@ -85,6 +86,24 @@ def test_form_wrapper_hides_hidden_fields():
 
     assert '<label for="id_visible">Visible:</label>' in html
     assert '<label for="id_hidden">Hidden:</label>' not in html
+
+
+def test_export_status_form_sso_user():
+    context = {
+        'sso_user': {'email': 'thing@thing.com'},
+        'form': forms.CompanyExportStatusForm(),
+    }
+    html = render_to_string('export-status-form.html', context)
+    assert MUST_CREATE_ACCOUNT_LABEL not in html
+
+
+def test_export_status_form_anon_user():
+    context = {
+        'sso_user': None,
+        'form': forms.CompanyExportStatusForm(),
+    }
+    html = render_to_string('export-status-form.html', context)
+    assert MUST_CREATE_ACCOUNT_LABEL in html
 
 
 def test_export_status_form_error():

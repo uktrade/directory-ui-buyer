@@ -57,7 +57,6 @@ class DomesticLandingView(FormView):
             'blippar': self.get_supplier_profile_url('07446749'),
             'briggs': self.get_supplier_profile_url('06836628'),
         }
-        context['buyers_waiting_number'] = settings.BUYERS_WAITING_NUMBER
 
         return context
 
@@ -155,7 +154,6 @@ class EnrolmentView(NamedUrlSessionWizardView):
 
 
 class SubmitEnrolmentView(SSOLoginRequiredMixin, View):
-    success_template = 'registered.html'
     failure_template = 'enrolment-failed.html'
 
     def dispatch(self, request, *args, **kwargs):
@@ -218,10 +216,8 @@ class SubmitEnrolmentView(SSOLoginRequiredMixin, View):
         )
         if not response.ok:
             response = TemplateResponse(self.request, self.failure_template)
-        elif settings.FEATURE_SYNCHRONOUS_PROFILE_CREATION:
-            response = redirect('company-edit')
         else:
-            response = TemplateResponse(self.request, self.success_template)
+            response = redirect('company-edit')
         return response
 
 

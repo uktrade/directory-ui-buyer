@@ -5,7 +5,6 @@
   
   /* Adjust visual for easier reading 
    ************************************/
-  .fact,
   #fabhome-benefits,
   #fabhome-howto {
     border-bottom: $grey-3 solid 1px;
@@ -25,18 +24,6 @@
   
   /* Save paper space 
    ********************/
-  .fact {
-    padding: 0 0 20px 0;
-    .figure {
-      font-size: 60px;
-      width: 200px;
-    }
-    .message {
-      font-size: 25px;
-      width: 240px;
-    }
-  }
-  
   #fabhome-benefits {
     padding: 0 40px;
     
@@ -82,7 +69,6 @@
     background-image: none;
   }
   
-  .fact::after,
   .register-company-number-form,
   #fabhome-howto li::after,
   #fabhome-screenshot {
