@@ -418,6 +418,10 @@ label, input, button, select, textarea {
     width: 21px;
     z-index: -1;
   }
+  
+  input:focus + label:before  {
+    outline: 3px solid $focus;
+  }
     
   label:before {
     content: "";
@@ -1163,7 +1167,7 @@ a.ed-filled-button-primary {
       text-align: center;
     }
     &:focus {
-      outline: 3px solid #FFBF47;
+      outline: 3px solid $focus;
     }
   }
   .ed-form-tab-order {
