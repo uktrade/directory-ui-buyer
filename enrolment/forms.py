@@ -6,6 +6,7 @@ from directory_validators.constants import choices
 from directory_constants.constants import urls
 
 from enrolment import fields, helpers, validators
+from enrolment.widgets import CheckboxWithInlineLabel
 
 
 class IndentedInvalidFieldsMixin:
@@ -55,35 +56,15 @@ class CompanyExportStatusForm(
         validators=[shared_validators.export_status_intention]
     )
     terms_agreed = forms.BooleanField(
-        label=mark_safe(
-            'Tick this box to accept the '
-            '<a href="{url}" target="_blank">terms and '
-            'conditions</a> of the Find a Buyer service.'.format(
-                url=urls.TERMS_AND_CONDITIONS_URL)
-        )
-    )
-
-
-class InternationalBuyerForm(IndentedInvalidFieldsMixin, forms.Form):
-    PLEASE_SELECT_LABEL = 'Please select a sector'
-    TERMS_CONDITIONS_MESSAGE = ('Tick the box to confirm you agree to '
-                                'the terms and conditions.')
-
-    full_name = forms.CharField(label='Your name')
-    email_address = forms.EmailField(label='Your email address')
-    sector = forms.ChoiceField(
-        label='Sector',
-        choices=(
-            [['', PLEASE_SELECT_LABEL]] + list(choices.COMPANY_CLASSIFICATIONS)
-        )
-    )
-    terms = forms.BooleanField(
-        label=mark_safe(
-            'I agree to the <a target="_self" '
-            'href="{url}">terms and conditions</a> of the website.'.format(
-                url=urls.TERMS_AND_CONDITIONS_URL)
+        label='',
+        widget=CheckboxWithInlineLabel(
+            label=mark_safe(
+                'Tick this box to accept the '
+                '<a href="{url}" target="_blank">terms and '
+                'conditions</a> of the Find a Buyer service.'.format(
+                    url=urls.TERMS_AND_CONDITIONS_URL)
+            ),
         ),
-        error_messages={'required': TERMS_CONDITIONS_MESSAGE}
     )
 
 

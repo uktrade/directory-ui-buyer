@@ -6,13 +6,11 @@ from django.core.validators import EmailValidator
 
 from directory_validators import enrolment as shared_validators
 
-from enrolment import fields, forms, validators
+from enrolment import fields, forms, validators, widgets
 
 
 REQUIRED_MESSAGE = Field.default_error_messages['required']
 EMAIL_FORMAT_MESSAGE = EmailValidator.message
-TERMS_CONDITIONS_MESSAGE = \
-    forms.InternationalBuyerForm.TERMS_CONDITIONS_MESSAGE
 
 
 class FormWithAutoFocusFieldMixin(forms.AutoFocusFieldMixin, Form):
@@ -40,7 +38,6 @@ def test_indent_invalid_mixin_installed():
     FormClasses = [
         forms.CompanyForm,
         forms.CompanyExportStatusForm,
-        forms.InternationalBuyerForm,
     ]
     for FormClass in FormClasses:
         assert issubclass(FormClass, forms.IndentedInvalidFieldsMixin)
@@ -61,30 +58,16 @@ def test_company_form_fields():
     assert field.fillchar == '0'
 
 
-def test_international_form_missing_data():
-    form = forms.InternationalBuyerForm(data={})
-
-    assert form.is_valid() is False
-    assert form.errors['full_name'] == [REQUIRED_MESSAGE]
-    assert form.errors['email_address'] == [REQUIRED_MESSAGE]
-    assert form.errors['sector'] == [REQUIRED_MESSAGE]
-    assert form.errors['terms'] == [TERMS_CONDITIONS_MESSAGE]
-
-
-def test_international_form_accepts_valid_data():
-    form = forms.InternationalBuyerForm(data={
-        'full_name': 'Jim Example',
-        'email_address': 'jim@example.com',
-        'sector': 'AEROSPACE',
-        'terms': True
-    })
-    assert form.is_valid()
-
-
 def test_company_export_status_form_validars():
     field = forms.CompanyExportStatusForm.base_fields['export_status']
     validator = shared_validators.export_status_intention
     assert validator in field.validators
+
+
+def test_company_export_status_terms_agreed_checkbox_widget():
+    field = forms.CompanyExportStatusForm().fields['terms_agreed']
+
+    assert isinstance(field.widget, widgets.CheckboxWithInlineLabel)
 
 
 def test_get_company_name_form_initial_data():
