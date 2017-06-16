@@ -13,7 +13,7 @@ def test_checkbox_with_inline_label():
 
     expected_html = """
         <div class="form-field checkbox">
-            <input name="checkbox" type="checkbox" />
+            <input id="id_checkbox" name="checkbox" type="checkbox" />
             <label for="id_checkbox">the label</label>
         </div>
     """
