@@ -326,28 +326,7 @@ label, input, button, select, textarea {
     line-height: 1.25;
     margin-bottom: 10px;
   }
-  /*
-  input[type='checkbox'] {
-    -webkit-appearance: none;
-    border: 1px solid grey;
-    border-radius: 5px;
-    height: 2.5ex;
-    margin: 0;
-    padding: 0;
-    position: relative;
-    top: 5px;
-    width: 2.5ex;
-    
-    &::after {
-      left: 3px;
-      position: absolute;
-    }
-    
-    &:checked label::before {
-      content: '\2714';
-    }
-  }
-*/
+
   select {
     height: 50px;
     width: 100%;
