@@ -1,7 +1,5 @@
 from django import forms
-
 from enrolment import widgets
-
 
 
 def test_checkbox_with_inline_label():

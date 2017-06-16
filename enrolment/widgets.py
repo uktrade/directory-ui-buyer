@@ -3,7 +3,7 @@ from django.forms import widgets
 
 
 class CheckboxWithInlineLabel(widgets.CheckboxInput):
-    template =  """
+    template = """
         <div class="form-field checkbox">
             {input_html}
             <label for="{id}">{label}</label>
