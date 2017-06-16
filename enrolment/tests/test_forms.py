@@ -64,7 +64,7 @@ def test_company_export_status_form_validars():
     assert validator in field.validators
 
 
-def test_company_export_status_terms_agreed_checlbox_widget():
+def test_company_export_status_terms_agreed_checkbox_widget():
     field = forms.CompanyExportStatusForm().fields['terms_agreed']
 
     assert isinstance(field.widget, widgets.CheckboxWithInlineLabel)
