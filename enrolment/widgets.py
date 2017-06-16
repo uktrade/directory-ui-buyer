@@ -15,7 +15,7 @@ class CheckboxWithInlineLabel(widgets.CheckboxInput):
         super().__init__(*args, **kwargs)
 
     def render(self, name, value, attrs=None):
-        input_html = super().render(name, value, attrs=None)
+        input_html = super().render(name, value, attrs)
         wrapper_html = self.template.format(
             input_html=input_html, label=self.label, id=attrs['id']
         )
