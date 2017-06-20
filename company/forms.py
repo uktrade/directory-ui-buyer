@@ -281,7 +281,10 @@ class CompanyBasicInfoForm(AutoFocusFieldMixin, IndentedInvalidFieldsMixin,
         ),
         widget=forms.Textarea,
         max_length=1000,
-        validators=[shared_validators.keywords_word_limit]
+        validators=[
+            shared_validators.keywords_special_characters,
+            shared_validators.keywords_word_limit
+        ]
     )
     employees = forms.ChoiceField(
         choices=choices.EMPLOYEES,

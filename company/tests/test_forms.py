@@ -389,6 +389,7 @@ def test_company_profile_form_required_fields():
 def test_company_profile_form_keywords_validator():
     field = forms.CompanyBasicInfoForm.base_fields['keywords']
     assert shared_validators.keywords_word_limit in field.validators
+    assert shared_validators.keywords_special_characters in field.validators
 
 
 def test_company_profile_form_url_validator():
@@ -422,7 +423,7 @@ def test_serialize_company_profile_forms():
         'address_line_2': 'Fakeville',
         'country': 'GB',
         'employees': '1-10',
-        'keywords': 'Jolly good exporter.',
+        'keywords': 'Jolly good exporter',
         'locality': 'London',
         'name': 'Example ltd.',
         'po_box': '124',
@@ -432,7 +433,7 @@ def test_serialize_company_profile_forms():
         'website': 'http://example.com',
     })
     expected = {
-        'keywords': 'Jolly good exporter.',
+        'keywords': 'Jolly good exporter',
         'employees': '1-10',
         'name': 'Example ltd.',
         'sectors': ['1'],
@@ -511,7 +512,7 @@ def test_serialize_company_address_form():
         'address_line_1': '123 Fake Street',
         'address_line_2': 'Fakeville',
         'country': 'GB',
-        'keywords': 'Jolly good exporter.',
+        'keywords': 'Jolly good exporter',
         'locality': 'London',
         'po_box': '124',
         'postal_code': 'E14 9IX',
