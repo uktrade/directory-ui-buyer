@@ -212,7 +212,7 @@ GOVUK.components = (new function() {
     var popupId = GOVUK.utils.uniqueString();
 
     // Configure options.
-    opts = $.extend({
+    var opts = $.extend({
       lookupOnCharacter: 4, // (Integer) At what character input to trigger the request for data
     }, options || {});
 
