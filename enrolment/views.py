@@ -13,7 +13,7 @@ from enrolment import forms, helpers
 from enrolment.helpers import (
     store_companies_house_profile_in_session_and_validate
 )
-from sso.utils import SSOLoginRequiredMixin
+from sso.utils import SSOSignUpRequiredMixin
 
 COMPANY_NUMBER_NOT_PROVIDED_ERROR = 'Company number not provided.'
 EXPORT_STATUS_NOT_PROVIDED_ERROR = 'Export status not provided.'
@@ -153,7 +153,7 @@ class EnrolmentView(NamedUrlSessionWizardView):
         return ctx
 
 
-class SubmitEnrolmentView(SSOLoginRequiredMixin, View):
+class SubmitEnrolmentView(SSOSignUpRequiredMixin, View):
     failure_template = 'enrolment-failed.html'
 
     def dispatch(self, request, *args, **kwargs):
