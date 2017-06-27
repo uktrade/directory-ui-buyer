@@ -211,7 +211,7 @@ class SubmitEnrolmentView(SSOSignUpRequiredMixin, View):
                 error_message=error.message
             )
 
-        response = api_client.registration.send_form(
+        response = api_client.enrolment.send_form(
             self.get_enrolment_data(export_status=export_status)
         )
         if not response.ok:
