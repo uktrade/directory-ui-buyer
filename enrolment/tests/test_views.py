@@ -168,7 +168,7 @@ def api_response_company_profile_no_date_of_creation_200(api_response_200):
 )
 @patch('enrolment.helpers.has_company', Mock(return_value=False))
 @patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
-@patch.object(api_client.registration, 'send_form', api_response_200)
+@patch.object(api_client.enrolment, 'send_form', api_response_200)
 def test_submit_enrolment_api_client_success_synchronous(client):
     response = client.get(
         reverse('register-submit'),
@@ -187,7 +187,7 @@ def test_submit_enrolment_api_client_success_synchronous(client):
 )
 @patch('enrolment.helpers.has_company', Mock(return_value=False))
 @patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
-@patch.object(api_client.registration, 'send_form', api_response_400)
+@patch.object(api_client.enrolment, 'send_form', api_response_400)
 def test_submit_enrolment_api_client_fail(client):
     response = client.get(
         reverse('register-submit'),
