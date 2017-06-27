@@ -19,29 +19,37 @@ class SSOUser:
         self.email = email
 
 
-class SSOLoginRequiredMixin:
+class SSOAccountStateRequiredMixin:
     """ CBV mixin which verifies sso user """
+
+    sso_redirect_url = None
 
     def dispatch(self, request, *args, **kwargs):
         if request.sso_user is None:
             return self.handle_no_permission()
-        return super(SSOLoginRequiredMixin, self).dispatch(
-            request, *args, **kwargs
-        )
+        return super().dispatch(request, *args, **kwargs)
 
     def handle_no_permission(self):
-        return self.redirect_to_login(
+        return self.redirect_to_sso(
             next_url=self.request.build_absolute_uri(),
         )
 
-    def redirect_to_login(self, next_url):
+    def redirect_to_sso(self, next_url):
         """
         Redirects the user to the sso signup page, passing the 'next' page
         """
-        resolved_url = resolve_url(settings.SSO_SIGNUP_URL)
+        resolved_url = resolve_url(self.sso_redirect_url)
         login_url_parts = list(urlparse(resolved_url))
         querystring = QueryDict(login_url_parts[4], mutable=True)
         querystring[settings.SSO_REDIRECT_FIELD_NAME] = next_url
         login_url_parts[4] = querystring.urlencode(safe='/')
 
         return HttpResponseRedirect(urlunparse(login_url_parts))
+
+
+class SSOLoginRequiredMixin(SSOAccountStateRequiredMixin):
+    sso_redirect_url = settings.SSO_LOGIN_URL
+
+
+class SSOSignUpRequiredMixin(SSOAccountStateRequiredMixin):
+    sso_redirect_url = settings.SSO_SIGNUP_URL
