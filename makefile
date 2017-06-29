@@ -61,6 +61,10 @@ DOCKER_SET_DEBUG_ENV_VARS := \
 	export DIRECTORY_UI_BUYER_CORS_ORIGIN_ALLOW_ALL=true; \
 	export DIRECTORY_UI_BUYER_SUPPLIER_SEARCH_URL=http://supplier.trade.great.dev:8005/search
 
+docker_test_env_files:
+	$(DOCKER_SET_DEBUG_ENV_VARS) && \
+	$(DOCKER_COMPOSE_CREATE_ENVS)
+
 DOCKER_REMOVE_ALL := \
 	docker ps -a | \
 	grep directoryui_ | \
