@@ -68,12 +68,12 @@ def test_has_company_no_company(mock_retrieve_supplier_profile):
     }
     mock_retrieve_supplier_profile.return_value = mock_response
 
-    assert helpers.has_company(sso_user_id=1) is False
+    assert helpers.has_company(sso_session_id=123) is False
 
 
 @patch.object(helpers.api_client.supplier, 'retrieve_profile', profile_api_404)
 def test_has_company_404():
-    assert helpers.has_company(sso_user_id=1) is False
+    assert helpers.has_company(sso_session_id=134) is False
 
 
 @patch.object(helpers.CompaniesHouseClient, 'retrieve_profile')

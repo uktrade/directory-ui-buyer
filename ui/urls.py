@@ -117,12 +117,12 @@ urlpatterns = [
         name='unsubscribe'
     ),
     url(
-        r'^api/external/company/supplier/(?P<sso_id>.+)/company/$',
+        r'^api/external/supplier/company/$',
         require_get(company_proxies.APIViewProxy.as_view()),
         name='api-external-company'
     ),
     url(
-        r'^api/external/supplier/(?P<sso_id>.+)/$',
+        r'^api/external/supplier/$',
         require_get(company_proxies.APIViewProxy.as_view()),
         name='api-external-supplier'
     ),

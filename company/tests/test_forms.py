@@ -722,7 +722,7 @@ def test_company_address_verification_valid_code(mock_verify_with_code):
     mock_verify_with_code.return_value = Mock(ok=False)
 
     form = forms.CompanyCodeVerificationForm(
-        sso_id=1,
+        sso_session_id=1,
         data={'code': 'x'*12}
     )
 
@@ -735,7 +735,7 @@ def test_company_address_verification_invalid_code(mock_verify_with_code):
     mock_verify_with_code.return_value = Mock(ok=True)
 
     form = forms.CompanyCodeVerificationForm(
-        sso_id=1,
+        sso_session_id=1,
         data={'code': 'x'*12}
     )
 
@@ -747,7 +747,7 @@ def test_company_address_verification_too_long(mock_verify_with_code):
     mock_verify_with_code.return_value = Mock(ok=True)
 
     form = forms.CompanyCodeVerificationForm(
-        sso_id=1,
+        sso_session_id=1,
         data={'code': 'x'*13}
     )
     expected = 'Ensure this value has at most 12 characters (it has 13).'
@@ -761,7 +761,7 @@ def test_company_address_verification_too_short(mock_verify_with_code):
     mock_verify_with_code.return_value = Mock(ok=True)
 
     form = forms.CompanyCodeVerificationForm(
-        sso_id=1,
+        sso_session_id=1,
         data={'code': 'x'*11}
     )
     expected = 'Ensure this value has at least 12 characters (it has 11).'

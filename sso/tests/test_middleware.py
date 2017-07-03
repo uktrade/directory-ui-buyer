@@ -39,6 +39,7 @@ def test_sso_middleware_api_response_ok(
 
     mock_get_session_user.assert_called_with('123')
     assert response._request.sso_user.id == 1
+    assert response._request.sso_user.session_id == '123'
     assert response._request.sso_user.email == 'jim@example.com'
 
 

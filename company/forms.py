@@ -473,10 +473,10 @@ class CompanyCodeVerificationForm(AutoFocusFieldMixin,
     )
 
     def __init__(self, *args, **kwargs):
-        sso_id = kwargs.pop('sso_id')
+        sso_session_id = kwargs.pop('sso_session_id')
         super().__init__(*args, **kwargs)
         self.fields['code'].validators = halt_validation_on_failure(
-            validators.verify_with_code(sso_id=sso_id),
+            validators.verify_with_code(sso_session_id=sso_session_id),
             *self.fields['code'].validators
         )
 
