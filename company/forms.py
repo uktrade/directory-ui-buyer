@@ -550,6 +550,27 @@ def serialize_company_profile_forms(cleaned_data):
     }
 
 
+def serialize_company_profile_without_address_forms(cleaned_data):
+    """
+    Return the shape directory-api-client expects for company profile edit,
+    excluding address fields.
+
+    @param {dict} cleaned_data - All the fields in `CompanyBasicInfoForm`
+                                 `CompanyLogoForm`, and
+                                 `CompanyClassificationForm`
+    @returns dict
+
+    """
+
+    return {
+        'name': cleaned_data['name'],
+        'website': cleaned_data['website'],
+        'keywords': cleaned_data['keywords'],
+        'employees': cleaned_data['employees'],
+        'sectors': [cleaned_data['sectors']],
+    }
+
+
 def serialize_company_logo_form(cleaned_data):
     """
     Return the shape directory-api-client expects for changing logo.
