@@ -1,5 +1,7 @@
 from datetime import datetime, timedelta
 
+import pytest
+
 from django.core.urlresolvers import reverse
 from django.template.loader import render_to_string
 
@@ -35,7 +37,7 @@ UPDATED_LABEL = 'Last updated'
 
 
 def test_company_profile_details_renders_public_link_if_published():
-    template_name = 'company-private-profile-detail.html'
+    template_name = 'company-profile-detail.html'
     context = {
         'company': {
             'summary': 'thing',
@@ -49,7 +51,7 @@ def test_company_profile_details_renders_public_link_if_published():
 
 
 def test_company_profile_details_not_render_public_link_if_published():
-    template_name = 'company-private-profile-detail.html'
+    template_name = 'company-profile-detail.html'
     context = {
         'company': {
             'public_profile_url': 'http://www.example.com/profile',
@@ -63,7 +65,7 @@ def test_company_profile_details_not_render_public_link_if_published():
 
 def test_company_profile_details_renders_social_links():
     edit_url = reverse('company-edit-social-media')
-    template_name = 'company-private-profile-detail.html'
+    template_name = 'company-profile-detail.html'
     context = default_context
 
     html = render_to_string(template_name, context)
@@ -76,7 +78,7 @@ def test_company_profile_details_renders_social_links():
 
 def test_company_profile_details_renders_edit_social_links():
     edit_url = reverse('company-edit-social-media')
-    template_name = 'company-private-profile-detail.html'
+    template_name = 'company-profile-detail.html'
     context = {}
 
     html = render_to_string(template_name, context)
@@ -85,7 +87,7 @@ def test_company_profile_details_renders_edit_social_links():
 
 
 def test_company_profile_details_renders_contact_details():
-    template_name = 'company-private-profile-detail.html'
+    template_name = 'company-profile-detail.html'
     context = default_context
 
     html = render_to_string(template_name, context)
@@ -95,7 +97,7 @@ def test_company_profile_details_renders_contact_details():
 
 
 def test_company_profile_details_renders_company_details():
-    template_name = 'company-private-profile-detail.html'
+    template_name = 'company-profile-detail.html'
     context = default_context
 
     html = render_to_string(template_name, context)
@@ -105,33 +107,33 @@ def test_company_profile_details_renders_company_details():
 
 
 def test_company_profile_details_renders_company_name():
-    template_name = 'company-private-profile-detail.html'
+    template_name = 'company-profile-detail.html'
     html = render_to_string(template_name, default_context)
     assert default_context['company']['name'] in html
 
 
 def test_company_profile_details_renders_logo():
-    template_name = 'company-private-profile-detail.html'
+    template_name = 'company-profile-detail.html'
     html = render_to_string(template_name, default_context)
 
     assert default_context['company']['logo'] in html
 
 
 def test_company_profile_details_renders_summary():
-    template_name = 'company-private-profile-detail.html'
+    template_name = 'company-profile-detail.html'
     html = render_to_string(template_name, default_context)
     assert default_context['company']['summary'] in html
 
 
 def test_company_profile_details_renders_sectors():
-    template_name = 'company-private-profile-detail.html'
+    template_name = 'company-profile-detail.html'
     html = render_to_string(template_name, default_context)
     assert 'sector 1' in html
     assert 'sector 2' in html
 
 
 def test_company_profile_details_renders_keywords():
-    template_name = 'company-private-profile-detail.html'
+    template_name = 'company-profile-detail.html'
     html = render_to_string(template_name, default_context)
 
     assert default_context['company']['keywords']
@@ -150,7 +152,7 @@ def test_company_private_profile_details_renders_standalone_edit_links():
             'is_published': False,
         }
     }
-    html = render_to_string('company-private-profile-detail.html', context)
+    html = render_to_string('company-profile-detail.html', context)
 
     assert reverse('company-edit-address') in html
     assert reverse('company-edit-sectors') in html
@@ -168,7 +170,7 @@ def test_company_private_profile_details_renders_wizard_links():
             'is_published': False,
         }
     }
-    html = render_to_string('company-private-profile-detail.html', context)
+    html = render_to_string('company-profile-detail.html', context)
     company_edit_link = 'href="{url}"'.format(url=reverse('company-edit'))
 
     assert reverse('company-edit-sectors') not in html
@@ -184,7 +186,7 @@ def test_company_profile_unpublished_no_description():
             'summary': '',
         }
     }
-    template_name = 'company-private-profile-detail.html'
+    template_name = 'company-profile-detail.html'
 
     html = render_to_string(template_name, context)
 
@@ -200,28 +202,38 @@ def test_company_profile_unpublished_no_email():
             'email_address': ''
         }
     }
-    template_name = 'company-private-profile-detail.html'
+    template_name = 'company-profile-detail.html'
 
     html = render_to_string(template_name, context)
 
     assert 'Your company has no contact details' in html
 
 
-def test_company_profile_unpublished_not_verified():
+@pytest.mark.parametrize("is_preverified,is_verified,should_show_message", [
+    [False, False, True],
+    [False, True, False],
+    [True, False, False],
+    [True, True, False],  # should not happen, but for completeness
+])
+def test_company_profile_unpublished_not_verified(
+    is_preverified, is_verified, should_show_message
+):
     context = {
         'company': {
             'is_published': False,
             'description': 'description description',
             'summary': 'summary summary',
             'email_address': 'thing@example.com',
-            'verified_with_code': False
+            'verified_with_code': is_verified,
+            'verified_with_preverified_enrolment': is_preverified,
         }
     }
-    template_name = 'company-private-profile-detail.html'
+    template_name = 'company-profile-detail.html'
 
     html = render_to_string(template_name, context)
 
-    assert 'Your company has not yet been verified' in html
+    label = 'Your company has not yet been verified'
+    assert (label in html) is should_show_message
 
 
 def test_company_profile_unpublished_published():
@@ -230,7 +242,7 @@ def test_company_profile_unpublished_published():
             'is_published': True,
         }
     }
-    template_name = 'company-private-profile-detail.html'
+    template_name = 'company-profile-detail.html'
 
     html = render_to_string(template_name, context)
 

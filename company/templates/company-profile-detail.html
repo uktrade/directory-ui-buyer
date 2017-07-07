@@ -46,7 +46,7 @@
 					</a>
 				</div>
 			</div>
-		{% elif not company.verified_with_code %}
+		{% elif not company.verified_with_preverified_enrolment and not company.verified_with_code %}
 			<div class="row-fluid clearfix clearfix company-profile-unpublished">
 				<div class="span8">
 					<h2 class="h2">Your company has not yet been verified.</h2>

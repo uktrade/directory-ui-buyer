@@ -154,7 +154,7 @@ class SupplierCaseStudyWizardView(
 
 
 class SupplierCompanyProfileDetailView(SupplierCompanyBaseView, TemplateView):
-    template_name = 'company-private-profile-detail.html'
+    template_name = 'company-profile-detail.html'
 
     def get_context_data(self, **kwargs):
         sso_user_id = self.request.sso_user.id
