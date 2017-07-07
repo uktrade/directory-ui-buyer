@@ -154,7 +154,7 @@ class SupplierCaseStudyWizardView(
 
 
 class SupplierCompanyProfileDetailView(SupplierCompanyBaseView, TemplateView):
-    template_name = 'company-private-profile-detail.html'
+    template_name = 'company-profile-detail.html'
 
     def get_context_data(self, **kwargs):
         sso_user_id = self.request.sso_user.id
@@ -194,21 +194,37 @@ class SupplierCompanyProfileEditView(
         ADDRESS_CONFIRM: 'company-profile-address-confirm-send.html',
         SENT: 'company-profile-form-letter-sent.html',
     }
-    form_labels = (
-        (BASIC, 'Basic'),
-        (CLASSIFICATION, 'Industry'),
-        (ADDRESS, 'Address'),
-        (ADDRESS_CONFIRM, 'Confirm'),
-    )
     failure_template = 'company-profile-update-error.html'
-    form_serializer = staticmethod(forms.serialize_company_profile_forms)
+
+    @property
+    def form_labels(self):
+        labels = [
+            (self.BASIC, 'Basic'),
+            (self.CLASSIFICATION, 'Industries'),
+        ]
+        if self.condition_show_address():
+            labels += [
+                (self.ADDRESS, 'Address'),
+                (self.ADDRESS_CONFIRM, 'Confirm'),
+            ]
+        return labels
 
     def condition_show_address(self):
-        return not self.company_profile['is_verification_letter_sent']
+        return not any([
+            self.company_profile['is_verification_letter_sent'],
+            self.company_profile['verified_with_preverified_enrolment'],
+        ])
 
     condition_dict = {
+        ADDRESS: condition_show_address,
         ADDRESS_CONFIRM: condition_show_address,
     }
+
+    @property
+    def form_serializer(self):
+        if self.condition_show_address():
+            return forms.serialize_company_profile_forms
+        return forms.serialize_company_profile_without_address_forms
 
     @cached_property
     def company_profile(self):

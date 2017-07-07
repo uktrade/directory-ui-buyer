@@ -1,5 +1,5 @@
 import http
-from unittest.mock import patch, Mock
+from unittest.mock import call, patch, Mock
 
 from directory_validators.constants import choices
 import pytest
@@ -353,7 +353,6 @@ def company_profile_letter_already_sent_edit_end_to_end(
     data_step_pairs = [
         [view.BASIC, company_profile_basic_data],
         [view.CLASSIFICATION, company_profile_classification_data],
-        [view.ADDRESS, company_profile_address_data],
     ]
 
     def inner():
@@ -891,9 +890,17 @@ def test_supplier_company_profile_letter_already_sent_edit_create_api_success(
 
     assert response.status_code == http.client.FOUND
     assert response.get('Location') == reverse('company-detail')
-    mock_update_profile.assert_called_once_with(
-        data=all_company_profile_data,
-        sso_user_id=sso_user.id,
+
+    assert mock_update_profile.call_count == 1
+    assert mock_update_profile.call_args == call(
+        data={
+            'sectors': ['AGRICULTURE_HORTICULTURE_AND_FISHERIES'],
+            'keywords': 'Nice, Great',
+            'employees': '1-10',
+            'name': 'Example Corp.',
+            'website': 'http://www.example.com'
+        },
+        sso_user_id=1
     )
 
 
@@ -1289,3 +1296,25 @@ def test_image_too_large_with_referrer(client):
 
     assert response.status_code == 302
     assert response.get('Location') == reverse('index')
+
+
+def test_company_profile_edit_form_labels_show_address():
+    view = views.SupplierCompanyProfileEditView()
+
+    with patch.object(view, 'condition_show_address', return_value=True):
+        assert view.form_labels == [
+            ('basic', 'Basic'),
+            ('classification', 'Industries'),
+            ('address', 'Address'),
+            ('confirm', 'Confirm'),
+        ]
+
+
+def test_company_profile_edit_form_labels_hide_address():
+    view = views.SupplierCompanyProfileEditView()
+
+    with patch.object(view, 'condition_show_address', return_value=False):
+        assert view.form_labels == [
+            ('basic', 'Basic'),
+            ('classification', 'Industries'),
+        ]

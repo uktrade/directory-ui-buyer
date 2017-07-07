@@ -81,6 +81,9 @@ def format_company_details(details):
         'supplier_case_studies': list(case_studies),
         'modified': format_date_modified(details['modified']),
         'verified_with_code': details['verified_with_code'],
+        'verified_with_preverified_enrolment': (
+            details['verified_with_preverified_enrolment']
+        ),
         'postal_full_name': details['postal_full_name'],
         'address_line_1': details['address_line_1'],
         'address_line_2': details['address_line_2'],
