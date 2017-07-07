@@ -1,3 +1,5 @@
+from collections import namedtuple
+
 from django.conf import settings
 from django.http import HttpResponseRedirect, QueryDict
 from django.utils.six.moves.urllib.parse import urlparse, urlunparse
@@ -11,12 +13,7 @@ sso_api_client = DirectorySSOAPIClient(
     api_key=settings.SSO_SIGNATURE_SECRET,
 )
 
-
-class SSOUser:
-
-    def __init__(self, id, email):
-        self.id = id
-        self.email = email
+SSOUser = namedtuple('SSOUser', ['id', 'email', 'session_id'])
 
 
 class SSOAccountStateRequiredMixin:

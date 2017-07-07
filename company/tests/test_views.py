@@ -1,10 +1,12 @@
 import http
+from http.cookies import SimpleCookie
 from unittest.mock import call, patch, Mock
 
 from directory_validators.constants import choices
 import pytest
 import requests
 
+from django.conf import settings
 from django.core.urlresolvers import reverse
 
 from sso.utils import SSOUser
@@ -65,6 +67,7 @@ def sso_user():
     return SSOUser(
         id=1,
         email='jim@example.com',
+        session_id='213'
     )
 
 
@@ -405,7 +408,7 @@ def test_case_study_edit_retrieves_data(
     client.get(url)
 
     mock_retrieve_supplier_case_study.assert_called_once_with(
-        case_study_id='2', sso_user_id=1,
+        case_study_id='2', sso_session_id='213',
     )
 
 
@@ -457,7 +460,7 @@ def test_case_study_create_api_success(
     data['image_three'] = Wildcard()
     mock_create_case_study.assert_called_once_with(
         data=data,
-        sso_user_id=sso_user.id,
+        sso_session_id=sso_user.session_id,
     )
 
 
@@ -498,7 +501,7 @@ def test_case_study_update_api_success(
     mock_update_case_study.assert_called_once_with(
         data=data,
         case_study_id='1',
-        sso_user_id=sso_user.id,
+        sso_session_id=sso_user.session_id,
     )
 
 
@@ -579,7 +582,7 @@ def test_company_profile_description_api_client_call(mock_update_profile,
     view.request = company_request
     view.done()
     mock_update_profile.assert_called_once_with(
-        sso_user_id=1, data={'field': 'value'}
+        sso_session_id='213', data={'field': 'value'}
     )
 
 
@@ -685,7 +688,7 @@ def test_company_profile_edit_api_client_call(
     view.request = company_request
     view.done()
     mock_update_profile.assert_called_once_with(
-        sso_user_id=1, data={'field': 'value'}
+        sso_session_id='213', data={'field': 'value'}
     )
 
 
@@ -806,7 +809,7 @@ def test_company_profile_logo_api_client_call(mock_update_profile,
     view.request = company_request
     view.done()
     mock_update_profile.assert_called_once_with(
-        sso_user_id=1, data={'field': 'value'}
+        sso_session_id='213', data={'field': 'value'}
     )
 
 
@@ -865,7 +868,7 @@ def test_supplier_company_profile_edit_create_api_success(
     assert response.template_name == view.templates[view.SENT]
     mock_update_profile.assert_called_once_with(
         data=all_company_profile_data,
-        sso_user_id=sso_user.id,
+        sso_session_id=sso_user.session_id,
     )
 
 
@@ -900,7 +903,7 @@ def test_supplier_company_profile_letter_already_sent_edit_create_api_success(
             'name': 'Example Corp.',
             'website': 'http://www.example.com'
         },
-        sso_user_id=1
+        sso_session_id='213'
     )
 
 
@@ -1018,7 +1021,7 @@ def test_company_address_validation_api_success(
     assert response.template_name == view.templates[view.SUCCESS]
     mock_verify_with_code.assert_called_with(
         code=all_address_verification_data['code'],
-        sso_user_id=sso_user.id,
+        sso_session_id=sso_user.session_id,
     )
 
 
@@ -1050,7 +1053,9 @@ def test_supplier_address_edit_standalone_initial_data(
 
     response = client.get(reverse('company-edit-address'))
 
-    mock_get_contact_details.assert_called_with(sso_user.id)
+    mock_get_contact_details.assert_called_with(
+        sso_session_id=sso_user.session_id
+    )
     assert response.context_data['form'].initial == expected_initial_data
 
 
@@ -1071,7 +1076,7 @@ def test_supplier_address_edit_standalone_view_api_success(
     client.post(url, supplier_address_data_standalone)
 
     mock_update_profile.assert_called_once_with(
-        sso_user_id=sso_user.id,
+        sso_session_id=sso_user.session_id,
         data={
             'postal_code': 'E14 6XK',
             'country': 'GB',
@@ -1108,7 +1113,7 @@ def test_supplier_contact_edit_standalone_view_api_success(
     client.post(url, company_profile_contact_standalone_data)
 
     mock_update_profile.assert_called_once_with(
-        sso_user_id=sso_user.id,
+        sso_session_id=sso_user.session_id,
         data={
             'email_full_name': 'test',
             'email_address': 'test@example.com',
@@ -1140,7 +1145,7 @@ def test_supplier_sectors_edit_standalone_view_api_success(
     url = reverse('company-edit-sectors')
     client.post(url, company_profile_sectors_standalone_data)
     mock_update_profile.assert_called_once_with(
-        sso_user_id=sso_user.id,
+        sso_session_id=sso_user.session_id,
         data={'sectors': ['AGRICULTURE_HORTICULTURE_AND_FISHERIES']}
     )
 
@@ -1159,7 +1164,7 @@ def test_supplier_sectors_edit_standalone_view_api_multiple_sectors(
     url = reverse('company-edit-sectors')
     client.post(url, company_profile_sectors_standalone_data)
     mock_update_profile.assert_called_once_with(
-        sso_user_id=sso_user.id,
+        sso_session_id=sso_user.session_id,
         data={'sectors': ['AGRICULTURE_HORTICULTURE_AND_FISHERIES']}
     )
 
@@ -1187,7 +1192,7 @@ def test_supplier_key_facts_edit_standalone_view_api_success(
 
     client.post(url, company_profile_key_facts_standalone_data)
     mock_update_profile.assert_called_once_with(
-        sso_user_id=sso_user.id,
+        sso_session_id=sso_user.session_id,
         data={
             'name': 'Example Corp.',
             'website': 'http://www.example.com',
@@ -1220,7 +1225,7 @@ def test_supplier_social_links_edit_standalone_view_api_success(
     client.post(url, company_profile_social_links_data)
 
     mock_update_profile.assert_called_once_with(
-        sso_user_id=sso_user.id,
+        sso_session_id=sso_user.session_id,
         data=all_social_links_data,
     )
 
@@ -1245,11 +1250,12 @@ def test_unsubscribe_anon_user(client):
 def test_unsubscribe_api_failure(
     mock_unsubscribe, api_response_400, client
 ):
+    client.cookies = SimpleCookie({settings.SSO_SESSION_COOKIE: 1})
     mock_unsubscribe.return_value = api_response_400
 
     response = client.post(reverse('unsubscribe'))
 
-    mock_unsubscribe.assert_called_once_with(sso_id=1)
+    mock_unsubscribe.assert_called_once_with(sso_session_id='213')
     view = views.EmailUnsubscribeView
     assert response.status_code == http.client.OK
     assert response.template_name == view.failure_template
@@ -1264,7 +1270,7 @@ def test_unsubscribe_api_success(
 
     response = client.post(reverse('unsubscribe'))
 
-    mock_unsubscribe.assert_called_once_with(sso_id=1)
+    mock_unsubscribe.assert_called_once_with(sso_session_id='213')
     view = views.EmailUnsubscribeView
     assert response.status_code == http.client.OK
     assert response.template_name == view.success_template

@@ -22,7 +22,7 @@ class SupplierCompanyBaseView(SSOLoginRequiredMixin):
         if request.sso_user is None:
             return self.handle_no_permission()
         else:
-            if not has_company(self.request.sso_user.id):
+            if not has_company(self.request.sso_user.session_id):
                 # the landing page has an input box for enrolling the company
                 return redirect('index')
             else:
@@ -55,7 +55,7 @@ class UpdateCompanyProfileOnFormWizardDoneMixin:
 
     def done(self, *args, **kwargs):
         api_response = api_client.company.update_profile(
-            sso_user_id=self.request.sso_user.id,
+            sso_session_id=self.request.sso_user.session_id,
             data=self.serialize_form_data()
         )
         if api_response.ok:
@@ -67,8 +67,8 @@ class UpdateCompanyProfileOnFormWizardDoneMixin:
 
 class GetCompanyProfileInitialFormDataMixin:
     def get_form_initial(self, step):
-        sso_user_id = self.request.sso_user.id
-        response = api_client.company.retrieve_private_profile(sso_user_id)
+        sso_session_id = self.request.sso_user.session_id
+        response = api_client.company.retrieve_private_profile(sso_session_id)
         if not response.ok:
             response.raise_for_status()
         return response.json()
@@ -119,7 +119,7 @@ class SupplierCaseStudyWizardView(
         if not self.kwargs['id']:
             return {}
         response = api_client.company.retrieve_private_case_study(
-            sso_user_id=self.request.sso_user.id,
+            sso_session_id=self.request.sso_user.session_id,
             case_study_id=self.kwargs['id'],
         )
         if not response.ok:
@@ -140,11 +140,11 @@ class SupplierCaseStudyWizardView(
             response = api_client.company.update_case_study(
                 data=data,
                 case_study_id=self.kwargs['id'],
-                sso_user_id=self.request.sso_user.id,
+                sso_session_id=self.request.sso_user.session_id,
             )
         else:
             response = api_client.company.create_case_study(
-                sso_user_id=self.request.sso_user.id,
+                sso_session_id=self.request.sso_user.session_id,
                 data=data,
             )
         if response.ok:
@@ -157,8 +157,8 @@ class SupplierCompanyProfileDetailView(SupplierCompanyBaseView, TemplateView):
     template_name = 'company-profile-detail.html'
 
     def get_context_data(self, **kwargs):
-        sso_user_id = self.request.sso_user.id
-        response = api_client.company.retrieve_private_profile(sso_user_id)
+        sso_session_id = self.request.sso_user.session_id
+        response = api_client.company.retrieve_private_profile(sso_session_id)
         response.raise_for_status()
         profile = helpers.get_company_profile_from_response(response)
         show_wizard_links = not forms.is_optional_profile_values_set(profile)
@@ -228,15 +228,15 @@ class SupplierCompanyProfileEditView(
 
     @cached_property
     def company_profile(self):
-        profile = helpers.get_company_profile(self.request.sso_user.id)
+        profile = helpers.get_company_profile(self.request.sso_user.session_id)
         if profile['sectors']:
             profile['sectors'] = profile['sectors'][0]
         return profile
 
     def get_form_initial(self, step):
         if step == self.ADDRESS:
-            sso_user_id = self.request.sso_user.id
-            return helpers.get_contact_details(sso_user_id)
+            sso_session_id = self.request.sso_user.session_id
+            return helpers.get_contact_details(sso_session_id)
         return self.company_profile
 
     def get_context_data(self, form, **kwargs):
@@ -291,7 +291,7 @@ class SupplierCompanyAddressVerificationView(
 
     def get_form_kwargs(self, *args, **kwargs):
         kwargs = super().get_form_kwargs(*args, **kwargs)
-        kwargs['sso_id'] = self.request.sso_user.id
+        kwargs['sso_session_id'] = self.request.sso_user.session_id
         return kwargs
 
     def done(self, *args, **kwargs):
@@ -391,8 +391,8 @@ class SupplierContactEditView(
     form_serializer = staticmethod(forms.serialize_company_contact_form)
 
     def get_form_initial(self, step):
-        sso_user_id = self.request.sso_user.id
-        return helpers.get_contact_details(sso_user_id)
+        sso_session_id = self.request.sso_user.session_id
+        return helpers.get_contact_details(sso_session_id=sso_session_id)
 
 
 class SupplierAddressEditView(
@@ -412,8 +412,8 @@ class SupplierAddressEditView(
     form_serializer = staticmethod(forms.serialize_company_address_form)
 
     def get_form_initial(self, step):
-        sso_user_id = self.request.sso_user.id
-        return helpers.get_contact_details(sso_user_id)
+        sso_session_id = self.request.sso_user.session_id
+        return helpers.get_contact_details(sso_session_id=sso_session_id)
 
 
 class EmailUnsubscribeView(SSOLoginRequiredMixin, FormView):
@@ -424,7 +424,7 @@ class EmailUnsubscribeView(SSOLoginRequiredMixin, FormView):
 
     def form_valid(self, form):
         response = api_client.supplier.unsubscribe(
-            sso_id=self.request.sso_user.id
+            sso_session_id=self.request.sso_user.session_id
         )
         if response.ok:
             return TemplateResponse(self.request, self.success_template)

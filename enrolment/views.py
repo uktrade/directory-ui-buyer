@@ -25,7 +25,8 @@ class DomesticLandingView(FormView):
     http_method_names = ['get', 'post']
 
     def dispatch(self, request, *args, **kwargs):
-        if request.sso_user and helpers.has_company(request.sso_user.id):
+        user = request.sso_user
+        if user and helpers.has_company(user.session_id):
             return redirect('company-detail')
         else:
             return super(DomesticLandingView, self).dispatch(
@@ -46,11 +47,9 @@ class DomesticLandingView(FormView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-
+        user = self.request.sso_user
         context['user_has_company'] = (
-            self.request.sso_user and helpers.has_company(
-                self.request.sso_user.id
-            )
+            user and helpers.has_company(user.session_id)
         )
         context['supplier_profile_urls'] = {
             'immersive': self.get_supplier_profile_url('07723438'),
@@ -80,7 +79,8 @@ class EnrolmentView(NamedUrlSessionWizardView):
     )
 
     def dispatch(self, request, *args, **kwargs):
-        if request.sso_user and helpers.has_company(request.sso_user.id):
+        user = request.sso_user
+        if user and helpers.has_company(user.session_id):
             return redirect('company-detail')
         else:
             return super(EnrolmentView, self).dispatch(
@@ -159,7 +159,7 @@ class SubmitEnrolmentView(SSOSignUpRequiredMixin, View):
     def dispatch(self, request, *args, **kwargs):
         if request.sso_user is None:
             return self.handle_no_permission()
-        elif helpers.has_company(request.sso_user.id):
+        elif helpers.has_company(request.sso_user.session_id):
             return redirect('company-detail')
         else:
             return super().dispatch(request, *args, **kwargs)
@@ -176,7 +176,7 @@ class SubmitEnrolmentView(SSOSignUpRequiredMixin, View):
         )
 
         return {
-            'sso_id': self.request.sso_user.id,
+            'sso_session_id': self.request.sso_user.session_id,
             'company_email': self.request.sso_user.email,
             'contact_email_address': self.request.sso_user.email,
             'company_number': company_number,

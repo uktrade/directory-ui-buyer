@@ -55,9 +55,9 @@ def halt_validation_on_failure(*all_validators):
     return [inner]
 
 
-def has_company(sso_user_id):
+def has_company(sso_session_id):
     response = api_client.supplier.retrieve_profile(
-        sso_id=sso_user_id
+        sso_session_id=sso_session_id
     )
     if response.ok:
         profile = response.json()

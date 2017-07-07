@@ -16,5 +16,6 @@ class SSOUserMiddleware:
                 sso_user_data = sso_response.json()
                 request.sso_user = SSOUser(
                     id=sso_user_data['id'],
-                    email=sso_user_data['email']
+                    email=sso_user_data['email'],
+                    session_id=session_id,
                 )
