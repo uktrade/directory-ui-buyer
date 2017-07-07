@@ -449,6 +449,24 @@ def test_serialize_company_profile_forms():
     assert actual == expected
 
 
+def test_serialize_company_profile_without_address_forms():
+    actual = forms.serialize_company_profile_without_address_forms({
+        'employees': '1-10',
+        'keywords': 'Jolly good exporter',
+        'name': 'Example ltd.',
+        'sectors': '1',
+        'website': 'http://example.com',
+    })
+    expected = {
+        'employees': '1-10',
+        'keywords': 'Jolly good exporter',
+        'name': 'Example ltd.',
+        'sectors': ['1'],
+        'website': 'http://example.com',
+    }
+    assert actual == expected
+
+
 def test_serialize_company_logo_form(uploaded_png_image):
     actual = forms.serialize_company_logo_form({'logo': uploaded_png_image})
     expected = {'logo': uploaded_png_image}
