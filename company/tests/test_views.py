@@ -903,7 +903,7 @@ def test_supplier_company_profile_letter_already_sent_edit_create_api_success(
             'name': 'Example Corp.',
             'website': 'http://www.example.com'
         },
-        sso_user_id=1
+        sso_session_id='213'
     )
 
 
