@@ -81,6 +81,9 @@ def format_company_details(details):
         'supplier_case_studies': list(case_studies),
         'modified': format_date_modified(details['modified']),
         'verified_with_code': details['verified_with_code'],
+        'verified_with_preverified_enrolment': (
+            details['verified_with_preverified_enrolment']
+        ),
         'postal_full_name': details['postal_full_name'],
         'address_line_1': details['address_line_1'],
         'address_line_2': details['address_line_2'],
@@ -121,10 +124,11 @@ def get_public_profile_url(company_number):
     return settings.SUPPLIER_PROFILE_URL.format(number=company_number)
 
 
-def get_company_profile(sso_id):
-    response = api_client.company.retrieve_private_profile(sso_id)
-    if not response.ok:
-        response.raise_for_status()
+def get_company_profile(sso_session_id):
+    response = api_client.company.retrieve_private_profile(
+        sso_session_id=sso_session_id
+    )
+    response.raise_for_status()
     return response.json()
 
 
@@ -135,8 +139,8 @@ def get_company_contact_details_from_companies_house(number):
     return response.json()
 
 
-def get_contact_details(sso_id):
-    profile = get_company_profile(sso_id)
+def get_contact_details(sso_session_id):
+    profile = get_company_profile(sso_session_id=sso_session_id)
     if profile['has_valid_address']:
         return profile
     return get_company_contact_details_from_companies_house(profile['number'])

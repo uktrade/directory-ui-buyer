@@ -46,6 +46,7 @@ def sso_user():
     return SSOUser(
         id=1,
         email='jim@example.com',
+        session_id='1234',
     )
 
 
@@ -230,7 +231,7 @@ def test_enrolment_logged_in_has_company_redirects(
 
     assert response.status_code == http.client.FOUND
     assert response.get('Location') == reverse('company-detail')
-    mock_has_company.assert_called_once_with(sso_user.id)
+    mock_has_company.assert_called_once_with(sso_user.session_id)
 
 
 @patch('enrolment.helpers.has_company', return_value=False)

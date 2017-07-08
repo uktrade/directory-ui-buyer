@@ -473,10 +473,10 @@ class CompanyCodeVerificationForm(AutoFocusFieldMixin,
     )
 
     def __init__(self, *args, **kwargs):
-        sso_id = kwargs.pop('sso_id')
+        sso_session_id = kwargs.pop('sso_session_id')
         super().__init__(*args, **kwargs)
         self.fields['code'].validators = halt_validation_on_failure(
-            validators.verify_with_code(sso_id=sso_id),
+            validators.verify_with_code(sso_session_id=sso_session_id),
             *self.fields['code'].validators
         )
 
@@ -547,6 +547,27 @@ def serialize_company_profile_forms(cleaned_data):
         'po_box': cleaned_data['po_box'],
         'postal_code': cleaned_data['postal_code'],
         'postal_full_name': cleaned_data['postal_full_name'],
+    }
+
+
+def serialize_company_profile_without_address_forms(cleaned_data):
+    """
+    Return the shape directory-api-client expects for company profile edit,
+    excluding address fields.
+
+    @param {dict} cleaned_data - All the fields in `CompanyBasicInfoForm`
+                                 `CompanyLogoForm`, and
+                                 `CompanyClassificationForm`
+    @returns dict
+
+    """
+
+    return {
+        'name': cleaned_data['name'],
+        'website': cleaned_data['website'],
+        'keywords': cleaned_data['keywords'],
+        'employees': cleaned_data['employees'],
+        'sectors': [cleaned_data['sectors']],
     }
 
 

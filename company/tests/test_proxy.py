@@ -24,9 +24,7 @@ def test_proxy_api_view_bad_signature(view_name, client):
     ) as mock_test_signature:
         mock_test_signature.return_value = False
 
-        url = reverse(view_name, kwargs={'sso_id': 2})
-
-        response = client.get(url)
+        response = client.get(reverse(view_name))
 
         assert response.status_code == http.client.FORBIDDEN
 
@@ -38,12 +36,10 @@ def test_proxy_api_view_rejects_unsafe_methods(view_name, client):
     ) as mock_test_signature:
         mock_test_signature.return_value = True
 
-        url = reverse(view_name, kwargs={'sso_id': 2})
-
         unsafe_methods = [client.delete, client.post, client.patch, client.put]
 
         for unsafe_method in unsafe_methods:
-            response = unsafe_method(url)
+            response = unsafe_method(reverse(view_name))
             assert response.status_code == http.client.METHOD_NOT_ALLOWED
 
 
@@ -62,9 +58,7 @@ def test_proxy_api_view_accepts_get(view_name, client):
             status=http.client.OK,
         )
 
-        url = reverse(view_name, kwargs={'sso_id': 2})
-
-        response = client.get(url)
+        response = client.get(reverse(view_name))
 
         assert response.json() == proxied_content
         assert 'X-Forwarded-Host' not in mock_urlopen.call_args[1]['headers']

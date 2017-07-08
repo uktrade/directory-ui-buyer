@@ -449,6 +449,24 @@ def test_serialize_company_profile_forms():
     assert actual == expected
 
 
+def test_serialize_company_profile_without_address_forms():
+    actual = forms.serialize_company_profile_without_address_forms({
+        'employees': '1-10',
+        'keywords': 'Jolly good exporter',
+        'name': 'Example ltd.',
+        'sectors': '1',
+        'website': 'http://example.com',
+    })
+    expected = {
+        'employees': '1-10',
+        'keywords': 'Jolly good exporter',
+        'name': 'Example ltd.',
+        'sectors': ['1'],
+        'website': 'http://example.com',
+    }
+    assert actual == expected
+
+
 def test_serialize_company_logo_form(uploaded_png_image):
     actual = forms.serialize_company_logo_form({'logo': uploaded_png_image})
     expected = {'logo': uploaded_png_image}
@@ -722,7 +740,7 @@ def test_company_address_verification_valid_code(mock_verify_with_code):
     mock_verify_with_code.return_value = Mock(ok=False)
 
     form = forms.CompanyCodeVerificationForm(
-        sso_id=1,
+        sso_session_id=1,
         data={'code': 'x'*12}
     )
 
@@ -735,7 +753,7 @@ def test_company_address_verification_invalid_code(mock_verify_with_code):
     mock_verify_with_code.return_value = Mock(ok=True)
 
     form = forms.CompanyCodeVerificationForm(
-        sso_id=1,
+        sso_session_id=1,
         data={'code': 'x'*12}
     )
 
@@ -747,7 +765,7 @@ def test_company_address_verification_too_long(mock_verify_with_code):
     mock_verify_with_code.return_value = Mock(ok=True)
 
     form = forms.CompanyCodeVerificationForm(
-        sso_id=1,
+        sso_session_id=1,
         data={'code': 'x'*13}
     )
     expected = 'Ensure this value has at most 12 characters (it has 13).'
@@ -761,7 +779,7 @@ def test_company_address_verification_too_short(mock_verify_with_code):
     mock_verify_with_code.return_value = Mock(ok=True)
 
     form = forms.CompanyCodeVerificationForm(
-        sso_id=1,
+        sso_session_id=1,
         data={'code': 'x'*11}
     )
     expected = 'Ensure this value has at least 12 characters (it has 11).'
