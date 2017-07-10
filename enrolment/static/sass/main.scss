@@ -1179,6 +1179,16 @@ a.ed-filled-button-primary {
   }
 }
 
+/* Mobile
+ **********************/
+@media (max-width: 480px) {
+  .ed-form-back-button {
+    margin: 0 0 40px 0;
+  }
+}
+
+
+
 @import 'general.scss';
 @import 'registration.scss';
 @import 'components.scss';
