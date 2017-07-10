@@ -21,6 +21,18 @@ def test_validate_company_unique_invalid(mock_validate_company_number):
 
 
 @patch.object(validators.api_client.company, 'validate_company_number')
+def test_validate_company_unique_invalid_unauthorized(
+    mock_validate_company_number
+):
+    error = 'Error. Please try again later.'
+    mock_validate_company_number.return_value = Mock(
+        status_code=http.client.UNAUTHORIZED,
+    )
+    with pytest.raises(ValidationError, message=error):
+        validators.company_unique('01245678')
+
+
+@patch.object(validators.api_client.company, 'validate_company_number')
 def test_validate_company_unique_valid(mock_validate_company_number):
     mock_validate_company_number.return_value = Mock(
         status_code=http.client.OK

@@ -18,8 +18,11 @@ MESSAGE_COMPANY_ERROR = 'Error. Please try again later.'
 def company_unique(value):
     # checks "is the company already registered?"
     response = api_client.company.validate_company_number(value)
-    if response.status_code == http.client.BAD_REQUEST:
-        raise ValidationError(response.json()['number'][0])
+    if response.status_code != http.client.OK:
+        if response.status_code == http.client.BAD_REQUEST:
+            raise ValidationError(response.json()['number'][0])
+        else:
+            raise ValidationError(MESSAGE_COMPANY_ERROR)
 
 
 def company_active(value):
