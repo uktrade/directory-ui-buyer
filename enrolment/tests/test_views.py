@@ -170,7 +170,7 @@ def api_response_company_profile_no_date_of_creation_200(api_response_200):
 @patch('enrolment.helpers.has_company', Mock(return_value=False))
 @patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
 @patch.object(api_client.enrolment, 'send_form', api_response_200)
-def test_submit_enrolment_api_client_success_synchronous(client):
+def test_submit_enrolment_api_client_success(client):
     response = client.get(
         reverse('register-submit'),
         {
@@ -180,6 +180,34 @@ def test_submit_enrolment_api_client_success_synchronous(client):
     )
     assert response.status_code == 302
     assert response.get('Location') == reverse('company-edit')
+
+
+@patch(
+    'enrolment.helpers.get_company_from_companies_house',
+    Mock(return_value=MOCK_COMPANIES_HOUSE_API_COMPANY_PROFILE)
+)
+@patch('enrolment.helpers.has_company', Mock(return_value=False))
+@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
+def test_submit_enrolment_api_client_success_correct_data(client):
+
+    with patch.object(api_client.enrolment, 'send_form') as send_form_mock:
+        client.get(
+            reverse('register-submit'),
+            {
+                'company_number': '12345678',
+                'export_status': 'ONE_TWO_YEARS_AGO'
+            }
+        )
+
+    send_form_mock.assert_called_once_with({
+        'sso_id': 1,
+        'company_email': 'jim@example.com',
+        'contact_email_address': 'jim@example.com',
+        'company_number': '12345678',
+        'date_of_creation': 'date_of_creation',
+        'company_name': 'company_name',
+        'export_status': 'ONE_TWO_YEARS_AGO'
+    })
 
 
 @patch(

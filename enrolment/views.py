@@ -1,3 +1,5 @@
+import logging
+
 from django.core.urlresolvers import reverse
 from django.conf import settings
 from django.http import JsonResponse, HttpResponseRedirect
@@ -17,6 +19,8 @@ from sso.utils import SSOSignUpRequiredMixin
 
 COMPANY_NUMBER_NOT_PROVIDED_ERROR = 'Company number not provided.'
 EXPORT_STATUS_NOT_PROVIDED_ERROR = 'Export status not provided.'
+
+logger = logging.getLogger(__name__)
 
 
 class DomesticLandingView(FormView):
@@ -176,7 +180,7 @@ class SubmitEnrolmentView(SSOSignUpRequiredMixin, View):
         )
 
         return {
-            'sso_session_id': self.request.sso_user.session_id,
+            'sso_id': self.request.sso_user.id,
             'company_email': self.request.sso_user.email,
             'contact_email_address': self.request.sso_user.email,
             'company_number': company_number,
@@ -211,10 +215,15 @@ class SubmitEnrolmentView(SSOSignUpRequiredMixin, View):
                 error_message=error.message
             )
 
-        response = api_client.enrolment.send_form(
+        api_response = api_client.enrolment.send_form(
             self.get_enrolment_data(export_status=export_status)
         )
-        if not response.ok:
+        if not api_response.ok:
+            logger.error(
+                "Enrolment failed, API response: {}".format(
+                    api_response.content
+                )
+            )
             response = TemplateResponse(self.request, self.failure_template)
         else:
             response = redirect('company-edit')
