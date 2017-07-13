@@ -18,7 +18,7 @@ class BaseProxyView(ProxyView):
 
         super(BaseProxyView, self).__init__(*args, **kwargs)
 
-    def dispatch(self, request, path, *args, **kwargs):
+    def dispatch(self, request, path='', *args, **kwargs):
         self.request_headers = self.get_request_headers()
 
         redirect_to = self._format_path_to_redirect(request)
@@ -42,7 +42,7 @@ class BaseProxyView(ProxyView):
     def get_upstream(self):
         return super(BaseProxyView, self).get_upstream(path=None)
 
-    def get_upstream_response(self, request, path, *args, **kwargs):
+    def get_upstream_response(self, request, path='', *args, **kwargs):
         request_payload = request.body
 
         self.log.debug("Request headers: %s", self.request_headers)
