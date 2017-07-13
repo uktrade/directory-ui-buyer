@@ -40,7 +40,7 @@ DOCKER_SET_DEBUG_ENV_VARS := \
 	export DIRECTORY_UI_BUYER_SSO_SIGNATURE_SECRET=api_signature_debug; \
 	export DIRECTORY_UI_BUYER_SSO_API_CLIENT_BASE_URL=http://sso.trade.great.dev:8004/; \
 	export DIRECTORY_UI_BUYER_SSO_LOGIN_URL=http://sso.trade.great.dev:8004/accounts/login/; \
-	export DIRECTORY_UI_BUYER_SSO_LOGOUT_URL=http://sso.trade.great.dev:8004/accounts/logout/?next=http://ui.trade.great.dev:8001; \
+	export DIRECTORY_UI_BUYER_SSO_LOGOUT_URL=http://sso.trade.great.dev:8004/accounts/logout/?next=http://buyer.trade.great.dev:8001; \
 	export DIRECTORY_UI_BUYER_SSO_SIGNUP_URL=http://sso.trade.great.dev:8004/accounts/signup/; \
 	export DIRECTORY_UI_BUYER_SSO_PROFILE_URL=http://profile.trade.great.dev:8006; \
 	export DIRECTORY_UI_BUYER_SSO_REDIRECT_FIELD_NAME=next; \
@@ -103,7 +103,7 @@ DEBUG_SET_ENV_VARS := \
 	export SSO_SIGNATURE_SECRET=proxy_signature_debug; \
 	export SSO_API_CLIENT_BASE_URL=http://sso.trade.great.dev:8004/; \
 	export SSO_LOGIN_URL=http://sso.trade.great.dev:8004/accounts/login/; \
-	export SSO_LOGOUT_URL=http://sso.trade.great.dev:8004/accounts/logout/?next=http://ui.trade.great.dev:8001; \
+	export SSO_LOGOUT_URL=http://sso.trade.great.dev:8004/accounts/logout/?next=http://buyer.trade.great.dev:8001; \
 	export SSO_SIGNUP_URL=http://sso.trade.great.dev:8004/accounts/signup/; \
 	export SSO_PROFILE_URL=http://profile.trade.great.dev:8006; \
 	export SSO_REDIRECT_FIELD_NAME=next; \

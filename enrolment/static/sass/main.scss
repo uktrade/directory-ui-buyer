@@ -873,10 +873,6 @@ body {
   clear: both; // needed for IE8 compatibility with multi column lists
 }
 
-.ed-form-classification-container li {
-  margin-bottom: 0;
-}
-
 .ed-error-page-container {
   color: #4a4a4a;
   .ed-error-page-title {
@@ -1161,13 +1157,6 @@ a.ed-filled-button-primary {
     @media (max-width: 640px) {
       display: none;
     }
-  }
-}
-
-.ed-form-classification-container {
-  input[type='radio'] {
-    height: 16px;
-    width: 16px;
   }
 }
 

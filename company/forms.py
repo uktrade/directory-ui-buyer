@@ -338,7 +338,6 @@ class CompanyClassificationForm(AutoFocusFieldMixin,
             'What sector is your company interested in working in? '
         ),
         choices=choices.COMPANY_CLASSIFICATIONS,
-        widget=forms.RadioSelect(),
     )
 
 
