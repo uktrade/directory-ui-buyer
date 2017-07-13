@@ -39,7 +39,7 @@ urlpatterns = [
     url(
         r'^api-static/admin/',
         AdminProxyView.as_view(),
-        name='admin_proxy'
+        name='admin_proxy_static'
     ),
     url(
         r'^$',
