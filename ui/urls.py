@@ -117,19 +117,19 @@ urlpatterns = [
         name='unsubscribe'
     ),
     url(
-        r'^api/external/supplier/company/$',
+        r'^api/external(?P<path>/supplier/company/)$',
         require_get(company_proxies.APIViewProxy.as_view()),
         name='api-external-company'
     ),
     url(
-        r'^api/external/supplier/$',
+        r'^api(?P<path>/external/supplier/)$',
         require_get(company_proxies.APIViewProxy.as_view()),
         name='api-external-supplier'
     ),
     url(
-        r'^api/external/supplier-sso/$',
+        r'^api(?P<path>/external/supplier-sso/)$',
         require_get(company_proxies.APIViewProxy.as_view()),
-        name='api-external-supplier'
+        name='api-external-supplier-sso'
     ),
     url(
         r'^api/internal/companies-house-search/$',

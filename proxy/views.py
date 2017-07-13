@@ -18,14 +18,14 @@ class BaseProxyView(ProxyView):
 
         super(BaseProxyView, self).__init__(*args, **kwargs)
 
-    def dispatch(self, request, *args, **kwargs):
+    def dispatch(self, request, path, *args, **kwargs):
         self.request_headers = self.get_request_headers()
 
         redirect_to = self._format_path_to_redirect(request)
         if redirect_to:
             return redirect(redirect_to)
 
-        upstream_response = self.get_upstream_response(request)
+        upstream_response = self.get_upstream_response(request, path)
 
         self._replace_host_on_redirect_location(request, upstream_response)
         self._set_content_type(request, upstream_response)
@@ -42,12 +42,12 @@ class BaseProxyView(ProxyView):
     def get_upstream(self):
         return super(BaseProxyView, self).get_upstream(path=None)
 
-    def get_upstream_response(self, request, *args, **kwargs):
+    def get_upstream_response(self, request, path, *args, **kwargs):
         request_payload = request.body
 
         self.log.debug("Request headers: %s", self.request_headers)
 
-        request_url = self.get_upstream() + request.get_full_path()
+        request_url = self.get_upstream() + path
 
         self.log.debug("Request URL: %s", request_url)
 
