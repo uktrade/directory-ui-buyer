@@ -1324,3 +1324,41 @@ def test_company_profile_edit_form_labels_hide_address():
             ('basic', 'Basic'),
             ('classification', 'Industries'),
         ]
+
+
+@patch.object(views.SupplierCompanyProfileEditView, 'render_done')
+@patch('company.views.SessionWizardView.render_next_step')
+@patch.object(views.SupplierCompanyProfileEditView, 'condition_show_address',
+              Mock(return_value=False))
+def test_render_next_step_skips_to_done_if_letter_sent(
+    mock_render_next_step, mock_render_done
+):
+    form = Mock()
+    kwargs = {}
+    view = views.SupplierCompanyProfileEditView()
+    view.steps = Mock(current='confirm')
+
+    view.render_next_step(form=form, **kwargs)
+
+    assert mock_render_done.call_count == 1
+    assert mock_render_done.call_args == call(form)
+    assert mock_render_next_step.call_count == 0
+
+
+@patch.object(views.SupplierCompanyProfileEditView, 'render_done')
+@patch('company.views.SessionWizardView.render_next_step')
+@patch.object(views.SupplierCompanyProfileEditView, 'condition_show_address',
+              Mock(return_value=True))
+def test_render_next_step_skips_to_done_if_letter_not_sent(
+    mock_render_next_step, mock_render_done
+):
+    form = Mock()
+    kwargs = {}
+    view = views.SupplierCompanyProfileEditView()
+    view.steps = Mock(current='confirm')
+
+    view.render_next_step(form=form, **kwargs)
+
+    assert mock_render_done.call_count == 0
+    assert mock_render_next_step.call_count == 1
+    assert mock_render_next_step.call_args == call(form)
