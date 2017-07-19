@@ -16,7 +16,7 @@ from enrolment.helpers import has_company
 from sso.utils import SSOLoginRequiredMixin
 
 
-class SupplierCompanyBaseView(SSOLoginRequiredMixin):
+class CompanyBaseView(SSOLoginRequiredMixin):
 
     def dispatch(self, request, *args, **kwargs):
         if request.sso_user is None:
@@ -26,7 +26,7 @@ class SupplierCompanyBaseView(SSOLoginRequiredMixin):
                 # the landing page has an input box for enrolling the company
                 return redirect('index')
             else:
-                return super(SupplierCompanyBaseView, self).dispatch(
+                return super(CompanyBaseView, self).dispatch(
                     request, *args, **kwargs
                 )
 
@@ -85,7 +85,7 @@ class GetTemplateForCurrentStepMixin:
 
 
 class SupplierCaseStudyWizardView(
-    SupplierCompanyBaseView,
+    CompanyBaseView,
     GetTemplateForCurrentStepMixin,
     SessionWizardView
 ):
@@ -153,7 +153,7 @@ class SupplierCaseStudyWizardView(
             return TemplateResponse(self.request, self.failure_template)
 
 
-class SupplierCompanyProfileDetailView(SupplierCompanyBaseView, TemplateView):
+class CompanyProfileDetailView(CompanyBaseView, TemplateView):
     template_name = 'company-profile-detail.html'
 
     def get_context_data(self, **kwargs):
@@ -169,8 +169,8 @@ class SupplierCompanyProfileDetailView(SupplierCompanyBaseView, TemplateView):
         }
 
 
-class SupplierCompanyProfileEditView(
-    SupplierCompanyBaseView,
+class CompanyProfileEditView(
+    CompanyBaseView,
     GetTemplateForCurrentStepMixin,
     UpdateCompanyProfileOnFormWizardDoneMixin,
     SessionWizardView
@@ -263,8 +263,8 @@ class SupplierCompanyProfileEditView(
         return super().handle_profile_update_success()
 
 
-class SupplierCompanyProfileLogoEditView(
-    SupplierCompanyBaseView,
+class CompanyProfileLogoEditView(
+    CompanyBaseView,
     GetTemplateForCurrentStepMixin,
     UpdateCompanyProfileOnFormWizardDoneMixin,
     SessionWizardView
@@ -283,8 +283,8 @@ class SupplierCompanyProfileLogoEditView(
     form_serializer = staticmethod(forms.serialize_company_logo_form)
 
 
-class SupplierCompanyAddressVerificationView(
-    SupplierCompanyBaseView,
+class CompanyAddressVerificationView(
+    CompanyBaseView,
     GetTemplateForCurrentStepMixin,
     SessionWizardView
 ):
@@ -311,8 +311,8 @@ class SupplierCompanyAddressVerificationView(
         )
 
 
-class SupplierCompanyDescriptionEditView(
-    SupplierCompanyBaseView,
+class CompanyDescriptionEditView(
+    CompanyBaseView,
     GetTemplateForCurrentStepMixin,
     GetCompanyProfileInitialFormDataMixin,
     UpdateCompanyProfileOnFormWizardDoneMixin,
@@ -329,8 +329,8 @@ class SupplierCompanyDescriptionEditView(
     form_serializer = staticmethod(forms.serialize_company_description_form)
 
 
-class SupplierCompanySocialLinksEditView(
-    SupplierCompanyBaseView,
+class CompanySocialLinksEditView(
+    CompanyBaseView,
     GetTemplateForCurrentStepMixin,
     GetCompanyProfileInitialFormDataMixin,
     UpdateCompanyProfileOnFormWizardDoneMixin,
@@ -348,7 +348,7 @@ class SupplierCompanySocialLinksEditView(
 
 
 class SupplierBasicInfoEditView(
-    SupplierCompanyBaseView,
+    CompanyBaseView,
     GetTemplateForCurrentStepMixin,
     GetCompanyProfileInitialFormDataMixin,
     UpdateCompanyProfileOnFormWizardDoneMixin,
@@ -366,7 +366,7 @@ class SupplierBasicInfoEditView(
 
 
 class SupplierClassificationEditView(
-    SupplierCompanyBaseView,
+    CompanyBaseView,
     GetTemplateForCurrentStepMixin,
     GetCompanyProfileInitialFormDataMixin,
     UpdateCompanyProfileOnFormWizardDoneMixin,
@@ -384,7 +384,7 @@ class SupplierClassificationEditView(
 
 
 class SupplierContactEditView(
-    SupplierCompanyBaseView,
+    CompanyBaseView,
     GetTemplateForCurrentStepMixin,
     GetCompanyProfileInitialFormDataMixin,
     UpdateCompanyProfileOnFormWizardDoneMixin,
@@ -406,7 +406,7 @@ class SupplierContactEditView(
 
 
 class SupplierAddressEditView(
-    SupplierCompanyBaseView,
+    CompanyBaseView,
     GetTemplateForCurrentStepMixin,
     UpdateCompanyProfileOnFormWizardDoneMixin,
     SessionWizardView

@@ -329,7 +329,7 @@ class CompanyLogoForm(AutoFocusFieldMixin, IndentedInvalidFieldsMixin,
             shared_validators.image_format,
         ]
     )
-
+from enrolment.widgets import CheckboxSelectInlineLabelMultiple
 
 class CompanyClassificationForm(AutoFocusFieldMixin,
                                 IndentedInvalidFieldsMixin, forms.Form):
@@ -338,6 +338,22 @@ class CompanyClassificationForm(AutoFocusFieldMixin,
             'What sector is your company interested in working in? '
         ),
         choices=choices.COMPANY_CLASSIFICATIONS,
+    )
+    export_destinations = forms.MultipleChoiceField(
+        label='Select the countries you would like to export to',
+        choices=[
+            ('CN', 'China'),
+            ('DE', 'Germany'),
+            ('IN', 'India'),
+            ('JP', 'Japan'),
+            ('US', 'United States'),
+            ('', 'Other')
+        ],
+        widget=CheckboxSelectInlineLabelMultiple,
+    )
+    export_destinations_other = forms.CharField(
+        label='Enter  3 maximum',
+        max_length=1000,
     )
 
 

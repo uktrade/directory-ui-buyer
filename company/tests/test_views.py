@@ -177,7 +177,7 @@ def all_social_links_data():
 
 @pytest.fixture
 def company_profile_social_links_data(all_social_links_data):
-    view = views.SupplierCompanySocialLinksEditView
+    view = views.CompanySocialLinksEditView
     return {
         'supplier_company_social_links_edit_view-current_step': view.SOCIAL,
         view.SOCIAL + '-twitter_url': all_social_links_data['twitter_url'],
@@ -188,7 +188,7 @@ def company_profile_social_links_data(all_social_links_data):
 
 @pytest.fixture
 def company_profile_address_data(all_company_profile_data):
-    view = views.SupplierCompanyProfileEditView
+    view = views.CompanyProfileEditView
     data = all_company_profile_data
     return {
         'supplier_company_profile_edit_view-current_step': view.ADDRESS,
@@ -205,7 +205,7 @@ def company_profile_address_data(all_company_profile_data):
 
 @pytest.fixture
 def company_profile_send_confirm_data():
-    step = views.SupplierCompanyProfileEditView.ADDRESS_CONFIRM
+    step = views.CompanyProfileEditView.ADDRESS_CONFIRM
     return {
         'supplier_company_profile_edit_view-current_step': step,
     }
@@ -221,7 +221,7 @@ def supplier_address_data_standalone(company_profile_address_data):
 
 @pytest.fixture
 def company_profile_basic_data(all_company_profile_data):
-    view = views.SupplierCompanyProfileEditView
+    view = views.CompanyProfileEditView
     data = all_company_profile_data
     return {
         'supplier_company_profile_edit_view-current_step': view.BASIC,
@@ -242,7 +242,7 @@ def company_profile_key_facts_standalone_data(company_profile_basic_data):
 
 @pytest.fixture
 def company_profile_classification_data(all_company_profile_data):
-    view = views.SupplierCompanyProfileEditView
+    view = views.CompanyProfileEditView
     data = all_company_profile_data
     return {
         'supplier_company_profile_edit_view-current_step': view.CLASSIFICATION,
@@ -279,7 +279,7 @@ def all_address_verification_data():
 
 @pytest.fixture
 def address_verification_address_data(all_address_verification_data):
-    view = views.SupplierCompanyAddressVerificationView
+    view = views.CompanyAddressVerificationView
     data = all_address_verification_data
     step = view.ADDRESS
     return {
@@ -309,7 +309,7 @@ def supplier_case_study_end_to_end(
 
 @pytest.fixture
 def address_verification_end_to_end(client, address_verification_address_data):
-    view = views.SupplierCompanyAddressVerificationView
+    view = views.CompanyAddressVerificationView
     data_step_pairs = [
         [view.ADDRESS, address_verification_address_data],
     ]
@@ -329,7 +329,7 @@ def company_profile_edit_end_to_end(
     company_profile_send_confirm_data, api_response_200
 ):
     # loop over each step in the supplier case study wizard and post valid data
-    view = views.SupplierCompanyProfileEditView
+    view = views.CompanyProfileEditView
     data_step_pairs = [
         [view.BASIC, company_profile_basic_data],
         [view.CLASSIFICATION, company_profile_classification_data],
@@ -352,7 +352,7 @@ def company_profile_letter_already_sent_edit_end_to_end(
     api_response_200
 ):
     # loop over each step in the supplier case study wizard and post valid data
-    view = views.SupplierCompanyProfileEditView
+    view = views.CompanyProfileEditView
     data_step_pairs = [
         [view.BASIC, company_profile_basic_data],
         [view.CLASSIFICATION, company_profile_classification_data],
@@ -374,7 +374,7 @@ def company_profile_edit_goto_step(
     api_response_200
 ):
     # loop over each step in the supplier case study wizard and post valid data
-    view = views.SupplierCompanyProfileEditView
+    view = views.CompanyProfileEditView
     data_step_pairs = [
         [view.BASIC, company_profile_basic_data],
         [view.CLASSIFICATION, company_profile_classification_data],
@@ -529,11 +529,11 @@ def test_company_profile_details_exposes_context(
 ):
     company = {'key': 'value'}
     mock_get_company_profile_from_response.return_value = company
-    view = views.SupplierCompanyProfileDetailView.as_view()
+    view = views.CompanyProfileDetailView.as_view()
     response = view(sso_request)
     assert response.status_code == http.client.OK
     assert response.template_name == [
-        views.SupplierCompanyProfileDetailView.template_name
+        views.CompanyProfileDetailView.template_name
     ]
 
     assert response.context_data['company'] == company
@@ -567,20 +567,20 @@ def test_company_profile_details_handles_bad_status(
 ):
     mock_retrieve_profile.return_value = api_response_400
     mock_get_company_profile_from_response.return_value = {}
-    view = views.SupplierCompanyProfileDetailView.as_view()
+    view = views.CompanyProfileDetailView.as_view()
 
     with pytest.raises(requests.exceptions.HTTPError):
         view(sso_request)
 
 
 @patch.object(views, 'has_company', Mock(return_value=True))
-@patch.object(views.SupplierCompanyDescriptionEditView, 'serialize_form_data',
+@patch.object(views.CompanyDescriptionEditView, 'serialize_form_data',
               Mock(return_value={'field': 'value'}))
 @patch.object(views.api_client.company, 'update_profile')
 def test_company_profile_description_api_client_call(mock_update_profile,
                                                      company_request):
 
-    view = views.SupplierCompanyDescriptionEditView()
+    view = views.CompanyDescriptionEditView()
     view.request = company_request
     view.done()
     mock_update_profile.assert_called_once_with(
@@ -589,7 +589,7 @@ def test_company_profile_description_api_client_call(mock_update_profile,
 
 
 @patch.object(views, 'has_company', Mock(return_value=True))
-@patch.object(views.SupplierCompanyDescriptionEditView, 'serialize_form_data',
+@patch.object(views.CompanyDescriptionEditView, 'serialize_form_data',
               Mock(return_value={}))
 @patch.object(views.api_client.company, 'update_profile')
 def test_company_profile_description_api_client_success(
@@ -597,14 +597,14 @@ def test_company_profile_description_api_client_success(
 ):
     mock_update_profile.return_value = api_response_200
 
-    view = views.SupplierCompanyDescriptionEditView()
+    view = views.CompanyDescriptionEditView()
     view.request = company_request
     response = view.done()
     assert response.status_code == http.client.FOUND
 
 
 @patch.object(views, 'has_company', Mock(return_value=True))
-@patch.object(views.SupplierCompanyDescriptionEditView, 'serialize_form_data',
+@patch.object(views.CompanyDescriptionEditView, 'serialize_form_data',
               Mock(return_value={}))
 @patch.object(views.api_client.company, 'update_profile')
 def test_company_profile_description_api_client_failure(
@@ -612,12 +612,12 @@ def test_company_profile_description_api_client_failure(
 ):
     mock_update_profile.return_value = api_response_400
 
-    view = views.SupplierCompanyDescriptionEditView()
+    view = views.CompanyDescriptionEditView()
     view.request = company_request
     response = view.done()
     assert response.status_code == http.client.OK
     expected_template_name = (
-        views.SupplierCompanyDescriptionEditView.failure_template
+        views.CompanyDescriptionEditView.failure_template
     )
     assert response.template_name == expected_template_name
 
@@ -628,7 +628,7 @@ def test_company_description_edit_calls_api(
     mock_retrieve_profile, company_request, api_response_company_profile_200
 ):
     mock_retrieve_profile.return_value = api_response_company_profile_200
-    view = views.SupplierCompanyDescriptionEditView.as_view()
+    view = views.CompanyDescriptionEditView.as_view()
 
     view(company_request)
 
@@ -641,7 +641,7 @@ def test_company_profile_description_exposes_api_result_to_form(
     mock_retrieve_profile, company_request, api_response_company_profile_200
 ):
     mock_retrieve_profile.return_value = api_response_company_profile_200
-    view = views.SupplierCompanyDescriptionEditView.as_view()
+    view = views.CompanyDescriptionEditView.as_view()
     expected = api_response_company_profile_200.json()
 
     response = view(company_request)
@@ -656,7 +656,7 @@ def test_company_description_edit_handles_bad_api_response(
 ):
 
     mock_retrieve_profile.return_value = api_response_400
-    view = views.SupplierCompanyDescriptionEditView.as_view()
+    view = views.CompanyDescriptionEditView.as_view()
 
     with pytest.raises(requests.exceptions.HTTPError):
         view(company_request)
@@ -668,7 +668,7 @@ def test_company_description_edit_views_use_correct_template(
     request = rf.get(reverse('company-edit-description'))
     request.sso_user = sso_user
     request.session = client.session
-    view_class = views.SupplierCompanyDescriptionEditView
+    view_class = views.CompanyDescriptionEditView
     assert view_class.form_list
     for form_pair in view_class.form_list:
         step_name = form_pair[0]
@@ -679,13 +679,13 @@ def test_company_description_edit_views_use_correct_template(
 
 
 @patch.object(views, 'has_company', Mock(return_value=True))
-@patch.object(views.SupplierCompanyProfileEditView, 'serialize_form_data',
+@patch.object(views.CompanyProfileEditView, 'serialize_form_data',
               Mock(return_value={'field': 'value'}))
 @patch.object(views.api_client.company, 'update_profile')
 def test_company_profile_edit_api_client_call(
     mock_update_profile, company_request, retrieve_profile_data
 ):
-    view = views.SupplierCompanyProfileEditView()
+    view = views.CompanyProfileEditView()
     view.company_profile = retrieve_profile_data
     view.request = company_request
     view.done()
@@ -695,7 +695,7 @@ def test_company_profile_edit_api_client_call(
 
 
 @patch.object(views, 'has_company', Mock(return_value=True))
-@patch.object(views.SupplierCompanyProfileEditView, 'serialize_form_data',
+@patch.object(views.CompanyProfileEditView, 'serialize_form_data',
               Mock(return_value={}))
 @patch.object(views.api_client.company, 'update_profile')
 def test_company_profile_edit_api_client_success(
@@ -704,7 +704,7 @@ def test_company_profile_edit_api_client_success(
 ):
     mock_update_profile.return_value = api_response_200
 
-    view = views.SupplierCompanyProfileEditView()
+    view = views.CompanyProfileEditView()
     view.request = company_request
     view.company_profile = retrieve_profile_data
     response = view.done()
@@ -713,7 +713,7 @@ def test_company_profile_edit_api_client_success(
 
 
 @patch.object(views, 'has_company', Mock(return_value=True))
-@patch.object(views.SupplierCompanyProfileEditView, 'serialize_form_data',
+@patch.object(views.CompanyProfileEditView, 'serialize_form_data',
               Mock(return_value={}))
 @patch.object(views.api_client.company, 'update_profile')
 def test_company_profile_edit_api_client_failure(
@@ -722,13 +722,13 @@ def test_company_profile_edit_api_client_failure(
 ):
     mock_update_profile.return_value = api_response_400
 
-    view = views.SupplierCompanyProfileEditView()
+    view = views.CompanyProfileEditView()
     view.company_profile = retrieve_profile_data
     view.request = company_request
     response = view.done()
     assert response.status_code == http.client.OK
     assert response.template_name == (
-        views.SupplierCompanyProfileEditView.failure_template
+        views.CompanyProfileEditView.failure_template
     )
 
 
@@ -739,7 +739,7 @@ def test_company_profile_edit_calls_api(
 ):
 
     mock_retrieve_profile.return_value = api_response_company_profile_200
-    view = views.SupplierCompanyProfileEditView.as_view()
+    view = views.CompanyProfileEditView.as_view()
 
     view(company_request)
 
@@ -752,7 +752,7 @@ def test_company_profile_edit_exposes_api_result_to_form(
     mock_retrieve_profile, company_request, api_response_company_profile_200
 ):
     mock_retrieve_profile.return_value = api_response_company_profile_200
-    view = views.SupplierCompanyProfileEditView.as_view()
+    view = views.CompanyProfileEditView.as_view()
     expected = api_response_company_profile_200.json()
     expected['sectors'] = expected['sectors'][0]
     response = view(company_request)
@@ -766,7 +766,7 @@ def test_company_profile_edit_handles_bad_api_response(
     mock_retrieve_profile, company_request, api_response_400
 ):
     mock_retrieve_profile.return_value = api_response_400
-    view = views.SupplierCompanyProfileEditView.as_view()
+    view = views.CompanyProfileEditView.as_view()
 
     with pytest.raises(requests.exceptions.HTTPError):
         view(company_request)
@@ -775,9 +775,9 @@ def test_company_profile_edit_handles_bad_api_response(
 @patch.object(views, 'has_company', Mock(return_value=False))
 def test_supplier_company_redirect_non_verified_company(sso_request):
     view_classes = [
-        views.SupplierCompanyProfileEditView,
-        views.SupplierCompanyProfileLogoEditView,
-        views.SupplierCompanyDescriptionEditView,
+        views.CompanyProfileEditView,
+        views.CompanyProfileLogoEditView,
+        views.CompanyDescriptionEditView,
     ]
     for ViewClass in view_classes:
         response = ViewClass.as_view()(sso_request)
@@ -791,7 +791,7 @@ def test_company_edit_views_use_correct_template(client, rf, sso_user):
     request = rf.get(reverse('company-edit'))
     request.sso_user = sso_user
     request.session = client.session
-    view_class = views.SupplierCompanyProfileEditView
+    view_class = views.CompanyProfileEditView
     assert view_class.form_list
     for form_pair in view_class.form_list:
         step_name = form_pair[0]
@@ -802,12 +802,12 @@ def test_company_edit_views_use_correct_template(client, rf, sso_user):
 
 
 @patch.object(views, 'has_company', Mock(return_value=True))
-@patch.object(views.SupplierCompanyProfileLogoEditView, 'serialize_form_data',
+@patch.object(views.CompanyProfileLogoEditView, 'serialize_form_data',
               Mock(return_value={'field': 'value'}))
 @patch.object(views.api_client.company, 'update_profile')
 def test_company_profile_logo_api_client_call(mock_update_profile,
                                               company_request):
-    view = views.SupplierCompanyProfileLogoEditView()
+    view = views.CompanyProfileLogoEditView()
     view.request = company_request
     view.done()
     mock_update_profile.assert_called_once_with(
@@ -816,7 +816,7 @@ def test_company_profile_logo_api_client_call(mock_update_profile,
 
 
 @patch.object(views, 'has_company', Mock(return_value=True))
-@patch.object(views.SupplierCompanyProfileLogoEditView, 'serialize_form_data',
+@patch.object(views.CompanyProfileLogoEditView, 'serialize_form_data',
               Mock(return_value={}))
 @patch.object(views.api_client.company, 'update_profile')
 def test_company_profile_logo_api_client_success(
@@ -824,14 +824,14 @@ def test_company_profile_logo_api_client_success(
 ):
     mock_update_profile.return_value = api_response_200
 
-    view = views.SupplierCompanyProfileLogoEditView()
+    view = views.CompanyProfileLogoEditView()
     view.request = company_request
     response = view.done()
     assert response.status_code == http.client.FOUND
 
 
 @patch.object(views, 'has_company', Mock(return_value=True))
-@patch.object(views.SupplierCompanyProfileLogoEditView, 'serialize_form_data',
+@patch.object(views.CompanyProfileLogoEditView, 'serialize_form_data',
               Mock(return_value={}))
 @patch.object(views.api_client.company, 'update_profile')
 def test_company_profile_logo_api_client_failure(
@@ -839,12 +839,12 @@ def test_company_profile_logo_api_client_failure(
 ):
     mock_update_profile.return_value = api_response_400
 
-    view = views.SupplierCompanyProfileLogoEditView()
+    view = views.CompanyProfileLogoEditView()
     view.request = company_request
     response = view.done()
     assert response.status_code == http.client.OK
     expected_template_name = (
-        views.SupplierCompanyProfileLogoEditView.failure_template
+        views.CompanyProfileLogoEditView.failure_template
     )
     assert response.template_name == expected_template_name
 
@@ -862,7 +862,7 @@ def test_supplier_company_profile_edit_create_api_success(
         api_response_200
 ):
     mock_update_profile.return_value = api_response_200
-    view = views.SupplierCompanyProfileEditView
+    view = views.CompanyProfileEditView
 
     response = company_profile_edit_end_to_end()
 
@@ -921,7 +921,7 @@ def test_supplier_company_profile_edit_create_api_failure(
 
     response = company_profile_edit_end_to_end()
 
-    view = views.SupplierCompanyProfileEditView
+    view = views.CompanyProfileEditView
     assert response.status_code == http.client.OK
     assert response.template_name == view.failure_template
 
@@ -935,7 +935,7 @@ def test_supplier_company_profile_initial_address_from_profile(
     expected['signature'] = Wildcard()
 
     response = company_profile_edit_goto_step(
-        step=views.SupplierCompanyProfileEditView.ADDRESS
+        step=views.CompanyProfileEditView.ADDRESS
     )
 
     assert response.context_data['form'].initial == expected
@@ -957,7 +957,7 @@ def test_supplier_company_profile_initial_address_from_companies_house(
     expected['signature'] = Wildcard()
 
     response = company_profile_edit_goto_step(
-        step=views.SupplierCompanyProfileEditView.ADDRESS
+        step=views.CompanyProfileEditView.ADDRESS
     )
     assert response.context_data['form'].initial == expected
 
@@ -968,7 +968,7 @@ def test_supplier_company_profile_initial_data_basic(
     company_profile_edit_goto_step, retrieve_profile_data
 ):
     response = company_profile_edit_goto_step(
-        step=views.SupplierCompanyProfileEditView.BASIC
+        step=views.CompanyProfileEditView.BASIC
     )
 
     expected = retrieve_profile_data
@@ -985,7 +985,7 @@ def test_supplier_company_profile_confirm_address_context_data(
     all_company_profile_data
 ):
     response = company_profile_edit_goto_step(
-        step=views.SupplierCompanyProfileEditView.ADDRESS_CONFIRM
+        step=views.CompanyProfileEditView.ADDRESS_CONFIRM
     )
 
     assert response.context['all_cleaned_data']
@@ -997,7 +997,7 @@ def test_supplier_company_profile_initial_data_classification(
     company_profile_edit_goto_step, retrieve_profile_data
 ):
     response = company_profile_edit_goto_step(
-        step=views.SupplierCompanyProfileEditView.CLASSIFICATION
+        step=views.CompanyProfileEditView.CLASSIFICATION
     )
     expected = retrieve_profile_data
     expected['sectors'] = expected['sectors'][0]
@@ -1015,7 +1015,7 @@ def test_company_address_validation_api_success(
 ):
     mock_verify_with_code.return_value = api_response_200
 
-    view = views.SupplierCompanyAddressVerificationView
+    view = views.CompanyAddressVerificationView
 
     response = address_verification_end_to_end()
 
@@ -1307,7 +1307,7 @@ def test_image_too_large_with_referrer(client):
 
 
 def test_company_profile_edit_form_labels_show_address():
-    view = views.SupplierCompanyProfileEditView()
+    view = views.CompanyProfileEditView()
 
     with patch.object(view, 'condition_show_address', return_value=True):
         assert view.form_labels == [
@@ -1319,7 +1319,7 @@ def test_company_profile_edit_form_labels_show_address():
 
 
 def test_company_profile_edit_form_labels_hide_address():
-    view = views.SupplierCompanyProfileEditView()
+    view = views.CompanyProfileEditView()
 
     with patch.object(view, 'condition_show_address', return_value=False):
         assert view.form_labels == [

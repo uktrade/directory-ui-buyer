@@ -401,7 +401,6 @@ label, input, button, select, textarea {
   input:focus + label:before  {
     outline: 3px solid $focus;
   }
-    
   label:before {
     content: "";
     border: 2px solid $grey-3;
@@ -499,41 +498,6 @@ body {
             float: none;
             width: 100%;
           }
-        }
-        .connections-platform-form {
-          ul li {
-            float: left;
-            width: 50%;
-
-            label {
-              display: block;
-              position: relative;
-              background: #F0F0F0;
-              padding: 12px 14px 12px 20px;
-              margin: 0 20px 20px 0;
-              overflow: hidden;
-              cursor: pointer;
-              input {
-                margin-right: 10px;
-                outline-color: #ffbf47;
-              }
-            }
-          }
-
-          @media (min-width: 979px) and (max-width: 1200px) {
-            ul li {
-              float: left;
-              width: 50%;
-            }
-          }
-
-          @media (max-width: 979px) {
-            ul li {
-              float: left;
-              width: 100%;
-            }
-          }
-
         }
       }
       .registered, .sorry {
