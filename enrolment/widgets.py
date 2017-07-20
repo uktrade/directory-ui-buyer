@@ -22,9 +22,6 @@ class CheckboxWithInlineLabel(widgets.CheckboxInput):
         return mark_safe(wrapper_html)
 
 
-from django.utils.html import format_html
-
-
 class CheckboxChoiceInputInlineLabel(widgets.CheckboxChoiceInput):
     template = """
         <div class="form-field checkbox">
@@ -34,13 +31,11 @@ class CheckboxChoiceInputInlineLabel(widgets.CheckboxChoiceInput):
     """
 
     def render(self, name=None, value=None, attrs=None, choices=()):
-        if self.id_for_label:
-            label_for = format_html(' for="{}"', self.id_for_label)
-        else:
-            label_for = ''
         attrs = dict(self.attrs, **attrs) if attrs else self.attrs
         wrapper_html = self.template.format(
-            input_html=self.tag(attrs), label=self.choice_label, id=''
+            input_html=self.tag(attrs),
+            label=self.choice_label,
+            id=self.id_for_label
         )
         return mark_safe(wrapper_html)
 
@@ -51,4 +46,3 @@ class CheckboxFieldInlineLabelRenderer(widgets.CheckboxFieldRenderer):
 
 class CheckboxSelectInlineLabelMultiple(widgets.CheckboxSelectMultiple):
     renderer = CheckboxFieldInlineLabelRenderer
-

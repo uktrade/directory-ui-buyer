@@ -10,6 +10,7 @@ from django.utils.safestring import mark_safe
 from company import validators
 from enrolment.forms import IndentedInvalidFieldsMixin, AutoFocusFieldMixin
 from enrolment.helpers import halt_validation_on_failure
+from enrolment.widgets import CheckboxSelectInlineLabelMultiple
 
 
 class SocialLinksForm(IndentedInvalidFieldsMixin, AutoFocusFieldMixin,
@@ -329,7 +330,7 @@ class CompanyLogoForm(AutoFocusFieldMixin, IndentedInvalidFieldsMixin,
             shared_validators.image_format,
         ]
     )
-from enrolment.widgets import CheckboxSelectInlineLabelMultiple
+
 
 class CompanyClassificationForm(AutoFocusFieldMixin,
                                 IndentedInvalidFieldsMixin, forms.Form):
@@ -349,12 +350,13 @@ class CompanyClassificationForm(AutoFocusFieldMixin,
             ('US', 'United States'),
             ('', 'Other')
         ],
-        widget=CheckboxSelectInlineLabelMultiple(),
+        widget=CheckboxSelectInlineLabelMultiple,
     )
     export_destinations_other = forms.CharField(
         label='Other countries',
         max_length=1000,
         help_text='Enter 3 maximum',
+        required=False,
     )
 
 
@@ -555,6 +557,8 @@ def serialize_company_profile_forms(cleaned_data):
         'website': cleaned_data['website'],
         'keywords': cleaned_data['keywords'],
         'employees': cleaned_data['employees'],
+        'export_destinations': cleaned_data['export_destinations'],
+        'export_destinations_other': cleaned_data['export_destinations_other'],
         'sectors': [cleaned_data['sectors']],
         'address_line_1': cleaned_data['address_line_1'],
         'address_line_2': cleaned_data['address_line_2'],
@@ -563,6 +567,7 @@ def serialize_company_profile_forms(cleaned_data):
         'po_box': cleaned_data['po_box'],
         'postal_code': cleaned_data['postal_code'],
         'postal_full_name': cleaned_data['postal_full_name'],
+
     }
 
 
@@ -583,6 +588,8 @@ def serialize_company_profile_without_address_forms(cleaned_data):
         'website': cleaned_data['website'],
         'keywords': cleaned_data['keywords'],
         'employees': cleaned_data['employees'],
+        'export_destinations': cleaned_data['export_destinations'],
+        'export_destinations_other': cleaned_data['export_destinations_other'],
         'sectors': [cleaned_data['sectors']],
     }
 
@@ -644,6 +651,8 @@ def serialize_company_sectors_form(cleaned_data):
 
     return {
         'sectors': [cleaned_data['sectors']],
+        'export_destinations': cleaned_data['export_destinations'],
+        'export_destinations_other': cleaned_data['export_destinations_other'],
     }
 
 

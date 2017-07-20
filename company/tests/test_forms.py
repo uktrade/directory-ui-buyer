@@ -431,6 +431,8 @@ def test_serialize_company_profile_forms():
         'postal_full_name': 'Jeremy postal',
         'sectors': '1',
         'website': 'http://example.com',
+        'export_destinations': ['CN'],
+        'export_destinations_other': 'Portland',
     })
     expected = {
         'keywords': 'Jolly good exporter',
@@ -445,6 +447,8 @@ def test_serialize_company_profile_forms():
         'po_box': '124',
         'postal_code': 'E14 9IX',
         'postal_full_name': 'Jeremy postal',
+        'export_destinations': ['CN'],
+        'export_destinations_other': 'Portland',
     }
     assert actual == expected
 
@@ -456,6 +460,8 @@ def test_serialize_company_profile_without_address_forms():
         'name': 'Example ltd.',
         'sectors': '1',
         'website': 'http://example.com',
+        'export_destinations': ['CN'],
+        'export_destinations_other': 'Portland',
     })
     expected = {
         'employees': '1-10',
@@ -463,6 +469,8 @@ def test_serialize_company_profile_without_address_forms():
         'name': 'Example ltd.',
         'sectors': ['1'],
         'website': 'http://example.com',
+        'export_destinations': ['CN'],
+        'export_destinations_other': 'Portland',
     }
     assert actual == expected
 
@@ -481,7 +489,7 @@ def test_serialize_company_description_form():
     })
     expected = {
         'description': 'Jolly good exporter.',
-        'summary': 'Nice and good'
+        'summary': 'Nice and good',
     }
     assert actual == expected
 
@@ -504,10 +512,14 @@ def test_serialize_company_basic_info_form():
 
 def test_serialize_company_sectors_form():
     data = {
-        'sectors': 'one'
+        'sectors': 'one',
+        'export_destinations': ['CN'],
+        'export_destinations_other': 'Portland',
     }
     expected = {
-        'sectors': ['one']
+        'sectors': ['one'],
+        'export_destinations': ['CN'],
+        'export_destinations_other': 'Portland',
     }
     assert forms.serialize_company_sectors_form(data) == expected
 

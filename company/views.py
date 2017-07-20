@@ -200,7 +200,7 @@ class CompanyProfileEditView(
     def form_labels(self):
         labels = [
             (self.BASIC, 'Basic'),
-            (self.CLASSIFICATION, 'Industries'),
+            (self.CLASSIFICATION, 'Industry and exporting'),
         ]
         if self.condition_show_address():
             labels += [

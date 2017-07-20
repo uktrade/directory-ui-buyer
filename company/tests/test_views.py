@@ -163,6 +163,8 @@ def all_company_profile_data():
         'postal_code': 'E14 6XK',
         'po_box': 'abc',
         'country': 'GB',
+        'export_destinations': ['CN', 'IN'],
+        'export_destinations_other': 'West Philadelphia',
     }
 
 
@@ -179,7 +181,7 @@ def all_social_links_data():
 def company_profile_social_links_data(all_social_links_data):
     view = views.CompanySocialLinksEditView
     return {
-        'supplier_company_social_links_edit_view-current_step': view.SOCIAL,
+        'company_social_links_edit_view-current_step': view.SOCIAL,
         view.SOCIAL + '-twitter_url': all_social_links_data['twitter_url'],
         view.SOCIAL + '-linkedin_url': all_social_links_data['linkedin_url'],
         view.SOCIAL + '-facebook_url': all_social_links_data['facebook_url'],
@@ -191,7 +193,7 @@ def company_profile_address_data(all_company_profile_data):
     view = views.CompanyProfileEditView
     data = all_company_profile_data
     return {
-        'supplier_company_profile_edit_view-current_step': view.ADDRESS,
+        'company_profile_edit_view-current_step': view.ADDRESS,
         view.ADDRESS + '-postal_full_name': data['postal_full_name'],
         view.ADDRESS + '-address_line_1': data['address_line_1'],
         view.ADDRESS + '-address_line_2': data['address_line_2'],
@@ -207,7 +209,7 @@ def company_profile_address_data(all_company_profile_data):
 def company_profile_send_confirm_data():
     step = views.CompanyProfileEditView.ADDRESS_CONFIRM
     return {
-        'supplier_company_profile_edit_view-current_step': step,
+        'company_profile_edit_view-current_step': step,
     }
 
 
@@ -224,7 +226,7 @@ def company_profile_basic_data(all_company_profile_data):
     view = views.CompanyProfileEditView
     data = all_company_profile_data
     return {
-        'supplier_company_profile_edit_view-current_step': view.BASIC,
+        'company_profile_edit_view-current_step': view.BASIC,
         view.BASIC + '-name': data['name'],
         view.BASIC + '-website': data['website'],
         view.BASIC + '-keywords': data['keywords'],
@@ -244,9 +246,12 @@ def company_profile_key_facts_standalone_data(company_profile_basic_data):
 def company_profile_classification_data(all_company_profile_data):
     view = views.CompanyProfileEditView
     data = all_company_profile_data
+    step = view.CLASSIFICATION
     return {
-        'supplier_company_profile_edit_view-current_step': view.CLASSIFICATION,
-        view.CLASSIFICATION + '-sectors': data['sectors'],
+        'company_profile_edit_view-current_step': step,
+        step + '-sectors': data['sectors'],
+        step + '-export_destinations': data['export_destinations'],
+        step + '-export_destinations_other': data['export_destinations_other'],
     }
 
 
@@ -283,7 +288,7 @@ def address_verification_address_data(all_address_verification_data):
     data = all_address_verification_data
     step = view.ADDRESS
     return {
-        'supplier_company_address_verification_view-current_step': step,
+        'company_address_verification_view-current_step': step,
         step + '-code': data['code'],
     }
 
@@ -773,7 +778,7 @@ def test_company_profile_edit_handles_bad_api_response(
 
 
 @patch.object(views, 'has_company', Mock(return_value=False))
-def test_supplier_company_redirect_non_verified_company(sso_request):
+def test_company_redirect_non_verified_company(sso_request):
     view_classes = [
         views.CompanyProfileEditView,
         views.CompanyProfileLogoEditView,
@@ -854,7 +859,7 @@ def test_company_profile_logo_api_client_failure(
        Mock(return_value=False))
 @patch.object(views, 'has_company', Mock(return_value=True))
 @patch.object(views.api_client.company, 'update_profile')
-def test_supplier_company_profile_edit_create_api_success(
+def test_company_profile_edit_create_api_success(
         mock_update_profile,
         company_profile_edit_end_to_end,
         sso_user,
@@ -880,7 +885,7 @@ def test_supplier_company_profile_edit_create_api_success(
 @patch.object(views, 'has_company', Mock(return_value=True))
 @patch.object(views.api_client.company, 'update_profile')
 @patch('api_client.api_client.company.retrieve_private_profile')
-def test_supplier_company_profile_letter_already_sent_edit_create_api_success(
+def test_company_profile_letter_already_sent_edit_create_api_success(
     mock_retrieve_profile, mock_update_profile,
     api_response_company_profile_letter_sent_200,
     api_response_200, sso_user, all_company_profile_data,
@@ -902,6 +907,8 @@ def test_supplier_company_profile_letter_already_sent_edit_create_api_success(
             'sectors': ['AGRICULTURE_HORTICULTURE_AND_FISHERIES'],
             'keywords': 'Nice, Great',
             'employees': '1-10',
+            'export_destinations': ['CN', 'IN'],
+            'export_destinations_other': 'West Philadelphia',
             'name': 'Example Corp.',
             'website': 'http://www.example.com'
         },
@@ -914,7 +921,7 @@ def test_supplier_company_profile_letter_already_sent_edit_create_api_success(
        Mock(return_value=False))
 @patch.object(views, 'has_company', Mock(return_value=True))
 @patch.object(views.api_client.company, 'update_profile')
-def test_supplier_company_profile_edit_create_api_failure(
+def test_company_profile_edit_create_api_failure(
     mock_create_case_study, company_profile_edit_end_to_end, api_response_400
 ):
     mock_create_case_study.return_value = api_response_400
@@ -928,7 +935,7 @@ def test_supplier_company_profile_edit_create_api_failure(
 
 @patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
 @patch.object(views, 'has_company', Mock(return_value=True))
-def test_supplier_company_profile_initial_address_from_profile(
+def test_company_profile_initial_address_from_profile(
     company_profile_edit_goto_step, retrieve_profile_data
 ):
     expected = retrieve_profile_data.copy()
@@ -944,7 +951,7 @@ def test_supplier_company_profile_initial_address_from_profile(
 @patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
 @patch.object(views, 'has_company', Mock(return_value=True))
 @patch('api_client.api_client.company.retrieve_private_profile')
-def test_supplier_company_profile_initial_address_from_companies_house(
+def test_company_profile_initial_address_from_companies_house(
     mock_retrieve_profile, company_profile_edit_goto_step,
     company_profile_companies_house_data,
     api_response_company_profile_no_contact_details
@@ -964,7 +971,7 @@ def test_supplier_company_profile_initial_address_from_companies_house(
 
 @patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
 @patch.object(views, 'has_company', Mock(return_value=True))
-def test_supplier_company_profile_initial_data_basic(
+def test_company_profile_initial_data_basic(
     company_profile_edit_goto_step, retrieve_profile_data
 ):
     response = company_profile_edit_goto_step(
@@ -980,7 +987,7 @@ def test_supplier_company_profile_initial_data_basic(
 @patch.object(views, 'has_company', Mock(return_value=True))
 @patch('company.forms.CompanyAddressVerificationForm.is_form_tampered',
        Mock(return_value=False))
-def test_supplier_company_profile_confirm_address_context_data(
+def test_company_profile_confirm_address_context_data(
     company_profile_edit_goto_step, retrieve_profile_data,
     all_company_profile_data
 ):
@@ -993,7 +1000,7 @@ def test_supplier_company_profile_confirm_address_context_data(
 
 @patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
 @patch.object(views, 'has_company', Mock(return_value=True))
-def test_supplier_company_profile_initial_data_classification(
+def test_company_profile_initial_data_classification(
     company_profile_edit_goto_step, retrieve_profile_data
 ):
     response = company_profile_edit_goto_step(
@@ -1146,9 +1153,14 @@ def test_supplier_sectors_edit_standalone_view_api_success(
 
     url = reverse('company-edit-sectors')
     client.post(url, company_profile_sectors_standalone_data)
-    mock_update_profile.assert_called_once_with(
+    assert mock_update_profile.call_count == 1
+    assert mock_update_profile.call_args == call(
         sso_session_id=sso_user.session_id,
-        data={'sectors': ['AGRICULTURE_HORTICULTURE_AND_FISHERIES']}
+        data={
+            'sectors': ['AGRICULTURE_HORTICULTURE_AND_FISHERIES'],
+            'export_destinations': ['CN', 'IN'],
+            'export_destinations_other': 'West Philadelphia',
+        }
     )
 
 
@@ -1165,9 +1177,15 @@ def test_supplier_sectors_edit_standalone_view_api_multiple_sectors(
 
     url = reverse('company-edit-sectors')
     client.post(url, company_profile_sectors_standalone_data)
-    mock_update_profile.assert_called_once_with(
+
+    assert mock_update_profile.call_count == 1
+    assert mock_update_profile.call_args == call(
         sso_session_id=sso_user.session_id,
-        data={'sectors': ['AGRICULTURE_HORTICULTURE_AND_FISHERIES']}
+        data={
+            'sectors': ['AGRICULTURE_HORTICULTURE_AND_FISHERIES'],
+            'export_destinations': ['CN', 'IN'],
+            'export_destinations_other': 'West Philadelphia',
+        }
     )
 
 
@@ -1312,7 +1330,7 @@ def test_company_profile_edit_form_labels_show_address():
     with patch.object(view, 'condition_show_address', return_value=True):
         assert view.form_labels == [
             ('basic', 'Basic'),
-            ('classification', 'Industries'),
+            ('classification', 'Industry and exporting'),
             ('address', 'Address'),
             ('confirm', 'Confirm'),
         ]
@@ -1324,7 +1342,7 @@ def test_company_profile_edit_form_labels_hide_address():
     with patch.object(view, 'condition_show_address', return_value=False):
         assert view.form_labels == [
             ('basic', 'Basic'),
-            ('classification', 'Industries'),
+            ('classification', 'Industry and exporting'),
         ]
 
 
