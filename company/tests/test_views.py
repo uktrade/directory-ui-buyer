@@ -556,7 +556,7 @@ def test_company_profile_details_calls_api(
     mock_get_company_profile_from_response.return_value = {
         'verified_with_preverified_enrolment': False,
     }
-    view = views.SupplierCompanyProfileDetailView.as_view()
+    view = views.CompanyProfileDetailView.as_view()
 
     view(sso_request)
 
@@ -1346,16 +1346,16 @@ def test_company_profile_edit_form_labels_hide_address():
         ]
 
 
-@patch.object(views.SupplierCompanyProfileEditView, 'render_done')
+@patch.object(views.CompanyProfileEditView, 'render_done')
 @patch('company.views.SessionWizardView.render_next_step')
-@patch.object(views.SupplierCompanyProfileEditView, 'condition_show_address',
+@patch.object(views.CompanyProfileEditView, 'condition_show_address',
               Mock(return_value=False))
 def test_render_next_step_skips_to_done_if_letter_sent(
     mock_render_next_step, mock_render_done
 ):
     form = Mock()
     kwargs = {}
-    view = views.SupplierCompanyProfileEditView()
+    view = views.CompanyProfileEditView()
     view.steps = Mock(current='confirm')
 
     view.render_next_step(form=form, **kwargs)
@@ -1365,16 +1365,16 @@ def test_render_next_step_skips_to_done_if_letter_sent(
     assert mock_render_next_step.call_count == 0
 
 
-@patch.object(views.SupplierCompanyProfileEditView, 'render_done')
+@patch.object(views.CompanyProfileEditView, 'render_done')
 @patch('company.views.SessionWizardView.render_next_step')
-@patch.object(views.SupplierCompanyProfileEditView, 'condition_show_address',
+@patch.object(views.CompanyProfileEditView, 'condition_show_address',
               Mock(return_value=True))
 def test_render_next_step_skips_to_done_if_letter_not_sent(
     mock_render_next_step, mock_render_done
 ):
     form = Mock()
     kwargs = {}
-    view = views.SupplierCompanyProfileEditView()
+    view = views.CompanyProfileEditView()
     view.steps = Mock(current='confirm')
 
     view.render_next_step(form=form, **kwargs)
