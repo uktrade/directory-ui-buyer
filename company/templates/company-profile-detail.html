@@ -113,14 +113,14 @@
 					{% if company.email_address %}
 						<p>
 							<a href="mailto:{{ company.email_address }}?subject=International%20buyer%20contact%20via%20your%20great.gov.uk%20trade%20profile">{{ company.email_address }}</a>
-							<a href="{% url show_wizard_links|yesno:'company-edit,company-edit-contact' %}" class="ed-pencil-edit-button-container">
+							<a href="{% url 'company-edit-contact' %}" class="ed-pencil-edit-button-container">
 								<img src="{% static 'images/pencil-icon.png' %}" class="ed-icon-pencil" />
 								<strong>Edit</strong>
 							</a>
 						</p>
 					{% else %}
 						<p>
-							<a href="{% url show_wizard_links|yesno:'company-edit,company-edit-contact' %}">Add your email</a>
+							<a href="{% url 'company-edit-contact' %}">Add your email</a>
 						</p>
 					{% endif %}
 				</div>
@@ -163,7 +163,7 @@
 
 			<div class="span4 ed-has-edit-button company-profile-module-inner company-profile-module-social-links">
 				<h2>Online profiles</h2>
-				<a class="ed-edit-button" href="/company-profile/edit/social-media" style="top: 20px; right: 20px; color: #004F95;">
+				<a class="ed-edit-button" href="{% url 'company-edit-social-media' %}" style="top: 20px; right: 20px; color: #004F95;">
 					<img src="{% static 'images/pencil-icon.png' %}" class="ed-icon-pencil" />
 					<strong>Edit</strong>
 				</a>

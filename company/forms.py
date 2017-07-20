@@ -690,14 +690,8 @@ def is_optional_profile_values_set(company_profile):
 
     """
 
-    fields = [
-        'name',
-        'website',
-        'sectors',
-        'keywords',
-        'employees',
-        'postal_full_name',
-        'email_address',
-        'email_full_name',
-    ]
+    fields = ['sectors', 'keywords', 'employees']
+    # pre-verified companies do not need to provide address details
+    if company_profile['verified_with_preverified_enrolment'] is False:
+        fields.append('postal_full_name',)
     return all(company_profile.get(field) for field in fields)
