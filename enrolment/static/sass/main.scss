@@ -1014,6 +1014,13 @@ a.no-focus-highlight {
   float: right;
 }
 
+#id_classification-export_destinations_other {
+  @media (min-width: 979px) {
+    width: 50%;
+    display: block;
+  }
+}
+
 // do not remove the `a.` prefix - it increases the specificity
 // to ensure `color` we set here is respected.
 a.ed-naked-button-error {

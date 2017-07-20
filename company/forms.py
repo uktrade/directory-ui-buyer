@@ -335,7 +335,7 @@ class CompanyClassificationForm(AutoFocusFieldMixin,
                                 IndentedInvalidFieldsMixin, forms.Form):
     sectors = forms.ChoiceField(
         label=(
-            'What sector is your company interested in working in? '
+            'What industry is your company in?'
         ),
         choices=choices.COMPANY_CLASSIFICATIONS,
     )
@@ -349,11 +349,12 @@ class CompanyClassificationForm(AutoFocusFieldMixin,
             ('US', 'United States'),
             ('', 'Other')
         ],
-        widget=CheckboxSelectInlineLabelMultiple,
+        widget=CheckboxSelectInlineLabelMultiple(),
     )
     export_destinations_other = forms.CharField(
-        label='Enter  3 maximum',
+        label='Other countries',
         max_length=1000,
+        help_text='Enter 3 maximum',
     )
 
 

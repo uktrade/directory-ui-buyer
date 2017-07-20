@@ -1,8 +1,14 @@
 {% extends "form-wrapper.html" %}
 
+{% load static from staticfiles %}
+
 {% block hero_title %}Create your company profile{% endblock %}
 {% block hero_text %}Add your company details to help others find you.{% endblock %}
 {% block form_title %}Your company sector{% endblock%}
 {% block button_next_label %}Next{% endblock%}
 {% block button_finish_label %}Save{% endblock%}
 {% block formarea_container_class %}span12 ed-form-classification-container{% endblock %}
+
+{% block bodyScripts %}
+    <script type="text/javascript" src="{% static 'javascripts/company-edit.js' %}"></script>
+{% endblock bodyScripts %}
