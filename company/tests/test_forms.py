@@ -618,14 +618,10 @@ def test_is_optional_profile_values_set_all_set(retrieve_profile_data):
 
 def test_is_optional_profile_values_set_some_missing(retrieve_profile_data):
     optional_fields = [
-        'name',
-        'website',
         'sectors',
         'keywords',
         'employees',
         'postal_full_name',
-        'email_address',
-        'email_full_name',
     ]
 
     for field in optional_fields:
@@ -635,15 +631,12 @@ def test_is_optional_profile_values_set_some_missing(retrieve_profile_data):
 
 
 def test_is_optional_profile_values_set_some_empty(retrieve_profile_data):
+    retrieve_profile_data['verified_with_preverified_enrolment'] = False
     field_names = [
-        'name',
-        'website',
         'sectors',
         'keywords',
         'employees',
         'postal_full_name',
-        'email_address',
-        'email_full_name',
     ]
     empty_values = ['', 0, {}, False, []]
 
@@ -653,8 +646,33 @@ def test_is_optional_profile_values_set_some_empty(retrieve_profile_data):
         assert forms.is_optional_profile_values_set(data) is False
 
 
+def test_is_optional_profile_values_preverified_address_missing(
+    retrieve_profile_data
+):
+    retrieve_profile_data['verified_with_preverified_enrolment'] = True
+    field_names = [
+        'postal_full_name',
+    ]
+    empty_values = ['', 0, {}, False, []]
+
+    for field_name, value in itertools.product(field_names, empty_values):
+        data = retrieve_profile_data.copy()
+        data[field_name] = value
+        assert forms.is_optional_profile_values_set(data) is True
+
+
+def test_is_optional_profile_values_preverified_address_present(
+    retrieve_profile_data
+):
+    retrieve_profile_data['verified_with_preverified_enrolment'] = True
+    retrieve_profile_data['postal_full_name'] = 'Jim Example'
+
+    assert forms.is_optional_profile_values_set(retrieve_profile_data) is True
+
+
 def test_is_optional_profile_values_set_none_set():
-    assert forms.is_optional_profile_values_set({}) is False
+    data = {'verified_with_preverified_enrolment': False}
+    assert forms.is_optional_profile_values_set(data) is False
 
 
 class PreventTamperForm(forms.PreventTamperMixin, Form):

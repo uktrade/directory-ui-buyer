@@ -175,7 +175,7 @@ def test_company_private_profile_details_renders_wizard_links():
 
     assert reverse('company-edit-sectors') not in html
     assert reverse('company-edit-key-facts') not in html
-    assert html.count(company_edit_link) == 8
+    assert html.count(company_edit_link) == 7
 
 
 def test_company_profile_unpublished_no_description():

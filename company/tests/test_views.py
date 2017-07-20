@@ -548,7 +548,9 @@ def test_company_profile_details_calls_api(
     mock_retrieve_profile, mock_get_company_profile_from_response,
     sso_request
 ):
-    mock_get_company_profile_from_response.return_value = {}
+    mock_get_company_profile_from_response.return_value = {
+        'verified_with_preverified_enrolment': False,
+    }
     view = views.SupplierCompanyProfileDetailView.as_view()
 
     view(sso_request)
