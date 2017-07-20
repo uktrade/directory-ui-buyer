@@ -1,6 +1,7 @@
 from directory_validators import company as shared_validators
 from directory_validators import enrolment as shared_enrolment_validators
 from directory_validators.constants import choices
+from directory_constants.constants import choices as constant_choices
 
 from django import forms
 from django.conf import settings
@@ -342,14 +343,7 @@ class CompanyClassificationForm(AutoFocusFieldMixin,
     )
     export_destinations = forms.MultipleChoiceField(
         label='Select the countries you would like to export to',
-        choices=[
-            ('CN', 'China'),
-            ('DE', 'Germany'),
-            ('IN', 'India'),
-            ('JP', 'Japan'),
-            ('US', 'United States'),
-            ('', 'Other')
-        ],
+        choices=constant_choices.EXPORT_DESTINATIONS + (('', 'Other'),),
         widget=CheckboxSelectInlineLabelMultiple,
     )
     export_destinations_other = forms.CharField(
