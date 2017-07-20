@@ -209,6 +209,16 @@ class SupplierCompanyProfileEditView(
             ]
         return labels
 
+    def render_next_step(self, form, **kwargs):
+        # when the final step is posted, formtools `current_step` is
+        # "confirm". However, `form_labels` does not return "confirm" because
+        # the letter has now been sent - resulting in ValueError
+        # https://sentry.ci.uktrade.io/dit/directory-ui-buyer-dev/issues/1588/
+        if self.steps.current == self.ADDRESS_CONFIRM:
+            if not self.condition_show_address():
+                return self.render_done(form, **kwargs)
+        return super().render_next_step(form, **kwargs)
+
     def condition_show_address(self):
         return not any([
             self.company_profile['is_verification_letter_sent'],
