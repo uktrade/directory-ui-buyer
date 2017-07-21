@@ -141,12 +141,15 @@ class EnrolmentView(NamedUrlSessionWizardView):
         company_number = helpers.get_company_number_from_session(
             self.request.session
         )
-        export_status = self.get_all_cleaned_data()['export_status']
-
-        url = '{path}?company_number={number}&export_status={status}'.format(
+        exported_before = self.get_all_cleaned_data()['has_exported_before']
+        url_template = (
+            '{path}?company_number={number}&'
+            'has_exported_before={exported_before}'
+        )
+        url = url_template.format(
             path=reverse('register-submit'),
             number=company_number,
-            status=export_status
+            exported_before=exported_before
         )
         return HttpResponseRedirect(url)
 
@@ -168,7 +171,7 @@ class SubmitEnrolmentView(SSOSignUpRequiredMixin, View):
         else:
             return super().dispatch(request, *args, **kwargs)
 
-    def get_enrolment_data(self, export_status):
+    def get_enrolment_data(self, has_exported_before):
         date_of_creation = helpers.get_company_date_of_creation_from_session(
             self.request.session
         )
@@ -186,7 +189,7 @@ class SubmitEnrolmentView(SSOSignUpRequiredMixin, View):
             'company_number': company_number,
             'date_of_creation': date_of_creation,
             'company_name': company_name,
-            'export_status': export_status
+            'has_exported_before': has_exported_before
         }
 
     def get_company_number(self):
@@ -196,16 +199,15 @@ class SubmitEnrolmentView(SSOSignUpRequiredMixin, View):
         else:
             return company_number
 
-    def get_export_status(self):
-        export_status = self.request.GET.get('export_status')
-        if not export_status:
-            raise ValidationError(EXPORT_STATUS_NOT_PROVIDED_ERROR)
-        else:
-            return export_status
+    def get_has_exported_before(self):
+        has_exported_before = self.request.GET.get('has_exported_before')
+        if has_exported_before:
+            return has_exported_before == 'True'
+        raise ValidationError(EXPORT_STATUS_NOT_PROVIDED_ERROR)
 
     def get(self, request, *args, **kwargs):
         try:
-            export_status = self.get_export_status()
+            has_exported_before = self.get_has_exported_before()
             helpers.store_companies_house_profile_in_session_and_validate(
                 session=self.request.session,
                 company_number=self.get_company_number()
@@ -216,7 +218,7 @@ class SubmitEnrolmentView(SSOSignUpRequiredMixin, View):
             )
 
         api_response = api_client.enrolment.send_form(
-            self.get_enrolment_data(export_status=export_status)
+            self.get_enrolment_data(has_exported_before=has_exported_before)
         )
         if not api_response.ok:
             logger.error(

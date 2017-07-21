@@ -1,7 +1,5 @@
 import os
 
-from directory_validators.constants import choices
-
 from django.conf import settings
 from django.forms import CharField, Form, HiddenInput
 from django.template.loader import render_to_string
@@ -104,29 +102,6 @@ def test_export_status_form_anon_user():
     }
     html = render_to_string('export-status-form.html', context)
     assert MUST_CREATE_ACCOUNT_LABEL in html
-
-
-def test_export_status_form_error():
-    form = forms.CompanyExportStatusForm(data={
-        'export_status': choices.NO_EXPORT_INTENTION
-    })
-    context = {
-        'form': form
-    }
-    html = render_to_string('export-status-form.html', context)
-    assert 'Try our other business services' in html
-
-
-def test_export_status_no_form_error_size():
-    form = forms.CompanyExportStatusForm(data={
-        'export_status': choices.EXPORT_STATUSES[1][0]
-    })
-    context = {
-        'form': form
-    }
-    html = render_to_string('export-status-form.html', context)
-    assert 'Sorry, this is not the right service for your company' not in html
-    assert '<form' in html
 
 
 def test_export_status_common_invalid_form_error_size():

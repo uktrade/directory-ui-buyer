@@ -1,6 +1,5 @@
 {% extends "form-wrapper.html" %}
 {% load external_url from constants_tags %}
-{% load no_export_intention from enrolment_tags %}
 
 {% block form_title %}Your company's previous exports{% endblock%}
 {% block button_finish_label %}Continue{% endblock%}
@@ -20,19 +19,5 @@
         <br>
         <br>
         <br>
-    {% endif %}
-{% endblock %}
-
-{% block formarea %}
-    {% if form|no_export_intention %}
-        <h1>Try our other business services</h1>
-        <p>
-            The Find a Buyer service promotes companies that are currently exporting or looking to export in the near future. The answers you gave suggest that your company is currently not appropriate to feature in the Find a Buyer service. 
-        </p>
-        <p>
-            If you want to get your business ready to export, check out the <a href="{% external_url 'new_to_exporting' %}" target="_self">Exporting is GREAT advice for new exporters</a>.
-        </p>
-    {% else %}
-        {{ block.super }}
     {% endif %}
 {% endblock %}

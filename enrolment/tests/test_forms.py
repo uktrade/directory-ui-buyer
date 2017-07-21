@@ -4,8 +4,6 @@ from django.forms import Form, HiddenInput
 from django.forms.fields import CharField, Field
 from django.core.validators import EmailValidator
 
-from directory_validators import enrolment as shared_validators
-
 from enrolment import fields, forms, validators, widgets
 
 
@@ -58,10 +56,24 @@ def test_company_form_fields():
     assert field.fillchar == '0'
 
 
-def test_company_export_status_form_validars():
-    field = forms.CompanyExportStatusForm.base_fields['export_status']
-    validator = shared_validators.export_status_intention
-    assert validator in field.validators
+def test_company_export_status_has_exported():
+    form = forms.CompanyExportStatusForm(data={
+        'has_exported_before': 'True',
+        'terms_agreed': True,
+    })
+
+    assert form.is_valid() is True
+    assert form.cleaned_data['has_exported_before'] is True
+
+
+def test_company_export_status_not_exported():
+    form = forms.CompanyExportStatusForm(data={
+        'has_exported_before': 'False',
+        'terms_agreed': True,
+    })
+
+    assert form.is_valid() is True
+    assert form.cleaned_data['has_exported_before'] is False
 
 
 def test_company_export_status_terms_agreed_checkbox_widget():
