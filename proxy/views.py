@@ -19,7 +19,7 @@ class BaseProxyView(ProxyView):
         super(BaseProxyView, self).__init__(*args, **kwargs)
 
     def dispatch(self, request, path=None, *args, **kwargs):
-        path = path or request.path
+        path = path or request.get_full_path()
         self.request_headers = self.get_request_headers()
 
         redirect_to = self._format_path_to_redirect(request)
