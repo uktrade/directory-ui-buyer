@@ -175,7 +175,7 @@ def test_submit_enrolment_api_client_success(client):
         reverse('register-submit'),
         {
             'company_number': '12345678',
-            'export_status': 'ONE_TWO_YEARS_AGO'
+            'has_exported_before': 'True'
         }
     )
     assert response.status_code == 302
@@ -195,7 +195,7 @@ def test_submit_enrolment_api_client_success_correct_data(client):
             reverse('register-submit'),
             {
                 'company_number': '12345678',
-                'export_status': 'ONE_TWO_YEARS_AGO'
+                'has_exported_before': 'True'
             }
         )
 
@@ -206,7 +206,7 @@ def test_submit_enrolment_api_client_success_correct_data(client):
         'company_number': '12345678',
         'date_of_creation': 'date_of_creation',
         'company_name': 'company_name',
-        'export_status': 'ONE_TWO_YEARS_AGO'
+        'has_exported_before': True,
     })
 
 
@@ -222,7 +222,7 @@ def test_submit_enrolment_api_client_fail(client):
         reverse('register-submit'),
         {
             'company_number': '12345678',
-            'export_status': 'ONE_TWO_YEARS_AGO'
+            'has_exported_before': 'True',
         }
     )
     assert response.template_name == SubmitEnrolmentView.failure_template
@@ -614,7 +614,7 @@ def test_submit_enrolment_caches_profile(client):
         reverse('register-submit'),
         {
             'company_number': '12345678',
-            'export_status': 'ONE_TWO_YEARS_AGO'
+            'has_exported_before': 'True',
         }
     )
 
@@ -637,7 +637,7 @@ def test_submit_enrolment_handles_api_company_not_found(client):
             reverse('register-submit'),
             {
                 'company_number': '12345678',
-                'export_status': 'ONE_TWO_YEARS_AGO'
+                'has_exported_before': 'True',
             }
         )
 
@@ -658,7 +658,7 @@ def test_submit_enrolment_handles_api_company_error(client):
             reverse('register-submit'),
             {
                 'company_number': '12345678',
-                'export_status': 'ONE_TWO_YEARS_AGO'
+                'has_exported_before': 'True',
             }
         )
     assert 'Error. Please try again later.' in str(response.content)
@@ -671,7 +671,7 @@ def test_submit_enrolment_company_number_not_provided(client):
     response = client.get(
         reverse('register-submit'),
         {
-            'export_status': 'ONE_TWO_YEARS_AGO'
+            'has_exported_before': 'True'
         }
     )
     assert 'Company number not provided.' in str(response.content)
@@ -704,7 +704,7 @@ def test_submit_enrolment_handles_company_not_active(client):
             reverse('register-submit'),
             {
                 'company_number': '12345678',
-                'export_status': 'ONE_TWO_YEARS_AGO'
+                'has_exported_before': 'True',
             }
         )
 
@@ -726,7 +726,7 @@ def test_submit_enrolment_handles_company_already_registered(client):
             reverse('register-submit'),
             {
                 'company_number': '12345678',
-                'export_status': 'ONE_TWO_YEARS_AGO'
+                'has_exported_before': 'True',
             }
         )
 
@@ -742,7 +742,7 @@ def test_submit_enrolment_handles_company_already_registered(client):
 )
 @patch.object(
     EnrolmentView, 'get_all_cleaned_data', return_value={
-        'export_status': 'ONE_TWO_YEARS_AGO'
+        'has_exported_before': True
     }
 )
 def test_enrolment_form_complete_redirects_to_submit_enrolment(
@@ -753,7 +753,7 @@ def test_enrolment_form_complete_redirects_to_submit_enrolment(
     response = view.done()
 
     assert response.status_code == 302
-    assert response.url == (
+    assert response.get('Location') == (
         '/register-submit?company_number=12345678&'
-        'export_status=ONE_TWO_YEARS_AGO'
+        'has_exported_before=True'
     )

@@ -2,7 +2,6 @@ from django import forms
 from django.utils.safestring import mark_safe
 
 from directory_validators import enrolment as shared_validators
-from directory_validators.constants import choices
 from directory_constants.constants import urls
 
 from enrolment import fields, helpers, validators
@@ -48,20 +47,21 @@ class CompanyForm(
 class CompanyExportStatusForm(
     AutoFocusFieldMixin, IndentedInvalidFieldsMixin, forms.Form
 ):
-    export_status = forms.ChoiceField(
+    has_exported_before = forms.TypedChoiceField(
         label=(
-            'Has your company sold products or services to overseas customers?'
+            'Have you exported before?'
         ),
-        choices=choices.EXPORT_STATUSES,
-        validators=[shared_validators.export_status_intention]
+        coerce=lambda x: x == 'True',
+        choices=[(True, 'Yes'), (False, 'No')],
+        widget=forms.RadioSelect()
     )
     terms_agreed = forms.BooleanField(
         label='',
         widget=CheckboxWithInlineLabel(
             label=mark_safe(
-                'Tick this box to accept the '
-                '<a href="{url}" target="_blank">terms and '
-                'conditions</a> of the Find a Buyer service.'.format(
+                'I accept the '
+                '<a href="{url}" target="_blank">Find a Buyer terms and '
+                'conditions</a>'.format(
                     url=urls.TERMS_AND_CONDITIONS_URL)
             ),
         ),

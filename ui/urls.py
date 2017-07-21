@@ -13,12 +13,12 @@ from company.views import (
     SupplierBasicInfoEditView,
     SupplierCaseStudyWizardView,
     SupplierClassificationEditView,
-    SupplierCompanyAddressVerificationView,
-    SupplierCompanyDescriptionEditView,
-    SupplierCompanyProfileDetailView,
-    SupplierCompanyProfileEditView,
-    SupplierCompanyProfileLogoEditView,
-    SupplierCompanySocialLinksEditView,
+    CompanyAddressVerificationView,
+    CompanyDescriptionEditView,
+    CompanyProfileDetailView,
+    CompanyProfileEditView,
+    CompanyProfileLogoEditView,
+    CompanySocialLinksEditView,
     SupplierContactEditView,
     EmailUnsubscribeView,
     RequestPaylodTooLargeErrorView,
@@ -58,27 +58,27 @@ urlpatterns = [
     ),
     url(
         r'^confirm-company-address$',
-        SupplierCompanyAddressVerificationView.as_view(),
+        CompanyAddressVerificationView.as_view(),
         name='confirm-company-address'
     ),
     url(
         r'^company-profile$',
-        SupplierCompanyProfileDetailView.as_view(),
+        CompanyProfileDetailView.as_view(),
         name='company-detail'
     ),
     url(
         r'^company-profile/edit$',
-        SupplierCompanyProfileEditView.as_view(),
+        CompanyProfileEditView.as_view(),
         name='company-edit'
     ),
     url(
         r'^company-profile/edit/logo$',
-        SupplierCompanyProfileLogoEditView.as_view(),
+        CompanyProfileLogoEditView.as_view(),
         name='company-edit-logo'
     ),
     url(
         r'^company-profile/edit/description$',
-        SupplierCompanyDescriptionEditView.as_view(),
+        CompanyDescriptionEditView.as_view(),
         name='company-edit-description'
     ),
     url(
@@ -103,7 +103,7 @@ urlpatterns = [
     ),
     url(
         r'^company-profile/edit/social-media$',
-        SupplierCompanySocialLinksEditView.as_view(),
+        CompanySocialLinksEditView.as_view(),
         name='company-edit-social-media'
     ),
     url(
