@@ -107,7 +107,7 @@ urlpatterns = [
         name='company-edit-social-media'
     ),
     url(
-        r'^company/case-study/edit/(?P<id>.+)?$',
+        r'^company/case-study/edit/(?P<id>[0-9]+)?$',
         SupplierCaseStudyWizardView.as_view(),
         name='company-case-study-edit'
     ),

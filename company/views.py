@@ -4,7 +4,7 @@ from formtools.wizard.views import SessionWizardView
 
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
-from django.shortcuts import redirect
+from django.shortcuts import redirect, Http404
 from django.template.response import TemplateResponse
 from django.utils.functional import cached_property
 from django.views.generic import TemplateView
@@ -122,8 +122,9 @@ class SupplierCaseStudyWizardView(
             sso_session_id=self.request.sso_user.session_id,
             case_study_id=self.kwargs['id'],
         )
-        if not response.ok:
-            response.raise_for_status()
+        if response.status_code == 404:
+            raise Http404()
+        response.raise_for_status()
         return response.json()
 
     def get_context_data(self, *args, **kwargs):

@@ -512,6 +512,20 @@ def test_case_study_update_api_success(
 
 @patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
 @patch.object(views, 'has_company', Mock(return_value=True))
+@patch.object(views.api_client.company, 'retrieve_private_case_study')
+def test_case_study_get_api_not_found(
+    mock_retrieve_private_case_study, api_response_404, client
+):
+    mock_retrieve_private_case_study.return_value = api_response_404
+    url = reverse('company-case-study-edit', kwargs={'id': 1221})
+
+    response = client.get(url)
+
+    assert response.status_code == http.client.NOT_FOUND
+
+
+@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
+@patch.object(views, 'has_company', Mock(return_value=True))
 @patch.object(views.api_client.company, 'update_case_study')
 def test_case_study_update_api_failure(
     mock_update_case_study, supplier_case_study_end_to_end, api_response_400
