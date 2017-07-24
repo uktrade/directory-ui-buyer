@@ -105,8 +105,8 @@ def test_proxy_admin_with_path_and_queryparam(mock_urlopen, client):
         headers={
             'X-Forwarded-Host': 'testserver',
             'X-Signature': (
-                'b1ec2a0401a2b285fb4ece69ca5429140e9db718ed42dad0bc87f024a9a6e'
-                '0b0'
+                '7bd503653fed4ae195f5aa8a91e9262434892fe751f3cbad690785a247fed'
+                'e2d'
             ),
             'Cookie': ''
         },
