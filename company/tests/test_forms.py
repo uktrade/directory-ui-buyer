@@ -849,3 +849,33 @@ def test_serialize_social_links_form():
         'facebook_url': 'facebook_url.com',
         'linkedin_url': 'linkedin_url.com',
     }
+
+
+@pytest.mark.parametrize('field', [
+    forms.CaseStudyBasicInfoForm().fields['title'],
+    forms.CaseStudyBasicInfoForm().fields['short_summary'],
+    forms.CaseStudyBasicInfoForm().fields['description'],
+    forms.CaseStudyBasicInfoForm().fields['keywords'],
+    forms.CaseStudyRichMediaForm().fields['image_one_caption'],
+    forms.CaseStudyRichMediaForm().fields['image_two_caption'],
+    forms.CaseStudyRichMediaForm().fields['image_three_caption'],
+    forms.CaseStudyRichMediaForm().fields['testimonial'],
+    forms.CaseStudyRichMediaForm().fields['testimonial_name'],
+    forms.CaseStudyRichMediaForm().fields['testimonial_job_title'],
+    forms.CaseStudyRichMediaForm().fields['testimonial_company'],
+    forms.CompanyBasicInfoForm().fields['name'],
+    forms.CompanyBasicInfoForm().fields['keywords'],
+    forms.CompanyDescriptionForm().fields['summary'],
+    forms.CompanyDescriptionForm().fields['description'],
+    forms.CompanyClassificationForm().fields['export_destinations_other'],
+    forms.CompanyContactDetailsForm().fields['email_full_name'],
+    forms.CompanyAddressVerificationForm().fields['postal_full_name'],
+    forms.CompanyAddressVerificationForm().fields['address_line_1'],
+    forms.CompanyAddressVerificationForm().fields['address_line_2'],
+    forms.CompanyAddressVerificationForm().fields['locality'],
+    forms.CompanyAddressVerificationForm().fields['country'],
+    forms.CompanyAddressVerificationForm().fields['postal_code'],
+    forms.CompanyAddressVerificationForm().fields['po_box'],
+])
+def test_xss_attack(field):
+    assert shared_validators.no_html in field.validators
