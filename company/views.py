@@ -76,6 +76,16 @@ class GetTemplateForCurrentStepMixin:
         return [self.templates[self.steps.current]]
 
 
+class BaseMultiStepCompanyEditView(
+    SSOLoginRequiredMixin,
+    CompanyRequiredMixin,
+    GetTemplateForCurrentStepMixin,
+    UpdateCompanyProfileOnFormWizardDoneMixin,
+    SessionWizardView
+):
+    pass
+
+
 class SupplierCaseStudyWizardView(
     SSOLoginRequiredMixin,
     CompanyRequiredMixin,
@@ -162,13 +172,7 @@ class CompanyProfileDetailView(
         }
 
 
-class CompanyProfileEditView(
-    SSOLoginRequiredMixin,
-    CompanyRequiredMixin,
-    GetTemplateForCurrentStepMixin,
-    UpdateCompanyProfileOnFormWizardDoneMixin,
-    SessionWizardView
-):
+class CompanyProfileEditView(BaseMultiStepCompanyEditView):
     ADDRESS = 'address'
     BASIC = 'basic'
     CLASSIFICATION = 'classification'
@@ -257,13 +261,7 @@ class CompanyProfileEditView(
         return super().handle_profile_update_success()
 
 
-class CompanyProfileLogoEditView(
-    SSOLoginRequiredMixin,
-    CompanyRequiredMixin,
-    GetTemplateForCurrentStepMixin,
-    UpdateCompanyProfileOnFormWizardDoneMixin,
-    SessionWizardView
-):
+class CompanyProfileLogoEditView(BaseMultiStepCompanyEditView):
 
     form_list = (
         ('logo', forms.CompanyLogoForm),
@@ -308,12 +306,7 @@ class CompanyAddressVerificationView(
 
 
 class CompanyDescriptionEditView(
-    SSOLoginRequiredMixin,
-    CompanyRequiredMixin,
-    GetTemplateForCurrentStepMixin,
-    GetCompanyProfileInitialFormDataMixin,
-    UpdateCompanyProfileOnFormWizardDoneMixin,
-    SessionWizardView
+    GetCompanyProfileInitialFormDataMixin, BaseMultiStepCompanyEditView
 ):
     DESCRIPTION = 'description'
     form_list = (
@@ -327,12 +320,7 @@ class CompanyDescriptionEditView(
 
 
 class CompanySocialLinksEditView(
-    SSOLoginRequiredMixin,
-    CompanyRequiredMixin,
-    GetTemplateForCurrentStepMixin,
-    GetCompanyProfileInitialFormDataMixin,
-    UpdateCompanyProfileOnFormWizardDoneMixin,
-    SessionWizardView
+    GetCompanyProfileInitialFormDataMixin, BaseMultiStepCompanyEditView
 ):
     SOCIAL = 'social'
     form_list = (
@@ -346,12 +334,7 @@ class CompanySocialLinksEditView(
 
 
 class SupplierBasicInfoEditView(
-    SSOLoginRequiredMixin,
-    CompanyRequiredMixin,
-    GetTemplateForCurrentStepMixin,
-    GetCompanyProfileInitialFormDataMixin,
-    UpdateCompanyProfileOnFormWizardDoneMixin,
-    SessionWizardView
+    GetCompanyProfileInitialFormDataMixin, BaseMultiStepCompanyEditView
 ):
     BASIC = 'basic'
     form_list = (
@@ -365,12 +348,7 @@ class SupplierBasicInfoEditView(
 
 
 class SupplierClassificationEditView(
-    SSOLoginRequiredMixin,
-    CompanyRequiredMixin,
-    GetTemplateForCurrentStepMixin,
-    GetCompanyProfileInitialFormDataMixin,
-    UpdateCompanyProfileOnFormWizardDoneMixin,
-    SessionWizardView
+    GetCompanyProfileInitialFormDataMixin, BaseMultiStepCompanyEditView
 ):
     CLASSIFICATION = 'classification'
     form_list = (
@@ -384,12 +362,7 @@ class SupplierClassificationEditView(
 
 
 class SupplierContactEditView(
-    SSOLoginRequiredMixin,
-    CompanyRequiredMixin,
-    GetTemplateForCurrentStepMixin,
-    GetCompanyProfileInitialFormDataMixin,
-    UpdateCompanyProfileOnFormWizardDoneMixin,
-    SessionWizardView
+    GetCompanyProfileInitialFormDataMixin, BaseMultiStepCompanyEditView
 ):
     CONTACT = 'contact'
     form_list = (
@@ -406,13 +379,7 @@ class SupplierContactEditView(
         return helpers.get_contact_details(sso_session_id=sso_session_id)
 
 
-class SupplierAddressEditView(
-    SSOLoginRequiredMixin,
-    CompanyRequiredMixin,
-    GetTemplateForCurrentStepMixin,
-    UpdateCompanyProfileOnFormWizardDoneMixin,
-    SessionWizardView
-):
+class SupplierAddressEditView(BaseMultiStepCompanyEditView):
     ADDRESS = 'address'
     form_list = (
         (ADDRESS, forms.CompanyAddressVerificationForm),
@@ -455,21 +422,23 @@ class RequestPaylodTooLargeErrorView(TemplateView):
 
 
 class Oauth2CallbackUrlMixin:
-
     @property
     def redirect_uri(self):
         callback_url = reverse('companies-house-oauth2-callback')
         return self.request.build_absolute_uri(callback_url)
 
 
-class CompaniesHouseOauth2View(
-    SSOLoginRequiredMixin, CompanyRequiredMixin, Oauth2CallbackUrlMixin,
-    RedirectView
-):
+class Oauth2FeatureFlagMixin:
     def dispatch(self, *args, **kwargs):
         if not settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED:
             raise Http404()
         return super().dispatch(*args, **kwargs)
+
+
+class CompaniesHouseOauth2View(
+    Oauth2FeatureFlagMixin, SSOLoginRequiredMixin, CompanyRequiredMixin,
+    Oauth2CallbackUrlMixin, RedirectView
+):
 
     def get_redirect_url(self):
         company = helpers.get_company_profile(self.request.sso_user.session_id)
@@ -480,17 +449,12 @@ class CompaniesHouseOauth2View(
 
 
 class CompaniesHouseOauth2CallbackView(
-    SSOLoginRequiredMixin, CompanyRequiredMixin, SubmitFormOnGetMixin,
-    Oauth2CallbackUrlMixin, FormView
+    Oauth2FeatureFlagMixin, SSOLoginRequiredMixin, CompanyRequiredMixin,
+    SubmitFormOnGetMixin, Oauth2CallbackUrlMixin, FormView
 ):
     form_class = forms.CompaniesHouseOauth2Form
     template_name = 'companies-house-oauth2-callback.html'
     success_url = reverse_lazy('company-detail')
-
-    def dispatch(self, *args, **kwargs):
-        if not settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED:
-            raise Http404()
-        return super().dispatch(*args, **kwargs)
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()

@@ -89,8 +89,8 @@ class CompaniesHouseClient:
         return requests.auth.HTTPBasicAuth(cls.api_key, '')
 
     @classmethod
-    def get(cls, url, data={}):
-        response = cls.session.get(url=url, data=data, auth=cls.get_auth())
+    def get(cls, url, params={}):
+        response = cls.session.get(url=url, params=params, auth=cls.get_auth())
         if response.status_code == http.client.UNAUTHORIZED:
             logger.error(MESSAGE_AUTH_FAILED)
         return response
@@ -108,7 +108,7 @@ class CompaniesHouseClient:
     @classmethod
     def search(cls, term):
         url = cls.endpoints['search']
-        return cls.get(url, {'q': term})
+        return cls.get(url, params={'q': term})
 
     @classmethod
     def make_oauth2_url(cls, redirect_uri, company_number):
@@ -131,7 +131,7 @@ class CompaniesHouseClient:
             'client_secret': cls.client_secret,
             'redirect_uri': redirect_uri,
         }
-        return cls.session.post(url=url, data=data)
+        return cls.session.post(url=url, json=data)
 
 
 def get_company_date_of_creation_from_session(session):
