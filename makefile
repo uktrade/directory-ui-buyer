@@ -59,7 +59,10 @@ DOCKER_SET_DEBUG_ENV_VARS := \
 	export DIRECTORY_UI_BUYER_UTM_COOKIE_DOMAIN=.great.dev; \
 	export DIRECTORY_UI_BUYER_DIRECTORY_EXTERNAL_API_SIGNATURE_SECRET=debug; \
 	export DIRECTORY_UI_BUYER_CORS_ORIGIN_ALLOW_ALL=true; \
-	export DIRECTORY_UI_BUYER_SUPPLIER_SEARCH_URL=http://supplier.trade.great.dev:8005/search
+	export DIRECTORY_UI_BUYER_SUPPLIER_SEARCH_URL=http://supplier.trade.great.dev:8005/search; \
+	export DIRECTORY_UI_BUYER_COMPANIES_HOUSE_CLIENT_ID=debug-client-id; \
+	export DIRECTORY_UI_BUYER_COMPANIES_HOUSE_CLIENT_SECRET=debug-client-secret; \
+	export DIRECTORY_UI_BUYER_FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED=true
 
 docker_test_env_files:
 	$(DOCKER_SET_DEBUG_ENV_VARS) && \
@@ -119,7 +122,10 @@ DEBUG_SET_ENV_VARS := \
 	export UTM_COOKIE_DOMAIN=.great.dev; \
 	export DIRECTORY_EXTERNAL_API_SIGNATURE_SECRET=debug; \
 	export CORS_ORIGIN_ALLOW_ALL=true; \
-	export SUPPLIER_SEARCH_URL=http://supplier.trade.great.dev:8005/search
+	export SUPPLIER_SEARCH_URL=http://supplier.trade.great.dev:8005/search; \
+	export COMPANIES_HOUSE_CLIENT_ID=debug-client-id; \
+	export COMPANIES_HOUSE_CLIENT_SECRET=debug-client-secret; \
+	export FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED=true
 
 
 debug_webserver:
