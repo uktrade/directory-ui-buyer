@@ -2,6 +2,7 @@ from django import forms
 from django.utils.safestring import mark_safe
 
 from directory_validators import enrolment as shared_validators
+from directory_validators.company import no_html
 from directory_constants.constants import urls
 
 from enrolment import fields, helpers, validators
@@ -31,6 +32,7 @@ class CompanyForm(
             "and re-enter your company."
         ),
         widget=forms.TextInput(attrs={'readonly': 'readonly'}),
+        validators=[no_html],
     )
     company_number = fields.PaddedCharField(
         label='Company number:',
@@ -41,6 +43,7 @@ class CompanyForm(
     company_address = forms.CharField(
         label='Company registered office address:',
         widget=forms.TextInput(attrs={'readonly': 'readonly'}),
+        validators=[no_html],
     )
 
 
