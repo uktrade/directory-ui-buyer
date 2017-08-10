@@ -460,3 +460,11 @@ class CompaniesHouseOauth2CallbackView(
         kwargs = super().get_form_kwargs()
         kwargs['redirect_uri'] = self.redirect_uri
         return kwargs
+
+    def form_valid(self, form):
+        response = api_client.company.verify_with_companies_house(
+            sso_session_id=self.request.sso_user.session_id,
+            access_token=form.oauth2_response.json()['access-token']
+        )
+        response.raise_for_status()
+        return super().form_valid(form)

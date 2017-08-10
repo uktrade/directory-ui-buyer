@@ -23,9 +23,11 @@ class Wildcard:
         return True
 
 
-def create_response(status_code):
+def create_response(status_code, json_body=None):
     response = requests.Response()
     response.status_code = status_code
+    if json_body:
+        response.json = lambda: json_body
     return response
 
 
@@ -47,6 +49,13 @@ def api_response_401():
 @pytest.fixture
 def api_response_404(*args, **kwargs):
     return create_response(http.client.NOT_FOUND)
+
+
+@pytest.fixture
+def api_response_oauth2_verify_200():
+    return create_response(
+        status_code=http.client.OK, json_body={'access-token': 'abc'}
+    )
 
 
 @pytest.fixture
@@ -1495,12 +1504,15 @@ def test_companies_house_callback_missing_code(
 
 
 @patch.object(forms.CompaniesHouseClient, 'verify_oauth2_code')
+@patch('api_client.api_client.company.verify_with_companies_house')
 def test_companies_house_callback_has_company_calls_companies_house(
-    mock_verify_oauth2_code, settings, has_company_client,
-    api_response_200
+    mock_verify_with_companies_house, mock_verify_oauth2_code, settings,
+    has_company_client, api_response_oauth2_verify_200, api_response_200,
+    sso_user
 ):
     settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED = True
-    mock_verify_oauth2_code.return_value = api_response_200
+    mock_verify_oauth2_code.return_value = api_response_oauth2_verify_200
+    mock_verify_with_companies_house.return_value = api_response_200
 
     url = reverse('companies-house-oauth2-callback')
     response = has_company_client.get(url, {'code': '123'})
@@ -1514,6 +1526,12 @@ def test_companies_house_callback_has_company_calls_companies_house(
     assert mock_verify_oauth2_code.call_args == call(
         code='123',
         redirect_url='http://testserver/companies-house-oauth2-callback/'
+    )
+
+    assert mock_verify_with_companies_house.call_count == 1
+    assert mock_verify_with_companies_house.call_args == call(
+        sso_session_id=sso_user.session_id,
+        access_token='abc',
     )
 
 
