@@ -6,6 +6,7 @@ from directory_constants.constants import choices as constant_choices
 from django import forms
 from django.conf import settings
 from django.core.signing import Signer
+from django.utils.functional import cached_property
 from django.utils.safestring import mark_safe
 
 from company import validators
@@ -537,12 +538,15 @@ class CompaniesHouseOauth2Form(forms.Form):
         self.redirect_uri = redirect_uri
         super().__init__(*args, **kwargs)
 
-    def clean_code(self):
-        response = CompaniesHouseClient.verify_oauth2_code(
+    @cached_property
+    def oauth2_response(self):
+        return CompaniesHouseClient.verify_oauth2_code(
             code=self.cleaned_data['code'],
             redirect_url=self.redirect_uri
         )
-        if not response.ok:
+
+    def clean_code(self):
+        if not self.oauth2_response.ok:
             raise forms.ValidationError(self.MESSAGE_INVALID_CODE)
         return self.cleaned_data['code']
 
