@@ -1,5 +1,8 @@
 from unittest.mock import Mock, patch
 
+from directory_validators.company import no_html
+import pytest
+
 from django.forms import Form, HiddenInput
 from django.forms.fields import CharField, Field
 from django.core.validators import EmailValidator
@@ -109,3 +112,11 @@ def test_get_company_name_form_initial_data():
         )
     }
     assert actual == expected
+
+
+@pytest.mark.parametrize('field', [
+    forms.CompanyForm().fields['company_name'],
+    forms.CompanyForm().fields['company_address'],
+])
+def test_xss_attack(field):
+    assert no_html in field.validators

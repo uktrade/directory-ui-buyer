@@ -61,6 +61,7 @@ class CaseStudyBasicInfoForm(IndentedInvalidFieldsMixin, AutoFocusFieldMixin,
         label='Title of your case study or project',
         help_text='Give your case study a title of 60 characters or fewer.',
         max_length=60,
+        validators=[shared_validators.no_html],
     )
     short_summary = forms.CharField(
         label='Summary of your case study or project',
@@ -69,7 +70,10 @@ class CaseStudyBasicInfoForm(IndentedInvalidFieldsMixin, AutoFocusFieldMixin,
             ' appear on your main trade profile page.'
         ),
         max_length=200,
-        validators=[validators.does_not_contain_email],
+        validators=[
+            validators.does_not_contain_email,
+            shared_validators.no_html,
+        ],
         widget=forms.Textarea,
     )
     description = forms.CharField(
@@ -80,7 +84,10 @@ class CaseStudyBasicInfoForm(IndentedInvalidFieldsMixin, AutoFocusFieldMixin,
             'company to an international business audience.'
         ),
         max_length=1000,
-        validators=[validators.does_not_contain_email],
+        validators=[
+            validators.does_not_contain_email,
+            shared_validators.no_html,
+        ],
         widget=forms.Textarea,
     )
     sector = forms.ChoiceField(
@@ -106,7 +113,10 @@ class CaseStudyBasicInfoForm(IndentedInvalidFieldsMixin, AutoFocusFieldMixin,
         ),
         max_length=1000,
         widget=forms.Textarea,
-        validators=[shared_validators.keywords_word_limit]
+        validators=[
+            shared_validators.keywords_word_limit,
+            shared_validators.no_html,
+        ]
     )
 
 
@@ -188,6 +198,7 @@ class CaseStudyRichMediaForm(IndentedInvalidFieldsMixin, AutoFocusFieldMixin,
         help_text='Maximum 120 characters',
         max_length=120,
         widget=forms.Textarea,
+        validators=[shared_validators.no_html],
     )
     image_two = forms.ImageField(
         required=False,
@@ -205,6 +216,7 @@ class CaseStudyRichMediaForm(IndentedInvalidFieldsMixin, AutoFocusFieldMixin,
         max_length=120,
         widget=forms.Textarea,
         required=False,
+        validators=[shared_validators.no_html],
     )
     image_three = forms.ImageField(
         required=False,
@@ -222,6 +234,7 @@ class CaseStudyRichMediaForm(IndentedInvalidFieldsMixin, AutoFocusFieldMixin,
         max_length=120,
         widget=forms.Textarea,
         required=False,
+        validators=[shared_validators.no_html],
     )
     testimonial = forms.CharField(
         label='Testimonial or block quote (optional)',
@@ -232,6 +245,7 @@ class CaseStudyRichMediaForm(IndentedInvalidFieldsMixin, AutoFocusFieldMixin,
         max_length=1000,
         required=False,
         widget=forms.Textarea,
+        validators=[shared_validators.no_html],
     )
     testimonial_name = forms.CharField(
         label='Full name of the source of the testimonial (optional)',
@@ -241,16 +255,19 @@ class CaseStudyRichMediaForm(IndentedInvalidFieldsMixin, AutoFocusFieldMixin,
         ),
         max_length=255,
         required=False,
+        validators=[shared_validators.no_html],
     )
     testimonial_job_title = forms.CharField(
         label='Job title of the source (optional)',
         max_length=255,
         required=False,
+        validators=[shared_validators.no_html],
     )
     testimonial_company = forms.CharField(
         label="Company name of the source (optional)",
         max_length=255,
         required=False,
+        validators=[shared_validators.no_html],
     )
 
 
@@ -262,6 +279,7 @@ class CompanyBasicInfoForm(AutoFocusFieldMixin, IndentedInvalidFieldsMixin,
             'Enter your preferred business name'
         ),
         max_length=255,
+        validators=[shared_validators.no_html],
     )
     website = forms.URLField(
         label='Website (optional):',
@@ -285,7 +303,8 @@ class CompanyBasicInfoForm(AutoFocusFieldMixin, IndentedInvalidFieldsMixin,
         max_length=1000,
         validators=[
             shared_validators.keywords_special_characters,
-            shared_validators.keywords_word_limit
+            shared_validators.keywords_word_limit,
+            shared_validators.no_html,
         ]
     )
     employees = forms.ChoiceField(
@@ -305,14 +324,20 @@ class CompanyDescriptionForm(AutoFocusFieldMixin, IndentedInvalidFieldsMixin,
         help_text='Maximum 250 characters.',
         max_length=250,
         widget=forms.Textarea,
-        validators=[validators.does_not_contain_email],
+        validators=[
+            validators.does_not_contain_email,
+            shared_validators.no_html,
+        ],
     )
     description = forms.CharField(
         widget=forms.Textarea,
         label='Describe your business to overseas buyers:',
         help_text='Maximum 2,000 characters.',
         max_length=2000,
-        validators=[validators.does_not_contain_email],
+        validators=[
+            validators.does_not_contain_email,
+            shared_validators.no_html,
+        ],
     )
 
 
@@ -351,6 +376,7 @@ class CompanyClassificationForm(AutoFocusFieldMixin,
         max_length=1000,
         help_text='Enter 3 maximum',
         required=False,
+        validators=[shared_validators.no_html],
     )
 
 
@@ -369,6 +395,7 @@ class CompanyContactDetailsForm(AutoFocusFieldMixin,
             'This is the full name of the person that international buyers '
             'should use when contacting your company.'
         ),
+        validators=[shared_validators.no_html]
     )
     email_address = forms.EmailField(
         label='Contact email address',
@@ -429,37 +456,44 @@ class CompanyAddressVerificationForm(PreventTamperMixin,
         label='Full name:',
         max_length=255,
         help_text='This is the full name that letters will be addressed to.',
+        validators=[shared_validators.no_html]
     )
     address_line_1 = forms.CharField(
         max_length=200,
         widget=forms.TextInput(attrs={'readonly': 'readonly'}),
+        validators=[shared_validators.no_html]
     )
     address_line_2 = forms.CharField(
         max_length=200,
         required=False,
         widget=forms.TextInput(attrs={'readonly': 'readonly'}),
+        validators=[shared_validators.no_html]
     )
     locality = forms.CharField(
         label='City:',
         max_length=200,
         required=False,
         widget=forms.TextInput(attrs={'readonly': 'readonly'}),
+        validators=[shared_validators.no_html]
     )
     country = forms.CharField(
         max_length=200,
         required=False,
         widget=forms.TextInput(attrs={'readonly': 'readonly'}),
+        validators=[shared_validators.no_html]
     )
     postal_code = forms.CharField(
         label='Postcode:',
         max_length=200,
         widget=forms.TextInput(attrs={'readonly': 'readonly'}),
+        validators=[shared_validators.no_html]
     )
     po_box = forms.CharField(
         label='PO box',
         max_length=200,
         required=False,
         widget=forms.TextInput(attrs={'readonly': 'readonly'}),
+        validators=[shared_validators.no_html]
     )
 
 
