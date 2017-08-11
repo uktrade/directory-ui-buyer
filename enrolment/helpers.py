@@ -1,6 +1,9 @@
+from collections import OrderedDict
+from functools import partial
 import http
 import logging
 import urllib
+from urllib.parse import urljoin
 
 from django.conf import settings
 from django.forms import ValidationError
@@ -20,8 +23,6 @@ COMPANIES_HOUSE_DATE_FORMAT = '%Y-%m-%d'
 
 
 logger = logging.getLogger(__name__)
-
-companies_house_session = requests.Session()
 
 
 def get_company_from_companies_house(company_number):
@@ -70,23 +71,26 @@ def has_company(sso_session_id):
 
 class CompaniesHouseClient:
     api_key = settings.COMPANIES_HOUSE_API_KEY
-    base_url = 'https://api.companieshouse.gov.uk'
+    client_id = settings.COMPANIES_HOUSE_CLIENT_ID
+    client_secret = settings.COMPANIES_HOUSE_CLIENT_SECRET
+    make_api_url = partial(urljoin, 'https://api.companieshouse.gov.uk')
+    make_oauth2_url = partial(urljoin, 'https://account.companieshouse.gov.uk')
     endpoints = {
-        'profile': 'company/{number}',
-        'address': 'company/{number}/registered-office-address',
-        'search': 'search/companies',
+        'profile': make_api_url('company/{number}'),
+        'address': make_api_url('company/{number}/registered-office-address'),
+        'search': make_api_url('search/companies'),
+        'oauth2': make_oauth2_url('oauth2/authorise'),
+        'oauth2-verify': make_oauth2_url('oauth2/token'),
     }
+    session = requests.Session()
 
     @classmethod
     def get_auth(cls):
         return requests.auth.HTTPBasicAuth(cls.api_key, '')
 
     @classmethod
-    def get(cls, url_path, data={}):
-        url = urllib.parse.urljoin(cls.base_url, url_path)
-        response = companies_house_session.get(
-            url=url, data=data, auth=cls.get_auth()
-        )
+    def get(cls, url, params={}):
+        response = cls.session.get(url=url, params=params, auth=cls.get_auth())
         if response.status_code == http.client.UNAUTHORIZED:
             logger.error(MESSAGE_AUTH_FAILED)
         return response
@@ -104,7 +108,30 @@ class CompaniesHouseClient:
     @classmethod
     def search(cls, term):
         url = cls.endpoints['search']
-        return cls.get(url, {'q': term})
+        return cls.get(url, params={'q': term})
+
+    @classmethod
+    def make_oauth2_url(cls, redirect_uri, company_number):
+        # ordered dict to facilitate testing
+        params = OrderedDict([
+            ('client_id', cls.client_id),
+            ('redirect_uri', redirect_uri),
+            ('response_type', 'code'),
+            ('scope', cls.endpoints['profile'].format(number=company_number)),
+        ])
+        return cls.endpoints['oauth2'] + '?' + urllib.parse.urlencode(params)
+
+    @classmethod
+    def verify_oauth2_code(cls, code, redirect_uri):
+        url = cls.endpoints['oauth2-verify']
+        data = {
+            'grant_type': 'authorization_code',
+            'code': code,
+            'client_id': cls.client_id,
+            'client_secret': cls.client_secret,
+            'redirect_uri': redirect_uri,
+        }
+        return cls.session.post(url=url, json=data)
 
 
 def get_company_date_of_creation_from_session(session):

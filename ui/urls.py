@@ -9,19 +9,21 @@ from enrolment.views import (
     SubmitEnrolmentView,
 )
 from company.views import (
-    SupplierAddressEditView,
-    SupplierBasicInfoEditView,
-    SupplierCaseStudyWizardView,
-    SupplierClassificationEditView,
+    CompaniesHouseOauth2CallbackView,
+    CompaniesHouseOauth2View,
     CompanyAddressVerificationView,
     CompanyDescriptionEditView,
     CompanyProfileDetailView,
     CompanyProfileEditView,
     CompanyProfileLogoEditView,
     CompanySocialLinksEditView,
-    SupplierContactEditView,
     EmailUnsubscribeView,
     RequestPaylodTooLargeErrorView,
+    SupplierAddressEditView,
+    SupplierBasicInfoEditView,
+    SupplierCaseStudyWizardView,
+    SupplierClassificationEditView,
+    SupplierContactEditView,
 )
 from company import proxy as company_proxies
 from admin.proxy import AdminProxyView
@@ -117,6 +119,16 @@ urlpatterns = [
         name='unsubscribe'
     ),
     url(
+        r'^companies-house-oauth2/$',
+        CompaniesHouseOauth2View.as_view(),
+        name='companies-house-oauth2'
+    ),
+    url(
+        r'^companies-house-oauth2-callback/$',
+        CompaniesHouseOauth2CallbackView.as_view(),
+        name='companies-house-oauth2-callback'
+    ),
+    url(
         r'^api/external(?P<path>/supplier/company/)$',
         require_get(company_proxies.APIViewProxy.as_view()),
         name='api-external-company'
@@ -136,7 +148,6 @@ urlpatterns = [
         CompaniesHouseSearchApiView.as_view(),
         name='api-internal-companies-house-search'
     ),
-
     url(
         r'^errors/image-too-large/$',
         RequestPaylodTooLargeErrorView.as_view(),

@@ -1,0 +1,7 @@
+{% extends "govuk_layout.html" %}
+
+{% block content %}
+	{% if form.code.errors %}
+		code: {{ form.code.errors }}
+	{% endif %}
+{%endblock content %}
