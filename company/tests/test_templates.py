@@ -209,14 +209,12 @@ def test_company_profile_unpublished_no_email():
     assert 'Your company has no contact details' in html
 
 
-@pytest.mark.parametrize("is_preverified,is_verified,should_show_message", [
-    [False, False, True],
-    [False, True, False],
-    [True, False, False],
-    [True, True, False],  # should not happen, but for completeness
+@pytest.mark.parametrize("is_verified,should_show_message", [
+    [True, False],
+    [False, True],
 ])
 def test_company_profile_unpublished_not_verified(
-    is_preverified, is_verified, should_show_message
+    is_verified, should_show_message
 ):
     context = {
         'company': {
@@ -224,8 +222,7 @@ def test_company_profile_unpublished_not_verified(
             'description': 'description description',
             'summary': 'summary summary',
             'email_address': 'thing@example.com',
-            'verified_with_code': is_verified,
-            'verified_with_preverified_enrolment': is_preverified,
+            'is_verified': is_verified,
         }
     }
     template_name = 'company-profile-detail.html'

@@ -37,7 +37,9 @@ def retrieve_profile_data():
         'supplier_case_studies': [],
         'twitter_url': 'http://www.twitter.com',
         'verified_with_code': True,
+        'verified_with_companies_house_oauth2': False,
         'verified_with_preverified_enrolment': False,
+        'is_verified': True,
         'website': 'http://example.com',
     }
 
