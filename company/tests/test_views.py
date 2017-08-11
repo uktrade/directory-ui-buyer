@@ -361,9 +361,41 @@ def address_verification_end_to_end(client, address_verification_address_data):
     ]
 
     def inner(case_study_id=''):
-        url = reverse('verify-company-address')
+        url = reverse('verify-company-address-confirm')
         for key, data in data_step_pairs:
             response = client.post(url, data)
+        return response
+    return inner
+
+
+@pytest.fixture
+def send_verification_letter_end_to_end(
+    has_company_client, all_company_profile_data
+):
+    all_data = all_company_profile_data
+    view = views.SendVerificationLetterView
+    address_data = {
+        'company_profile_edit_view-current_step': view.ADDRESS,
+        view.ADDRESS + '-postal_full_name': all_data['postal_full_name'],
+        view.ADDRESS + '-address_line_1': all_data['address_line_1'],
+        view.ADDRESS + '-address_line_2': all_data['address_line_2'],
+        view.ADDRESS + '-locality': all_data['locality'],
+        view.ADDRESS + '-postal_code': all_data['postal_code'],
+        view.ADDRESS + '-po_box': all_data['po_box'],
+        view.ADDRESS + '-country': all_data['country'],
+        view.ADDRESS + '-signature': None,
+    }
+
+    data_step_pairs = [
+        [view.ADDRESS, address_data],
+        [view.ADDRESS_CONFIRM, {}],
+    ]
+
+    def inner():
+        url = reverse('verify-company-address')
+        for key, data in data_step_pairs:
+            data['send_verification_letter_view-current_step'] = key
+            response = has_company_client.post(url, data)
         return response
     return inner
 
@@ -1086,7 +1118,7 @@ def test_company_profile_initial_data_classification(
 @patch.object(validators.api_client.company, 'verify_with_code')
 def test_company_address_validation_api_success(
     mock_verify_with_code, address_verification_end_to_end, sso_user,
-    all_address_verification_data, api_response_200
+    all_address_verification_data, api_response_200, settings
 ):
     mock_verify_with_code.return_value = api_response_200
 
@@ -1677,3 +1709,48 @@ def test_company_address_verification_backwards_compattible_feature_flag_off(
     response = has_company_client.get(url)
 
     assert response.status_code == 200
+
+
+def test_verify_company_address_feature_flag_off(settings, client):
+    settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED = False
+
+    response = client.get(reverse('verify-company-address'))
+
+    assert response.status_code == 404
+
+
+def test_verify_company_address_feature_flag_on(settings, has_company_client):
+    settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED = True
+
+    response = has_company_client.get(reverse('verify-company-address'))
+
+    assert response.status_code == 200
+
+
+@patch.object(views.api_client.company, 'update_profile')
+@patch('company.forms.CompanyAddressVerificationForm.is_form_tampered',
+       Mock(return_value=False))
+def test_verify_company_address_end_to_end(
+    mock_update_profile, settings, has_company_client,
+    send_verification_letter_end_to_end
+):
+    settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED = True
+    view = views.SendVerificationLetterView
+
+    response = send_verification_letter_end_to_end()
+
+    assert response.status_code == 200
+    assert response.template_name == view.templates[view.SENT]
+    assert mock_update_profile.call_count == 1
+    assert mock_update_profile.call_args == call(
+        data={
+            'address_line_1': '123 Fake Street',
+            'po_box': 'abc',
+            'address_line_2': 'Fakeville',
+            'locality': 'London',
+            'postal_code': 'E14 6XK',
+            'country': 'GB',
+            'postal_full_name': 'Jeremy'
+        },
+        sso_session_id='213'
+    )

@@ -271,6 +271,48 @@ class CompanyProfileEditView(BaseMultiStepCompanyEditView):
         return super().handle_profile_update_success()
 
 
+class SendVerificationLetterView(
+    Oauth2FeatureFlagMixin, BaseMultiStepCompanyEditView
+):
+    ADDRESS = 'address'
+    ADDRESS_CONFIRM = 'confirm'
+    SENT = 'sent'
+
+    form_list = (
+        (ADDRESS, forms.CompanyAddressVerificationForm),
+        (ADDRESS_CONFIRM, forms.EmptyForm),
+    )
+    templates = {
+        ADDRESS: 'company-profile-form-address.html',
+        ADDRESS_CONFIRM: 'company-profile-address-confirm-send.html',
+        SENT: 'company-profile-form-letter-sent.html',
+    }
+    form_labels = [
+        (ADDRESS, 'Address'),
+        (ADDRESS_CONFIRM, 'Confirm'),
+    ]
+    form_serializer = staticmethod(forms.serialize_company_address_form)
+    failure_template = 'company-profile-update-error.html'
+
+    @cached_property
+    def company_profile(self):
+        return helpers.get_company_profile(self.request.sso_user.session_id)
+
+    def get_form_initial(self, step):
+        return helpers.get_contact_details(self.request.sso_user.session_id)
+
+    def get_context_data(self, form, **kwargs):
+        return super().get_context_data(
+            form=form,
+            form_labels=self.form_labels,
+            all_cleaned_data=self.get_all_cleaned_data(),
+            **kwargs
+        )
+
+    def handle_profile_update_success(self):
+        return TemplateResponse(self.request, self.templates[self.SENT])
+
+
 class CompanyProfileLogoEditView(BaseMultiStepCompanyEditView):
     form_list = (
         ('logo', forms.CompanyLogoForm),
@@ -289,7 +331,13 @@ class CompanyVerifyView(
     Oauth2FeatureFlagMixin, SSOLoginRequiredMixin, CompanyRequiredMixin,
     TemplateView,
 ):
-    template_name = 'company-verify.html'
+    template_name = 'company-verify-hub.html'
+
+    def get_context_data(self, **kwargs):
+        company = helpers.get_company_profile(self.request.sso_user.session_id)
+        return {
+            'company': company,
+        }
 
 
 class CompanyAddressVerificationView(

@@ -26,6 +26,7 @@ from company.views import (
     SupplierClassificationEditView,
     SupplierContactEditView,
     CompanyVerifyView,
+    SendVerificationLetterView,
 )
 from company import proxy as company_proxies
 from admin.proxy import AdminProxyView
@@ -122,9 +123,14 @@ urlpatterns = [
         name='verify-company-hub'
     ),
     url(
-        r'^verify/address/$',
-        CompanyAddressVerificationView.as_view(),
+        r'^verify/letter-send$',
+        SendVerificationLetterView.as_view(),
         name='verify-company-address'
+    ),
+    url(
+        r'^verify/letter-confirm/$',
+        CompanyAddressVerificationView.as_view(),
+        name='verify-company-address-confirm'
     ),
     url(
         r'^verify/companies-house/$',

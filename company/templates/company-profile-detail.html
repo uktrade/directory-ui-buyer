@@ -53,14 +53,20 @@
 					<p style="font-weight: 400;">Your profile can't be published until your company is verified</p>
 				</div>
 				<div class="span4" style="margin-top: 10px;">
-					{% if company.has_valid_address %}
-						<a href="{% url 'verify-company-address' %}" class="ed-naked-button-error">
+					{% if features.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED %}
+						<a href="{% url 'verify-company-hub' %}" class="ed-naked-button-error">
 							Verify your company
 						</a>
 					{% else %}
-						<a href="{% url 'company-edit-address' %}" class="ed-naked-button-error">
-							Set your address
-						</a>
+						{% if company.has_valid_address %}
+							<a href="{% url 'verify-company-address' %}" class="ed-naked-button-error">
+								Verify your company
+							</a>
+						{% else %}
+							<a href="{% url 'company-edit-address' %}" class="ed-naked-button-error">
+								Set your address
+							</a>
+						{% endif %}
 					{% endif %}
 				</div>
 			</div>

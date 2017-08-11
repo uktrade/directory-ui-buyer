@@ -1,0 +1,16 @@
+{% extends "govuk_layout.html" %}
+
+{% block content %}
+	<ul>
+		<li>
+		{% if company.is_verification_letter_sent %}
+			<a href="{% url 'verify-company-address-confirm' %}">Verify with your address</a>
+		{% else %}
+			<a href="{% url 'verify-company-address' %}">Verify with your address</a>
+		{% endif %}
+		</li>
+		<li>
+			<a href="{% url 'verify-companies-house' %}">Verify with Companies House</a>
+		</li>
+	</ul>
+{%endblock content %}
