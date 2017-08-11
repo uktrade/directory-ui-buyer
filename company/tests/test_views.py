@@ -361,7 +361,7 @@ def address_verification_end_to_end(client, address_verification_address_data):
     ]
 
     def inner(case_study_id=''):
-        url = reverse('confirm-company-address')
+        url = reverse('verify-company-address')
         for key, data in data_step_pairs:
             response = client.post(url, data)
         return response
@@ -1411,7 +1411,7 @@ def test_render_next_step_skips_to_done_if_letter_not_sent(
 def test_companies_house_oauth2_feature_flag_disbaled(settings, client):
     settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED = False
 
-    url = reverse('companies-house-oauth2')
+    url = reverse('verify-companies-house')
     response = client.get(url)
 
     assert response.status_code == 404
@@ -1420,20 +1420,20 @@ def test_companies_house_oauth2_feature_flag_disbaled(settings, client):
 def test_companies_house_oauth2_not_logged_in(client, settings):
     settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED = True
 
-    url = reverse('companies-house-oauth2')
+    url = reverse('verify-companies-house')
     response = client.get(url)
 
     assert response.status_code == 302
     assert urllib.parse.unquote_plus(response.get('Location')) == (
         'http://sso.trade.great.dev:8004/accounts/login/?'
-        'next=http://testserver/companies-house-oauth2/'
+        'next=http://testserver/verify/companies-house/'
     )
 
 
 def test_companies_house_oauth2_no_company(settings, no_company_client):
     settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED = True
 
-    url = reverse('companies-house-oauth2')
+    url = reverse('verify-companies-house')
     response = no_company_client.get(url)
 
     assert response.status_code == 302
@@ -1445,7 +1445,7 @@ def test_companies_house_oauth2_has_company_redirects(
 ):
     settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED = True
 
-    url = reverse('companies-house-oauth2')
+    url = reverse('verify-companies-house')
     response = has_company_client.get(url)
 
     assert response.status_code == 302
@@ -1461,7 +1461,7 @@ def test_companies_house_oauth2_has_company_redirects(
 def test_companies_house_callback_feature_flag_disbaled(settings, client):
     settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED = False
 
-    url = reverse('companies-house-oauth2-callback')
+    url = reverse('verify-companies-house-callback')
     response = client.get(url)
 
     assert response.status_code == 404
@@ -1470,7 +1470,7 @@ def test_companies_house_callback_feature_flag_disbaled(settings, client):
 def test_companies_house_callback_not_logged_in(settings, client):
     settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED = True
 
-    url = reverse('companies-house-oauth2-callback')
+    url = reverse('verify-companies-house-callback')
     response = client.get(url)
 
     assert response.status_code == 302
@@ -1483,7 +1483,7 @@ def test_companies_house_callback_not_logged_in(settings, client):
 def test_companies_house_callback_no_company(settings, no_company_client):
     settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED = True
 
-    url = reverse('companies-house-oauth2-callback')
+    url = reverse('verify-companies-house-callback')
     response = no_company_client.get(url)
 
     assert response.status_code == 302
@@ -1496,7 +1496,7 @@ def test_companies_house_callback_missing_code(
 ):
     settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED = True
 
-    url = reverse('companies-house-oauth2-callback')  # missing code
+    url = reverse('verify-companies-house-callback')  # missing code
     response = has_company_client.get(url)
 
     assert response.status_code == 200
@@ -1514,7 +1514,7 @@ def test_companies_house_callback_has_company_calls_companies_house(
     mock_verify_oauth2_code.return_value = api_response_oauth2_verify_200
     mock_verify_with_companies_house.return_value = api_response_200
 
-    url = reverse('companies-house-oauth2-callback')
+    url = reverse('verify-companies-house-callback')
     response = has_company_client.get(url, {'code': '123'})
 
     assert response.status_code == 302
@@ -1543,7 +1543,7 @@ def test_companies_house_callback_invalid_code(
     settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED = True
     mock_verify_oauth2_code.return_value = api_response_400
 
-    url = reverse('companies-house-oauth2-callback')
+    url = reverse('verify-companies-house-callback')
     response = has_company_client.get(url, {'code': '123'})
 
     assert response.status_code == 200
@@ -1558,8 +1558,32 @@ def test_companies_house_callback_unauthorized(
     settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED = True
     mock_verify_oauth2_code.return_value = api_response_401
 
-    url = reverse('companies-house-oauth2-callback')
+    url = reverse('verify-companies-house-callback')
     response = has_company_client.get(url, {'code': '123'})
 
     assert response.status_code == 200
     assert b'Invalid code.' in response.content
+
+
+def test_verify_company_feature_flag_on():
+    pass
+
+
+def test_verify_company_feature_flag_off():
+    pass
+
+
+def test_verify_company_anon_user():
+    pass
+
+
+def test_verify_company_authed_user():
+    pass
+
+
+def test_verify_company_no_company_user():
+    pass
+
+
+def test_verify_company_has_company_user():
+    pass

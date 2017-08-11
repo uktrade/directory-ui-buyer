@@ -12,6 +12,7 @@ from company.views import (
     CompaniesHouseOauth2CallbackView,
     CompaniesHouseOauth2View,
     CompanyAddressVerificationView,
+    CompanyAddressVerificationOldView,
     CompanyDescriptionEditView,
     CompanyProfileDetailView,
     CompanyProfileEditView,
@@ -24,6 +25,7 @@ from company.views import (
     SupplierCaseStudyWizardView,
     SupplierClassificationEditView,
     SupplierContactEditView,
+    CompanyVerifyView,
 )
 from company import proxy as company_proxies
 from admin.proxy import AdminProxyView
@@ -57,11 +59,6 @@ urlpatterns = [
         r'^register-submit$',
         SubmitEnrolmentView.as_view(),
         name='register-submit'
-    ),
-    url(
-        r'^confirm-company-address$',
-        CompanyAddressVerificationView.as_view(),
-        name='confirm-company-address'
     ),
     url(
         r'^company-profile$',
@@ -118,16 +115,33 @@ urlpatterns = [
         EmailUnsubscribeView.as_view(),
         name='unsubscribe'
     ),
+
     url(
-        r'^companies-house-oauth2/$',
+        r'^verify/$',
+        CompanyVerifyView.as_view(),
+        name='verify-company'
+    ),
+    url(
+        r'^verify/address/$',
+        CompanyAddressVerificationView.as_view(),
+        name='verify-company-address'
+    ),
+    url(
+        r'^verify/companies-house/$',
         CompaniesHouseOauth2View.as_view(),
-        name='companies-house-oauth2'
+        name='verify-companies-house'
     ),
     url(
         r'^companies-house-oauth2-callback/$',
         CompaniesHouseOauth2CallbackView.as_view(),
-        name='companies-house-oauth2-callback'
+        name='verify-companies-house-callback'
     ),
+    url(
+        r'^confirm-company-address$',
+        CompanyAddressVerificationOldView.as_view(),
+        name='verify-company-address-historic-url'
+    ),
+
     url(
         r'^api/external(?P<path>/supplier/company/)$',
         require_get(company_proxies.APIViewProxy.as_view()),

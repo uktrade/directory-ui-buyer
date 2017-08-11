@@ -76,6 +76,13 @@ class GetTemplateForCurrentStepMixin:
         return [self.templates[self.steps.current]]
 
 
+class Oauth2FeatureFlagMixin:
+    def dispatch(self, *args, **kwargs):
+        if not settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED:
+            raise Http404()
+        return super().dispatch(*args, **kwargs)
+
+
 class BaseMultiStepCompanyEditView(
     SSOLoginRequiredMixin,
     CompanyRequiredMixin,
@@ -262,7 +269,6 @@ class CompanyProfileEditView(BaseMultiStepCompanyEditView):
 
 
 class CompanyProfileLogoEditView(BaseMultiStepCompanyEditView):
-
     form_list = (
         ('logo', forms.CompanyLogoForm),
     )
@@ -274,6 +280,13 @@ class CompanyProfileLogoEditView(BaseMultiStepCompanyEditView):
         'logo': 'company-profile-logo-form.html',
     }
     form_serializer = staticmethod(forms.serialize_company_logo_form)
+
+
+class CompanyVerifyView(
+    Oauth2FeatureFlagMixin, SSOLoginRequiredMixin, CompanyRequiredMixin,
+    TemplateView,
+):
+    template_name = 'company-verify.html'
 
 
 class CompanyAddressVerificationView(
@@ -303,6 +316,15 @@ class CompanyAddressVerificationView(
             self.request,
             self.templates[self.SUCCESS]
         )
+
+
+# once the feature flag is removed, turn this into a RedirectView
+class CompanyAddressVerificationOldView(CompanyAddressVerificationView):
+    def dispatch(self, *args, **kwargs):
+        if settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED:
+            # redirect to the same view, bit with the new url
+            return redirect('verify-company-address')
+        return super().dispatch(*args, **kwargs)
 
 
 class CompanyDescriptionEditView(
@@ -424,15 +446,8 @@ class RequestPaylodTooLargeErrorView(TemplateView):
 class Oauth2CallbackUrlMixin:
     @property
     def redirect_uri(self):
-        callback_url = reverse('companies-house-oauth2-callback')
+        callback_url = reverse('verify-companies-house-callback')
         return self.request.build_absolute_uri(callback_url)
-
-
-class Oauth2FeatureFlagMixin:
-    def dispatch(self, *args, **kwargs):
-        if not settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED:
-            raise Http404()
-        return super().dispatch(*args, **kwargs)
 
 
 class CompaniesHouseOauth2View(
