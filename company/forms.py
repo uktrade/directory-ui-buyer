@@ -6,12 +6,14 @@ from directory_constants.constants import choices as constant_choices
 from django import forms
 from django.conf import settings
 from django.core.signing import Signer
+from django.utils.functional import cached_property
 from django.utils.safestring import mark_safe
 
 from company import validators
 from enrolment.forms import IndentedInvalidFieldsMixin, AutoFocusFieldMixin
 from enrolment.helpers import halt_validation_on_failure
 from enrolment.widgets import CheckboxSelectInlineLabelMultiple
+from enrolment.helpers import CompaniesHouseClient
 
 
 class SocialLinksForm(IndentedInvalidFieldsMixin, AutoFocusFieldMixin,
@@ -525,6 +527,28 @@ class CompanyCodeVerificationForm(AutoFocusFieldMixin,
             validators.verify_with_code(sso_session_id=sso_session_id),
             *self.fields['code'].validators
         )
+
+
+class CompaniesHouseOauth2Form(forms.Form):
+    MESSAGE_INVALID_CODE = 'Invalid code.'
+
+    code = forms.CharField(max_length=1000)
+
+    def __init__(self, redirect_uri, *args, **kwargs):
+        self.redirect_uri = redirect_uri
+        super().__init__(*args, **kwargs)
+
+    @cached_property
+    def oauth2_response(self):
+        return CompaniesHouseClient.verify_oauth2_code(
+            code=self.cleaned_data['code'],
+            redirect_url=self.redirect_uri
+        )
+
+    def clean_code(self):
+        if not self.oauth2_response.ok:
+            raise forms.ValidationError(self.MESSAGE_INVALID_CODE)
+        return self.cleaned_data['code']
 
 
 class EmptyForm(forms.Form):

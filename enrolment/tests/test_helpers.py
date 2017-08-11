@@ -184,3 +184,42 @@ def test_get_company_status_from_session(client):
     session[key] = {'company_status': 'active'}
 
     assert helpers.get_company_status_from_session(session) == 'active'
+
+
+def test_verify_oauth2_code():
+    with requests_mock.mock() as mock:
+        mock.post(
+            'https://account.companieshouse.gov.uk/oauth2/token',
+            status_code=http.client.OK,
+        )
+        response = helpers.CompaniesHouseClient.verify_oauth2_code(
+            code='123',
+            redirect_uri='http://redirect.com',
+        )
+        assert response.status_code == 200
+
+    request = mock.request_history[0]
+
+    assert request.json() == {
+        'client_id': 'debug-client-id',
+        'grant_type': 'authorization_code',
+        'client_secret': 'debug-client-secret',
+        'redirect_uri': 'http://redirect.com',
+        'code': '123'
+    }
+
+
+def test_search():
+    with requests_mock.mock() as mock:
+        mock.get(
+            'https://api.companieshouse.gov.uk/search/companies',
+            status_code=http.client.OK,
+        )
+        response = helpers.CompaniesHouseClient.search(
+            term='green',
+        )
+        assert response.status_code == 200
+
+    request = mock.request_history[0]
+
+    assert request.query == 'q=green'
