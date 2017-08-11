@@ -1,6 +1,6 @@
 import http
 from http.cookies import SimpleCookie
-from unittest.mock import call, patch, Mock
+from unittest.mock import call, patch, PropertyMock, Mock
 import urllib
 
 from directory_validators.constants import choices
@@ -753,8 +753,10 @@ def test_company_profile_edit_api_client_call(
 @patch.object(views.api_client.company, 'update_profile')
 def test_company_profile_edit_api_client_success(
     mock_update_profile, company_request, api_response_200,
-    retrieve_profile_data
+    retrieve_profile_data, settings
 ):
+    settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED = False
+
     mock_update_profile.return_value = api_response_200
 
     view = views.CompanyProfileEditView()
@@ -840,7 +842,11 @@ def test_company_redirect_non_verified_company(sso_request):
 
 
 @patch.object(views, 'has_company', Mock(return_value=True))
-def test_company_edit_views_use_correct_template(client, rf, sso_user):
+def test_company_edit_views_use_correct_template(
+    client, rf, sso_user, settings
+):
+    settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED = False
+
     request = rf.get(reverse('company-edit'))
     request.sso_user = sso_user
     request.session = client.session
@@ -888,8 +894,10 @@ def test_company_profile_logo_api_client_success(
               Mock(return_value={}))
 @patch.object(views.api_client.company, 'update_profile')
 def test_company_profile_logo_api_client_failure(
-    mock_update_profile, company_request, api_response_400
+    mock_update_profile, company_request, api_response_400, settings
 ):
+    settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED = False
+
     mock_update_profile.return_value = api_response_400
 
     view = views.CompanyProfileLogoEditView()
@@ -912,8 +920,11 @@ def test_company_profile_edit_create_api_success(
     company_profile_edit_end_to_end,
     sso_user,
     all_company_profile_data,
-    api_response_200
+    api_response_200,
+    settings
 ):
+    settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED = False
+
     mock_update_profile.return_value = api_response_200
     view = views.CompanyProfileEditView
 
@@ -970,8 +981,11 @@ def test_company_profile_letter_already_sent_edit_create_api_success(
 @patch.object(views, 'has_company', Mock(return_value=True))
 @patch.object(views.api_client.company, 'update_profile')
 def test_company_profile_edit_create_api_failure(
-    mock_create_case_study, company_profile_edit_end_to_end, api_response_400
+    mock_create_case_study, company_profile_edit_end_to_end, api_response_400,
+    settings
 ):
+    settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED = False
+
     mock_create_case_study.return_value = api_response_400
 
     response = company_profile_edit_end_to_end()
@@ -984,8 +998,10 @@ def test_company_profile_edit_create_api_failure(
 @patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
 @patch.object(views, 'has_company', Mock(return_value=True))
 def test_company_profile_initial_address_from_profile(
-    company_profile_edit_goto_step, retrieve_profile_data
+    company_profile_edit_goto_step, retrieve_profile_data, settings
 ):
+    settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED = False
+
     expected = retrieve_profile_data.copy()
     expected['signature'] = Wildcard()
 
@@ -1002,8 +1018,10 @@ def test_company_profile_initial_address_from_profile(
 def test_company_profile_initial_address_from_companies_house(
     mock_retrieve_profile, company_profile_edit_goto_step,
     company_profile_companies_house_data,
-    api_response_company_profile_no_contact_details
+    api_response_company_profile_no_contact_details, settings
 ):
+    settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED = False
+
     mock_retrieve_profile.return_value = (
         api_response_company_profile_no_contact_details
     )
@@ -1037,8 +1055,10 @@ def test_company_profile_initial_data_basic(
        Mock(return_value=False))
 def test_company_profile_confirm_address_context_data(
     company_profile_edit_goto_step, retrieve_profile_data,
-    all_company_profile_data
+    all_company_profile_data, settings
 ):
+    settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED = False
+
     response = company_profile_edit_goto_step(
         step=views.CompanyProfileEditView.ADDRESS_CONFIRM
     )
@@ -1370,6 +1390,35 @@ def test_company_profile_edit_form_labels_hide_address():
         ]
 
 
+def test_company_profile_edit_condition_address_feature_flag_on(settings):
+    settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED = True
+
+    view = views.CompanyProfileEditView()
+
+    assert view.condition_show_address() is False
+
+
+@pytest.mark.parametrize('letter_sent,preverified,expected', [
+    [False, False, True],
+    [True,  False, False],
+    [False, True,  False],
+    [True,  True,  False],  # should not be possible
+])
+def test_company_profile_edit_condition_address_feature_flag_off(
+    letter_sent, preverified, expected, settings, sso_request
+):
+    settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED = False
+
+    view = views.CompanyProfileEditView()
+    view.request = sso_request
+    property_mock = PropertyMock(return_value={
+        'is_verification_letter_sent': letter_sent,
+        'verified_with_preverified_enrolment': preverified,
+    })
+    with patch.object(view, 'company_profile', new_callable=property_mock):
+        assert view.condition_show_address() is expected
+
+
 @patch.object(views.CompanyProfileEditView, 'render_done')
 @patch('company.views.SessionWizardView.render_next_step')
 @patch.object(views.CompanyProfileEditView, 'condition_show_address',
@@ -1565,25 +1614,66 @@ def test_companies_house_callback_unauthorized(
     assert b'Invalid code.' in response.content
 
 
-def test_verify_company_feature_flag_on():
-    pass
+def test_verify_company_feature_flag_off(settings, client):
+    settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED = False
+
+    url = reverse('verify-company-hub')
+    response = client.get(url)
+
+    assert response.status_code == 404
 
 
-def test_verify_company_feature_flag_off():
-    pass
+def test_verify_company_anon_user(settings, client):
+    settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED = True
+
+    url = reverse('verify-company-hub')
+    response = client.get(url)
+
+    assert response.status_code == 302
+    assert urllib.parse.unquote_plus(response.get('Location')) == (
+        'http://sso.trade.great.dev:8004/accounts/login/?'
+        'next=http://testserver/verify/'
+    )
 
 
-def test_verify_company_anon_user():
-    pass
+def test_verify_company_no_company_user(settings, no_company_client):
+    settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED = True
+
+    url = reverse('verify-company-hub')
+    response = no_company_client.get(url)
+
+    assert response.status_code == 302
+    assert response.get('Location') == reverse('index')
 
 
-def test_verify_company_authed_user():
-    pass
+def test_verify_company_has_company_user(settings, has_company_client):
+    settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED = True
+
+    url = reverse('verify-company-hub')
+    response = has_company_client.get(url)
+
+    assert response.status_code == 200
+    assert response.template_name == [views.CompanyVerifyView.template_name]
 
 
-def test_verify_company_no_company_user():
-    pass
+def test_company_address_verification_backwards_compattible_feature_flag_on(
+    settings, client
+):
+    settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED = True
+
+    url = reverse('verify-company-address-historic-url')
+    response = client.get(url)
+
+    assert response.status_code == 302
+    assert response.get('Location') == reverse('verify-company-address')
 
 
-def test_verify_company_has_company_user():
-    pass
+def test_company_address_verification_backwards_compattible_feature_flag_off(
+    settings, has_company_client
+):
+    settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED = False
+
+    url = reverse('verify-company-address-historic-url')
+    response = has_company_client.get(url)
+
+    assert response.status_code == 200

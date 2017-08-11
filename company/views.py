@@ -225,6 +225,9 @@ class CompanyProfileEditView(BaseMultiStepCompanyEditView):
         return super().render_next_step(form, **kwargs)
 
     def condition_show_address(self):
+        # once this feature flag is removed, this view will never show address
+        if settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED:
+            return False
         return not any([
             self.company_profile['is_verification_letter_sent'],
             self.company_profile['verified_with_preverified_enrolment'],
@@ -318,8 +321,8 @@ class CompanyAddressVerificationView(
         )
 
 
-# once the feature flag is removed, turn this into a RedirectView
-class CompanyAddressVerificationOldView(CompanyAddressVerificationView):
+# TODO: once the feature flag is removed, turn this into a RedirectView
+class CompanyAddressVerificationHistoricView(CompanyAddressVerificationView):
     def dispatch(self, *args, **kwargs):
         if settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED:
             # redirect to the same view, bit with the new url

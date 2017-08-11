@@ -12,7 +12,7 @@ from company.views import (
     CompaniesHouseOauth2CallbackView,
     CompaniesHouseOauth2View,
     CompanyAddressVerificationView,
-    CompanyAddressVerificationOldView,
+    CompanyAddressVerificationHistoricView,
     CompanyDescriptionEditView,
     CompanyProfileDetailView,
     CompanyProfileEditView,
@@ -119,7 +119,7 @@ urlpatterns = [
     url(
         r'^verify/$',
         CompanyVerifyView.as_view(),
-        name='verify-company'
+        name='verify-company-hub'
     ),
     url(
         r'^verify/address/$',
@@ -138,7 +138,7 @@ urlpatterns = [
     ),
     url(
         r'^confirm-company-address$',
-        CompanyAddressVerificationOldView.as_view(),
+        CompanyAddressVerificationHistoricView.as_view(),
         name='verify-company-address-historic-url'
     ),
 
