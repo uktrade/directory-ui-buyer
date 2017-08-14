@@ -55,6 +55,7 @@ MIDDLEWARE_CLASSES = [
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'sso.middleware.SSOUserMiddleware',
+    'ui.middleware.NoCacheMiddlware',
 ]
 
 ROOT_URLCONF = 'ui.urls'
