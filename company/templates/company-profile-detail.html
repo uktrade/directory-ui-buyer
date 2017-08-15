@@ -59,7 +59,7 @@
 						</a>
 					{% else %}
 						{% if company.has_valid_address %}
-							<a href="{% url 'verify-company-address' %}" class="ed-naked-button-error">
+							<a href="{% url 'verify-company-address-confirm' %}" class="ed-naked-button-error">
 								Verify your company
 							</a>
 						{% else %}

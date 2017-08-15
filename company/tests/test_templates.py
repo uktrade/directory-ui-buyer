@@ -261,10 +261,10 @@ def test_company_profile_details_feature_flag_on():
 
     html = render_to_string(template_name, context)
 
-    assert reverse('verify-company-hub') in html
+    assert '"' + reverse('verify-company-hub') + '"' in html
 
 
-def test_company_profile_details_feature_flag_off():
+def test_company_profile_details_feature_flag_off_valid_address():
     template_name = 'company-profile-detail.html'
     context = {
         'features': {
@@ -274,12 +274,36 @@ def test_company_profile_details_feature_flag_off():
             'description': 'thing',
             'summary': 'thing',
             'email_address': 'thing@example.com',
+            'has_valid_address': True
         },
     }
 
     html = render_to_string(template_name, context)
 
-    assert reverse('verify-company-hub') not in html
+    assert '"' + reverse('verify-company-hub') + '"' not in html
+    assert reverse('verify-company-address-confirm') in html
+    assert reverse('company-edit-address') not in html
+
+
+def test_company_profile_details_feature_flag_off_invalid_address():
+    template_name = 'company-profile-detail.html'
+    context = {
+        'features': {
+            'FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED': False,
+        },
+        'company': {
+            'description': 'thing',
+            'summary': 'thing',
+            'email_address': 'thing@example.com',
+            'has_valid_address': False
+        },
+    }
+
+    html = render_to_string(template_name, context)
+
+    assert '"' + reverse('verify-company-hub') + '"' not in html
+    assert reverse('verify-company-address-confirm') not in html
+    assert reverse('company-edit-address') in html
 
 
 def test_company_verify_hub_letter_sent():
