@@ -244,3 +244,67 @@ def test_company_profile_unpublished_published():
     html = render_to_string(template_name, context)
 
     assert 'Your company is published' in html
+
+
+def test_company_profile_details_feature_flag_on():
+    template_name = 'company-profile-detail.html'
+    context = {
+        'features': {
+            'FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED': True,
+        },
+        'company': {
+            'description': 'thing',
+            'summary': 'thing',
+            'email_address': 'thing@example.com',
+        },
+    }
+
+    html = render_to_string(template_name, context)
+
+    assert reverse('verify-company-hub') in html
+
+
+def test_company_profile_details_feature_flag_off():
+    template_name = 'company-profile-detail.html'
+    context = {
+        'features': {
+            'FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED': False,
+        },
+        'company': {
+            'description': 'thing',
+            'summary': 'thing',
+            'email_address': 'thing@example.com',
+        },
+    }
+
+    html = render_to_string(template_name, context)
+
+    assert reverse('verify-company-hub') not in html
+
+
+def test_company_verify_hub_letter_sent():
+    template_name = 'company-verify-hub.html'
+    context = {
+        'company': {
+            'is_verification_letter_sent': True,
+        }
+    }
+
+    html = render_to_string(template_name, context)
+
+    assert reverse('verify-company-address-confirm') in html
+    assert reverse('verify-companies-house') in html
+
+
+def test_company_verify_hub_letter_not_sent():
+    template_name = 'company-verify-hub.html'
+    context = {
+        'company': {
+            'is_verification_letter_sent': False,
+        }
+    }
+
+    html = render_to_string(template_name, context)
+
+    assert reverse('verify-company-address') in html
+    assert reverse('verify-companies-house') in html

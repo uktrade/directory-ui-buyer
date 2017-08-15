@@ -7,12 +7,15 @@ def test_feature_flags_installed(settings):
     assert 'ui.context_processors.feature_flags' in processors
 
 
-def test_feature_returns_expected_features():
+def test_feature_returns_expected_features(settings):
+    settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED = True
 
     actual = context_processors.feature_flags(None)
 
     assert actual == {
-        'features': {}
+        'features': {
+            'FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED': True,
+        }
     }
 
 

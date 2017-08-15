@@ -107,6 +107,14 @@ def api_response_company_profile_200(retrieve_profile_data):
 
 
 @pytest.fixture
+def api_response_company_profile_unverified_200(retrieve_profile_data):
+    response = requests.Response()
+    response.status_code = http.client.OK
+    response.json = lambda: {**retrieve_profile_data, 'is_verified': False}
+    return response
+
+
+@pytest.fixture
 def api_response_company_profile_letter_sent_200(retrieve_profile_data):
     profile_data = deepcopy(retrieve_profile_data)
     profile_data['is_verification_letter_sent'] = True
@@ -190,6 +198,17 @@ def retrieve_profile(api_response_company_profile_200):
     stub = patch(
         'api_client.api_client.company.retrieve_private_profile',
         return_value=api_response_company_profile_200,
+    )
+    stub.start()
+    yield
+    stub.stop()
+
+
+@pytest.fixture
+def retrieve_profile_unverified(api_response_company_profile_unverified_200):
+    stub = patch(
+        'api_client.api_client.company.retrieve_private_profile',
+        return_value=api_response_company_profile_unverified_200,
     )
     stub.start()
     yield

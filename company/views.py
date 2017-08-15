@@ -76,6 +76,13 @@ class GetTemplateForCurrentStepMixin:
         return [self.templates[self.steps.current]]
 
 
+class Oauth2FeatureFlagMixin:
+    def dispatch(self, *args, **kwargs):
+        if not settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED:
+            raise Http404()
+        return super().dispatch(*args, **kwargs)
+
+
 class BaseMultiStepCompanyEditView(
     SSOLoginRequiredMixin,
     CompanyRequiredMixin,
@@ -218,6 +225,9 @@ class CompanyProfileEditView(BaseMultiStepCompanyEditView):
         return super().render_next_step(form, **kwargs)
 
     def condition_show_address(self):
+        # once this feature flag is removed, this view will never show address
+        if settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED:
+            return False
         return not any([
             self.company_profile['is_verification_letter_sent'],
             self.company_profile['verified_with_preverified_enrolment'],
@@ -256,13 +266,57 @@ class CompanyProfileEditView(BaseMultiStepCompanyEditView):
         return context
 
     def handle_profile_update_success(self):
-        if self.condition_show_address():
+        if settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED:
+            if not self.company_profile['is_verified']:
+                return redirect('verify-company-hub')
+        elif self.condition_show_address():
             return TemplateResponse(self.request, self.templates[self.SENT])
         return super().handle_profile_update_success()
 
 
-class CompanyProfileLogoEditView(BaseMultiStepCompanyEditView):
+class SendVerificationLetterView(
+    Oauth2FeatureFlagMixin, BaseMultiStepCompanyEditView
+):
+    ADDRESS = 'address'
+    ADDRESS_CONFIRM = 'confirm'
+    SENT = 'sent'
 
+    form_list = (
+        (ADDRESS, forms.CompanyAddressVerificationForm),
+        (ADDRESS_CONFIRM, forms.EmptyForm),
+    )
+    templates = {
+        ADDRESS: 'company-profile-form-address.html',
+        ADDRESS_CONFIRM: 'company-profile-address-confirm-send.html',
+        SENT: 'company-profile-form-letter-sent.html',
+    }
+    form_labels = [
+        (ADDRESS, 'Address'),
+        (ADDRESS_CONFIRM, 'Confirm'),
+    ]
+    form_serializer = staticmethod(forms.serialize_company_address_form)
+    failure_template = 'company-profile-update-error.html'
+
+    @cached_property
+    def company_profile(self):
+        return helpers.get_company_profile(self.request.sso_user.session_id)
+
+    def get_form_initial(self, step):
+        return helpers.get_contact_details(self.request.sso_user.session_id)
+
+    def get_context_data(self, form, **kwargs):
+        return super().get_context_data(
+            form=form,
+            form_labels=self.form_labels,
+            all_cleaned_data=self.get_all_cleaned_data(),
+            **kwargs
+        )
+
+    def handle_profile_update_success(self):
+        return TemplateResponse(self.request, self.templates[self.SENT])
+
+
+class CompanyProfileLogoEditView(BaseMultiStepCompanyEditView):
     form_list = (
         ('logo', forms.CompanyLogoForm),
     )
@@ -274,6 +328,19 @@ class CompanyProfileLogoEditView(BaseMultiStepCompanyEditView):
         'logo': 'company-profile-logo-form.html',
     }
     form_serializer = staticmethod(forms.serialize_company_logo_form)
+
+
+class CompanyVerifyView(
+    Oauth2FeatureFlagMixin, SSOLoginRequiredMixin, CompanyRequiredMixin,
+    TemplateView,
+):
+    template_name = 'company-verify-hub.html'
+
+    def get_context_data(self, **kwargs):
+        company = helpers.get_company_profile(self.request.sso_user.session_id)
+        return {
+            'company': company,
+        }
 
 
 class CompanyAddressVerificationView(
@@ -303,6 +370,15 @@ class CompanyAddressVerificationView(
             self.request,
             self.templates[self.SUCCESS]
         )
+
+
+# TODO: once the feature flag is removed, turn this into a RedirectView
+class CompanyAddressVerificationHistoricView(CompanyAddressVerificationView):
+    def dispatch(self, *args, **kwargs):
+        if settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED:
+            # redirect to the same view, bit with the new url
+            return redirect('verify-company-address')
+        return super().dispatch(*args, **kwargs)
 
 
 class CompanyDescriptionEditView(
@@ -424,15 +500,8 @@ class RequestPaylodTooLargeErrorView(TemplateView):
 class Oauth2CallbackUrlMixin:
     @property
     def redirect_uri(self):
-        callback_url = reverse('companies-house-oauth2-callback')
+        callback_url = reverse('verify-companies-house-callback')
         return self.request.build_absolute_uri(callback_url)
-
-
-class Oauth2FeatureFlagMixin:
-    def dispatch(self, *args, **kwargs):
-        if not settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED:
-            raise Http404()
-        return super().dispatch(*args, **kwargs)
 
 
 class CompaniesHouseOauth2View(
