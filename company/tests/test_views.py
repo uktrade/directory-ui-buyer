@@ -336,7 +336,8 @@ def address_verification_address_data(all_address_verification_data):
 
 @pytest.fixture
 def supplier_case_study_end_to_end(
-    client, supplier_case_study_basic_data, supplier_case_study_rich_data
+    has_company_client, supplier_case_study_basic_data,
+    supplier_case_study_rich_data
 ):
     # loop over each step in the supplier case study wizard and post valid data
     view = views.SupplierCaseStudyWizardView
@@ -348,13 +349,15 @@ def supplier_case_study_end_to_end(
     def inner(case_study_id=''):
         url = reverse('company-case-study-edit', kwargs={'id': case_study_id})
         for key, data in data_step_pairs:
-            response = client.post(url, data)
+            response = has_company_client.post(url, data)
         return response
     return inner
 
 
 @pytest.fixture
-def address_verification_end_to_end(client, address_verification_address_data):
+def address_verification_end_to_end(
+    has_company_client, address_verification_address_data
+):
     view = views.CompanyAddressVerificationView
     data_step_pairs = [
         [view.ADDRESS, address_verification_address_data],
@@ -363,7 +366,7 @@ def address_verification_end_to_end(client, address_verification_address_data):
     def inner(case_study_id=''):
         url = reverse('verify-company-address-confirm')
         for key, data in data_step_pairs:
-            response = client.post(url, data)
+            response = has_company_client.post(url, data)
         return response
     return inner
 
@@ -402,7 +405,7 @@ def send_verification_letter_end_to_end(
 
 @pytest.fixture
 def company_profile_edit_end_to_end(
-    client, company_profile_address_data,
+    has_company_client, company_profile_address_data,
     company_profile_basic_data, company_profile_classification_data,
     company_profile_send_confirm_data, api_response_200
 ):
@@ -418,14 +421,14 @@ def company_profile_edit_end_to_end(
     def inner():
         url = reverse('company-edit')
         for key, data in data_step_pairs:
-            response = client.post(url, data)
+            response = has_company_client.post(url, data)
         return response
     return inner
 
 
 @pytest.fixture
 def company_profile_letter_already_sent_edit_end_to_end(
-    client, company_profile_address_data,
+    has_company_client, company_profile_address_data,
     company_profile_basic_data, company_profile_classification_data,
     api_response_200
 ):
@@ -439,14 +442,14 @@ def company_profile_letter_already_sent_edit_end_to_end(
     def inner():
         url = reverse('company-edit')
         for key, data in data_step_pairs:
-            response = client.post(url, data)
+            response = has_company_client.post(url, data)
         return response
     return inner
 
 
 @pytest.fixture
 def company_profile_edit_goto_step(
-    client, company_profile_address_data,
+    has_company_client, company_profile_address_data,
     company_profile_basic_data, company_profile_classification_data,
     company_profile_send_confirm_data,
     api_response_200
@@ -468,10 +471,10 @@ def company_profile_edit_goto_step(
         )
         url = reverse('company-edit')
         if index == 0:
-            response = client.get(url)
+            response = has_company_client.get(url)
         else:
             for key, data in data_step_pairs[:index]:
-                response = client.post(url, data, follow=True)
+                response = has_company_client.post(url, data, follow=True)
         return response
     return inner
 
@@ -512,8 +515,6 @@ def test_case_study_edit_handles_api_error(
         has_company_client.get(url)
 
 
-@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
-@patch.object(views, 'has_company', Mock(return_value=True))
 @patch.object(views.api_client.company, 'create_case_study')
 def test_case_study_create_api_success(
     mock_create_case_study, supplier_case_study_end_to_end, sso_user,
@@ -537,8 +538,6 @@ def test_case_study_create_api_success(
     )
 
 
-@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
-@patch.object(views, 'has_company', Mock(return_value=True))
 @patch.object(views.api_client.company, 'create_case_study')
 def test_case_study_create_api_failure(
     mock_create_case_study, supplier_case_study_end_to_end, api_response_400
@@ -552,8 +551,6 @@ def test_case_study_create_api_failure(
     assert response.template_name == view.failure_template
 
 
-@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
-@patch.object(views, 'has_company', Mock(return_value=True))
 @patch.object(views.api_client.company, 'update_case_study')
 def test_case_study_update_api_success(
     mock_update_case_study, supplier_case_study_end_to_end, sso_user,
@@ -590,8 +587,6 @@ def test_case_study_get_api_not_found(
     assert response.status_code == http.client.NOT_FOUND
 
 
-@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
-@patch.object(views, 'has_company', Mock(return_value=True))
 @patch.object(views.api_client.company, 'update_case_study')
 def test_case_study_update_api_failure(
     mock_update_case_study, supplier_case_study_end_to_end, api_response_400
@@ -605,17 +600,17 @@ def test_case_study_update_api_failure(
     assert response.template_name == view.failure_template
 
 
-@patch.object(views, 'has_company', Mock(return_value=True))
 @patch.object(helpers, 'get_company_profile')
 @patch.object(forms, 'is_optional_profile_values_set', return_value=True)
 def test_company_profile_details_exposes_context(
-    mock_is_optional_profile_values_set, mock_get_company_profile, sso_request,
-    retrieve_profile_data
+    mock_is_optional_profile_values_set, mock_get_company_profile,
+    retrieve_profile_data, has_company_client
 ):
     company = retrieve_profile_data
     mock_get_company_profile.return_value = company
-    view = views.CompanyProfileDetailView.as_view()
-    response = view(sso_request)
+
+    response = has_company_client.get(reverse('company-detail'))
+
     assert response.status_code == http.client.OK
     assert response.template_name == [
         views.CompanyProfileDetailView.template_name
@@ -942,18 +937,12 @@ def test_company_profile_logo_api_client_failure(
     assert response.template_name == expected_template_name
 
 
-@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
 @patch('company.forms.CompanyAddressVerificationForm.is_form_tampered',
        Mock(return_value=False))
-@patch.object(views, 'has_company', Mock(return_value=True))
 @patch.object(views.api_client.company, 'update_profile')
 def test_company_profile_edit_create_api_success(
-    mock_update_profile,
-    company_profile_edit_end_to_end,
-    sso_user,
-    all_company_profile_data,
-    api_response_200,
-    settings
+    mock_update_profile, company_profile_edit_end_to_end, sso_user,
+    all_company_profile_data, api_response_200, settings
 ):
     settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED = False
 
@@ -970,10 +959,43 @@ def test_company_profile_edit_create_api_success(
     )
 
 
-@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
 @patch('company.forms.CompanyAddressVerificationForm.is_form_tampered',
        Mock(return_value=False))
-@patch.object(views, 'has_company', Mock(return_value=True))
+@patch.object(views.api_client.company, 'update_profile')
+def test_company_profile_edit_last_step_feature_flag_enabled_not_verified(
+    mock_update_profile, company_profile_letter_already_sent_edit_end_to_end,
+    all_company_profile_data, api_response_200, settings,
+    retrieve_profile_unverified
+):
+    settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED = True
+
+    mock_update_profile.return_value = api_response_200
+
+    response = company_profile_letter_already_sent_edit_end_to_end()
+
+    assert response.status_code == 302
+    assert response.get('Location') == reverse('verify-company-hub')
+
+
+@patch('company.forms.CompanyAddressVerificationForm.is_form_tampered',
+       Mock(return_value=False))
+@patch.object(views.api_client.company, 'update_profile')
+def test_company_profile_edit_last_step_feature_flag_enabled_verified(
+    mock_update_profile, company_profile_letter_already_sent_edit_end_to_end,
+    all_company_profile_data, api_response_200, settings,
+):
+    settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED = True
+
+    mock_update_profile.return_value = api_response_200
+
+    response = company_profile_letter_already_sent_edit_end_to_end()
+
+    assert response.status_code == 302
+    assert response.get('Location') == reverse('company-detail')
+
+
+@patch('company.forms.CompanyAddressVerificationForm.is_form_tampered',
+       Mock(return_value=False))
 @patch.object(views.api_client.company, 'update_profile')
 @patch('api_client.api_client.company.retrieve_private_profile')
 def test_company_profile_letter_already_sent_edit_create_api_success(
@@ -1007,10 +1029,8 @@ def test_company_profile_letter_already_sent_edit_create_api_success(
     )
 
 
-@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
 @patch('company.forms.CompanyAddressVerificationForm.is_form_tampered',
        Mock(return_value=False))
-@patch.object(views, 'has_company', Mock(return_value=True))
 @patch.object(views.api_client.company, 'update_profile')
 def test_company_profile_edit_create_api_failure(
     mock_create_case_study, company_profile_edit_end_to_end, api_response_400,
@@ -1027,8 +1047,6 @@ def test_company_profile_edit_create_api_failure(
     assert response.template_name == view.failure_template
 
 
-@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
-@patch.object(views, 'has_company', Mock(return_value=True))
 def test_company_profile_initial_address_from_profile(
     company_profile_edit_goto_step, retrieve_profile_data, settings
 ):
@@ -1044,8 +1062,6 @@ def test_company_profile_initial_address_from_profile(
     assert response.context_data['form'].initial == expected
 
 
-@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
-@patch.object(views, 'has_company', Mock(return_value=True))
 @patch('api_client.api_client.company.retrieve_private_profile')
 def test_company_profile_initial_address_from_companies_house(
     mock_retrieve_profile, company_profile_edit_goto_step,
@@ -1067,8 +1083,6 @@ def test_company_profile_initial_address_from_companies_house(
     assert response.context_data['form'].initial == expected
 
 
-@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
-@patch.object(views, 'has_company', Mock(return_value=True))
 def test_company_profile_initial_data_basic(
     company_profile_edit_goto_step, retrieve_profile_data
 ):
@@ -1081,8 +1095,6 @@ def test_company_profile_initial_data_basic(
     assert response.context_data['form'].initial == expected
 
 
-@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
-@patch.object(views, 'has_company', Mock(return_value=True))
 @patch('company.forms.CompanyAddressVerificationForm.is_form_tampered',
        Mock(return_value=False))
 def test_company_profile_confirm_address_context_data(
@@ -1098,8 +1110,6 @@ def test_company_profile_confirm_address_context_data(
     assert response.context['all_cleaned_data']
 
 
-@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
-@patch.object(views, 'has_company', Mock(return_value=True))
 def test_company_profile_initial_data_classification(
     company_profile_edit_goto_step, retrieve_profile_data
 ):
@@ -1111,10 +1121,8 @@ def test_company_profile_initial_data_classification(
     assert response.context_data['form'].initial == expected
 
 
-@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
 @patch('company.forms.CompanyAddressVerificationForm.is_form_tampered',
        Mock(return_value=False))
-@patch.object(views, 'has_company', Mock(return_value=True))
 @patch.object(validators.api_client.company, 'verify_with_code')
 def test_company_address_validation_api_success(
     mock_verify_with_code, address_verification_end_to_end, sso_user,
@@ -1134,10 +1142,8 @@ def test_company_address_validation_api_success(
     )
 
 
-@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
 @patch('company.forms.CompanyAddressVerificationForm.is_form_tampered',
        Mock(return_value=False))
-@patch.object(views, 'has_company', Mock(return_value=True))
 @patch.object(views.api_client.company, 'verify_with_code')
 def test_company_address_validation_api_failure(
     mock_verify_with_code, address_verification_end_to_end, api_response_400

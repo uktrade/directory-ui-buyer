@@ -266,7 +266,10 @@ class CompanyProfileEditView(BaseMultiStepCompanyEditView):
         return context
 
     def handle_profile_update_success(self):
-        if self.condition_show_address():
+        if settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED:
+            if not self.company_profile['is_verified']:
+                return redirect('verify-company-hub')
+        elif self.condition_show_address():
             return TemplateResponse(self.request, self.templates[self.SENT])
         return super().handle_profile_update_success()
 
