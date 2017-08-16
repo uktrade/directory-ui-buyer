@@ -1,6 +1,6 @@
 import datetime
 
-from directory_validators.constants import choices
+from directory_constants.constants import choices
 from directory_validators.helpers import tokenize_keywords
 
 from django.conf import settings
@@ -10,7 +10,7 @@ from enrolment.helpers import CompaniesHouseClient
 
 
 EMPLOYEE_CHOICES = {key: value for key, value in choices.EMPLOYEES}
-SECTOR_CHOICES = {key: value for key, value in choices.COMPANY_CLASSIFICATIONS}
+SECTOR_CHOICES = {key: value for key, value in choices.INDUSTRIES}
 
 
 def format_date_of_creation(raw_date):

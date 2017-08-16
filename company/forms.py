@@ -1,7 +1,6 @@
 from directory_validators import company as shared_validators
 from directory_validators import enrolment as shared_enrolment_validators
-from directory_validators.constants import choices
-from directory_constants.constants import choices as constant_choices
+from directory_constants.constants import choices
 
 from django import forms
 from django.conf import settings
@@ -45,7 +44,7 @@ class SocialLinksForm(IndentedInvalidFieldsMixin, AutoFocusFieldMixin,
 class PublicProfileSearchForm(IndentedInvalidFieldsMixin, AutoFocusFieldMixin,
                               forms.Form):
     sectors = forms.ChoiceField(
-        choices=choices.COMPANY_CLASSIFICATIONS,
+        choices=choices.INDUSTRIES,
     )
     page = forms.IntegerField(
         required=False,
@@ -96,7 +95,7 @@ class CaseStudyBasicInfoForm(IndentedInvalidFieldsMixin, AutoFocusFieldMixin,
         help_text=(
             'Select the sector most relevant to your case study or project.'
         ),
-        choices=[('', 'Select Sector')] + list(choices.COMPANY_CLASSIFICATIONS)
+        choices=[('', 'Select Sector')] + list(choices.INDUSTRIES)
     )
     website = forms.URLField(
         label='The web address for your case study (optional)',
@@ -366,11 +365,11 @@ class CompanyClassificationForm(AutoFocusFieldMixin,
         label=(
             'What industry is your company in?'
         ),
-        choices=choices.COMPANY_CLASSIFICATIONS,
+        choices=choices.INDUSTRIES,
     )
     export_destinations = forms.MultipleChoiceField(
         label='Select the countries you would like to export to',
-        choices=constant_choices.EXPORT_DESTINATIONS + (('', 'Other'),),
+        choices=choices.EXPORT_DESTINATIONS + (('', 'Other'),),
         widget=CheckboxSelectInlineLabelMultiple,
     )
     export_destinations_other = forms.CharField(
