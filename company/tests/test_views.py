@@ -3,7 +3,7 @@ from http.cookies import SimpleCookie
 from unittest.mock import call, patch, PropertyMock, Mock
 import urllib
 
-from directory_validators.constants import choices
+from directory_constants.constants import choices
 import pytest
 import requests
 
@@ -15,7 +15,7 @@ from company import forms, helpers, views, validators
 from company.tests.helpers import create_test_image
 
 
-default_sector = choices.COMPANY_CLASSIFICATIONS[1][0]
+default_sector = choices.INDUSTRIES[1][0]
 
 
 class Wildcard:
@@ -196,7 +196,7 @@ def all_company_profile_data():
         'website': 'http://www.example.com',
         'keywords': 'Nice, Great',
         'employees': choices.EMPLOYEES[1][0],
-        'sectors': [choices.COMPANY_CLASSIFICATIONS[1][0]],
+        'sectors': [choices.INDUSTRIES[1][0]],
         'postal_full_name': 'Jeremy',
         'address_line_1': '123 Fake Street',
         'address_line_2': 'Fakeville',

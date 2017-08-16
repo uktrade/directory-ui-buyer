@@ -1,7 +1,7 @@
 import itertools
 from unittest.mock import Mock, patch
 
-from directory_validators.constants import choices
+from directory_constants.constants import choices
 import pytest
 
 from django.forms.fields import Field
@@ -34,7 +34,7 @@ def test_serialize_case_study_forms_string_images():
         'title': 'a title',
         'description': 'a description',
         'short_summary': 'damn good',
-        'sector': choices.COMPANY_CLASSIFICATIONS[1][0],
+        'sector': choices.INDUSTRIES[1][0],
         'website': 'http://www.example.com',
         'keywords': 'goog, great',
         'image_one': '1.png',
@@ -52,7 +52,7 @@ def test_serialize_case_study_forms_string_images():
         'title': 'a title',
         'description': 'a description',
         'short_summary': 'damn good',
-        'sector': choices.COMPANY_CLASSIFICATIONS[1][0],
+        'sector': choices.INDUSTRIES[1][0],
         'website': 'http://www.example.com',
         'keywords': 'goog, great',
         'testimonial': 'very nice',
@@ -77,7 +77,7 @@ def test_serialize_case_study_forms_file_images():
         'title': 'a title',
         'description': 'a description',
         'short_summary': 'damn good',
-        'sector': choices.COMPANY_CLASSIFICATIONS[1][0],
+        'sector': choices.INDUSTRIES[1][0],
         'website': 'http://www.example.com',
         'keywords': 'goog, great',
         'image_one': image_one,
@@ -95,7 +95,7 @@ def test_serialize_case_study_forms_file_images():
         'title': 'a title',
         'description': 'a description',
         'short_summary': 'damn good',
-        'sector': choices.COMPANY_CLASSIFICATIONS[1][0],
+        'sector': choices.INDUSTRIES[1][0],
         'website': 'http://www.example.com',
         'keywords': 'goog, great',
         'testimonial': 'very nice',
@@ -145,7 +145,7 @@ def test_case_study_form_all_fields():
         'title': 'a title',
         'description': 'a description',
         'short_summary': 'damn good',
-        'sector': choices.COMPANY_CLASSIFICATIONS[1][0],
+        'sector': choices.INDUSTRIES[1][0],
         'website': 'http://www.example.com',
         'keywords': 'goog, great',
     }
@@ -281,7 +281,7 @@ def test_indent_invalid_mixin_installed():
 
 def test_public_profile_search_form_default_page():
     data = {
-        'sectors': choices.COMPANY_CLASSIFICATIONS[1][0]
+        'sectors': choices.INDUSTRIES[1][0]
     }
     form = forms.PublicProfileSearchForm(data=data)
 
@@ -291,7 +291,7 @@ def test_public_profile_search_form_default_page():
 
 def test_public_profile_search_form_specified_page():
     data = {
-        'sectors': choices.COMPANY_CLASSIFICATIONS[1][0],
+        'sectors': choices.INDUSTRIES[1][0],
         'page': 3
     }
     form = forms.PublicProfileSearchForm(data=data)
@@ -310,7 +310,7 @@ def test_public_profile_search_form_requires_sectors():
 
 def test_public_profile_search_form_valid_data():
     data = {
-        'sectors': choices.COMPANY_CLASSIFICATIONS[1][0],
+        'sectors': choices.INDUSTRIES[1][0],
     }
     form = forms.PublicProfileSearchForm(data=data)
 
