@@ -279,7 +279,7 @@
 									{{ sector.label }}
 								</span>
 							{% empty %}
-								<p><a href="{% url show_wizard_links|yesno:'company-edit,company-edit-sectors' %}">Add sectors</a></p>
+								<p><a href="{% url show_wizard_links|yesno:'company-edit,company-edit-sectors' %}">Choose sector</a></p>
 							{% endfor %}
 							</p>
 							{% if company.sectors %}
