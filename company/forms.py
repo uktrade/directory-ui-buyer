@@ -405,6 +405,15 @@ class CompanyContactDetailsForm(AutoFocusFieldMixin,
             ' will see to contact your company.'
         ),
     )
+    website = forms.URLField(
+        label='Website (optional):',
+        max_length=255,
+        help_text=(
+            'The website address must start with either http:// or '
+            'https://'
+        ),
+        required=False,
+    )
 
 
 class PreventTamperMixin(forms.Form):
@@ -719,6 +728,7 @@ def serialize_company_contact_form(cleaned_data):
     return {
         'email_full_name': cleaned_data['email_full_name'],
         'email_address': cleaned_data['email_address'],
+        'website': cleaned_data['website'],
     }
 
 
