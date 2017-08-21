@@ -183,20 +183,17 @@ class CompanyProfileEditView(BaseMultiStepCompanyEditView):
     ADDRESS = 'address'
     BASIC = 'basic'
     CLASSIFICATION = 'classification'
-    ADDRESS_CONFIRM = 'confirm'
     SENT = 'sent'
 
     form_list = (
         (BASIC, forms.CompanyBasicInfoForm),
         (CLASSIFICATION, forms.CompanyClassificationForm),
         (ADDRESS, forms.CompanyAddressVerificationForm),
-        (ADDRESS_CONFIRM, forms.EmptyForm),
     )
     templates = {
         BASIC: 'company-profile-form.html',
         CLASSIFICATION: 'company-profile-form-classification.html',
         ADDRESS: 'company-profile-form-address.html',
-        ADDRESS_CONFIRM: 'company-profile-address-confirm-send.html',
         SENT: 'company-profile-form-letter-sent.html',
     }
     failure_template = 'company-profile-update-error.html'
@@ -208,18 +205,15 @@ class CompanyProfileEditView(BaseMultiStepCompanyEditView):
             (self.CLASSIFICATION, 'Industry and exporting'),
         ]
         if self.condition_show_address():
-            labels += [
-                (self.ADDRESS, 'Address'),
-                (self.ADDRESS_CONFIRM, 'Confirm'),
-            ]
+            labels.append((self.ADDRESS, 'Confirmation'))
         return labels
 
     def render_next_step(self, form, **kwargs):
         # when the final step is posted, formtools `current_step` is
-        # "confirm". However, `form_labels` does not return "confirm" because
+        # "address". However, `form_labels` does not return "confirm" because
         # the letter has now been sent - resulting in ValueError
         # https://sentry.ci.uktrade.io/dit/directory-ui-buyer-dev/issues/1588/
-        if self.steps.current == self.ADDRESS_CONFIRM:
+        if self.steps.current == self.ADDRESS:
             if not self.condition_show_address():
                 return self.render_done(form, **kwargs)
         return super().render_next_step(form, **kwargs)
@@ -235,7 +229,6 @@ class CompanyProfileEditView(BaseMultiStepCompanyEditView):
 
     condition_dict = {
         ADDRESS: condition_show_address,
-        ADDRESS_CONFIRM: condition_show_address,
     }
 
     @property
@@ -259,10 +252,13 @@ class CompanyProfileEditView(BaseMultiStepCompanyEditView):
 
     def get_context_data(self, form, **kwargs):
         context = super().get_context_data(
-            form=form, form_labels=self.form_labels, **kwargs
+            form=form, form_labels=self.form_labels, **kwargs,
         )
-        if self.steps.current == self.ADDRESS_CONFIRM:
-            context['all_cleaned_data'] = self.get_all_cleaned_data()
+        if self.steps.current == self.ADDRESS:
+            all_cleaned_data = self.get_all_cleaned_data()
+            context['company_name'] = all_cleaned_data.get('name')
+            context['company_number'] = self.company_profile['number']
+            context['company_address'] = form.build_address()
         return context
 
     def handle_profile_update_success(self):
@@ -278,21 +274,17 @@ class SendVerificationLetterView(
     Oauth2FeatureFlagMixin, BaseMultiStepCompanyEditView
 ):
     ADDRESS = 'address'
-    ADDRESS_CONFIRM = 'confirm'
     SENT = 'sent'
 
     form_list = (
         (ADDRESS, forms.CompanyAddressVerificationForm),
-        (ADDRESS_CONFIRM, forms.EmptyForm),
     )
     templates = {
         ADDRESS: 'company-profile-form-address.html',
-        ADDRESS_CONFIRM: 'company-profile-address-confirm-send.html',
         SENT: 'company-profile-form-letter-sent.html',
     }
     form_labels = [
         (ADDRESS, 'Address'),
-        (ADDRESS_CONFIRM, 'Confirm'),
     ]
     form_serializer = staticmethod(forms.serialize_company_address_form)
     failure_template = 'company-profile-update-error.html'

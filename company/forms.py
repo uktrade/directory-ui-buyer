@@ -11,7 +11,10 @@ from django.utils.safestring import mark_safe
 from company import validators
 from enrolment.forms import IndentedInvalidFieldsMixin, AutoFocusFieldMixin
 from enrolment.helpers import halt_validation_on_failure
-from enrolment.widgets import CheckboxSelectInlineLabelMultiple
+from enrolment.widgets import (
+    CheckboxSelectInlineLabelMultiple,
+    CheckboxWithInlineLabel
+)
 from enrolment.helpers import CompaniesHouseClient
 
 
@@ -467,45 +470,71 @@ class CompanyAddressVerificationForm(PreventTamperMixin,
         label='Full name:',
         max_length=255,
         help_text='This is the full name that letters will be addressed to.',
-        validators=[shared_validators.no_html]
+        validators=[shared_validators.no_html],
     )
     address_line_1 = forms.CharField(
         max_length=200,
-        widget=forms.TextInput(attrs={'readonly': 'readonly'}),
-        validators=[shared_validators.no_html]
+        widget=forms.HiddenInput,
+        validators=[shared_validators.no_html],
     )
     address_line_2 = forms.CharField(
         max_length=200,
         required=False,
-        widget=forms.TextInput(attrs={'readonly': 'readonly'}),
-        validators=[shared_validators.no_html]
+        widget=forms.HiddenInput,
+        validators=[shared_validators.no_html],
     )
     locality = forms.CharField(
         label='City:',
         max_length=200,
         required=False,
-        widget=forms.TextInput(attrs={'readonly': 'readonly'}),
-        validators=[shared_validators.no_html]
+        widget=forms.HiddenInput,
+        validators=[shared_validators.no_html],
     )
     country = forms.CharField(
         max_length=200,
         required=False,
-        widget=forms.TextInput(attrs={'readonly': 'readonly'}),
-        validators=[shared_validators.no_html]
+        widget=forms.HiddenInput,
+        validators=[shared_validators.no_html],
     )
     postal_code = forms.CharField(
         label='Postcode:',
         max_length=200,
-        widget=forms.TextInput(attrs={'readonly': 'readonly'}),
-        validators=[shared_validators.no_html]
+        widget=forms.HiddenInput,
+        validators=[shared_validators.no_html],
     )
     po_box = forms.CharField(
         label='PO box',
         max_length=200,
         required=False,
-        widget=forms.TextInput(attrs={'readonly': 'readonly'}),
-        validators=[shared_validators.no_html]
+        widget=forms.HiddenInput,
+        validators=[shared_validators.no_html],
     )
+    address_confirmed = forms.BooleanField(
+        label='',
+        widget=CheckboxWithInlineLabel(
+            label=mark_safe(
+                '<span>Tick this box to confirmed that this is the correct '
+                'address.</span>'
+                '<small>If you cannot collect mail yourself, you will need '
+                'to ensure that someone can send the letter on to you.</small>'
+            ),
+        ),
+    )
+
+    def build_address(self):
+        address_parts = []
+        for field_name in self.tamper_proof_fields:
+            field_value = self[field_name].value()
+            if field_value:
+                address_parts.append(field_value)
+        return ', '.join(address_parts)
+
+    def visible_fields(self):
+        skip = ['postal_full_name']
+        return [
+            field for field in self
+            if not field.is_hidden and field.name not in skip
+        ]
 
 
 class CompanyCodeVerificationForm(AutoFocusFieldMixin,

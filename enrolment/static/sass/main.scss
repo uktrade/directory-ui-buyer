@@ -1206,6 +1206,50 @@ a.ed-filled-button-primary {
   }
 }
 
+#ed-company-edit-address-container {
+  margin-bottom: 45px;
+}
+
+#ed-company-edit-address {
+  background-color: #d8d8d8;
+  padding: 30px;
+  margin-top: 20px;
+  .ed-company-edit-address-name {
+    height: 40px;
+    font-size: 32px;
+    font-weight: 500;
+    line-height: 1.25;
+    letter-spacing: -0.6px;
+    color: #333333;
+    margin-bottom: 15px;
+  }
+  .ed-company-edit-address-number {
+    height: 26px;
+    font-size: 18px;
+    line-height: 1.44;
+    color: #333333;
+    margin-bottom: 30px;
+  }
+}
+
+#ed-company-edit-address-tickbox-container {
+  .checkbox {
+      padding-left: 50px;
+  }
+}
+
+#ed-account-create-explainer {
+  font-size: 18px;
+  p:first-child {
+    margin-top: 30px;
+    margin-bottom: 30px;
+  }
+  li {
+    list-style: disc;
+    margin-left: 1em;
+  }
+}
+
 /* Mobile
  **********************/
 @media (max-width: 480px) {
