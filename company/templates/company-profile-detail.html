@@ -106,7 +106,7 @@
 					{% if company.website %}
 						<p>
 							<a href="{{ company.website}}">{{ company.website }}</a>
-							<a href="{% url show_wizard_links|yesno:'company-edit,company-edit-key-facts' %}" class="ed-pencil-edit-button-container">
+							<a href="{% url show_wizard_links|yesno:'company-edit,company-edit-contact' %}" class="ed-pencil-edit-button-container">
 								<img src="{% static 'images/pencil-icon.png' %}" class="ed-icon-pencil" />
 								<strong>Edit</strong>
 							</a>
