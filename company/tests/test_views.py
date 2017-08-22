@@ -313,6 +313,7 @@ def company_profile_contact_standalone_data():
         'supplier_contact_edit_view-current_step': step,
         step + '-email_address': 'test@example.com',
         step + '-email_full_name': 'test',
+        step + '-website': 'http://www.example.com',
     }
 
 
@@ -1224,6 +1225,7 @@ def test_supplier_contact_edit_standalone_view_api_success(
         data={
             'email_full_name': 'test',
             'email_address': 'test@example.com',
+            'website': 'http://www.example.com',
         }
     )
 

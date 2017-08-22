@@ -528,10 +528,12 @@ def test_serialize_company_contact_form():
     data = {
         'email_full_name': 'Jim',
         'email_address': 'jim@example.com',
+        'website': 'http://www.example.com',
     }
     expected = {
         'email_full_name': 'Jim',
         'email_address': 'jim@example.com',
+        'website': 'http://www.example.com',
     }
     assert forms.serialize_company_contact_form(data) == expected
 
@@ -572,6 +574,7 @@ def test_company_contact_details_accepts_valid():
     data = {
         'email_address': 'Jeremy@exmaple.com',
         'email_full_name': 'Jeremy',
+        'website': 'http://www.example.com',
     }
     form = forms.CompanyContactDetailsForm(data=data)
 
