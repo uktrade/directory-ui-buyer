@@ -24,7 +24,9 @@
     }
   }
 
-  hideDestinationsOther();
+  if (destinationsOther.value === '') {
+    hideDestinationsOther();
+  }
   hideDestinationOtherLabel();
   destinations.lastChild.addEventListener('change', handleDestinationOtherChange);
 })();
