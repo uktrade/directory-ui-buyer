@@ -467,7 +467,7 @@ class CompanyAddressVerificationForm(PreventTamperMixin,
     ]
 
     postal_full_name = forms.CharField(
-        label='Full name:',
+        label='Add your name',
         max_length=255,
         help_text='This is the full name that letters will be addressed to.',
         validators=[shared_validators.no_html],
@@ -513,10 +513,9 @@ class CompanyAddressVerificationForm(PreventTamperMixin,
         label='',
         widget=CheckboxWithInlineLabel(
             label=mark_safe(
-                '<span>Tick this box to confirmed that this is the correct '
-                'address.</span>'
-                '<small>If you cannot collect mail yourself, you will need '
-                'to ensure that someone can send the letter on to you.</small>'
+                '<span>Tick to confirm address.</span> '
+                '<small> If you can’t collect the letter yourself, you’ll '
+                'need to make sure someone can send it on to you..</small>'
             ),
         ),
     )
