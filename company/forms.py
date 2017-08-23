@@ -116,6 +116,7 @@ class CaseStudyBasicInfoForm(IndentedInvalidFieldsMixin, AutoFocusFieldMixin,
         widget=forms.Textarea,
         validators=[
             shared_validators.keywords_word_limit,
+            shared_validators.keywords_special_characters,
             shared_validators.no_html,
         ]
     )
