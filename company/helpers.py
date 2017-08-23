@@ -121,3 +121,20 @@ def get_contact_details(sso_session_id):
 
 def chunk_list(unchunked, length):
     return [unchunked[x:x+length] for x in range(0, len(unchunked), length)]
+
+
+def build_company_address(company_profile):
+    field_names = [
+        'address_line_1',
+        'address_line_2',
+        'locality',
+        'country',
+        'postal_code',
+        'po_box',
+    ]
+    address_parts = []
+    for field_name in field_names:
+        value = company_profile.get(field_name)
+        if value:
+            address_parts.append(value)
+    return ', '.join(address_parts)

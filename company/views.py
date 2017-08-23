@@ -245,10 +245,9 @@ class CompanyProfileEditView(BaseMultiStepCompanyEditView):
         return profile
 
     def get_form_initial(self, step):
-        if step == self.ADDRESS:
-            sso_session_id = self.request.sso_user.session_id
-            return helpers.get_contact_details(sso_session_id)
-        return self.company_profile
+        if step in [self.BASIC, self.CLASSIFICATION]:
+            return self.company_profile
+        return {}
 
     def get_context_data(self, form, **kwargs):
         context = super().get_context_data(
@@ -258,7 +257,9 @@ class CompanyProfileEditView(BaseMultiStepCompanyEditView):
             all_cleaned_data = self.get_all_cleaned_data()
             context['company_name'] = all_cleaned_data.get('name')
             context['company_number'] = self.company_profile['number']
-            context['company_address'] = form.build_address()
+            context['company_address'] = helpers.build_company_address(
+                self.company_profile
+            )
         return context
 
     def handle_profile_update_success(self):

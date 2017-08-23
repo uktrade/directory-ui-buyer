@@ -419,15 +419,9 @@ def test_company_profile_form_accepts_valid_data():
 
 def test_serialize_company_profile_forms():
     actual = forms.serialize_company_profile_forms({
-        'address_line_1': '123 Fake Street',
-        'address_line_2': 'Fakeville',
-        'country': 'GB',
         'employees': '1-10',
         'keywords': 'Jolly good exporter',
-        'locality': 'London',
         'name': 'Example ltd.',
-        'po_box': '124',
-        'postal_code': 'E14 9IX',
         'postal_full_name': 'Jeremy postal',
         'sectors': '1',
         'website': 'http://example.com',
@@ -440,12 +434,6 @@ def test_serialize_company_profile_forms():
         'name': 'Example ltd.',
         'sectors': ['1'],
         'website': 'http://example.com',
-        'address_line_1': '123 Fake Street',
-        'address_line_2': 'Fakeville',
-        'country': 'GB',
-        'locality': 'London',
-        'po_box': '124',
-        'postal_code': 'E14 9IX',
         'postal_full_name': 'Jeremy postal',
         'export_destinations': ['CN'],
         'export_destinations_other': 'Portland',
@@ -541,22 +529,9 @@ def test_serialize_company_contact_form():
 def test_serialize_company_address_form():
 
     actual = forms.serialize_company_address_form({
-        'address_line_1': '123 Fake Street',
-        'address_line_2': 'Fakeville',
-        'country': 'GB',
-        'keywords': 'Jolly good exporter',
-        'locality': 'London',
-        'po_box': '124',
-        'postal_code': 'E14 9IX',
         'postal_full_name': 'Jeremy postal',
     })
     expected = {
-        'address_line_1': '123 Fake Street',
-        'address_line_2': 'Fakeville',
-        'country': 'GB',
-        'locality': 'London',
-        'po_box': '124',
-        'postal_code': 'E14 9IX',
         'postal_full_name': 'Jeremy postal',
     }
     assert actual == expected
@@ -582,60 +557,16 @@ def test_company_contact_details_accepts_valid():
     assert form.cleaned_data == data
 
 
-def test_company_address_verification_form_build_address():
-    data = {
-        'address_line_1': '123 fake street',
-        'address_line_2': '',
-        'locality': 'London',
-        'country': 'UK',
-        'postal_code': 'E14 9OX',
-        'po_box': '',
-    }
-    form = forms.CompanyAddressVerificationForm(data=data)
-
-    assert form.build_address() == (
-        '123 fake street, London, UK, E14 9OX'
-    )
-
-
-def test_company_address_verification_detects_tamper():
-    assert issubclass(
-        forms.CompanyAddressVerificationForm, forms.PreventTamperMixin
-    )
-    assert forms.CompanyAddressVerificationForm.tamper_proof_fields == [
-        'address_line_1',
-        'address_line_2',
-        'locality',
-        'country',
-        'postal_code',
-        'po_box',
-    ]
-
-
 def test_company_address_verification_required_fields():
     form = forms.CompanyAddressVerificationForm(data={})
 
-    assert form.fields['address_line_1'].required is True
-    assert form.fields['postal_code'].required is True
     assert form.fields['postal_full_name'].required is True
-    assert form.fields['address_line_2'].required is False
-    assert form.fields['locality'].required is False
-    assert form.fields['po_box'].required is False
-    assert form.fields['country'].required is False
+    assert form.fields['address_confirmed'].required is True
 
 
-@patch('company.forms.CompanyAddressVerificationForm.is_form_tampered',
-       Mock(return_value=False))
 def test_company_address_verification_accepts_valid():
     data = {
-        'postal_full_name': 'Peter',
-        'address_line_1': '123 Fake Street',
-        'address_line_2': 'Fakeville',
-        'locality': 'London',
-        'postal_code': 'E14 8UX',
-        'po_box': '123',
-        'country': 'GB',
-        'signature': '124',
+        'postal_full_name': 'Jim Example',
         'address_confirmed': True,
     }
     form = forms.CompanyAddressVerificationForm(data=data)
@@ -890,12 +821,6 @@ def test_serialize_social_links_form():
     forms.CompanyClassificationForm().fields['export_destinations_other'],
     forms.CompanyContactDetailsForm().fields['email_full_name'],
     forms.CompanyAddressVerificationForm().fields['postal_full_name'],
-    forms.CompanyAddressVerificationForm().fields['address_line_1'],
-    forms.CompanyAddressVerificationForm().fields['address_line_2'],
-    forms.CompanyAddressVerificationForm().fields['locality'],
-    forms.CompanyAddressVerificationForm().fields['country'],
-    forms.CompanyAddressVerificationForm().fields['postal_code'],
-    forms.CompanyAddressVerificationForm().fields['po_box'],
 ])
 def test_xss_attack(field):
     assert shared_validators.no_html in field.validators

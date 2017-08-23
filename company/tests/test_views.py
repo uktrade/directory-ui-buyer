@@ -1,6 +1,6 @@
 import http
 from http.cookies import SimpleCookie
-from unittest.mock import call, patch, PropertyMock, Mock
+from unittest.mock import call, patch, PropertyMock, Mock, ANY
 import urllib
 
 from directory_constants.constants import choices
@@ -16,11 +16,6 @@ from company.tests.helpers import create_test_image
 
 
 default_sector = choices.INDUSTRIES[1][0]
-
-
-class Wildcard:
-    def __eq__(*args, **kwargs):
-        return True
 
 
 def create_response(status_code, json_body=None):
@@ -374,14 +369,7 @@ def send_verification_letter_end_to_end(
     address_data = {
         'company_profile_edit_view-current_step': view.ADDRESS,
         view.ADDRESS + '-postal_full_name': all_data['postal_full_name'],
-        view.ADDRESS + '-address_line_1': all_data['address_line_1'],
-        view.ADDRESS + '-address_line_2': all_data['address_line_2'],
-        view.ADDRESS + '-locality': all_data['locality'],
-        view.ADDRESS + '-postal_code': all_data['postal_code'],
-        view.ADDRESS + '-po_box': all_data['po_box'],
-        view.ADDRESS + '-country': all_data['country'],
         view.ADDRESS + '-address_confirmed': True,
-        view.ADDRESS + '-signature': None,
     }
 
     data_step_pairs = [
@@ -517,12 +505,12 @@ def test_case_study_create_api_success(
 
     assert response.status_code == http.client.FOUND
     assert response.get('Location') == reverse('company-detail')
-    data = all_case_study_data
+    data = {
+        **all_case_study_data,
+        'image_one': ANY, 'image_two': ANY, 'image_three': ANY,
+    }
     # django converts uploaded files to UploadedFile, which makes
     # `assert_called_once_with` tricky.
-    data['image_one'] = Wildcard()
-    data['image_two'] = Wildcard()
-    data['image_three'] = Wildcard()
     mock_create_case_study.assert_called_once_with(
         data=data,
         sso_session_id=sso_user.session_id,
@@ -553,12 +541,12 @@ def test_case_study_update_api_success(
 
     assert response.status_code == http.client.FOUND
     assert response.get('Location') == reverse('company-detail')
-    data = all_case_study_data
     # django converts uploaded files to UploadedFile, which makes
     # `assert_called_once_with` tricky.
-    data['image_one'] = Wildcard()
-    data['image_two'] = Wildcard()
-    data['image_three'] = Wildcard()
+    data = {
+        **all_case_study_data,
+        'image_one': ANY, 'image_two': ANY, 'image_three': ANY,
+    }
     mock_update_case_study.assert_called_once_with(
         data=data,
         case_study_id='1',
@@ -928,8 +916,6 @@ def test_company_profile_logo_api_client_failure(
     assert response.template_name == expected_template_name
 
 
-@patch('company.forms.CompanyAddressVerificationForm.is_form_tampered',
-       Mock(return_value=False))
 @patch.object(views.api_client.company, 'update_profile')
 def test_company_profile_edit_create_api_success(
     mock_update_profile, company_profile_edit_end_to_end, sso_user,
@@ -945,13 +931,24 @@ def test_company_profile_edit_create_api_success(
     assert response.status_code == http.client.OK
     assert response.template_name == view.templates[view.SENT]
     mock_update_profile.assert_called_once_with(
-        data=all_company_profile_data,
+        data={
+            'name': all_company_profile_data['name'],
+            'website': all_company_profile_data['website'],
+            'keywords': all_company_profile_data['keywords'],
+            'employees': all_company_profile_data['employees'],
+            'sectors': all_company_profile_data['sectors'],
+            'postal_full_name': all_company_profile_data['postal_full_name'],
+            'export_destinations': (
+                all_company_profile_data['export_destinations']
+            ),
+            'export_destinations_other': (
+                all_company_profile_data['export_destinations_other']
+            ),
+        },
         sso_session_id=sso_user.session_id,
     )
 
 
-@patch('company.forms.CompanyAddressVerificationForm.is_form_tampered',
-       Mock(return_value=False))
 @patch.object(views.api_client.company, 'update_profile')
 def test_company_profile_edit_last_step_feature_flag_enabled_not_verified(
     mock_update_profile, company_profile_letter_already_sent_edit_end_to_end,
@@ -968,8 +965,6 @@ def test_company_profile_edit_last_step_feature_flag_enabled_not_verified(
     assert response.get('Location') == reverse('verify-company-hub')
 
 
-@patch('company.forms.CompanyAddressVerificationForm.is_form_tampered',
-       Mock(return_value=False))
 @patch.object(views.api_client.company, 'update_profile')
 def test_company_profile_edit_last_step_feature_flag_enabled_verified(
     mock_update_profile, company_profile_letter_already_sent_edit_end_to_end,
@@ -985,8 +980,6 @@ def test_company_profile_edit_last_step_feature_flag_enabled_verified(
     assert response.get('Location') == reverse('company-detail')
 
 
-@patch('company.forms.CompanyAddressVerificationForm.is_form_tampered',
-       Mock(return_value=False))
 @patch.object(views.api_client.company, 'update_profile')
 @patch('api_client.api_client.company.retrieve_private_profile')
 def test_company_profile_letter_already_sent_edit_create_api_success(
@@ -1020,8 +1013,6 @@ def test_company_profile_letter_already_sent_edit_create_api_success(
     )
 
 
-@patch('company.forms.CompanyAddressVerificationForm.is_form_tampered',
-       Mock(return_value=False))
 @patch.object(views.api_client.company, 'update_profile')
 def test_company_profile_edit_create_api_failure(
     mock_create_case_study, company_profile_edit_end_to_end, api_response_400,
@@ -1038,25 +1029,9 @@ def test_company_profile_edit_create_api_failure(
     assert response.template_name == view.failure_template
 
 
-def test_company_profile_initial_address_from_profile(
-    company_profile_edit_goto_step, retrieve_profile_data, settings
-):
-    settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED = False
-
-    expected = retrieve_profile_data.copy()
-    expected['signature'] = Wildcard()
-
-    response = company_profile_edit_goto_step(
-        step=views.CompanyProfileEditView.ADDRESS
-    )
-
-    assert response.context_data['form'].initial == expected
-
-
 @patch('api_client.api_client.company.retrieve_private_profile')
-def test_company_profile_initial_address_from_companies_house(
+def test_company_profile_initial_address(
     mock_retrieve_profile, company_profile_edit_goto_step,
-    company_profile_companies_house_data,
     api_response_company_profile_no_contact_details, settings
 ):
     settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED = False
@@ -1065,13 +1040,10 @@ def test_company_profile_initial_address_from_companies_house(
         api_response_company_profile_no_contact_details
     )
 
-    expected = company_profile_companies_house_data.copy()
-    expected['signature'] = Wildcard()
-
     response = company_profile_edit_goto_step(
         step=views.CompanyProfileEditView.ADDRESS
     )
-    assert response.context_data['form'].initial == expected
+    assert response.context_data['form'].initial == {}
 
 
 def test_company_profile_initial_data_basic(
@@ -1086,8 +1058,6 @@ def test_company_profile_initial_data_basic(
     assert response.context_data['form'].initial == expected
 
 
-@patch('company.forms.CompanyAddressVerificationForm.is_form_tampered',
-       Mock(return_value=False))
 def test_company_profile_confirm_address_context_data(
     company_profile_edit_goto_step, retrieve_profile_data,
     all_company_profile_data, settings
@@ -1116,8 +1086,6 @@ def test_company_profile_initial_data_classification(
     assert response.context_data['form'].initial == expected
 
 
-@patch('company.forms.CompanyAddressVerificationForm.is_form_tampered',
-       Mock(return_value=False))
 @patch.object(validators.api_client.company, 'verify_with_code')
 def test_company_address_validation_api_success(
     mock_verify_with_code, address_verification_end_to_end, sso_user,
@@ -1137,8 +1105,6 @@ def test_company_address_validation_api_success(
     )
 
 
-@patch('company.forms.CompanyAddressVerificationForm.is_form_tampered',
-       Mock(return_value=False))
 @patch.object(views.api_client.company, 'verify_with_code')
 def test_company_address_validation_api_failure(
     mock_verify_with_code, address_verification_end_to_end, api_response_400
@@ -1167,8 +1133,6 @@ def test_supplier_address_edit_standalone_initial_data(
     assert response.context_data['form'].initial == expected_initial_data
 
 
-@patch('company.forms.CompanyAddressVerificationForm.is_form_tampered',
-       Mock(return_value=False))
 @patch.object(helpers, 'get_contact_details',
               Mock(return_value={}))
 @patch.object(views.api_client.company, 'update_profile')
@@ -1184,13 +1148,7 @@ def test_supplier_address_edit_standalone_view_api_success(
     mock_update_profile.assert_called_once_with(
         sso_session_id=sso_user.session_id,
         data={
-            'postal_code': 'E14 6XK',
-            'country': 'GB',
-            'address_line_2': 'Fakeville',
             'postal_full_name': 'Jeremy',
-            'address_line_1': '123 Fake Street',
-            'po_box': 'abc',
-            'locality': 'London',
         }
     )
 
@@ -1729,8 +1687,6 @@ def test_verify_company_address_feature_flag_on(settings, has_company_client):
 
 
 @patch.object(views.api_client.company, 'update_profile')
-@patch('company.forms.CompanyAddressVerificationForm.is_form_tampered',
-       Mock(return_value=False))
 def test_verify_company_address_end_to_end(
     mock_update_profile, settings, has_company_client,
     send_verification_letter_end_to_end
@@ -1745,12 +1701,6 @@ def test_verify_company_address_end_to_end(
     assert mock_update_profile.call_count == 1
     assert mock_update_profile.call_args == call(
         data={
-            'address_line_1': '123 Fake Street',
-            'po_box': 'abc',
-            'address_line_2': 'Fakeville',
-            'locality': 'London',
-            'postal_code': 'E14 6XK',
-            'country': 'GB',
             'postal_full_name': 'Jeremy',
         },
         sso_session_id='213'

@@ -1,5 +1,5 @@
 import http
-from unittest.mock import patch, Mock
+from unittest.mock import call, patch, Mock
 
 from django.core.urlresolvers import reverse
 from django.forms import ValidationError
@@ -189,7 +189,6 @@ def test_submit_enrolment_api_client_success(client):
 @patch('enrolment.helpers.has_company', Mock(return_value=False))
 @patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
 def test_submit_enrolment_api_client_success_correct_data(client):
-
     with patch.object(api_client.enrolment, 'send_form') as send_form_mock:
         client.get(
             reverse('register-submit'),
@@ -199,7 +198,8 @@ def test_submit_enrolment_api_client_success_correct_data(client):
             }
         )
 
-    send_form_mock.assert_called_once_with({
+    assert send_form_mock.call_count == 1
+    assert send_form_mock.call_args == call({
         'sso_id': 1,
         'company_email': 'jim@example.com',
         'contact_email_address': 'jim@example.com',
@@ -207,6 +207,12 @@ def test_submit_enrolment_api_client_success_correct_data(client):
         'date_of_creation': 'date_of_creation',
         'company_name': 'company_name',
         'has_exported_before': True,
+        'address_line_1': 'address_line_1',
+        'address_line_2': 'address_line_2',
+        'locality': 'locality',
+        'country': 'country',
+        'postal_code': 'postal_code',
+        'po_box': 'po_box',
     })
 
 

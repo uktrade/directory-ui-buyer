@@ -452,61 +452,14 @@ class PreventTamperMixin(forms.Form):
         return data
 
 
-class CompanyAddressVerificationForm(PreventTamperMixin,
-                                     AutoFocusFieldMixin,
+class CompanyAddressVerificationForm(AutoFocusFieldMixin,
                                      IndentedInvalidFieldsMixin,
                                      forms.Form):
-
-    tamper_proof_fields = [
-        'address_line_1',
-        'address_line_2',
-        'locality',
-        'country',
-        'postal_code',
-        'po_box',
-    ]
 
     postal_full_name = forms.CharField(
         label='Add your name',
         max_length=255,
         help_text='This is the full name that letters will be addressed to.',
-        validators=[shared_validators.no_html],
-    )
-    address_line_1 = forms.CharField(
-        max_length=200,
-        widget=forms.HiddenInput,
-        validators=[shared_validators.no_html],
-    )
-    address_line_2 = forms.CharField(
-        max_length=200,
-        required=False,
-        widget=forms.HiddenInput,
-        validators=[shared_validators.no_html],
-    )
-    locality = forms.CharField(
-        label='City:',
-        max_length=200,
-        required=False,
-        widget=forms.HiddenInput,
-        validators=[shared_validators.no_html],
-    )
-    country = forms.CharField(
-        max_length=200,
-        required=False,
-        widget=forms.HiddenInput,
-        validators=[shared_validators.no_html],
-    )
-    postal_code = forms.CharField(
-        label='Postcode:',
-        max_length=200,
-        widget=forms.HiddenInput,
-        validators=[shared_validators.no_html],
-    )
-    po_box = forms.CharField(
-        label='PO box',
-        max_length=200,
-        required=False,
-        widget=forms.HiddenInput,
         validators=[shared_validators.no_html],
     )
     address_confirmed = forms.BooleanField(
@@ -519,14 +472,6 @@ class CompanyAddressVerificationForm(PreventTamperMixin,
             ),
         ),
     )
-
-    def build_address(self):
-        address_parts = []
-        for field_name in self.tamper_proof_fields:
-            field_value = self[field_name].value()
-            if field_value:
-                address_parts.append(field_value)
-        return ', '.join(address_parts)
 
     def visible_fields(self):
         skip = ['postal_full_name']
@@ -649,12 +594,6 @@ def serialize_company_profile_forms(cleaned_data):
         'export_destinations': cleaned_data['export_destinations'],
         'export_destinations_other': cleaned_data['export_destinations_other'],
         'sectors': [cleaned_data['sectors']],
-        'address_line_1': cleaned_data['address_line_1'],
-        'address_line_2': cleaned_data['address_line_2'],
-        'country': cleaned_data['country'],
-        'locality': cleaned_data['locality'],
-        'po_box': cleaned_data['po_box'],
-        'postal_code': cleaned_data['postal_code'],
         'postal_full_name': cleaned_data['postal_full_name'],
 
     }
@@ -772,12 +711,6 @@ def serialize_company_address_form(cleaned_data):
     """
 
     return {
-        'address_line_1': cleaned_data['address_line_1'],
-        'address_line_2': cleaned_data['address_line_2'],
-        'country': cleaned_data['country'],
-        'locality': cleaned_data['locality'],
-        'po_box': cleaned_data['po_box'],
-        'postal_code': cleaned_data['postal_code'],
         'postal_full_name': cleaned_data['postal_full_name'],
     }
 

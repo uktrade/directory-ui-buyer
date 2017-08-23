@@ -174,24 +174,23 @@ class SubmitEnrolmentView(SSOSignUpRequiredMixin, View):
             return super().dispatch(request, *args, **kwargs)
 
     def get_enrolment_data(self, has_exported_before):
-        date_of_creation = helpers.get_company_date_of_creation_from_session(
-            self.request.session
-        )
-        company_name = helpers.get_company_name_from_session(
-            self.request.session
-        )
-        company_number = helpers.get_company_number_from_session(
-            self.request.session
-        )
-
+        session = self.request.session
+        date_of_creation = helpers.get_date_of_creation_from_session(session)
+        address = helpers.get_company_address_from_session(session)
         return {
             'sso_id': self.request.sso_user.id,
             'company_email': self.request.sso_user.email,
             'contact_email_address': self.request.sso_user.email,
-            'company_number': company_number,
+            'company_number': helpers.get_company_number_from_session(session),
             'date_of_creation': date_of_creation,
-            'company_name': company_name,
-            'has_exported_before': has_exported_before
+            'company_name': helpers.get_company_name_from_session(session),
+            'has_exported_before': has_exported_before,
+            'address_line_1': address.get('address_line_1', ''),
+            'address_line_2': address.get('address_line_2', ''),
+            'locality': address.get('locality', ''),
+            'country': address.get('country', ''),
+            'postal_code': address.get('postal_code', ''),
+            'po_box': address.get('po_box', ''),
         }
 
     def get_company_number(self):
@@ -219,9 +218,8 @@ class SubmitEnrolmentView(SSOSignUpRequiredMixin, View):
                 error_message=error.message
             )
 
-        api_response = api_client.enrolment.send_form(
-            self.get_enrolment_data(has_exported_before=has_exported_before)
-        )
+        data = self.get_enrolment_data(has_exported_before=has_exported_before)
+        api_response = api_client.enrolment.send_form(data)
         if not api_response.ok:
             logger.error(
                 "Enrolment failed, API response: {}".format(
