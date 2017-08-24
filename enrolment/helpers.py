@@ -134,32 +134,31 @@ class CompaniesHouseClient:
         return cls.session.post(url=url, json=data)
 
 
-def get_company_date_of_creation_from_session(session):
+def get_date_of_creation_from_session(session):
     return session[
         COMPANIES_HOUSE_PROFILE_SESSION_KEY
     ]['date_of_creation']
 
 
 def get_company_number_from_session(session):
-    return session.get(
-        COMPANIES_HOUSE_PROFILE_SESSION_KEY, {}
-    ).get('company_number')
+    key = 'company_number'
+    return session.get(COMPANIES_HOUSE_PROFILE_SESSION_KEY, {}).get(key)
 
 
 def get_company_name_from_session(session):
-    return session[
-        COMPANIES_HOUSE_PROFILE_SESSION_KEY
-    ]['company_name']
+    return get_company_from_session(session)['company_name']
 
 
 def get_company_status_from_session(session):
-    return session[
-        COMPANIES_HOUSE_PROFILE_SESSION_KEY
-    ]['company_status']
+    return get_company_from_session(session)['company_status']
+
+
+def get_company_address_from_session(session):
+    return get_company_from_session(session)['registered_office_address']
 
 
 def get_company_from_session(session):
-    return session.get(COMPANIES_HOUSE_PROFILE_SESSION_KEY)
+    return session.get(COMPANIES_HOUSE_PROFILE_SESSION_KEY, {})
 
 
 def store_companies_house_profile_in_session_and_validate(

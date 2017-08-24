@@ -160,12 +160,12 @@ def test_get_companies_house_contact_details():
     assert response.json() == contact_details
 
 
-def test_get_company_date_of_creation_from_session(client):
+def test_get_date_of_creation_from_session(client):
     session = client.session
     key = helpers.COMPANIES_HOUSE_PROFILE_SESSION_KEY
     session[key] = {'date_of_creation': '2000-10-10'}
 
-    actual = helpers.get_company_date_of_creation_from_session(session)
+    actual = helpers.get_date_of_creation_from_session(session)
 
     assert actual == '2000-10-10'
 

@@ -63,7 +63,14 @@ class UpdateCompanyProfileOnFormWizardDoneMixin:
 
 class GetCompanyProfileInitialFormDataMixin:
     def get_form_initial(self, step):
-        return helpers.get_company_profile(self.request.sso_user.session_id)
+        return self.company_profile
+
+    @cached_property
+    def company_profile(self):
+        profile = helpers.get_company_profile(self.request.sso_user.session_id)
+        if profile['sectors']:
+            profile['sectors'] = profile['sectors'][0]
+        return profile
 
 
 class GetTemplateForCurrentStepMixin:
@@ -86,6 +93,7 @@ class Oauth2FeatureFlagMixin:
 class BaseMultiStepCompanyEditView(
     SSOLoginRequiredMixin,
     CompanyRequiredMixin,
+    GetCompanyProfileInitialFormDataMixin,
     GetTemplateForCurrentStepMixin,
     UpdateCompanyProfileOnFormWizardDoneMixin,
     SessionWizardView
@@ -237,19 +245,6 @@ class CompanyProfileEditView(BaseMultiStepCompanyEditView):
             return forms.serialize_company_profile_forms
         return forms.serialize_company_profile_without_address_forms
 
-    @cached_property
-    def company_profile(self):
-        profile = helpers.get_company_profile(self.request.sso_user.session_id)
-        if profile['sectors']:
-            profile['sectors'] = profile['sectors'][0]
-        return profile
-
-    def get_form_initial(self, step):
-        if step == self.ADDRESS:
-            sso_session_id = self.request.sso_user.session_id
-            return helpers.get_contact_details(sso_session_id)
-        return self.company_profile
-
     def get_context_data(self, form, **kwargs):
         context = super().get_context_data(
             form=form, form_labels=self.form_labels, **kwargs,
@@ -258,7 +253,9 @@ class CompanyProfileEditView(BaseMultiStepCompanyEditView):
             all_cleaned_data = self.get_all_cleaned_data()
             context['company_name'] = all_cleaned_data.get('name')
             context['company_number'] = self.company_profile['number']
-            context['company_address'] = form.build_address()
+            context['company_address'] = helpers.build_company_address(
+                self.company_profile
+            )
         return context
 
     def handle_profile_update_success(self):
@@ -271,7 +268,8 @@ class CompanyProfileEditView(BaseMultiStepCompanyEditView):
 
 
 class SendVerificationLetterView(
-    Oauth2FeatureFlagMixin, BaseMultiStepCompanyEditView
+    Oauth2FeatureFlagMixin,
+    BaseMultiStepCompanyEditView
 ):
     ADDRESS = 'address'
     SENT = 'sent'
@@ -288,13 +286,6 @@ class SendVerificationLetterView(
     ]
     form_serializer = staticmethod(forms.serialize_company_address_form)
     failure_template = 'company-profile-update-error.html'
-
-    @cached_property
-    def company_profile(self):
-        return helpers.get_company_profile(self.request.sso_user.session_id)
-
-    def get_form_initial(self, step):
-        return helpers.get_contact_details(self.request.sso_user.session_id)
 
     def get_context_data(self, form, **kwargs):
         return super().get_context_data(
@@ -373,9 +364,7 @@ class CompanyAddressVerificationHistoricView(CompanyAddressVerificationView):
         return super().dispatch(*args, **kwargs)
 
 
-class CompanyDescriptionEditView(
-    GetCompanyProfileInitialFormDataMixin, BaseMultiStepCompanyEditView
-):
+class CompanyDescriptionEditView(BaseMultiStepCompanyEditView):
     DESCRIPTION = 'description'
     form_list = (
         (DESCRIPTION, forms.CompanyDescriptionForm),
@@ -387,9 +376,7 @@ class CompanyDescriptionEditView(
     form_serializer = staticmethod(forms.serialize_company_description_form)
 
 
-class CompanySocialLinksEditView(
-    GetCompanyProfileInitialFormDataMixin, BaseMultiStepCompanyEditView
-):
+class CompanySocialLinksEditView(BaseMultiStepCompanyEditView):
     SOCIAL = 'social'
     form_list = (
         (SOCIAL, forms.SocialLinksForm),
@@ -401,9 +388,7 @@ class CompanySocialLinksEditView(
     form_serializer = staticmethod(forms.serialize_social_links_form)
 
 
-class SupplierBasicInfoEditView(
-    GetCompanyProfileInitialFormDataMixin, BaseMultiStepCompanyEditView
-):
+class SupplierBasicInfoEditView(BaseMultiStepCompanyEditView):
     BASIC = 'basic'
     form_list = (
         (BASIC, forms.CompanyBasicInfoForm),
@@ -415,9 +400,7 @@ class SupplierBasicInfoEditView(
     form_serializer = staticmethod(forms.serialize_company_basic_info_form)
 
 
-class SupplierClassificationEditView(
-    GetCompanyProfileInitialFormDataMixin, BaseMultiStepCompanyEditView
-):
+class SupplierClassificationEditView(BaseMultiStepCompanyEditView):
     CLASSIFICATION = 'classification'
     form_list = (
         (CLASSIFICATION, forms.CompanyClassificationForm),
@@ -429,9 +412,7 @@ class SupplierClassificationEditView(
     form_serializer = staticmethod(forms.serialize_company_sectors_form)
 
 
-class SupplierContactEditView(
-    GetCompanyProfileInitialFormDataMixin, BaseMultiStepCompanyEditView
-):
+class SupplierContactEditView(BaseMultiStepCompanyEditView):
     CONTACT = 'contact'
     form_list = (
         (CONTACT, forms.CompanyContactDetailsForm),
@@ -441,10 +422,6 @@ class SupplierContactEditView(
         CONTACT: 'company-profile-form-contact.html',
     }
     form_serializer = staticmethod(forms.serialize_company_contact_form)
-
-    def get_form_initial(self, step):
-        sso_session_id = self.request.sso_user.session_id
-        return helpers.get_contact_details(sso_session_id=sso_session_id)
 
 
 class SupplierAddressEditView(BaseMultiStepCompanyEditView):
@@ -458,9 +435,15 @@ class SupplierAddressEditView(BaseMultiStepCompanyEditView):
     }
     form_serializer = staticmethod(forms.serialize_company_address_form)
 
-    def get_form_initial(self, step):
-        sso_session_id = self.request.sso_user.session_id
-        return helpers.get_contact_details(sso_session_id=sso_session_id)
+    def get_context_data(self, form, **kwargs):
+        company_address = helpers.build_company_address(self.company_profile)
+        return super().get_context_data(
+            form=form,
+            company_name=self.company_profile['name'],
+            company_number=self.company_profile['number'],
+            company_address=company_address,
+            **kwargs,
+        )
 
 
 class EmailUnsubscribeView(SSOLoginRequiredMixin, FormView):

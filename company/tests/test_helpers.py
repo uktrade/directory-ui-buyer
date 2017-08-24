@@ -230,3 +230,18 @@ def test_format_company_details_handles_keywords_empty(retrieve_profile_data):
         formatted = helpers.format_company_details(retrieve_profile_data)
 
         assert formatted['keywords'] == []
+
+
+def test_build_company_address():
+    company_profile = {
+        'address_line_1': '123 fake street',
+        'address_line_2': '',
+        'locality': 'London',
+        'country': 'UK',
+        'postal_code': 'E14 9OX',
+        'po_box': '',
+    }
+
+    assert helpers.build_company_address(company_profile) == (
+        '123 fake street, London, UK, E14 9OX'
+    )
