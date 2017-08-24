@@ -705,7 +705,10 @@ def test_company_profile_description_exposes_api_result_to_form(
 
     response = view(company_request)
 
-    assert response.context_data['form'].initial == expected
+    assert response.context_data['form'].initial == {
+        **expected,
+        'sectors': expected['sectors'][0],
+    }
 
 
 @patch.object(views, 'has_company', Mock(return_value=True))
@@ -1032,7 +1035,8 @@ def test_company_profile_edit_create_api_failure(
 @patch('api_client.api_client.company.retrieve_private_profile')
 def test_company_profile_initial_address(
     mock_retrieve_profile, company_profile_edit_goto_step,
-    api_response_company_profile_no_contact_details, settings
+    api_response_company_profile_no_contact_details, settings,
+    retrieve_profile_data
 ):
     settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED = False
 
@@ -1043,7 +1047,12 @@ def test_company_profile_initial_address(
     response = company_profile_edit_goto_step(
         step=views.CompanyProfileEditView.ADDRESS
     )
-    assert response.context_data['form'].initial == {}
+
+    assert response.context_data['form'].initial == {
+        **retrieve_profile_data,
+        'sectors': retrieve_profile_data['sectors'][0],
+        'has_valid_address': False,
+    }
 
 
 def test_company_profile_initial_data_basic(
@@ -1118,23 +1127,17 @@ def test_company_address_validation_api_failure(
     assert response.context_data['form'].errors['code'] == expected
 
 
-@patch.object(helpers, 'get_contact_details')
 def test_supplier_address_edit_standalone_initial_data(
-    mock_get_contact_details, has_company_client, sso_user,
+    retrieve_profile_data, has_company_client, sso_user,
 ):
-    expected_initial_data = {'field': 'value'}
-    mock_get_contact_details.return_value = expected_initial_data
-
     response = has_company_client.get(reverse('company-edit-address'))
 
-    mock_get_contact_details.assert_called_with(
-        sso_session_id=sso_user.session_id
-    )
-    assert response.context_data['form'].initial == expected_initial_data
+    assert response.context_data['form'].initial == {
+        **retrieve_profile_data,
+        'sectors': retrieve_profile_data['sectors'][0],
+    }
 
 
-@patch.object(helpers, 'get_contact_details',
-              Mock(return_value={}))
 @patch.object(views.api_client.company, 'update_profile')
 def test_supplier_address_edit_standalone_view_api_success(
     mock_update_profile, has_company_client, supplier_address_data_standalone,
@@ -1157,9 +1160,11 @@ def test_supplier_contact_edit_standalone_initial_data(
     has_company_client, retrieve_profile_data
 ):
     response = has_company_client.get(reverse('company-edit-contact'))
-    expected = retrieve_profile_data
 
-    assert response.context_data['form'].initial == expected
+    assert response.context_data['form'].initial == {
+        **retrieve_profile_data,
+        'sectors': retrieve_profile_data['sectors'][0],
+    }
 
 
 @patch.object(views.api_client.company, 'update_profile')
@@ -1187,7 +1192,10 @@ def test_supplier_sectors_edit_standalone_initial_data(
 ):
     response = has_company_client.get(reverse('company-edit-sectors'))
 
-    assert response.context_data['form'].initial == retrieve_profile_data
+    assert response.context_data['form'].initial == {
+        **retrieve_profile_data,
+        'sectors': retrieve_profile_data['sectors'][0],
+    }
 
 
 @patch.object(views.api_client.company, 'update_profile')
@@ -1240,7 +1248,10 @@ def test_supplier_key_facts_edit_standalone_initial_data(
 ):
     response = has_company_client.get(reverse('company-edit-key-facts'))
 
-    assert response.context_data['form'].initial == retrieve_profile_data
+    assert response.context_data['form'].initial == {
+        **retrieve_profile_data,
+        'sectors': retrieve_profile_data['sectors'][0],
+    }
 
 
 @patch.object(views.api_client.company, 'update_profile')
@@ -1269,7 +1280,10 @@ def test_supplier_social_links_edit_standalone_initial_data(
 ):
     response = has_company_client.get(reverse('company-edit-social-media'))
 
-    assert response.context_data['form'].initial == retrieve_profile_data
+    assert response.context_data['form'].initial == {
+        **retrieve_profile_data,
+        'sectors': retrieve_profile_data['sectors'][0],
+    }
 
 
 @patch.object(views.api_client.company, 'update_profile')

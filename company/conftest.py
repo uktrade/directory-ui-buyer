@@ -220,7 +220,7 @@ def get_companies_house_office_address(
     api_response_company_profile_companies_house_200
 ):
     stub = patch(
-        'company.helpers.CompaniesHouseClient.retrieve_address',
+        'enrolment.helpers.CompaniesHouseClient.retrieve_address',
         return_value=api_response_company_profile_companies_house_200,
     )
     stub.start()

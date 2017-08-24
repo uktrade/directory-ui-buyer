@@ -6,7 +6,6 @@ from directory_validators.helpers import tokenize_keywords
 from django.conf import settings
 
 from api_client import api_client
-from enrolment.helpers import CompaniesHouseClient
 
 
 EMPLOYEE_CHOICES = {key: value for key, value in choices.EMPLOYEES}
@@ -103,20 +102,6 @@ def get_company_profile(sso_session_id):
     )
     response.raise_for_status()
     return response.json()
-
-
-def get_company_contact_details_from_companies_house(number):
-    response = CompaniesHouseClient.retrieve_address(number)
-    if not response.ok:
-        response.raise_for_status()
-    return response.json()
-
-
-def get_contact_details(sso_session_id):
-    profile = get_company_profile(sso_session_id=sso_session_id)
-    if profile['has_valid_address']:
-        return profile
-    return get_company_contact_details_from_companies_house(profile['number'])
 
 
 def chunk_list(unchunked, length):
