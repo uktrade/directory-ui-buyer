@@ -153,11 +153,13 @@ class EnrolmentView(NamedUrlSessionWizardView):
         )
         return HttpResponseRedirect(url)
 
-    def get_context_data(self, *args, **kwargs):
-        ctx = super().get_context_data(
-            form_labels=self.form_labels, *args, **kwargs
+    def get_context_data(self, form,  *args, **kwargs):
+        context = super().get_context_data(
+            form=form, form_labels=self.form_labels, *args, **kwargs
         )
-        return ctx
+        if self.steps.current == self.COMPANY:
+            context.update(form.initial)
+        return context
 
 
 class SubmitEnrolmentView(SSOSignUpRequiredMixin, View):

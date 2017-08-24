@@ -582,6 +582,22 @@ def test_company_contact_details_accepts_valid():
     assert form.cleaned_data == data
 
 
+def test_company_address_verification_form_build_address():
+    data = {
+        'address_line_1': '123 fake street',
+        'address_line_2': '',
+        'locality': 'London',
+        'country': 'UK',
+        'postal_code': 'E14 9OX',
+        'po_box': '',
+    }
+    form = forms.CompanyAddressVerificationForm(data=data)
+
+    assert form.build_address() == (
+        '123 fake street, London, UK, E14 9OX'
+    )
+
+
 def test_company_address_verification_detects_tamper():
     assert issubclass(
         forms.CompanyAddressVerificationForm, forms.PreventTamperMixin
@@ -620,6 +636,7 @@ def test_company_address_verification_accepts_valid():
         'po_box': '123',
         'country': 'GB',
         'signature': '124',
+        'address_confirmed': True,
     }
     form = forms.CompanyAddressVerificationForm(data=data)
 

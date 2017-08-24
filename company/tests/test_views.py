@@ -242,15 +242,8 @@ def company_profile_address_data(all_company_profile_data):
         view.ADDRESS + '-postal_code': data['postal_code'],
         view.ADDRESS + '-po_box': data['po_box'],
         view.ADDRESS + '-country': data['country'],
+        view.ADDRESS + '-address_confirmed': True,
         view.ADDRESS + '-signature': None,
-    }
-
-
-@pytest.fixture
-def company_profile_send_confirm_data():
-    step = views.CompanyProfileEditView.ADDRESS_CONFIRM
-    return {
-        'company_profile_edit_view-current_step': step,
     }
 
 
@@ -387,12 +380,12 @@ def send_verification_letter_end_to_end(
         view.ADDRESS + '-postal_code': all_data['postal_code'],
         view.ADDRESS + '-po_box': all_data['po_box'],
         view.ADDRESS + '-country': all_data['country'],
+        view.ADDRESS + '-address_confirmed': True,
         view.ADDRESS + '-signature': None,
     }
 
     data_step_pairs = [
         [view.ADDRESS, address_data],
-        [view.ADDRESS_CONFIRM, {}],
     ]
 
     def inner():
@@ -408,7 +401,7 @@ def send_verification_letter_end_to_end(
 def company_profile_edit_end_to_end(
     has_company_client, company_profile_address_data,
     company_profile_basic_data, company_profile_classification_data,
-    company_profile_send_confirm_data, api_response_200
+    api_response_200
 ):
     # loop over each step in the supplier case study wizard and post valid data
     view = views.CompanyProfileEditView
@@ -416,7 +409,6 @@ def company_profile_edit_end_to_end(
         [view.BASIC, company_profile_basic_data],
         [view.CLASSIFICATION, company_profile_classification_data],
         [view.ADDRESS, company_profile_address_data],
-        [view.ADDRESS_CONFIRM, company_profile_send_confirm_data],
     ]
 
     def inner():
@@ -452,7 +444,6 @@ def company_profile_letter_already_sent_edit_end_to_end(
 def company_profile_edit_goto_step(
     has_company_client, company_profile_address_data,
     company_profile_basic_data, company_profile_classification_data,
-    company_profile_send_confirm_data,
     api_response_200
 ):
     # loop over each step in the supplier case study wizard and post valid data
@@ -461,7 +452,6 @@ def company_profile_edit_goto_step(
         [view.BASIC, company_profile_basic_data],
         [view.CLASSIFICATION, company_profile_classification_data],
         [view.ADDRESS, company_profile_address_data],
-        [view.ADDRESS_CONFIRM, company_profile_send_confirm_data]
     ]
 
     def inner(step=view.ADDRESS):
@@ -1105,10 +1095,14 @@ def test_company_profile_confirm_address_context_data(
     settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED = False
 
     response = company_profile_edit_goto_step(
-        step=views.CompanyProfileEditView.ADDRESS_CONFIRM
+        step=views.CompanyProfileEditView.ADDRESS
     )
 
-    assert response.context['all_cleaned_data']
+    assert response.context['company_name'] == 'Example Corp.'
+    assert response.context['company_number'] == 123456
+    assert response.context['company_address'] == (
+        '123 Fake Street, Fakeville, London, GB, E14 6XK'
+    )
 
 
 def test_company_profile_initial_data_classification(
@@ -1196,7 +1190,7 @@ def test_supplier_address_edit_standalone_view_api_success(
             'postal_full_name': 'Jeremy',
             'address_line_1': '123 Fake Street',
             'po_box': 'abc',
-            'locality': 'London'
+            'locality': 'London',
         }
     )
 
@@ -1415,8 +1409,7 @@ def test_company_profile_edit_form_labels_show_address():
         assert view.form_labels == [
             ('basic', 'Basic'),
             ('classification', 'Industry and exporting'),
-            ('address', 'Address'),
-            ('confirm', 'Confirm'),
+            ('address', 'Confirmation'),
         ]
 
 
@@ -1469,7 +1462,7 @@ def test_render_next_step_skips_to_done_if_letter_sent(
     form = Mock()
     kwargs = {}
     view = views.CompanyProfileEditView()
-    view.steps = Mock(current='confirm')
+    view.steps = Mock(current='address')
 
     view.render_next_step(form=form, **kwargs)
 
@@ -1488,7 +1481,7 @@ def test_render_next_step_skips_to_done_if_letter_not_sent(
     form = Mock()
     kwargs = {}
     view = views.CompanyProfileEditView()
-    view.steps = Mock(current='confirm')
+    view.steps = Mock(current='address')
 
     view.render_next_step(form=form, **kwargs)
 
@@ -1758,7 +1751,7 @@ def test_verify_company_address_end_to_end(
             'locality': 'London',
             'postal_code': 'E14 6XK',
             'country': 'GB',
-            'postal_full_name': 'Jeremy'
+            'postal_full_name': 'Jeremy',
         },
         sso_session_id='213'
     )

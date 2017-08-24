@@ -16,8 +16,10 @@ class IndentedInvalidFieldsMixin:
 class AutoFocusFieldMixin:
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        first_field = self.visible_fields()[0]
-        self.fields[first_field.name].widget.attrs['autofocus'] = 'autofocus'
+        fields = self.visible_fields()
+        if fields:
+            field = fields[0]
+            self.fields[field.name].widget.attrs['autofocus'] = 'autofocus'
 
 
 class CompanyForm(
@@ -31,20 +33,23 @@ class CompanyForm(
             "If this is not your company then click back in your browser "
             "and re-enter your company."
         ),
-        widget=forms.TextInput(attrs={'readonly': 'readonly'}),
+        widget=forms.HiddenInput,
         validators=[no_html],
     )
     company_number = fields.PaddedCharField(
         label='Company number:',
-        widget=forms.TextInput(attrs={'readonly': 'readonly'}),
+        widget=forms.HiddenInput,
         max_length=8,
         fillchar='0',
     )
     company_address = forms.CharField(
         label='Company registered office address:',
-        widget=forms.TextInput(attrs={'readonly': 'readonly'}),
+        widget=forms.HiddenInput,
         validators=[no_html],
     )
+
+    def visible_fields(self):
+        return []
 
 
 class CompanyExportStatusForm(
