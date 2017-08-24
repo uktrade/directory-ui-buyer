@@ -435,7 +435,7 @@ class CompanyAddressVerificationForm(AutoFocusFieldMixin,
             label=mark_safe(
                 '<span>Tick to confirm address.</span> '
                 '<small> If you can’t collect the letter yourself, you’ll '
-                'need to make sure someone can send it on to you..</small>'
+                'need to make sure someone can send it on to you.</small>'
             ),
         ),
     )
