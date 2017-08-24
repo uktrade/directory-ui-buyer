@@ -5,7 +5,6 @@ from directory_constants.constants import choices
 import pytest
 
 from django.forms.fields import Field
-from django.forms import CharField, Form
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.validators import URLValidator
 
@@ -636,84 +635,6 @@ def test_is_optional_profile_values_preverified_address_present(
 def test_is_optional_profile_values_set_none_set():
     data = {'verified_with_preverified_enrolment': False}
     assert forms.is_optional_profile_values_set(data) is False
-
-
-class PreventTamperForm(forms.PreventTamperMixin, Form):
-    tamper_proof_fields = ['field1', 'field2']
-
-    field1 = CharField()
-    field2 = CharField()
-    field3 = CharField()
-
-
-class PreventTamperFormBadDataType(forms.PreventTamperMixin, Form):
-    tamper_proof_fields = {'field1', 'field2'}
-
-    field1 = CharField()
-    field2 = CharField()
-    field3 = CharField()
-
-
-def test_prevent_tamper_rejects_set():
-    with pytest.raises(AssertionError):
-        PreventTamperFormBadDataType()
-
-
-def test_prevent_tamper_rejects_change():
-    initial = {
-        'field1': '123',
-        'field2': '456',
-    }
-    initial_form = PreventTamperForm(initial=initial)
-    data = {
-        'field1': '123',
-        'field2': '456A',
-        'field3': 'thing',
-        'signature': initial_form.initial['signature']
-    }
-
-    form = PreventTamperForm(data=data)
-    expected = [forms.PreventTamperMixin.NO_TAMPER_MESSAGE]
-
-    assert form.is_valid() is False
-    assert form.errors['__all__'] == expected
-
-
-def test_prevent_tamper_detects_accepts_unchanged():
-    initial = {
-        'field1': '123',
-        'field2': '456',
-    }
-    initial_form = PreventTamperForm(initial=initial)
-    data = {
-        'field1': '123',
-        'field2': '456',
-        'field3': 'thing',
-        'signature': initial_form.initial['signature']
-    }
-
-    form = PreventTamperForm(data=data)
-
-    assert form.is_valid() is True
-
-
-def test_prevent_tamper_detects_accepts_changed_other_field():
-    initial = {
-        'field1': '123',
-        'field2': '456',
-        'field3': 'thing1',
-    }
-    initial_form = PreventTamperForm(initial=initial)
-    data = {
-        'field1': '123',
-        'field2': '456',
-        'field3': 'thing2',
-        'signature': initial_form.initial['signature']
-    }
-
-    form = PreventTamperForm(data=data)
-
-    assert form.is_valid() is True
 
 
 @patch('company.validators.api_client.company.verify_with_code')

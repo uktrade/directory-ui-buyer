@@ -4,7 +4,6 @@ from directory_constants.constants import choices
 
 from django import forms
 from django.conf import settings
-from django.core.signing import Signer
 from django.utils.functional import cached_property
 from django.utils.safestring import mark_safe
 
@@ -418,38 +417,6 @@ class CompanyContactDetailsForm(AutoFocusFieldMixin,
         ),
         required=False,
     )
-
-
-class PreventTamperMixin(forms.Form):
-
-    NO_TAMPER_MESSAGE = 'Form tamper detected.'
-
-    signature = forms.CharField(
-        widget=forms.HiddenInput
-    )
-
-    def __init__(self, initial=None, *args, **kwargs):
-        fields = self.tamper_proof_fields
-        assert fields
-        # `self.tamper_proof_fields` must use data type that preserves order
-        assert isinstance(fields, list) or isinstance(fields, tuple)
-        initial = initial or {}
-        initial['signature'] = self.create_signature(initial)
-        super().__init__(initial=initial, *args, **kwargs)
-
-    def create_signature(self, values):
-        value = [values.get(field, '') for field in self.tamper_proof_fields]
-        return Signer().sign(','.join(value))
-
-    def is_form_tampered(self):
-        data = self.cleaned_data
-        return data.get('signature') != self.create_signature(data)
-
-    def clean(self):
-        data = super().clean()
-        if self.is_form_tampered():
-            raise forms.ValidationError(self.NO_TAMPER_MESSAGE)
-        return data
 
 
 class CompanyAddressVerificationForm(AutoFocusFieldMixin,
