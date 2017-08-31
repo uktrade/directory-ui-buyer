@@ -160,10 +160,10 @@ integration_tests:
 	make docker_integration_tests
 
 compile_requirements:
-	python3 -m piptools compile requirements.ini
+	python3 -m piptools compile requirements.in
 
 compile_test_requirements:
-	python3 -m piptools compile requirements_test.ini
+	python3 -m piptools compile requirements_test.in
 
 compile_all_requirements: compile_requirements compile_test_requirements
 
