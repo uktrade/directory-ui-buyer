@@ -1,16 +1,40 @@
 {% extends "govuk_layout.html" %}
-
+{% block sub_header %}{% endblock %}
 {% block content %}
-	<ul>
-		<li>
-		{% if company.is_verification_letter_sent %}
-			<a href="{% url 'verify-company-address-confirm' %}">Verify with your address</a>
-		{% else %}
-			<a href="{% url 'verify-company-address' %}">Verify with your address</a>
-		{% endif %}
-		</li>
-		<li>
-			<a href="{% url 'verify-companies-house' %}">Verify with Companies House</a>
-		</li>
-	</ul>
+    <div class="outer-container">
+        <br>
+        <h1>Confirm your identity</h1>
+        <br>
+        <br>
+        <p>For security, we need to check you’re who you say you are.</p>
+        <p>You can sign in with Companies House to confirm your identity straight away. You’ll need your Companies House username and password.</p>
+        <p>Alternatively, we can send a confirmation letter to your company’s registered address.</p>
+        <br>
+        <br>
+        <div class="row-fluid">
+            <div class="span6" id="ed-verify-companies-house-container">
+                <h2>Sign in with Companies House</h2>
+                <br>
+                <p>Enter your Companies House username and password. We’ll be able to confirm your identity instantly.</p>
+                <br>
+                <br>
+                <a href="{% url 'verify-companies-house' %}" class="button button-primary">Sign in</a>
+            </div>
+            <div class="span6">
+                <h2>Get confirmation letter</h2>
+                <br>
+                <p>We’ll then send a confirmation letter to your company’s registered address address within 5 working days. If you can’t collect the letter yourself, you’ll need to make sure someone can send it on to you.</p>
+                <br>
+                {% if company.is_verification_letter_sent %}
+                    <a href="{% url 'verify-company-address-confirm' %}" class="button button-primary">Verify with your address</a>
+                {% else %}
+                    <a href="{% url 'verify-company-address' %}" class="button button-primary">Send</a>
+                {% endif %}
+            </div>
+        </ul>
+    </div>
+    <br>
+    <br>
+    <br>
+    <a id="ed-verify-hub-back" href="{% url 'company-detail' %}">Back</a>
 {%endblock content %}
