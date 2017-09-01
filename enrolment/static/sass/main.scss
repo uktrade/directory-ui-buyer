@@ -1249,6 +1249,25 @@ a.ed-filled-button-primary {
   }
 }
 
+#ed-verify-companies-house-container {
+  @media (max-width: 480px) {
+    border-bottom: 4px solid #979797;
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+  }
+  @media (min-width: 481px) {
+    border-right: 4px solid #979797;
+  }
+}
+
+#ed-verify-hub-back {
+  margin-bottom: 45px;
+  display: inline-block;
+  font-size: 18px;
+  text-decoration: underline;
+}
+
+
 /* Mobile
  **********************/
 @media (max-width: 480px) {
