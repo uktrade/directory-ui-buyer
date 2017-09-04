@@ -85,21 +85,24 @@ class GetTemplateForCurrentStepMixin:
 
 class NotFoundOnDisabledFeature:
 
-    def get_flag(self):
-        return self.flag
-
     def dispatch(self, *args, **kwargs):
-        if not self.get_flag():
+        if not self.flag:
             raise Http404()
         return super().dispatch(*args, **kwargs)
-    
+
 
 class Oauth2FeatureFlagMixin(NotFoundOnDisabledFeature):
-    flag = settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED
+
+    @property
+    def flag(self):
+        return settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED
 
 
 class MultiUserAccountFeatureFlagMixin(NotFoundOnDisabledFeature):
-    flag = settings.FEATURE_MULTI_USER_ACCOUNT_ENABLED
+
+    @property
+    def flag(self):
+        return settings.FEATURE_MULTI_USER_ACCOUNT_ENABLED
 
 
 class BaseMultiStepCompanyEditView(
@@ -540,11 +543,13 @@ class BaseMultiUserAccountView(
 class AddCollaboratorView(BaseMultiUserAccountView, FormView):
     form_class = forms.AddCollaboratorForm
     template_name = 'company-add-collaborator.html'
-    form_serializer = staticmethod(forms.serialize_add_collaborator_form)
 
     def form_valid(self, form):
-        # TODO: communicate with API - add collaborator
+        self.add_collaborator(email_address=form.cleaned_data['email_address'])
         return super().form_valid(form)
+
+    def add_collaborator(self, email_address):
+        raise NotImplementedError('TODO: communicate with API')
 
     def get_success_url(self):
         return settings.SSO_PROFILE_URL + '?user-added'
@@ -553,21 +558,21 @@ class AddCollaboratorView(BaseMultiUserAccountView, FormView):
 class RemoveCollaboratorView(BaseMultiUserAccountView, FormView):
     form_class = forms.RemoveCollaboratorForm
     template_name = 'company-remove-collaborator.html'
-    form_serializer = staticmethod(forms.serialize_remove_collaborator_form)
 
     def form_valid(self, form):
-        # TODO: communicate with API - add collaborator
+        self.remove_collaborator(user_ids=form.cleaned_data['user_ids'])
         return super().form_valid(form)
+
+    def remove_collaborator(self, user_ids):
+        raise NotImplementedError('TODO: communicate with API')
 
     def get_success_url(self):
         return settings.SSO_PROFILE_URL + '?user-removed'
 
 
-class TransferAccountView(
+class TransferAccountWizardView(
     GetTemplateForCurrentStepMixin, BaseMultiUserAccountView, SessionWizardView
 ):
-    form_class = forms.RemoveCollaboratorForm
-
     EMAIL = 'email'
     PASSWORD = 'password'
 
@@ -580,12 +585,15 @@ class TransferAccountView(
         EMAIL: 'company-remove-collaborator-email.html',
         PASSWORD: 'company-remove-collaborator-password.html'
     }
-    form_serializer = staticmethod(forms.serialize_transfer_account_form)
 
-    def form_valid(self, form):
-        # TODO: communicate with API - add collaborator
-        return super().form_valid(form)
+    def done(self, *args, **kwargs):
+        self.transfer_owner(
+            email_address=self.get_all_cleaned_data()['email_address']
+        )
+        return redirect(self.get_success_url())
+
+    def transfer_owner(self, email_address):
+        raise NotImplementedError('TODO: communicate with API')
 
     def get_success_url(self):
-        return settings.SSO_PROFILE_URL + '?user-removed'
-
+        return settings.SSO_PROFILE_URL + '?owner-transferred'

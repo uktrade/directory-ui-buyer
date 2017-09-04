@@ -519,8 +519,7 @@ class RemoveCollaboratorForm(AutoFocusFieldMixin, forms.Form):
 
     def get_user_ids_choices(self):
         return (
-            (1, 'jim@axample.com'),
-            (2, 'fred@axample.com'),
+            (1, 'test@axample.com'),
         )
 
     user_ids = forms.MultipleChoiceField(
@@ -728,55 +727,6 @@ def serialize_company_address_form(cleaned_data):
 
     return {
         'postal_full_name': cleaned_data['postal_full_name'],
-    }
-
-
-
-def serialize_add_collaborator_form(cleaned_data):
-    """
-    Return the shape directory-api-client expects for adding collaborators.
-
-    @param {dict} cleaned_data - All the fields in
-                                 `AddCollaboratorForm`
-    @returns dict
-
-    """
-
-    return {
-        'email_address': cleaned_data['email_address'],
-    }
-
-
-
-def serialize_remove_collaborator_form(cleaned_data):
-    """
-    Return the shape directory-api-client expects for removing collaborators.
-
-    @param {dict} cleaned_data - All the fields in
-                                 `RemoveCollaboratorForm`
-    @returns dict
-
-    """
-
-
-    return {
-        'user_ids': cleaned_data['user_ids'],
-    }
-
-
-def serialize_transfer_account_form(cleaned_data):
-    """
-    Return the shape directory-api-client expects for removing collaborators.
-
-    @param {dict} cleaned_data - All the fields in
-                                 `TransferAccountEmailForm`
-    @returns dict
-
-    """
-
-
-    return {
-        'email_address': cleaned_data['email_address'],
     }
 
 
