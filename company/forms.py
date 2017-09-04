@@ -500,6 +500,54 @@ class CompaniesHouseOauth2Form(forms.Form):
         return self.cleaned_data['code']
 
 
+class AddCollaboratorForm(AutoFocusFieldMixin, forms.Form):
+    email_address = forms.EmailField(
+        label=(
+            'Enter the email address you would like to add to your account'
+        ),
+        widget=forms.EmailInput(
+            attrs={'placeholder': 'Email address'}
+        )
+    )
+
+
+class RemoveCollaboratorForm(AutoFocusFieldMixin, forms.Form):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['user_ids'].choices = self.get_user_ids_choices()
+
+    def get_user_ids_choices(self):
+        return (
+            (1, 'test@axample.com'),
+        )
+
+    user_ids = forms.MultipleChoiceField(
+        label='Select the email/emails you would like to remove',
+        choices=[],  # updated on __init__
+        widget=CheckboxSelectInlineLabelMultiple,
+    )
+
+
+class TransferAccountEmailForm(AutoFocusFieldMixin, forms.Form):
+    email_address = forms.EmailField(
+        label=(
+            'Enter the email address you would like to take over your account'
+        ),
+        widget=forms.EmailInput(
+            attrs={'placeholder': 'Email address'}
+        )
+    )
+
+
+class TransferAccountPasswordForm(AutoFocusFieldMixin, forms.Form):
+    password = forms.CharField(
+        label='Your password',
+        help_text='For your security, please enter your current password',
+        widget=forms.PasswordInput,
+    )
+
+
 class EmptyForm(forms.Form):
     # some views expect a form, even if no data entry is required. This works
     # around this requirement.

@@ -1719,3 +1719,183 @@ def test_verify_company_address_end_to_end(
         },
         sso_session_id='213'
     )
+
+
+multi_user_urls = [
+    reverse('add-collaborator'),
+    reverse('remove-collaborator'),
+    reverse('account-transfer'),
+]
+
+
+@pytest.mark.parametrize('url', multi_user_urls)
+def test_multi_user_view_feature_flag_off(url, settings, client):
+    settings.FEATURE_MULTI_USER_ACCOUNT_ENABLED = False
+
+    response = client.get(url)
+
+    assert response.status_code == 404
+
+
+@pytest.mark.parametrize('url', multi_user_urls)
+def test_multi_user_view_anon_user(url, settings, client):
+    settings.FEATURE_MULTI_USER_ACCOUNT_ENABLED = True
+
+    response = client.get(url)
+
+    assert response.status_code == 302
+    assert urllib.parse.unquote_plus(response.get('Location')) == (
+        'http://sso.trade.great.dev:8004/accounts/login/?'
+        'next=http://testserver' + url
+    )
+
+
+@pytest.mark.parametrize('url', multi_user_urls)
+def test_multi_user_view_no_company(url, no_company_client):
+    settings.FEATURE_MULTI_USER_ACCOUNT_ENABLED = True
+
+    response = no_company_client.get(url)
+
+    assert response.status_code == 302
+    assert response.get('Location') == reverse('index')
+
+
+@pytest.mark.parametrize('url', multi_user_urls)
+def test_multi_user_view_has_company(url, has_company_client):
+    settings.FEATURE_MULTI_USER_ACCOUNT_ENABLED = True
+
+    response = has_company_client.get(url)
+
+    assert response.status_code == 200
+
+
+@patch.object(views.AddCollaboratorView, 'add_collaborator')
+def test_add_collaborator_invalid_form(
+    mock_add_collaborator, has_company_client, settings
+):
+    settings.FEATURE_MULTI_USER_ACCOUNT_ENABLED = True
+
+    url = reverse('add-collaborator')
+
+    response = has_company_client.post(url, {})
+
+    assert response.status_code == 200
+    assert response.context_data['form'].is_valid() is False
+    assert 'email_address' in response.context_data['form'].errors
+
+    assert mock_add_collaborator.call_count == 0
+
+
+@patch.object(views.AddCollaboratorView, 'add_collaborator')
+def test_add_collaborator_valid_form(
+    mock_add_collaborator, has_company_client, settings
+):
+    settings.FEATURE_MULTI_USER_ACCOUNT_ENABLED = True
+
+    url = reverse('add-collaborator')
+
+    response = has_company_client.post(url, {'email_address': 'a@b.com'})
+
+    assert response.status_code == 302
+    assert response.get('Location') == (
+        'http://profile.trade.great.dev:8006/find-a-buyer/?user-added'
+    )
+
+    assert mock_add_collaborator.call_count == 1
+    assert mock_add_collaborator.call_args == call(
+        email_address='a@b.com'
+    )
+
+
+@patch.object(views.RemoveCollaboratorView, 'remove_collaborator')
+def test_remove_collaborator_invalid_form(
+    mock_remove_collaborator, has_company_client, settings
+):
+    settings.FEATURE_MULTI_USER_ACCOUNT_ENABLED = True
+
+    url = reverse('remove-collaborator')
+
+    response = has_company_client.post(url, {})
+
+    assert response.status_code == 200
+    assert response.context_data['form'].is_valid() is False
+    assert 'user_ids' in response.context_data['form'].errors
+
+    assert mock_remove_collaborator.call_count == 0
+
+
+@patch.object(views.RemoveCollaboratorView, 'remove_collaborator')
+def test_remove_collaborator_valid_form(
+    mock_remove_collaborator, has_company_client, settings
+):
+    settings.FEATURE_MULTI_USER_ACCOUNT_ENABLED = True
+
+    url = reverse('remove-collaborator')
+
+    response = has_company_client.post(url, {'user_ids': ['1']})
+
+    assert response.status_code == 302
+    assert response.get('Location') == (
+        'http://profile.trade.great.dev:8006/find-a-buyer/?user-removed'
+    )
+
+    assert mock_remove_collaborator.call_count == 1
+    assert mock_remove_collaborator.call_args == call(
+        user_ids=['1']
+    )
+
+
+@patch.object(views.TransferAccountWizardView, 'transfer_owner')
+def test_transfer_owner_invalid_form(
+    mock_transfer_owner, has_company_client, settings
+):
+    settings.FEATURE_MULTI_USER_ACCOUNT_ENABLED = True
+    view = views.TransferAccountWizardView
+
+    response = has_company_client.post(
+        reverse('account-transfer'),
+        {
+            'transfer_account_wizard_view-current_step': view.EMAIL,
+            view.EMAIL + '-email_address': 'a.com'
+        }
+    )
+
+    assert response.status_code == 200
+    assert response.context_data['form'].is_valid() is False
+    assert 'email_address' in response.context_data['form'].errors
+
+    assert mock_transfer_owner.call_count == 0
+
+
+@patch.object(views.TransferAccountWizardView, 'transfer_owner')
+def test_transfer_ownser_valid_form(
+    mock_transfer_owner, has_company_client, settings
+):
+    settings.FEATURE_MULTI_USER_ACCOUNT_ENABLED = True
+    view = views.TransferAccountWizardView
+    url = reverse('account-transfer')
+
+    response = has_company_client.post(
+        reverse('account-transfer'),
+        {
+            'transfer_account_wizard_view-current_step': view.EMAIL,
+            view.EMAIL + '-email_address': 'a@b.com'
+        }
+    )
+    response = has_company_client.post(
+        url,
+        {
+            'transfer_account_wizard_view-current_step': view.PASSWORD,
+            view.PASSWORD + '-password': 'password'
+        }
+    )
+
+    assert response.status_code == 302
+    assert response.get('Location') == (
+        'http://profile.trade.great.dev:8006/find-a-buyer/?owner-transferred'
+    )
+
+    assert mock_transfer_owner.call_count == 1
+    assert mock_transfer_owner.call_args == call(
+        email_address='a@b.com'
+    )

@@ -27,6 +27,9 @@ from company.views import (
     SupplierContactEditView,
     CompanyVerifyView,
     SendVerificationLetterView,
+    AddCollaboratorView,
+    RemoveCollaboratorView,
+    TransferAccountWizardView,
 )
 from company import proxy as company_proxies
 from admin.proxy import AdminProxyView
@@ -147,7 +150,21 @@ urlpatterns = [
         CompanyAddressVerificationHistoricView.as_view(),
         name='verify-company-address-historic-url'
     ),
-
+    url(
+        r'^account/add-collaborator/$',
+        AddCollaboratorView.as_view(),
+        name='add-collaborator'
+    ),
+    url(
+        r'^account/remove-collaborator/$',
+        RemoveCollaboratorView.as_view(),
+        name='remove-collaborator'
+    ),
+    url(
+        r'^account/transfer/$',
+        TransferAccountWizardView.as_view(),
+        name='account-transfer'
+    ),
     url(
         r'^api/external(?P<path>/supplier/company/)$',
         require_get(company_proxies.APIViewProxy.as_view()),
