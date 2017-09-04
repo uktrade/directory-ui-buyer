@@ -528,7 +528,7 @@ class CompaniesHouseOauth2CallbackView(
 
 class BaseMultiUserAccountView(
     MultiUserAccountFeatureFlagMixin, SSOLoginRequiredMixin,
-    CompanyRequiredMixin, FormView
+    CompanyRequiredMixin
 ):
     # TODO: check if user has permission to add/remove users
     def get_context_data(self, **kwargs):
@@ -537,7 +537,7 @@ class BaseMultiUserAccountView(
         )
 
 
-class AddCollaboratorView(BaseMultiUserAccountView):
+class AddCollaboratorView(BaseMultiUserAccountView, FormView):
     form_class = forms.AddCollaboratorForm
     template_name = 'company-add-collaborator.html'
     form_serializer = staticmethod(forms.serialize_add_collaborator_form)
@@ -550,10 +550,37 @@ class AddCollaboratorView(BaseMultiUserAccountView):
         return settings.SSO_PROFILE_URL + '?user-added'
 
 
-class RemoveCollaboratorView(BaseMultiUserAccountView):
+class RemoveCollaboratorView(BaseMultiUserAccountView, FormView):
     form_class = forms.RemoveCollaboratorForm
     template_name = 'company-remove-collaborator.html'
-    form_serializer = staticmethod(forms.serialize_add_collaborator_form)
+    form_serializer = staticmethod(forms.serialize_remove_collaborator_form)
+
+    def form_valid(self, form):
+        # TODO: communicate with API - add collaborator
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return settings.SSO_PROFILE_URL + '?user-removed'
+
+
+class TransferAccountView(
+    GetTemplateForCurrentStepMixin, BaseMultiUserAccountView, SessionWizardView
+):
+    form_class = forms.RemoveCollaboratorForm
+
+    EMAIL = 'email'
+    PASSWORD = 'password'
+
+    form_list = (
+        (EMAIL, forms.TransferAccountEmailForm),
+        (PASSWORD, forms.TransferAccountPasswordForm),
+    )
+    failure_template = 'company-transfer-error.html'
+    templates = {
+        EMAIL: 'company-remove-collaborator-email.html',
+        PASSWORD: 'company-remove-collaborator-password.html'
+    }
+    form_serializer = staticmethod(forms.serialize_transfer_account_form)
 
     def form_valid(self, form):
         # TODO: communicate with API - add collaborator

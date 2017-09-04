@@ -530,6 +530,25 @@ class RemoveCollaboratorForm(AutoFocusFieldMixin, forms.Form):
     )
 
 
+class TransferAccountEmailForm(AutoFocusFieldMixin, forms.Form):
+    email_address = forms.EmailField(
+        label=(
+            'Enter the email address you would like to take over your account'
+        ),
+        widget=forms.EmailInput(
+            attrs={'placeholder': 'Email address'}
+        )
+    )
+
+
+class TransferAccountPasswordForm(AutoFocusFieldMixin, forms.Form):
+    password = forms.CharField(
+        label='Your password',
+        help_text='For your security, please enter your current password',
+        widget=forms.PasswordInput,
+    )
+
+
 class EmptyForm(forms.Form):
     # some views expect a form, even if no data entry is required. This works
     # around this requirement.
@@ -722,6 +741,39 @@ def serialize_add_collaborator_form(cleaned_data):
     @returns dict
 
     """
+
+    return {
+        'email_address': cleaned_data['email_address'],
+    }
+
+
+
+def serialize_remove_collaborator_form(cleaned_data):
+    """
+    Return the shape directory-api-client expects for removing collaborators.
+
+    @param {dict} cleaned_data - All the fields in
+                                 `RemoveCollaboratorForm`
+    @returns dict
+
+    """
+
+
+    return {
+        'user_ids': cleaned_data['user_ids'],
+    }
+
+
+def serialize_transfer_account_form(cleaned_data):
+    """
+    Return the shape directory-api-client expects for removing collaborators.
+
+    @param {dict} cleaned_data - All the fields in
+                                 `TransferAccountEmailForm`
+    @returns dict
+
+    """
+
 
     return {
         'email_address': cleaned_data['email_address'],
