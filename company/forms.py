@@ -511,6 +511,25 @@ class AddCollaboratorForm(AutoFocusFieldMixin, forms.Form):
     )
 
 
+class RemoveCollaboratorForm(AutoFocusFieldMixin, forms.Form):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['user_ids'].choices = self.get_user_ids_choices()
+
+    def get_user_ids_choices(self):
+        return (
+            (1, 'jim@axample.com'),
+            (2, 'fred@axample.com'),
+        )
+
+    user_ids = forms.MultipleChoiceField(
+        label='Select the email/emails you would like to remove',
+        choices=[],  # updated on __init__
+        widget=CheckboxSelectInlineLabelMultiple,
+    )
+
+
 class EmptyForm(forms.Form):
     # some views expect a form, even if no data entry is required. This works
     # around this requirement.

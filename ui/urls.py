@@ -28,6 +28,7 @@ from company.views import (
     CompanyVerifyView,
     SendVerificationLetterView,
     AddCollaboratorView,
+    RemoveCollaboratorView,
 )
 from company import proxy as company_proxies
 from admin.proxy import AdminProxyView
@@ -152,6 +153,11 @@ urlpatterns = [
         r'^account/add-collaborator/$',
         AddCollaboratorView.as_view(),
         name='add-collaborator'
+    ),
+    url(
+        r'^account/remove-collaborator/$',
+        RemoveCollaboratorView.as_view(),
+        name='remove-collaborator'
     ),
     url(
         r'^api/external(?P<path>/supplier/company/)$',

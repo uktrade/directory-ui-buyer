@@ -526,10 +526,18 @@ class CompaniesHouseOauth2CallbackView(
         return super().form_valid(form)
 
 
-class AddCollaboratorView(
+class BaseMultiUserAccountView(
     MultiUserAccountFeatureFlagMixin, SSOLoginRequiredMixin,
     CompanyRequiredMixin, FormView
 ):
+    # TODO: check if user has permission to add/remove users
+    def get_context_data(self, **kwargs):
+        return super().get_context_data(
+            **kwargs, company_profile_url=settings.SSO_PROFILE_URL
+        )
+
+
+class AddCollaboratorView(BaseMultiUserAccountView):
     form_class = forms.AddCollaboratorForm
     template_name = 'company-add-collaborator.html'
     form_serializer = staticmethod(forms.serialize_add_collaborator_form)
@@ -539,9 +547,18 @@ class AddCollaboratorView(
         return super().form_valid(form)
 
     def get_success_url(self):
-        return settings.SSO_PROFILE_URL + '?user-account-added'
+        return settings.SSO_PROFILE_URL + '?user-added'
 
-    def get_context_data(self, **kwargs):
-        return super().get_context_data(
-            **kwargs, company_profile_url=settings.SSO_PROFILE_URL
-        )
+
+class RemoveCollaboratorView(BaseMultiUserAccountView):
+    form_class = forms.RemoveCollaboratorForm
+    template_name = 'company-remove-collaborator.html'
+    form_serializer = staticmethod(forms.serialize_add_collaborator_form)
+
+    def form_valid(self, form):
+        # TODO: communicate with API - add collaborator
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return settings.SSO_PROFILE_URL + '?user-removed'
+
