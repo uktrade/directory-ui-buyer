@@ -500,6 +500,17 @@ class CompaniesHouseOauth2Form(forms.Form):
         return self.cleaned_data['code']
 
 
+class AddCollaboratorForm(AutoFocusFieldMixin, forms.Form):
+    email_address = forms.EmailField(
+        label=(
+            'Enter the email address you would like to add to your account'
+        ),
+        widget=forms.EmailInput(
+            attrs={'placeholder': 'Email address'}
+        )
+    )
+
+
 class EmptyForm(forms.Form):
     # some views expect a form, even if no data entry is required. This works
     # around this requirement.
@@ -679,6 +690,22 @@ def serialize_company_address_form(cleaned_data):
 
     return {
         'postal_full_name': cleaned_data['postal_full_name'],
+    }
+
+
+
+def serialize_add_collaborator_form(cleaned_data):
+    """
+    Return the shape directory-api-client expects for adding collaborators.
+
+    @param {dict} cleaned_data - All the fields in
+                                 `AddCollaboratorForm`
+    @returns dict
+
+    """
+
+    return {
+        'email_address': cleaned_data['email_address'],
     }
 
 

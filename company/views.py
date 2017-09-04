@@ -83,11 +83,23 @@ class GetTemplateForCurrentStepMixin:
         return [self.templates[self.steps.current]]
 
 
-class Oauth2FeatureFlagMixin:
+class NotFoundOnDisabledFeature:
+
+    def get_flag(self):
+        return self.flag
+
     def dispatch(self, *args, **kwargs):
-        if not settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED:
+        if not self.get_flag():
             raise Http404()
         return super().dispatch(*args, **kwargs)
+    
+
+class Oauth2FeatureFlagMixin(NotFoundOnDisabledFeature):
+    flag = settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED
+
+
+class MultiUserAccountFeatureFlagMixin(NotFoundOnDisabledFeature):
+    flag = settings.FEATURE_MULTI_USER_ACCOUNT_ENABLED
 
 
 class BaseMultiStepCompanyEditView(
@@ -512,3 +524,24 @@ class CompaniesHouseOauth2CallbackView(
         )
         response.raise_for_status()
         return super().form_valid(form)
+
+
+class AddCollaboratorView(
+    MultiUserAccountFeatureFlagMixin, SSOLoginRequiredMixin,
+    CompanyRequiredMixin, FormView
+):
+    form_class = forms.AddCollaboratorForm
+    template_name = 'company-add-collaborator.html'
+    form_serializer = staticmethod(forms.serialize_add_collaborator_form)
+
+    def form_valid(self, form):
+        # TODO: communicate with API - add collaborator
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return settings.SSO_PROFILE_URL + '?user-account-added'
+
+    def get_context_data(self, **kwargs):
+        return super().get_context_data(
+            **kwargs, company_profile_url=settings.SSO_PROFILE_URL
+        )

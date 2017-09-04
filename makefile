@@ -42,7 +42,7 @@ DOCKER_SET_DEBUG_ENV_VARS := \
 	export DIRECTORY_UI_BUYER_SSO_LOGIN_URL=http://sso.trade.great.dev:8004/accounts/login/; \
 	export DIRECTORY_UI_BUYER_SSO_LOGOUT_URL=http://sso.trade.great.dev:8004/accounts/logout/?next=http://buyer.trade.great.dev:8001; \
 	export DIRECTORY_UI_BUYER_SSO_SIGNUP_URL=http://sso.trade.great.dev:8004/accounts/signup/; \
-	export DIRECTORY_UI_BUYER_SSO_PROFILE_URL=http://profile.trade.great.dev:8006; \
+	export DIRECTORY_UI_BUYER_SSO_PROFILE_URL=http://profile.trade.great.dev:8006/find-a-buyer/; \
 	export DIRECTORY_UI_BUYER_SSO_REDIRECT_FIELD_NAME=next; \
 	export DIRECTORY_UI_BUYER_SSO_SESSION_COOKIE=debug_sso_session_cookie; \
 	export DIRECTORY_UI_BUYER_SESSION_COOKIE_SECURE=false; \
@@ -109,7 +109,7 @@ DEBUG_SET_ENV_VARS := \
 	export SSO_LOGIN_URL=http://sso.trade.great.dev:8004/accounts/login/; \
 	export SSO_LOGOUT_URL=http://sso.trade.great.dev:8004/accounts/logout/?next=http://buyer.trade.great.dev:8001; \
 	export SSO_SIGNUP_URL=http://sso.trade.great.dev:8004/accounts/signup/; \
-	export SSO_PROFILE_URL=http://profile.trade.great.dev:8006; \
+	export SSO_PROFILE_URL=http://profile.trade.great.dev:8006/find-a-buyer/; \
 	export SSO_REDIRECT_FIELD_NAME=next; \
 	export SSO_SESSION_COOKIE=debug_sso_session_cookie; \
 	export SESSION_COOKIE_SECURE=false; \
