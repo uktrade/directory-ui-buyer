@@ -30,6 +30,7 @@ from company.views import (
     AddCollaboratorView,
     RemoveCollaboratorView,
     TransferAccountWizardView,
+    AcceptTransferAccountView,
 )
 from company import proxy as company_proxies
 from admin.proxy import AdminProxyView
@@ -164,6 +165,11 @@ urlpatterns = [
         r'^account/transfer/$',
         TransferAccountWizardView.as_view(),
         name='account-transfer'
+    ),
+    url(
+        r'^account/transfer/accept/$',
+        AcceptTransferAccountView.as_view(),
+        name='account-transfer-accept'
     ),
     url(
         r'^api/external(?P<path>/supplier/company/)$',

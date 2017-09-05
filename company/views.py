@@ -17,16 +17,29 @@ from enrolment.helpers import CompaniesHouseClient, has_company
 from sso.utils import SSOLoginRequiredMixin
 
 
-class CompanyRequiredMixin:
+class CompanyStateRequirement(SSOLoginRequiredMixin):
     def dispatch(self, request, *args, **kwargs):
         if request.sso_user is None:
             return self.handle_no_permission()
         else:
-            if not has_company(self.request.sso_user.session_id):
-                # the landing page has an input box for enrolling the company
-                return redirect('index')
+            if not self.is_company_state_valid():
+                return redirect(self.redirect_name)
             else:
                 return super().dispatch(request, *args, **kwargs)
+
+
+class CompanyRequiredMixin(CompanyStateRequirement):
+    redirect_name = 'index'
+
+    def is_company_state_valid(self):
+        return has_company(self.request.sso_user.session_id)
+
+
+class NoCompanyRequiredMixin(CompanyStateRequirement):
+    redirect_name = 'company-detail'
+
+    def is_company_state_valid(self):
+        return not has_company(self.request.sso_user.session_id)
 
 
 class SubmitFormOnGetMixin:
@@ -106,7 +119,6 @@ class MultiUserAccountFeatureFlagMixin(NotFoundOnDisabledFeature):
 
 
 class BaseMultiStepCompanyEditView(
-    SSOLoginRequiredMixin,
     CompanyRequiredMixin,
     GetCompanyProfileInitialFormDataMixin,
     GetTemplateForCurrentStepMixin,
@@ -117,7 +129,6 @@ class BaseMultiStepCompanyEditView(
 
 
 class SupplierCaseStudyWizardView(
-    SSOLoginRequiredMixin,
     CompanyRequiredMixin,
     GetTemplateForCurrentStepMixin,
     SessionWizardView
@@ -187,9 +198,7 @@ class SupplierCaseStudyWizardView(
             return TemplateResponse(self.request, self.failure_template)
 
 
-class CompanyProfileDetailView(
-    SSOLoginRequiredMixin, CompanyRequiredMixin, TemplateView
-):
+class CompanyProfileDetailView(CompanyRequiredMixin, TemplateView):
     template_name = 'company-profile-detail.html'
 
     def get_context_data(self, **kwargs):
@@ -329,8 +338,7 @@ class CompanyProfileLogoEditView(BaseMultiStepCompanyEditView):
 
 
 class CompanyVerifyView(
-    Oauth2FeatureFlagMixin, SSOLoginRequiredMixin, CompanyRequiredMixin,
-    TemplateView,
+    Oauth2FeatureFlagMixin, CompanyRequiredMixin, TemplateView,
 ):
     template_name = 'company-verify-hub.html'
 
@@ -342,10 +350,7 @@ class CompanyVerifyView(
 
 
 class CompanyAddressVerificationView(
-    SSOLoginRequiredMixin,
-    CompanyRequiredMixin,
-    GetTemplateForCurrentStepMixin,
-    SessionWizardView
+    CompanyRequiredMixin, GetTemplateForCurrentStepMixin, SessionWizardView
 ):
     ADDRESS = 'address'
     SUCCESS = 'success'
@@ -495,7 +500,7 @@ class Oauth2CallbackUrlMixin:
 
 
 class CompaniesHouseOauth2View(
-    Oauth2FeatureFlagMixin, SSOLoginRequiredMixin, CompanyRequiredMixin,
+    Oauth2FeatureFlagMixin, CompanyRequiredMixin,
     Oauth2CallbackUrlMixin, RedirectView
 ):
 
@@ -508,7 +513,7 @@ class CompaniesHouseOauth2View(
 
 
 class CompaniesHouseOauth2CallbackView(
-    Oauth2FeatureFlagMixin, SSOLoginRequiredMixin, CompanyRequiredMixin,
+    Oauth2FeatureFlagMixin, CompanyRequiredMixin,
     SubmitFormOnGetMixin, Oauth2CallbackUrlMixin, FormView
 ):
     form_class = forms.CompaniesHouseOauth2Form
@@ -530,8 +535,7 @@ class CompaniesHouseOauth2CallbackView(
 
 
 class BaseMultiUserAccountView(
-    MultiUserAccountFeatureFlagMixin, SSOLoginRequiredMixin,
-    CompanyRequiredMixin
+    MultiUserAccountFeatureFlagMixin, CompanyRequiredMixin
 ):
     # TODO: check if user has permission to add/remove users
     def get_context_data(self, **kwargs):
@@ -582,8 +586,8 @@ class TransferAccountWizardView(
     )
     failure_template = 'company-transfer-error.html'
     templates = {
-        EMAIL: 'company-remove-collaborator-email.html',
-        PASSWORD: 'company-remove-collaborator-password.html'
+        EMAIL: 'company-transfer-account-email.html',
+        PASSWORD: 'company-transfer-account-password.html'
     }
 
     def done(self, *args, **kwargs):
@@ -597,3 +601,34 @@ class TransferAccountWizardView(
 
     def get_success_url(self):
         return settings.SSO_PROFILE_URL + '?owner-transferred'
+
+
+class AcceptTransferAccountView(
+    MultiUserAccountFeatureFlagMixin, NoCompanyRequiredMixin, FormView
+):
+    form_class = forms.AcceptTransferAccountForm
+    success_url = reverse_lazy('company-detail')
+    template_name = 'company-accept-transfer-account.html'
+
+    def get_initial(self):
+        return {
+            'invite_key': self.request.GET.get('invite_key')
+        }
+
+    def get_context_data(self, **kwargs):
+        invite_key = self.request.GET.get('invite_key')
+        return super().get_context_data(
+            invite=self.get_invite_details(invite_key=invite_key),
+            **kwargs,
+        )
+
+    def form_valid(self, form):
+        self.transfer_owner(invite_key=form.cleaned_data['invite_key'])
+        return super().form_valid(form)
+
+    def get_invite_details(self, invite_key):
+        return {}
+        raise NotImplementedError('TODO: communicate with API')
+
+    def transfer_owner(self, invite_key):
+        raise NotImplementedError('TODO: communicate with API')

@@ -548,6 +548,12 @@ class TransferAccountPasswordForm(AutoFocusFieldMixin, forms.Form):
     )
 
 
+class AcceptTransferAccountForm(forms.Form):
+    invite_key = forms.CharField(
+        widget=forms.HiddenInput
+    )
+
+
 class EmptyForm(forms.Form):
     # some views expect a form, even if no data entry is required. This works
     # around this requirement.
