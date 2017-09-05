@@ -515,14 +515,14 @@ class RemoveCollaboratorForm(AutoFocusFieldMixin, forms.Form):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['user_ids'].choices = self.get_user_ids_choices()
+        self.fields['supplier_ids'].choices = self.get_supplier_ids_choices()
 
-    def get_user_ids_choices(self):
+    def get_supplier_ids_choices(self):
         return (
             (1, 'test@axample.com'),
         )
 
-    user_ids = forms.MultipleChoiceField(
+    supplier_ids = forms.MultipleChoiceField(
         label='Select the email/emails you would like to remove',
         choices=[],  # updated on __init__
         widget=CheckboxSelectInlineLabelMultiple,
@@ -548,7 +548,7 @@ class TransferAccountPasswordForm(AutoFocusFieldMixin, forms.Form):
     )
 
 
-class AcceptTransferAccountForm(forms.Form):
+class AcceptInviteForm(forms.Form):
     invite_key = forms.CharField(
         widget=forms.HiddenInput
     )

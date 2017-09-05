@@ -375,7 +375,7 @@ class CompanyAddressVerificationView(
         )
 
 
-# TODO: once the feature flag is removed, turn this into a RedirectView
+# once the feature flag is removed, turn this into a RedirectView
 class CompanyAddressVerificationHistoricView(CompanyAddressVerificationView):
     def dispatch(self, *args, **kwargs):
         if settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED:
@@ -553,7 +553,11 @@ class AddCollaboratorView(BaseMultiUserAccountView, FormView):
         return super().form_valid(form)
 
     def add_collaborator(self, email_address):
-        raise NotImplementedError('TODO: communicate with API')
+        response = api_client.company.create_collaboration_invite(
+            sso_session_id=self.request.sso_user.session_id,
+            collaborator_email=email_address,
+        )
+        response.raise_for_status()
 
     def get_success_url(self):
         return settings.SSO_PROFILE_URL + '?user-added'
@@ -564,11 +568,16 @@ class RemoveCollaboratorView(BaseMultiUserAccountView, FormView):
     template_name = 'company-remove-collaborator.html'
 
     def form_valid(self, form):
-        self.remove_collaborator(user_ids=form.cleaned_data['user_ids'])
+        supplier_ids = form.cleaned_data['supplier_ids']
+        self.remove_collaborator(supplier_ids=supplier_ids)
         return super().form_valid(form)
 
-    def remove_collaborator(self, user_ids):
-        raise NotImplementedError('TODO: communicate with API')
+    def remove_collaborator(self, supplier_ids):
+        response = api_client.company.remove_collaborators(
+            sso_session_id=self.request.sso_user.session_id,
+            supplier_ids=supplier_ids,
+        )
+        response.raise_for_status()
 
     def get_success_url(self):
         return settings.SSO_PROFILE_URL + '?user-removed'
@@ -579,6 +588,7 @@ class TransferAccountWizardView(
 ):
     EMAIL = 'email'
     PASSWORD = 'password'
+    ERROR = 'error'
 
     form_list = (
         (EMAIL, forms.TransferAccountEmailForm),
@@ -587,48 +597,74 @@ class TransferAccountWizardView(
     failure_template = 'company-transfer-error.html'
     templates = {
         EMAIL: 'company-transfer-account-email.html',
-        PASSWORD: 'company-transfer-account-password.html'
+        PASSWORD: 'company-transfer-account-password.html',
+        ERROR: 'company-transfer-account-error.html',
     }
 
     def done(self, *args, **kwargs):
-        self.transfer_owner(
-            email_address=self.get_all_cleaned_data()['email_address']
-        )
+        email_address = self.get_all_cleaned_data()['email_address']
+        self.transfer_owner(email_address=email_address)
         return redirect(self.get_success_url())
 
     def transfer_owner(self, email_address):
-        raise NotImplementedError('TODO: communicate with API')
+        response = api_client.company.create_transfer_invite(
+            sso_session_id=self.request.sso_user.session_id,
+            new_owner_email=email_address,
+        )
+        response.raise_for_status()
 
     def get_success_url(self):
         return settings.SSO_PROFILE_URL + '?owner-transferred'
 
 
-class AcceptTransferAccountView(
+class BaseAcceptInviteView(
     MultiUserAccountFeatureFlagMixin, NoCompanyRequiredMixin, FormView
 ):
-    form_class = forms.AcceptTransferAccountForm
+    form_class = forms.AcceptInviteForm
     success_url = reverse_lazy('company-detail')
-    template_name = 'company-accept-transfer-account.html'
+    invalid_template_name = 'company-invite-invalid-token.html'
 
     def get_initial(self):
         return {
             'invite_key': self.request.GET.get('invite_key')
         }
 
-    def get_context_data(self, **kwargs):
-        invite_key = self.request.GET.get('invite_key')
-        return super().get_context_data(
-            invite=self.get_invite_details(invite_key=invite_key),
-            **kwargs,
+    @cached_property
+    def invite(self):
+        response = self.retrieve_api_method(
+            sso_session_id=self.request.sso_user.session_id,
+            invite_key=self.request.GET.get('invite_key'),
         )
+        if response.ok:
+            return response.json()
+
+    def get_template_names(self):
+        if not self.invite:
+            return ['company-invite-invalid-token.html']
+        return super().get_template_names()
+
+    def get_context_data(self, **kwargs):
+        return super().get_context_data(invite=self.invite, **kwargs,)
 
     def form_valid(self, form):
-        self.transfer_owner(invite_key=form.cleaned_data['invite_key'])
+        self.accept_invite(invite_key=form.cleaned_data['invite_key'])
         return super().form_valid(form)
 
-    def get_invite_details(self, invite_key):
-        return {}
-        raise NotImplementedError('TODO: communicate with API')
+    def accept_invite(self, invite_key):
+        response = self.accept_api_method(
+            sso_session_id=self.request.sso_user.session_id,
+            invite_key=invite_key,
+        )
+        response.raise_for_status()
 
-    def transfer_owner(self, invite_key):
-        raise NotImplementedError('TODO: communicate with API')
+
+class AcceptTransferAccountView(BaseAcceptInviteView):
+    template_name = 'company-accept-transfer-account.html'
+    retrieve_api_method = api_client.company.retrieve_transfer_invite
+    accept_api_method = api_client.company.accept_transfer_invite
+
+
+class AcceptCollaborationView(BaseAcceptInviteView):
+    template_name = 'company-accept-collaboration.html'
+    retrieve_api_method = api_client.company.retrieve_collaboration_invite
+    accept_api_method = api_client.company.accept_collaboration_invite

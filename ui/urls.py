@@ -2,36 +2,8 @@ from django.conf.urls import url
 from django.views.decorators.http import require_http_methods
 from django.views.generic import RedirectView, TemplateView
 
-from enrolment.views import (
-    CompaniesHouseSearchApiView,
-    DomesticLandingView,
-    EnrolmentView,
-    SubmitEnrolmentView,
-)
-from company.views import (
-    CompaniesHouseOauth2CallbackView,
-    CompaniesHouseOauth2View,
-    CompanyAddressVerificationView,
-    CompanyAddressVerificationHistoricView,
-    CompanyDescriptionEditView,
-    CompanyProfileDetailView,
-    CompanyProfileEditView,
-    CompanyProfileLogoEditView,
-    CompanySocialLinksEditView,
-    EmailUnsubscribeView,
-    RequestPaylodTooLargeErrorView,
-    SupplierAddressEditView,
-    SupplierBasicInfoEditView,
-    SupplierCaseStudyWizardView,
-    SupplierClassificationEditView,
-    SupplierContactEditView,
-    CompanyVerifyView,
-    SendVerificationLetterView,
-    AddCollaboratorView,
-    RemoveCollaboratorView,
-    TransferAccountWizardView,
-    AcceptTransferAccountView,
-)
+from enrolment import views as enrolment_views
+from company import views as company_views
 from company import proxy as company_proxies
 from admin.proxy import AdminProxyView
 
@@ -52,124 +24,132 @@ urlpatterns = [
     ),
     url(
         r'^$',
-        DomesticLandingView.as_view(),
+        enrolment_views.DomesticLandingView.as_view(),
         name='index'
     ),
     url(
         r'^register/(?P<step>.+)$',
-        EnrolmentView.as_view(url_name='register', done_step_name='finished'),
+        enrolment_views.EnrolmentView.as_view(
+            url_name='register', done_step_name='finished'
+        ),
         name='register'
     ),
     url(
         r'^register-submit$',
-        SubmitEnrolmentView.as_view(),
+        enrolment_views.SubmitEnrolmentView.as_view(),
         name='register-submit'
     ),
     url(
         r'^company-profile$',
-        CompanyProfileDetailView.as_view(),
+        company_views.CompanyProfileDetailView.as_view(),
         name='company-detail'
     ),
     url(
         r'^company-profile/edit$',
-        CompanyProfileEditView.as_view(),
+        company_views.CompanyProfileEditView.as_view(),
         name='company-edit'
     ),
     url(
         r'^company-profile/edit/logo$',
-        CompanyProfileLogoEditView.as_view(),
+        company_views.CompanyProfileLogoEditView.as_view(),
         name='company-edit-logo'
     ),
     url(
         r'^company-profile/edit/description$',
-        CompanyDescriptionEditView.as_view(),
+        company_views.CompanyDescriptionEditView.as_view(),
         name='company-edit-description'
     ),
     url(
         r'^company-profile/edit/key-facts$',
-        SupplierBasicInfoEditView.as_view(),
+        company_views.SupplierBasicInfoEditView.as_view(),
         name='company-edit-key-facts'
     ),
     url(
         r'^company-profile/edit/sectors$',
-        SupplierClassificationEditView.as_view(),
+        company_views.SupplierClassificationEditView.as_view(),
         name='company-edit-sectors'
     ),
     url(
         r'^company-profile/edit/contact$',
-        SupplierContactEditView.as_view(),
+        company_views.SupplierContactEditView.as_view(),
         name='company-edit-contact'
     ),
     url(
         r'^company-profile/edit/address$',
-        SupplierAddressEditView.as_view(),
+        company_views.SupplierAddressEditView.as_view(),
         name='company-edit-address'
     ),
     url(
         r'^company-profile/edit/social-media$',
-        CompanySocialLinksEditView.as_view(),
+        company_views.CompanySocialLinksEditView.as_view(),
         name='company-edit-social-media'
     ),
     url(
         r'^company/case-study/edit/(?P<id>[0-9]+)?$',
-        SupplierCaseStudyWizardView.as_view(),
+        company_views.SupplierCaseStudyWizardView.as_view(),
         name='company-case-study-edit'
     ),
     url(
         r'^unsubscribe/',
-        EmailUnsubscribeView.as_view(),
+        company_views.EmailUnsubscribeView.as_view(),
         name='unsubscribe'
     ),
 
     url(
         r'^verify/$',
-        CompanyVerifyView.as_view(),
+        company_views.CompanyVerifyView.as_view(),
         name='verify-company-hub'
     ),
     url(
         r'^verify/letter-send$',
-        SendVerificationLetterView.as_view(),
+        company_views.SendVerificationLetterView.as_view(),
         name='verify-company-address'
     ),
     url(
         r'^verify/letter-confirm/$',
-        CompanyAddressVerificationView.as_view(),
+        company_views.CompanyAddressVerificationView.as_view(),
         name='verify-company-address-confirm'
     ),
     url(
         r'^verify/companies-house/$',
-        CompaniesHouseOauth2View.as_view(),
+        company_views.CompaniesHouseOauth2View.as_view(),
         name='verify-companies-house'
     ),
     url(
         r'^companies-house-oauth2-callback/$',
-        CompaniesHouseOauth2CallbackView.as_view(),
+        company_views.CompaniesHouseOauth2CallbackView.as_view(),
         name='verify-companies-house-callback'
     ),
     url(
         r'^confirm-company-address$',
-        CompanyAddressVerificationHistoricView.as_view(),
+        company_views.CompanyAddressVerificationHistoricView.as_view(),
         name='verify-company-address-historic-url'
     ),
     url(
         r'^account/add-collaborator/$',
-        AddCollaboratorView.as_view(),
+        company_views.AddCollaboratorView.as_view(),
         name='add-collaborator'
     ),
     url(
         r'^account/remove-collaborator/$',
-        RemoveCollaboratorView.as_view(),
+        company_views.RemoveCollaboratorView.as_view(),
         name='remove-collaborator'
     ),
     url(
         r'^account/transfer/$',
-        TransferAccountWizardView.as_view(),
+        company_views.TransferAccountWizardView.as_view(),
         name='account-transfer'
     ),
     url(
         r'^account/transfer/accept/$',
-        AcceptTransferAccountView.as_view(),
+        company_views.AcceptTransferAccountView.as_view(),
         name='account-transfer-accept'
+    ),
+
+    url(
+        r'^account/collaborate/accept/$',
+        company_views.AcceptCollaborationView.as_view(),
+        name='account-collaborate-accept'
     ),
     url(
         r'^api/external(?P<path>/supplier/company/)$',
@@ -188,12 +168,12 @@ urlpatterns = [
     ),
     url(
         r'^api/internal/companies-house-search/$',
-        CompaniesHouseSearchApiView.as_view(),
+        enrolment_views.CompaniesHouseSearchApiView.as_view(),
         name='api-internal-companies-house-search'
     ),
     url(
         r'^errors/image-too-large/$',
-        RequestPaylodTooLargeErrorView.as_view(),
+        company_views.RequestPaylodTooLargeErrorView.as_view(),
         name='request-payload-too-large'
     ),
     url(

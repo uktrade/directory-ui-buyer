@@ -1,0 +1,15 @@
+{% extends 'govuk_layout.html' %}
+{% load staticfiles %}
+
+{% block sub_header %}{% endblock %}
+{% block content %}
+	<br>
+	<div class="outer-container ed-enrolment">
+		<h1>Your invite link was invalid.</h2>
+		<br>
+		<br>
+		<h2>Click <a href="{% url 'index' %}">here</a> to go to the home page.</h2>
+		<br>
+		<br>
+	</div>
+{%endblock content %}
