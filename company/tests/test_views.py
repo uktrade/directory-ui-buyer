@@ -1899,3 +1899,72 @@ def test_transfer_ownser_valid_form(
     assert mock_transfer_owner.call_args == call(
         email_address='a@b.com'
     )
+
+
+def test_accept_account_transfer_feature_flag_off(client, settings):
+    settings.FEATURE_MULTI_USER_ACCOUNT_ENABLED = False
+    url = reverse('account-transfer-accept')
+
+    response = client.get(url)
+
+    assert response.status_code == 404
+
+
+def test_accept_account_transfer_anon_user(client, settings):
+    settings.FEATURE_MULTI_USER_ACCOUNT_ENABLED = True
+    url = reverse('account-transfer-accept')
+
+    response = client.get(url)
+
+    assert response.status_code == 302
+    assert urllib.parse.unquote_plus(response.get('Location')) == (
+        'http://sso.trade.great.dev:8004/accounts/login/?'
+        'next=http://testserver' + url
+    )
+
+
+def test_accept_account_transfer_has_company(has_company_client, settings):
+    settings.FEATURE_MULTI_USER_ACCOUNT_ENABLED = True
+    url = reverse('account-transfer-accept')
+
+    response = has_company_client.get(url)
+
+    assert response.status_code == 302
+    assert response.get('Location') == reverse('company-detail')
+
+
+@patch.object(views.AcceptTransferAccountView, 'get_invite_details',
+              Mock(return_value={'company_name': 'Special Company'}))
+def test_accept_account_transfer_get_invite(no_company_client, settings):
+    settings.FEATURE_MULTI_USER_ACCOUNT_ENABLED = True
+    url = reverse('account-transfer-accept')
+
+    response = no_company_client.get(url)
+
+    assert response.status_code == 200
+    assert response.context_data['invite'] == {
+        'company_name': 'Special Company'
+    }
+
+
+@patch.object(views.AcceptTransferAccountView, 'transfer_owner',
+              Mock(return_value={'company_name': 'Special Company'}))
+def test_accept_account_transfer_no_invite_key(no_company_client, settings):
+    settings.FEATURE_MULTI_USER_ACCOUNT_ENABLED = True
+    url = reverse('account-transfer-accept')
+
+    response = no_company_client.post(url, data={})
+
+    assert response.status_code == 200
+    assert response.context_data['form'].is_valid() is False
+    assert 'invite_key' in response.context_data['form'].errors
+
+
+@pytest.mark.skip('enable once the api client validates invite keys')
+def test_accept_account_transfer_invite_key_invalid():
+    pass
+
+
+@pytest.mark.skip('enable once the api client validates invite keys')
+def test_accept_account_transfer_transfer_owner():
+    pass
