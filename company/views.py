@@ -534,17 +534,32 @@ class CompaniesHouseOauth2CallbackView(
         return super().form_valid(form)
 
 
-class BaseMultiUserAccountView(
-    MultiUserAccountFeatureFlagMixin, CompanyRequiredMixin
+class CompanyOwnerRequiredMixin:
+    def dispatch(self, *args, **kwargs):
+        if not self.is_company_profile_owner():
+            return redirect('company-detail')
+        return super().dispatch(*args, **kwargs)
+
+    def is_company_profile_owner(self):
+        response = api_client.supplier.retrieve_profile(
+            sso_session_id=self.request.sso_user.session_id,
+        )
+        response.raise_for_status()
+        parsed = response.json()
+        return parsed['is_company_owner']
+
+
+class BaseMultiUserAccountManagementView(
+    MultiUserAccountFeatureFlagMixin, CompanyRequiredMixin,
+    CompanyOwnerRequiredMixin
 ):
-    # TODO: check if user has permission to add/remove users
     def get_context_data(self, **kwargs):
         return super().get_context_data(
             **kwargs, company_profile_url=settings.SSO_PROFILE_URL
         )
 
 
-class AddCollaboratorView(BaseMultiUserAccountView, FormView):
+class AddCollaboratorView(BaseMultiUserAccountManagementView, FormView):
     form_class = forms.AddCollaboratorForm
     template_name = 'company-add-collaborator.html'
 
@@ -563,7 +578,7 @@ class AddCollaboratorView(BaseMultiUserAccountView, FormView):
         return settings.SSO_PROFILE_URL + '?user-added'
 
 
-class RemoveCollaboratorView(BaseMultiUserAccountView, FormView):
+class RemoveCollaboratorView(BaseMultiUserAccountManagementView, FormView):
     form_class = forms.RemoveCollaboratorForm
     template_name = 'company-remove-collaborator.html'
 
@@ -591,7 +606,8 @@ class RemoveCollaboratorView(BaseMultiUserAccountView, FormView):
 
 
 class TransferAccountWizardView(
-    GetTemplateForCurrentStepMixin, BaseMultiUserAccountView, SessionWizardView
+    GetTemplateForCurrentStepMixin, BaseMultiUserAccountManagementView,
+    SessionWizardView
 ):
     EMAIL = 'email'
     PASSWORD = 'password'

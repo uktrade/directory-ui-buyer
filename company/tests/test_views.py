@@ -1767,6 +1767,18 @@ def test_multi_user_view_anon_user(url, settings, client):
 
 
 @pytest.mark.parametrize('url', multi_user_urls)
+@patch.object(views.CompanyOwnerRequiredMixin, 'is_company_profile_owner',
+              Mock(return_value=False))
+def test_multi_user_view_non_company_owner(url, settings, has_company_client):
+    settings.FEATURE_MULTI_USER_ACCOUNT_ENABLED = True
+
+    response = has_company_client.get(url)
+
+    assert response.status_code == 302
+    assert response.get('Location') == reverse('company-detail')
+
+
+@pytest.mark.parametrize('url', multi_user_urls)
 def test_multi_user_view_no_company(url, no_company_client):
     settings.FEATURE_MULTI_USER_ACCOUNT_ENABLED = True
 
