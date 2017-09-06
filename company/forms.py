@@ -7,6 +7,7 @@ from django.conf import settings
 from django.utils.functional import cached_property
 from django.utils.safestring import mark_safe
 
+from api_client import api_client
 from company import validators
 from enrolment.forms import IndentedInvalidFieldsMixin, AutoFocusFieldMixin
 from enrolment.helpers import halt_validation_on_failure
@@ -513,17 +514,22 @@ class AddCollaboratorForm(AutoFocusFieldMixin, forms.Form):
 
 class RemoveCollaboratorForm(AutoFocusFieldMixin, forms.Form):
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, sso_session_id, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['supplier_ids'].choices = self.get_supplier_ids_choices()
-
-    def get_supplier_ids_choices(self):
-        return (
-            (1, 'test@axample.com'),
+        self.fields['sso_ids'].choices = self.get_supplier_ids_choices(
+            sso_session_id=sso_session_id
         )
 
-    supplier_ids = forms.MultipleChoiceField(
-        label='Select the email/emails you would like to remove',
+    def get_supplier_ids_choices(self, sso_session_id):
+        response = api_client.company.retrieve_collaborators(
+            sso_session_id=sso_session_id
+        )
+        response.raise_for_status()
+        parsed = response.json()
+        return [(i['sso_id'], i['company_email']) for i in parsed]
+
+    sso_ids = forms.MultipleChoiceField(
+        label='',
         choices=[],  # updated on __init__
         widget=CheckboxSelectInlineLabelMultiple,
     )
