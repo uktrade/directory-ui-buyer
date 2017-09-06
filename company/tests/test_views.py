@@ -54,6 +54,13 @@ def api_response_oauth2_verify_200():
 
 
 @pytest.fixture
+def api_response_get_invite_200():
+    return create_response(
+        status_code=http.client.OK, json_body={'company_name': 'A Company'}
+    )
+
+
+@pytest.fixture
 def logged_in_client(client):
     stub = patch(
         'sso.middleware.SSOUserMiddleware.process_request', process_request
@@ -1769,9 +1776,9 @@ def test_multi_user_view_has_company(url, has_company_client):
     assert response.status_code == 200
 
 
-@patch.object(views.AddCollaboratorView, 'add_collaborator')
+@patch.object(views.api_client.company, 'create_collaboration_invite')
 def test_add_collaborator_invalid_form(
-    mock_add_collaborator, has_company_client, settings
+    mock_create_collaboration_invite, has_company_client, settings
 ):
     settings.FEATURE_MULTI_USER_ACCOUNT_ENABLED = True
 
@@ -1783,14 +1790,16 @@ def test_add_collaborator_invalid_form(
     assert response.context_data['form'].is_valid() is False
     assert 'email_address' in response.context_data['form'].errors
 
-    assert mock_add_collaborator.call_count == 0
+    assert mock_create_collaboration_invite.call_count == 0
 
 
-@patch.object(views.AddCollaboratorView, 'add_collaborator')
+@patch.object(views.api_client.company, 'create_collaboration_invite')
 def test_add_collaborator_valid_form(
-    mock_add_collaborator, has_company_client, settings
+    mock_create_collaboration_invite, has_company_client, settings,
+    api_response_200, sso_user
 ):
     settings.FEATURE_MULTI_USER_ACCOUNT_ENABLED = True
+    mock_create_collaboration_invite.return_value = api_response_200
 
     url = reverse('add-collaborator')
 
@@ -1801,15 +1810,38 @@ def test_add_collaborator_valid_form(
         'http://profile.trade.great.dev:8006/find-a-buyer/?user-added'
     )
 
-    assert mock_add_collaborator.call_count == 1
-    assert mock_add_collaborator.call_args == call(
-        email_address='a@b.com'
+    assert mock_create_collaboration_invite.call_count == 1
+    assert mock_create_collaboration_invite.call_args == call(
+        sso_session_id=sso_user.session_id,
+        collaborator_email='a@b.com'
     )
 
 
-@patch.object(views.RemoveCollaboratorView, 'remove_collaborator')
-def test_remove_collaborator_invalid_form(
-    mock_remove_collaborator, has_company_client, settings
+@pytest.mark.parametrize('url,data,mock_path', (
+    (
+        reverse('add-collaborator'),
+        {'email_address': 'a@b.com'},
+        'company.views.api_client.company.create_collaboration_invite',
+    ),
+    (
+        reverse('remove-collaborator'),
+        {'supplier_ids': ['1']},
+        'company.views.api_client.company.remove_collaborators',
+    )
+))
+def test_add_collaborator_valid_form_api_error(
+    url, data, mock_path, has_company_client, settings, api_response_400
+):
+    settings.FEATURE_MULTI_USER_ACCOUNT_ENABLED = True
+
+    with patch(mock_path, return_value=api_response_400):
+        with pytest.raises(requests.exceptions.HTTPError):
+            has_company_client.post(url, data)
+
+
+@patch.object(views.api_client.company, 'remove_collaborators')
+def test_remove_collaborators_invalid_form(
+    mock_remove_collaborators, has_company_client, settings
 ):
     settings.FEATURE_MULTI_USER_ACCOUNT_ENABLED = True
 
@@ -1819,35 +1851,38 @@ def test_remove_collaborator_invalid_form(
 
     assert response.status_code == 200
     assert response.context_data['form'].is_valid() is False
-    assert 'user_ids' in response.context_data['form'].errors
+    assert 'supplier_ids' in response.context_data['form'].errors
 
-    assert mock_remove_collaborator.call_count == 0
+    assert mock_remove_collaborators.call_count == 0
 
 
-@patch.object(views.RemoveCollaboratorView, 'remove_collaborator')
-def test_remove_collaborator_valid_form(
-    mock_remove_collaborator, has_company_client, settings
+@patch.object(views.api_client.company, 'remove_collaborators')
+def test_remove_collaborators_valid_form(
+    mock_remove_collaborators, has_company_client, settings, api_response_200,
+    sso_user
 ):
     settings.FEATURE_MULTI_USER_ACCOUNT_ENABLED = True
+    mock_remove_collaborators.return_value = api_response_200
 
     url = reverse('remove-collaborator')
 
-    response = has_company_client.post(url, {'user_ids': ['1']})
+    response = has_company_client.post(url, {'supplier_ids': ['1']})
 
     assert response.status_code == 302
     assert response.get('Location') == (
         'http://profile.trade.great.dev:8006/find-a-buyer/?user-removed'
     )
 
-    assert mock_remove_collaborator.call_count == 1
-    assert mock_remove_collaborator.call_args == call(
-        user_ids=['1']
+    assert mock_remove_collaborators.call_count == 1
+    assert mock_remove_collaborators.call_args == call(
+        sso_session_id=sso_user.session_id,
+        supplier_ids=['1']
     )
 
 
-@patch.object(views.TransferAccountWizardView, 'transfer_owner')
+@patch.object(views.api_client.company, 'create_transfer_invite')
 def test_transfer_owner_invalid_form(
-    mock_transfer_owner, has_company_client, settings
+    ock_create_transfer_invite, has_company_client, settings
 ):
     settings.FEATURE_MULTI_USER_ACCOUNT_ENABLED = True
     view = views.TransferAccountWizardView
@@ -1864,12 +1899,12 @@ def test_transfer_owner_invalid_form(
     assert response.context_data['form'].is_valid() is False
     assert 'email_address' in response.context_data['form'].errors
 
-    assert mock_transfer_owner.call_count == 0
+    assert ock_create_transfer_invite.call_count == 0
 
 
-@patch.object(views.TransferAccountWizardView, 'transfer_owner')
-def test_transfer_ownser_valid_form(
-    mock_transfer_owner, has_company_client, settings
+@patch.object(views.api_client.company, 'create_transfer_invite')
+def test_transfer_owner_valid_form(
+    mock_create_transfer_invite, has_company_client, settings, sso_user
 ):
     settings.FEATURE_MULTI_USER_ACCOUNT_ENABLED = True
     view = views.TransferAccountWizardView
@@ -1895,24 +1930,56 @@ def test_transfer_ownser_valid_form(
         'http://profile.trade.great.dev:8006/find-a-buyer/?owner-transferred'
     )
 
-    assert mock_transfer_owner.call_count == 1
-    assert mock_transfer_owner.call_args == call(
-        email_address='a@b.com'
+    assert mock_create_transfer_invite.call_count == 1
+    assert mock_create_transfer_invite.call_args == call(
+        sso_session_id=sso_user.session_id, new_owner_email='a@b.com'
     )
 
 
-def test_accept_account_transfer_feature_flag_off(client, settings):
+@patch.object(views.api_client.company, 'create_transfer_invite')
+def test_transfer_owner_valid_form_api_error(
+    mock_create_transfer_invite, has_company_client, settings, api_response_400
+):
+    settings.FEATURE_MULTI_USER_ACCOUNT_ENABLED = True
+    mock_create_transfer_invite.return_value = api_response_400
+    view = views.TransferAccountWizardView
+    url = reverse('account-transfer')
+
+    has_company_client.post(
+        reverse('account-transfer'),
+        {
+            'transfer_account_wizard_view-current_step': view.EMAIL,
+            view.EMAIL + '-email_address': 'a@b.com'
+        }
+    )
+    with pytest.raises(requests.exceptions.HTTPError):
+        has_company_client.post(
+            url,
+            {
+                'transfer_account_wizard_view-current_step': view.PASSWORD,
+                view.PASSWORD + '-password': 'password'
+            }
+        )
+
+
+invite_urls = (
+    reverse('account-transfer-accept'),
+    reverse('account-collaborate-accept'),
+)
+
+
+@pytest.mark.parametrize('url', invite_urls)
+def test_accept_invite_feature_flag_off(url, client, settings):
     settings.FEATURE_MULTI_USER_ACCOUNT_ENABLED = False
-    url = reverse('account-transfer-accept')
 
     response = client.get(url)
 
     assert response.status_code == 404
 
 
-def test_accept_account_transfer_anon_user(client, settings):
+@pytest.mark.parametrize('url', invite_urls)
+def test_accept_invite_anon_user(url, client, settings):
     settings.FEATURE_MULTI_USER_ACCOUNT_ENABLED = True
-    url = reverse('account-transfer-accept')
 
     response = client.get(url)
 
@@ -1923,9 +1990,9 @@ def test_accept_account_transfer_anon_user(client, settings):
     )
 
 
-def test_accept_account_transfer_has_company(has_company_client, settings):
+@pytest.mark.parametrize('url', invite_urls)
+def test_accept_invite_has_company(url, has_company_client, settings):
     settings.FEATURE_MULTI_USER_ACCOUNT_ENABLED = True
-    url = reverse('account-transfer-accept')
 
     response = has_company_client.get(url)
 
@@ -1933,25 +2000,30 @@ def test_accept_account_transfer_has_company(has_company_client, settings):
     assert response.get('Location') == reverse('company-detail')
 
 
-@patch.object(views.AcceptTransferAccountView, 'get_invite_details',
-              Mock(return_value={'company_name': 'Special Company'}))
-def test_accept_account_transfer_get_invite(no_company_client, settings):
+@pytest.mark.parametrize('url,mock_path', (
+    (
+        reverse('account-transfer-accept'),
+        'company.views.AcceptTransferAccountView.retrieve_api_method'
+    ),
+    (
+        reverse('account-collaborate-accept'),
+        'company.views.AcceptCollaborationView.retrieve_api_method'
+    ),
+))
+def test_accept_invite_get_invite(
+    url, mock_path, no_company_client, settings, api_response_get_invite_200
+):
     settings.FEATURE_MULTI_USER_ACCOUNT_ENABLED = True
-    url = reverse('account-transfer-accept')
+    with patch(mock_path, return_value=api_response_get_invite_200):
+        response = no_company_client.get(url)
 
-    response = no_company_client.get(url)
-
-    assert response.status_code == 200
-    assert response.context_data['invite'] == {
-        'company_name': 'Special Company'
-    }
+        assert response.status_code == 200
+        assert response.context_data['invite'] == {'company_name': 'A Company'}
 
 
-@patch.object(views.AcceptTransferAccountView, 'transfer_owner',
-              Mock(return_value={'company_name': 'Special Company'}))
-def test_accept_account_transfer_no_invite_key(no_company_client, settings):
+@pytest.mark.parametrize('url', invite_urls)
+def test_accept_invite_no_invite_key(url, no_company_client, settings):
     settings.FEATURE_MULTI_USER_ACCOUNT_ENABLED = True
-    url = reverse('account-transfer-accept')
 
     response = no_company_client.post(url, data={})
 
@@ -1960,11 +2032,44 @@ def test_accept_account_transfer_no_invite_key(no_company_client, settings):
     assert 'invite_key' in response.context_data['form'].errors
 
 
-@pytest.mark.skip('enable once the api client validates invite keys')
-def test_accept_account_transfer_invite_key_invalid():
-    pass
+@pytest.mark.parametrize('url,mock_path', (
+    (
+        reverse('account-transfer-accept'),
+        'company.views.AcceptTransferAccountView.retrieve_api_method'
+    ),
+    (
+        reverse('account-collaborate-accept'),
+        'company.views.AcceptCollaborationView.retrieve_api_method'
+    ),
+))
+def test_accept_invite_invite_key_invalid(
+    url, mock_path, no_company_client, settings, api_response_400
+):
+    settings.FEATURE_MULTI_USER_ACCOUNT_ENABLED = True
+    with patch(mock_path, return_value=api_response_400):
+
+        response = no_company_client.get(url)
+
+        assert response.status_code == 200
+        assert response.context_data['invite'] is None
 
 
-@pytest.mark.skip('enable once the api client validates invite keys')
-def test_accept_account_transfer_transfer_owner():
-    pass
+@pytest.mark.parametrize('url,mock_path', (
+    (
+        reverse('account-transfer-accept'),
+        'company.views.AcceptTransferAccountView.accept_api_method'
+    ),
+    (
+        reverse('account-collaborate-accept'),
+        'company.views.AcceptCollaborationView.accept_api_method'
+    ),
+))
+def test_accept_invite_invite_key_valid_post(
+    url, mock_path, no_company_client, settings, api_response_200
+):
+    settings.FEATURE_MULTI_USER_ACCOUNT_ENABLED = True
+    with patch(mock_path, return_value=api_response_200):
+        response = no_company_client.post(url, {'invite_key': 123})
+
+        assert response.status_code == 302
+        assert response.get('Location') == reverse('company-detail')
