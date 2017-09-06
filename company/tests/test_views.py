@@ -61,6 +61,15 @@ def api_response_get_invite_200():
 
 
 @pytest.fixture
+def api_response_collaborators_200():
+    return create_response(
+        status_code=http.client.OK, json_body=[
+            {'sso_id': 1, 'company_email': 'test@example.com'},
+        ]
+    )
+
+
+@pytest.fixture
 def logged_in_client(client):
     stub = patch(
         'sso.middleware.SSOUserMiddleware.process_request', process_request
@@ -1768,8 +1777,13 @@ def test_multi_user_view_no_company(url, no_company_client):
 
 
 @pytest.mark.parametrize('url', multi_user_urls)
-def test_multi_user_view_has_company(url, has_company_client):
+@patch.object(views.api_client.company, 'retrieve_collaborators')
+def test_multi_user_view_has_company(
+    mock_retrieve_collaborators, url, has_company_client,
+    api_response_collaborators_200
+):
     settings.FEATURE_MULTI_USER_ACCOUNT_ENABLED = True
+    mock_retrieve_collaborators.return_value = api_response_collaborators_200
 
     response = has_company_client.get(url)
 
@@ -1825,25 +1839,31 @@ def test_add_collaborator_valid_form(
     ),
     (
         reverse('remove-collaborator'),
-        {'supplier_ids': ['1']},
+        {'sso_ids': ['1']},
         'company.views.api_client.company.remove_collaborators',
     )
 ))
+@patch.object(views.api_client.company, 'retrieve_collaborators')
 def test_add_collaborator_valid_form_api_error(
-    url, data, mock_path, has_company_client, settings, api_response_400
+    mock_retrieve_collaborators, url, data, mock_path, has_company_client,
+    settings, api_response_400, api_response_collaborators_200
 ):
     settings.FEATURE_MULTI_USER_ACCOUNT_ENABLED = True
+    mock_retrieve_collaborators.return_value = api_response_collaborators_200
 
     with patch(mock_path, return_value=api_response_400):
         with pytest.raises(requests.exceptions.HTTPError):
             has_company_client.post(url, data)
 
 
+@patch.object(views.api_client.company, 'retrieve_collaborators')
 @patch.object(views.api_client.company, 'remove_collaborators')
 def test_remove_collaborators_invalid_form(
-    mock_remove_collaborators, has_company_client, settings
+    mock_remove_collaborators, mock_retrieve_collaborators, has_company_client,
+    settings, api_response_collaborators_200
 ):
     settings.FEATURE_MULTI_USER_ACCOUNT_ENABLED = True
+    mock_retrieve_collaborators.return_value = api_response_collaborators_200
 
     url = reverse('remove-collaborator')
 
@@ -1851,22 +1871,24 @@ def test_remove_collaborators_invalid_form(
 
     assert response.status_code == 200
     assert response.context_data['form'].is_valid() is False
-    assert 'supplier_ids' in response.context_data['form'].errors
+    assert 'sso_ids' in response.context_data['form'].errors
 
     assert mock_remove_collaborators.call_count == 0
 
 
+@patch.object(views.api_client.company, 'retrieve_collaborators')
 @patch.object(views.api_client.company, 'remove_collaborators')
 def test_remove_collaborators_valid_form(
-    mock_remove_collaborators, has_company_client, settings, api_response_200,
-    sso_user
+    mock_remove_collaborators, mock_retrieve_collaborators, has_company_client,
+    settings, api_response_200, api_response_collaborators_200, sso_user
 ):
     settings.FEATURE_MULTI_USER_ACCOUNT_ENABLED = True
     mock_remove_collaborators.return_value = api_response_200
+    mock_retrieve_collaborators.return_value = api_response_collaborators_200
 
     url = reverse('remove-collaborator')
 
-    response = has_company_client.post(url, {'supplier_ids': ['1']})
+    response = has_company_client.post(url, {'sso_ids': ['1']})
 
     assert response.status_code == 302
     assert response.get('Location') == (
@@ -1876,7 +1898,7 @@ def test_remove_collaborators_valid_form(
     assert mock_remove_collaborators.call_count == 1
     assert mock_remove_collaborators.call_args == call(
         sso_session_id=sso_user.session_id,
-        supplier_ids=['1']
+        sso_ids=['1']
     )
 
 

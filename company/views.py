@@ -567,15 +567,22 @@ class RemoveCollaboratorView(BaseMultiUserAccountView, FormView):
     form_class = forms.RemoveCollaboratorForm
     template_name = 'company-remove-collaborator.html'
 
+    def get_form_kwargs(self, *args, **kwargs):
+        form_kwargs = super().get_form_kwargs(*args, **kwargs)
+        return {
+            'sso_session_id': self.request.sso_user.session_id,
+            **form_kwargs
+        }
+
     def form_valid(self, form):
-        supplier_ids = form.cleaned_data['supplier_ids']
-        self.remove_collaborator(supplier_ids=supplier_ids)
+        sso_ids = form.cleaned_data['sso_ids']
+        self.remove_collaborator(sso_ids=sso_ids)
         return super().form_valid(form)
 
-    def remove_collaborator(self, supplier_ids):
+    def remove_collaborator(self, sso_ids):
         response = api_client.company.remove_collaborators(
             sso_session_id=self.request.sso_user.session_id,
-            supplier_ids=supplier_ids,
+            sso_ids=sso_ids,
         )
         response.raise_for_status()
 
