@@ -1937,10 +1937,48 @@ def test_transfer_owner_invalid_form(
 
 
 @patch.object(views.api_client.company, 'create_transfer_invite')
-def test_transfer_owner_valid_form(
-    mock_create_transfer_invite, has_company_client, settings, sso_user
+@patch.object(forms.sso_api_client.user, 'check_password')
+def test_transfer_owner_valid_password(
+    mock_check_password, mock_create_transfer_invite, has_company_client,
+    settings, sso_user, api_response_400
 ):
     settings.FEATURE_MULTI_USER_ACCOUNT_ENABLED = True
+    mock_check_password.return_value = api_response_400
+
+    view = views.TransferAccountWizardView
+    url = reverse('account-transfer')
+
+    response = has_company_client.post(
+        reverse('account-transfer'),
+        {
+            'transfer_account_wizard_view-current_step': view.EMAIL,
+            view.EMAIL + '-email_address': 'a@b.com'
+        }
+    )
+    response = has_company_client.post(
+        url,
+        {
+            'transfer_account_wizard_view-current_step': view.PASSWORD,
+            view.PASSWORD + '-password': 'password'
+        }
+    )
+
+    expected_error = forms.TransferAccountPasswordForm.MESSAGE_INVALID_PASSWORD
+    assert response.status_code == 200
+    assert response.context_data['form'].errors['password'] == [expected_error]
+
+    assert mock_create_transfer_invite.call_count == 0
+
+
+@patch.object(views.api_client.company, 'create_transfer_invite')
+@patch.object(forms.sso_api_client.user, 'check_password')
+def test_transfer_owner_valid_form(
+    mock_check_password, mock_create_transfer_invite, has_company_client,
+    settings, sso_user, api_response_200
+):
+    settings.FEATURE_MULTI_USER_ACCOUNT_ENABLED = True
+    mock_check_password.return_value = api_response_200
+
     view = views.TransferAccountWizardView
     url = reverse('account-transfer')
 
@@ -1971,11 +2009,15 @@ def test_transfer_owner_valid_form(
 
 
 @patch.object(views.api_client.company, 'create_transfer_invite')
+@patch.object(forms.sso_api_client.user, 'check_password')
 def test_transfer_owner_valid_form_api_error(
-    mock_create_transfer_invite, has_company_client, settings, api_response_400
+    mock_check_password, mock_create_transfer_invite, has_company_client,
+    settings, api_response_200, api_response_400
 ):
     settings.FEATURE_MULTI_USER_ACCOUNT_ENABLED = True
     mock_create_transfer_invite.return_value = api_response_400
+    mock_check_password.return_value = api_response_200
+
     view = views.TransferAccountWizardView
     url = reverse('account-transfer')
 
