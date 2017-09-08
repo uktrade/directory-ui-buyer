@@ -624,6 +624,12 @@ class TransferAccountWizardView(
         ERROR: 'company-transfer-account-error.html',
     }
 
+    def get_form_kwargs(self, step):
+        initial = super().get_form_kwargs(step)
+        if step == self.PASSWORD:
+            initial['sso_session_id'] = self.request.sso_user.session_id
+        return initial
+
     def done(self, *args, **kwargs):
         email_address = self.get_all_cleaned_data()['email_address']
         self.transfer_owner(email_address=email_address)
