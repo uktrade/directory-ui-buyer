@@ -16,6 +16,7 @@ from enrolment.widgets import (
     CheckboxWithInlineLabel
 )
 from enrolment.helpers import CompaniesHouseClient
+from sso.utils import sso_api_client
 
 
 class SocialLinksForm(IndentedInvalidFieldsMixin, AutoFocusFieldMixin,
@@ -546,12 +547,29 @@ class TransferAccountEmailForm(AutoFocusFieldMixin, forms.Form):
     )
 
 
-class TransferAccountPasswordForm(AutoFocusFieldMixin, forms.Form):
+class TransferAccountPasswordForm(
+    IndentedInvalidFieldsMixin, AutoFocusFieldMixin, forms.Form
+):
+    MESSAGE_INVALID_PASSWORD = 'Invalid password'
+
     password = forms.CharField(
         label='Your password',
         help_text='For your security, please enter your current password',
         widget=forms.PasswordInput,
     )
+
+    def __init__(self, sso_session_id, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.sso_session_id = sso_session_id
+
+    def clean_password(self):
+        response = sso_api_client.user.check_password(
+            session_id=self.sso_session_id,
+            password=self.cleaned_data['password'],
+        )
+        if not response.ok:
+            raise forms.ValidationError(self.MESSAGE_INVALID_PASSWORD)
+        return self.cleaned_data['password']
 
 
 class AcceptInviteForm(forms.Form):
