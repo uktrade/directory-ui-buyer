@@ -1,15 +1,15 @@
 # directory-ui-buyer
-[Export Directory UI](https://find-a-buyer.export.great.gov.uk/)
 
-This is the repo for Find A Buyer (FAB) - the Department for International Trade (DIT) service for exposing motivated British exporters to international buyers seeking British goods and service.
+[![code-climate-image]][code-climate]
+[![circle-ci-image]][circle-ci]
+[![codecov-image]][codecov]
+[![gemnasium-image]][gemnasium]
 
-## Build status
+**[Export Directory UI](https://find-a-buyer.export.great.gov.uk/)**
 
-[![CircleCI](https://circleci.com/gh/uktrade/directory-ui-buyer/tree/master.svg?style=svg)](https://circleci.com/gh/uktrade/directory-ui-buyer/tree/master)
+Find A Buyer (FAB) - the Department for International Trade (DIT) service for exposing motivated British exporters to international buyers seeking British goods and service.
 
-## Coverage
-
-[![codecov](https://codecov.io/gh/uktrade/directory-ui-buyer/branch/master/graph/badge.svg)](https://codecov.io/gh/uktrade/directory-ui-buyer)
+---
 
 ## Development 
 
@@ -128,3 +128,16 @@ Note in production, the `directory-sso` session cookie is shared with all subdom
 Therefore to make cookie sharing work in development we need the apps to ne running on subdomains. Some stipulations:
  - `directory-ui-buyer` and `directory-sso` must both be running on sibling subdomains (with same parent domain)
  - `directory-sso` must be told to target cookies at the parent domain.
+
+
+[code-climate-image]: https://codeclimate.com/github/uktrade/directory-ui-buyer/badges/issue_count.svg
+[code-climate]: https://codeclimate.com/github/uktrade/directory-ui-buyer
+
+[circle-ci-image]: https://circleci.com/gh/uktrade/directory-ui-buyer/tree/master.svg?style=svg
+[circle-ci]: https://circleci.com/gh/uktrade/directory-ui-buyer/tree/master
+
+[codecov-image]: https://codecov.io/gh/uktrade/directory-ui-buyer/branch/master/graph/badge.svg
+[codecov]: https://codecov.io/gh/uktrade/directory-ui-buyer
+
+[gemnasium-image]: https://gemnasium.com/badges/github.com/uktrade/directory-ui-buyer.svg
+[gemnasium]: https://gemnasium.com/github.com/uktrade/directory-ui-buyer
