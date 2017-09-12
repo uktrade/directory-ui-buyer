@@ -1,5 +1,5 @@
 import json
-from unittest.mock import call, Mock, patch
+from unittest.mock import call, Mock, patch, ANY
 import urllib3
 
 from django.core.urlresolvers import reverse
@@ -30,10 +30,7 @@ def test_proxy_admin_base_url(mock_urlopen, client):
         decode_content=False,
         headers={
             'X-Forwarded-Host': 'testserver',
-            'X-Signature': (
-                '1d01ac054ba24f56c1a0a005317ecaf1cdeec154f8846e4eb9317c080a'
-                'f0c062'
-            ),
+            'X-Signature': ANY,
             'Cookie': ''
         },
         preload_content=False,
@@ -67,10 +64,7 @@ def test_proxy_admin_with_path(mock_urlopen, client):
         decode_content=False,
         headers={
             'X-Forwarded-Host': 'testserver',
-            'X-Signature': (
-                'b1ec2a0401a2b285fb4ece69ca5429140e9db718ed42dad0bc87f024a9a6e'
-                '0b0'
-            ),
+            'X-Signature': ANY,
             'Cookie': ''
         },
         preload_content=False,
@@ -104,10 +98,7 @@ def test_proxy_admin_with_path_and_queryparam(mock_urlopen, client):
         decode_content=False,
         headers={
             'X-Forwarded-Host': 'testserver',
-            'X-Signature': (
-                '7bd503653fed4ae195f5aa8a91e9262434892fe751f3cbad690785a247fed'
-                'e2d'
-            ),
+            'X-Signature': ANY,
             'Cookie': ''
         },
         preload_content=False,
