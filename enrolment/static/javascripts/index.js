@@ -360,6 +360,7 @@ GOVUK.components = (new function() {
     }
   }
   SelectiveLookup.prototype.search = function() {
+   this._private.$errors.empty();
    this._private.service.update(this.param());
   }
   SelectiveLookup.prototype.param = function() {
@@ -442,11 +443,6 @@ GOVUK.components = (new function() {
         instance._private.$errors.empty();
         instance._private.$errors.append("<p>Check that you entered the company name correctly and select the matching company name from the list.</p>");
       }
-    });
-    
-    // Clear previously shown errors.
-    this._private.$input.on("focus.CompaniesHouseNameLookup", function(e) {
-      instance._private.$errors.empty();
     });
   }
   CompaniesHouseNameLookup.prototype = new SelectiveLookup;
