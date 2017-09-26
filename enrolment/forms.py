@@ -2,7 +2,7 @@ from django import forms
 from django.utils.safestring import mark_safe
 
 from directory_validators import enrolment as shared_validators
-from directory_validators.company import no_html
+from directory_validators.company import no_html, no_royal_charter
 from directory_constants.constants import urls
 
 from enrolment import fields, helpers, validators
@@ -86,6 +86,7 @@ class CompanyNumberForm(IndentedInvalidFieldsMixin, forms.Form):
             shared_validators.company_number,
             validators.company_unique,
             validators.company_number_present_and_active,
+            no_royal_charter,
         ),
         max_length=8,
         fillchar='0',
