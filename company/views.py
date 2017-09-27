@@ -312,10 +312,14 @@ class SendVerificationLetterView(
     failure_template = 'company-profile-update-error.html'
 
     def get_context_data(self, form, **kwargs):
+        company_address = helpers.build_company_address(self.company_profile)
         return super().get_context_data(
             form=form,
             form_labels=self.form_labels,
             all_cleaned_data=self.get_all_cleaned_data(),
+            company_name=self.company_profile['name'],
+            company_number=self.company_profile['number'],
+            company_address=company_address,
             **kwargs
         )
 

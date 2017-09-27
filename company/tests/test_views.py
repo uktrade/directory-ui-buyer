@@ -1100,6 +1100,21 @@ def test_company_profile_confirm_address_context_data(
     )
 
 
+def test_send_verification_letter_address_context_data(
+    company_profile_edit_goto_step, retrieve_profile_data, has_company_client,
+    all_company_profile_data, settings
+):
+    settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED = True
+
+    response = has_company_client.get(reverse('verify-company-address'))
+
+    assert response.context['company_name'] == 'Great company'
+    assert response.context['company_number'] == 123456
+    assert response.context['company_address'] == (
+        '123 Fake Street, Fakeville, London, GB, E14 6XK'
+    )
+
+
 def test_company_profile_initial_data_classification(
     company_profile_edit_goto_step, retrieve_profile_data
 ):
