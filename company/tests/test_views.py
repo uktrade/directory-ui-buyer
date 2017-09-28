@@ -207,7 +207,7 @@ def all_company_profile_data():
         'website': 'http://www.example.com',
         'keywords': 'Nice, Great',
         'employees': choices.EMPLOYEES[1][0],
-        'sectors': [choices.INDUSTRIES[1][0]],
+        'sectors': [choices.INDUSTRIES[3][0]],
         'postal_full_name': 'Jeremy',
         'address_line_1': '123 Fake Street',
         'address_line_2': 'Fakeville',
