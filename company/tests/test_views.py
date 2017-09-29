@@ -1352,7 +1352,9 @@ def test_unsubscribe_anon_user(client):
 def test_unsubscribe_api_failure(
     mock_unsubscribe, api_response_400, logged_in_client
 ):
-    logged_in_client.cookies = SimpleCookie({settings.SSO_SESSION_COOKIE: 1})
+    logged_in_client.cookies = SimpleCookie(
+        {settings.SSO_PROXY_SESSION_COOKIE: 1}
+    )
     mock_unsubscribe.return_value = api_response_400
 
     response = logged_in_client.post(reverse('unsubscribe'))

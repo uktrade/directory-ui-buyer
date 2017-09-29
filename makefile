@@ -37,14 +37,14 @@ DOCKER_SET_DEBUG_ENV_VARS := \
 	export DIRECTORY_UI_BUYER_API_CLIENT_CLASS_NAME=unit-test; \
 	export DIRECTORY_UI_BUYER_API_SIGNATURE_SECRET=debug; \
 	export DIRECTORY_UI_BUYER_API_CLIENT_BASE_URL=http://api.trade.great.dev:8000; \
-	export DIRECTORY_UI_BUYER_SSO_SIGNATURE_SECRET=api_signature_debug; \
-	export DIRECTORY_UI_BUYER_SSO_API_CLIENT_BASE_URL=http://sso.trade.great.dev:8004/; \
-	export DIRECTORY_UI_BUYER_SSO_LOGIN_URL=http://sso.trade.great.dev:8004/accounts/login/; \
-	export DIRECTORY_UI_BUYER_SSO_LOGOUT_URL=http://sso.trade.great.dev:8004/accounts/logout/?next=http://buyer.trade.great.dev:8001; \
-	export DIRECTORY_UI_BUYER_SSO_SIGNUP_URL=http://sso.trade.great.dev:8004/accounts/signup/; \
+	export DIRECTORY_UI_BUYER_SSO_PROXY_SIGNATURE_SECRET=api_signature_debug; \
+	export DIRECTORY_UI_BUYER_SSO_PROXY_API_CLIENT_BASE_URL=http://sso.trade.great.dev:8004/; \
+	export DIRECTORY_UI_BUYER_SSO_PROXY_LOGIN_URL=http://sso.trade.great.dev:8004/accounts/login/; \
+	export DIRECTORY_UI_BUYER_SSO_PROXY_LOGOUT_URL=http://sso.trade.great.dev:8004/accounts/logout/?next=http://buyer.trade.great.dev:8001; \
+	export DIRECTORY_UI_BUYER_SSO_PROXY_SIGNUP_URL=http://sso.trade.great.dev:8004/accounts/signup/; \
 	export DIRECTORY_UI_BUYER_SSO_PROFILE_URL=http://profile.trade.great.dev:8006/find-a-buyer/; \
-	export DIRECTORY_UI_BUYER_SSO_REDIRECT_FIELD_NAME=next; \
-	export DIRECTORY_UI_BUYER_SSO_SESSION_COOKIE=debug_sso_session_cookie; \
+	export DIRECTORY_UI_BUYER_SSO_PROXY_REDIRECT_FIELD_NAME=next; \
+	export DIRECTORY_UI_BUYER_SSO_PROXY_SESSION_COOKIE=debug_sso_session_cookie; \
 	export DIRECTORY_UI_BUYER_SESSION_COOKIE_SECURE=false; \
 	export DIRECTORY_UI_BUYER_PORT=8001; \
 	export DIRECTORY_UI_BUYER_SECRET_KEY=debug; \
@@ -105,14 +105,14 @@ DEBUG_SET_ENV_VARS := \
 	export DEBUG=true ;\
 	export API_SIGNATURE_SECRET=debug; \
 	export API_CLIENT_BASE_URL=http://api.trade.great.dev:8000; \
-	export SSO_SIGNATURE_SECRET=proxy_signature_debug; \
-	export SSO_API_CLIENT_BASE_URL=http://sso.trade.great.dev:8004/; \
-	export SSO_LOGIN_URL=http://sso.trade.great.dev:8004/accounts/login/; \
-	export SSO_LOGOUT_URL=http://sso.trade.great.dev:8004/accounts/logout/?next=http://buyer.trade.great.dev:8001; \
-	export SSO_SIGNUP_URL=http://sso.trade.great.dev:8004/accounts/signup/; \
+	export SSO_PROXY_SIGNATURE_SECRET=proxy_signature_debug; \
+	export SSO_PROXY_API_CLIENT_BASE_URL=http://sso.trade.great.dev:8004/; \
+	export SSO_PROXY_LOGIN_URL=http://sso.trade.great.dev:8004/accounts/login/; \
+	export SSO_PROXY_LOGOUT_URL=http://sso.trade.great.dev:8004/accounts/logout/?next=http://buyer.trade.great.dev:8001; \
+	export SSO_PROXY_SIGNUP_URL=http://sso.trade.great.dev:8004/accounts/signup/; \
 	export SSO_PROFILE_URL=http://profile.trade.great.dev:8006/find-a-buyer/; \
-	export SSO_REDIRECT_FIELD_NAME=next; \
-	export SSO_SESSION_COOKIE=debug_sso_session_cookie; \
+	export SSO_PROXY_REDIRECT_FIELD_NAME=next; \
+	export SSO_PROXY_SESSION_COOKIE=debug_sso_session_cookie; \
 	export SESSION_COOKIE_SECURE=false; \
 	export COMPANIES_HOUSE_API_KEY=debug; \
 	export FEATURE_PUBLIC_PROFILES_ENABLED=true; \
