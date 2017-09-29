@@ -228,16 +228,17 @@ class CompanyProfileEditView(BaseMultiStepCompanyEditView):
         ADDRESS: 'company-profile-form-address.html',
         SENT: 'company-profile-form-letter-sent.html',
     }
+
     failure_template = 'company-profile-update-error.html'
 
     @property
     def form_labels(self):
         labels = [
-            (self.BASIC, 'Basic'),
+            (self.BASIC, 'About your company'),
             (self.CLASSIFICATION, 'Industry and exporting'),
         ]
         if self.condition_show_address():
-            labels.append((self.ADDRESS, 'Confirmation'))
+            labels.append((self.ADDRESS, 'Review and send'))
         return labels
 
     def render_next_step(self, form, **kwargs):

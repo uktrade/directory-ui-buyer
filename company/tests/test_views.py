@@ -1412,9 +1412,9 @@ def test_company_profile_edit_form_labels_show_address():
 
     with patch.object(view, 'condition_show_address', return_value=True):
         assert view.form_labels == [
-            ('basic', 'Basic'),
+            ('basic', 'About your company'),
             ('classification', 'Industry and exporting'),
-            ('address', 'Confirmation'),
+            ('address', 'Review and send'),
         ]
 
 
@@ -1423,7 +1423,7 @@ def test_company_profile_edit_form_labels_hide_address():
 
     with patch.object(view, 'condition_show_address', return_value=False):
         assert view.form_labels == [
-            ('basic', 'Basic'),
+            ('basic', 'About your company'),
             ('classification', 'Industry and exporting'),
         ]
 
