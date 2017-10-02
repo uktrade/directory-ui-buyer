@@ -189,7 +189,11 @@ def test_form_progress_indicator_no_steps():
 
 def test_form_progress_indicator_first_step_active():
     context = {
-        'form_labels': ['one', 'two', 'three'],
+        'form_labels': [
+            ('one', 'One'),
+            ('two', 'Two'),
+            ('three', 'Three'),
+        ],
         'wizard': {
             'steps':
                 {
@@ -207,7 +211,11 @@ def test_form_progress_indicator_first_step_active():
 
 def test_form_progress_indicator_second_step_active():
     context = {
-        'form_labels': ['one', 'two', 'three'],
+        'form_labels': [
+            ('one', 'One'),
+            ('two', 'Two'),
+            ('three', 'Three'),
+        ],
         'wizard': {
             'steps':
                 {
@@ -225,7 +233,11 @@ def test_form_progress_indicator_second_step_active():
 
 def test_form_progress_indicator_last_step_active():
     context = {
-        'form_labels': ['one', 'two', 'three'],
+        'form_labels': [
+            ('one', 'One'),
+            ('two', 'Two'),
+            ('three', 'Three'),
+        ],
         'wizard': {
             'steps':
                 {

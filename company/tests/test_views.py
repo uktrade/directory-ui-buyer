@@ -8,6 +8,7 @@ import pytest
 import requests
 
 from django.conf import settings
+from django.core.files.uploadedfile import UploadedFile
 from django.core.urlresolvers import reverse
 
 from sso.utils import SSOUser
@@ -133,17 +134,32 @@ def sso_request(rf, client, sso_user):
 
 @pytest.fixture()
 def image_one():
-    return create_test_image('png')
+    return UploadedFile(
+        file=create_test_image('png'),
+        name='one.png',
+        content_type='image/png',
+        size=100,
+    )
 
 
 @pytest.fixture()
 def image_two():
-    return create_test_image('png')
+    return UploadedFile(
+        file=create_test_image('png'),
+        name='one.png',
+        content_type='image/png',
+        size=100,
+    )
 
 
 @pytest.fixture()
 def image_three():
-    return create_test_image('png')
+    return UploadedFile(
+        file=create_test_image('png'),
+        name='one.png',
+        content_type='image/png',
+        size=100,
+    )
 
 
 @pytest.fixture()
@@ -518,7 +534,6 @@ def test_case_study_create_api_success(
     mock_create_case_study.return_value = api_response_200
 
     response = supplier_case_study_end_to_end()
-
     assert response.status_code == http.client.FOUND
     assert response.get('Location') == reverse('company-detail')
     data = {
@@ -527,7 +542,9 @@ def test_case_study_create_api_success(
     }
     # django converts uploaded files to UploadedFile, which makes
     # `assert_called_once_with` tricky.
-    mock_create_case_study.assert_called_once_with(
+
+    assert mock_create_case_study.call_count == 1
+    assert mock_create_case_study.call_args == call(
         data=data,
         sso_session_id=sso_user.session_id,
     )
