@@ -79,7 +79,7 @@ class EnrolmentView(NamedUrlSessionWizardView):
     }
     form_labels = (
         (COMPANY, 'Confirm company'),
-        (STATUS, 'Export status'),
+        (STATUS, 'Trading status'),
     )
 
     def dispatch(self, request, *args, **kwargs):
