@@ -22,27 +22,10 @@ class CheckboxWithInlineLabel(widgets.CheckboxInput):
         return mark_safe(wrapper_html)
 
 
-class CheckboxChoiceInputInlineLabel(widgets.CheckboxChoiceInput):
-    template = """
-        <div class="form-field checkbox">
-            {input_html}
-            <label for="{id}">{label}</label>
-        </div>
-    """
-
-    def render(self, name=None, value=None, attrs=None, choices=()):
-        attrs = dict(self.attrs, **attrs) if attrs else self.attrs
-        wrapper_html = self.template.format(
-            input_html=self.tag(attrs),
-            label=self.choice_label,
-            id=self.id_for_label
-        )
-        return mark_safe(wrapper_html)
-
-
-class CheckboxFieldInlineLabelRenderer(widgets.CheckboxFieldRenderer):
-    choice_input_class = CheckboxChoiceInputInlineLabel
-
-
 class CheckboxSelectInlineLabelMultiple(widgets.CheckboxSelectMultiple):
-    renderer = CheckboxFieldInlineLabelRenderer
+    option_template_name = 'widgets/checkbox_input_option.html'
+    css_class_name = 'form-field checkbox multi'
+
+    def __init__(self, attrs=None):
+        super().__init__(attrs=attrs)
+        self.attrs['class'] = self.attrs.get('class', self.css_class_name)

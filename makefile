@@ -64,7 +64,9 @@ DOCKER_SET_DEBUG_ENV_VARS := \
 	export DIRECTORY_UI_BUYER_COMPANIES_HOUSE_CLIENT_SECRET=debug-client-secret; \
 	export DIRECTORY_UI_BUYER_FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED=true; \
 	export DIRECTORY_UI_BUYER_FEATURE_MULTI_USER_ACCOUNT_ENABLED=true; \
-	export DIRECTORY_UI_BUYER_SECURE_HSTS_SECONDS=0
+	export DIRECTORY_UI_BUYER_SECURE_HSTS_SECONDS=0; \
+	export DIRECTORY_UI_BUYER_PYTHONWARNINGS=all; \
+	export DIRECTORY_UI_BUYER_PYTHONDEBUG=true
 
 docker_test_env_files:
 	$(DOCKER_SET_DEBUG_ENV_VARS) && \
@@ -114,7 +116,7 @@ DEBUG_SET_ENV_VARS := \
 	export SSO_PROXY_REDIRECT_FIELD_NAME=next; \
 	export SSO_PROXY_SESSION_COOKIE=debug_sso_session_cookie; \
 	export SESSION_COOKIE_SECURE=false; \
-	export COMPANIES_HOUSE_API_KEY=debug; \
+	export COMPANIES_HOUSE_API_KEY=1sprpaa-SuDihDC_9qofhm48Qz5PoJjGgBCX6hR_; \
 	export FEATURE_PUBLIC_PROFILES_ENABLED=true; \
 	export SUPPLIER_CASE_STUDY_URL=http://supplier.trade.great.dev:8005/case-study/{id}; \
 	export SUPPLIER_PROFILE_LIST_URL=http://supplier.trade.great.dev:8005/suppliers?sectors={sectors}; \
@@ -129,7 +131,9 @@ DEBUG_SET_ENV_VARS := \
 	export COMPANIES_HOUSE_CLIENT_SECRET=debug-client-secret; \
 	export FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED=true; \
 	export FEATURE_MULTI_USER_ACCOUNT_ENABLED=true; \
-	export SECURE_HSTS_SECONDS=0
+	export SECURE_HSTS_SECONDS=0; \
+	export PYTHONWARNINGS=all; \
+	export PYTHONDEBUG=true
 
 
 debug_webserver:
@@ -160,10 +164,10 @@ integration_tests:
 	make docker_integration_tests
 
 compile_requirements:
-	python3 -m piptools compile requirements.ini
+	python3 -m piptools compile requirements.in
 
 compile_test_requirements:
-	python3 -m piptools compile requirements_test.ini
+	python3 -m piptools compile requirements_test.in
 
 compile_all_requirements: compile_requirements compile_test_requirements
 
