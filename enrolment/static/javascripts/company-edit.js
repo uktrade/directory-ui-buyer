@@ -1,7 +1,12 @@
 (function() {
   var destinationsOther = document.getElementById('id_classification-export_destinations_other');
   var destinationsOtherParent = destinationsOther.parentElement;
-  var destinations = document.getElementById('id_classification-export_destinations');
+  var destinations = (
+    document
+      .getElementById('id_classification-export_destinations')
+      .getElementsByTagName('input')
+  );
+  var otherInput = destinations[destinations.length -1];
 
   function hideDestinationsOther() {
     destinationsOtherParent.style.display = 'none';
@@ -28,5 +33,5 @@
     hideDestinationsOther();
   }
   hideDestinationOtherLabel();
-  destinations.lastChild.addEventListener('change', handleDestinationOtherChange);
+  otherInput.addEventListener('change', handleDestinationOtherChange);
 })();
