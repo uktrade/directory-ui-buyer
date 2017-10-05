@@ -24,6 +24,12 @@
         <link href="{% static 'vendor/bootstrap/css/bootstrap-grid-only.css' %}" media="all" rel="stylesheet" />
         <link href="{% static 'vendor/bootstrap/css/bootstrap-responsive.css' %}" media="all" rel="stylesheet" />
 
+        <script src="{% static 'Dit-Pattern-Styling/public/js/jquery.js' %}"></script>
+        <!--[if IE 8]><script src="{% static 'Dit-Pattern-Styling/public/js/ie8.js' }"></script><![endif]-->
+        <!--[if IE 8]><script type="text/javascript" src="js/selectivizr.js"></script><![endif]-->
+        <script type="text/javascript" src="{% static 'Dit-Pattern-Styling/public/js/navigation.js' %}"></script>
+        <script type="text/javascript" src="{% static 'javascripts/index.js' %}"></script>
+
         {% block css %}
             <link href="{% static 'main.css' %}" media="all" rel="stylesheet" />
         {% endblock %}
@@ -80,12 +86,6 @@
         {% include 'directory_header_footer/footer.html' %}
 
         <div id="global-app-error" class="app-error hidden"></div>
-
-        <script src="{% static 'Dit-Pattern-Styling/public/js/jquery.js' %}"></script>
-        <!--[if IE 8]><script src="{% static 'Dit-Pattern-Styling/public/js/ie8.js' }"></script><![endif]-->
-        <!--[if IE 8]><script type="text/javascript" src="js/selectivizr.js"></script><![endif]-->
-        <script type="text/javascript" src="{% static 'Dit-Pattern-Styling/public/js/navigation.js' %}"></script>
-        <script type="text/javascript" src="{% static 'javascripts/index.js' %}"></script>
         <script type="text/javascript">GOVUK.page.init();</script>
         {% block bodyScripts %}{% endblock bodyScripts %}
     </body>
