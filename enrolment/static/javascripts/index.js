@@ -413,9 +413,6 @@ GOVUK.components = (new function() {
     }
   }
 
-  $(document.body).on("click.SelectiveLookupCloseAll", SelectiveLookup.closeAll);
-
-
   /* Extends SelectiveLookup to perform specific requirements
    * for Companies House company search by name, and resulting
    * form field population.
@@ -503,6 +500,10 @@ GOVUK.page = (new function() {
       // Apply JS lookup functionality.
       new GOVUK.components.CompaniesHouseNameLookup($companyName, $companyNumber);
     });
+    $(document.body).on(
+      "click.SelectiveLookupCloseAll",
+      GOVUK.components.SelectiveLookup.closeAll
+    );
   }
 
 });
