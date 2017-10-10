@@ -505,7 +505,7 @@ class CompaniesHouseOauth2Form(forms.Form):
 class AddCollaboratorForm(AutoFocusFieldMixin, forms.Form):
     email_address = forms.EmailField(
         label=(
-            'Enter the email address you would like to add to your account'
+            'Enter the new user’s email address.'
         ),
         widget=forms.EmailInput(
             attrs={'placeholder': 'Email address'}
