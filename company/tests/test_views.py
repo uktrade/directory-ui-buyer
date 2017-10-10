@@ -1607,7 +1607,7 @@ def test_companies_house_callback_missing_code(
     assert mock_verify_oauth2_code.call_count == 0
 
 
-@patch.object(forms.CompaniesHouseClient, 'verify_oauth2_code')
+@patch.object(forms.CompaniesHouseClient, 'verify_oauth2_code', autospec=True)
 @patch('api_client.api_client.company.verify_with_companies_house')
 def test_companies_house_callback_has_company_calls_companies_house(
     mock_verify_with_companies_house, mock_verify_oauth2_code, settings,
@@ -1629,7 +1629,7 @@ def test_companies_house_callback_has_company_calls_companies_house(
     assert mock_verify_oauth2_code.call_count == 1
     assert mock_verify_oauth2_code.call_args == call(
         code='123',
-        redirect_url='http://testserver/companies-house-oauth2-callback/'
+        redirect_uri='http://testserver/companies-house-oauth2-callback/'
     )
 
     assert mock_verify_with_companies_house.call_count == 1

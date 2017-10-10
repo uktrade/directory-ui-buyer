@@ -493,7 +493,7 @@ class CompaniesHouseOauth2Form(forms.Form):
     def oauth2_response(self):
         return CompaniesHouseClient.verify_oauth2_code(
             code=self.cleaned_data['code'],
-            redirect_url=self.redirect_uri
+            redirect_uri=self.redirect_uri
         )
 
     def clean_code(self):
