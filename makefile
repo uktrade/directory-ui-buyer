@@ -116,7 +116,7 @@ DEBUG_SET_ENV_VARS := \
 	export SSO_PROXY_REDIRECT_FIELD_NAME=next; \
 	export SSO_PROXY_SESSION_COOKIE=debug_sso_session_cookie; \
 	export SESSION_COOKIE_SECURE=false; \
-	export COMPANIES_HOUSE_API_KEY=1sprpaa-SuDihDC_9qofhm48Qz5PoJjGgBCX6hR_; \
+	export COMPANIES_HOUSE_API_KEY=debug; \
 	export FEATURE_PUBLIC_PROFILES_ENABLED=true; \
 	export SUPPLIER_CASE_STUDY_URL=http://supplier.trade.great.dev:8005/case-study/{id}; \
 	export SUPPLIER_PROFILE_LIST_URL=http://supplier.trade.great.dev:8005/suppliers?sectors={sectors}; \
