@@ -133,7 +133,8 @@ DEBUG_SET_ENV_VARS := \
 	export FEATURE_MULTI_USER_ACCOUNT_ENABLED=true; \
 	export SECURE_HSTS_SECONDS=0; \
 	export PYTHONWARNINGS=all; \
-	export PYTHONDEBUG=true
+	export PYTHONDEBUG=true; \
+	export FEATURE_NEW_SHARED_HEADER_ENABLED=true
 
 
 debug_webserver:
