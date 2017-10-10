@@ -116,7 +116,7 @@ DEBUG_SET_ENV_VARS := \
 	export SSO_PROXY_REDIRECT_FIELD_NAME=next; \
 	export SSO_PROXY_SESSION_COOKIE=debug_sso_session_cookie; \
 	export SESSION_COOKIE_SECURE=false; \
-	export COMPANIES_HOUSE_API_KEY=debug; \
+	export COMPANIES_HOUSE_API_KEY=1sprpaa-SuDihDC_9qofhm48Qz5PoJjGgBCX6hR_; \
 	export FEATURE_PUBLIC_PROFILES_ENABLED=true; \
 	export SUPPLIER_CASE_STUDY_URL=http://supplier.trade.great.dev:8005/case-study/{id}; \
 	export SUPPLIER_PROFILE_LIST_URL=http://supplier.trade.great.dev:8005/suppliers?sectors={sectors}; \
@@ -133,7 +133,8 @@ DEBUG_SET_ENV_VARS := \
 	export FEATURE_MULTI_USER_ACCOUNT_ENABLED=true; \
 	export SECURE_HSTS_SECONDS=0; \
 	export PYTHONWARNINGS=all; \
-	export PYTHONDEBUG=true
+	export PYTHONDEBUG=true; \
+	export FEATURE_NEW_SHARED_HEADER_ENABLED=true
 
 
 debug_webserver:
