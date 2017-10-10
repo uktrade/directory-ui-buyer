@@ -539,7 +539,7 @@ class RemoveCollaboratorForm(AutoFocusFieldMixin, forms.Form):
 class TransferAccountEmailForm(AutoFocusFieldMixin, forms.Form):
     email_address = forms.EmailField(
         label=(
-            'Enter the email address you would like to take over your account'
+            'Enter the email address you want your profile transferred to.'
         ),
         widget=forms.EmailInput(
             attrs={'placeholder': 'Email address'}
