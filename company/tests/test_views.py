@@ -2035,7 +2035,6 @@ def test_transfer_owner_valid_form(
     assert response.get('Location') == (
         'http://profile.trade.great.dev:8006/find-a-buyer/?owner-transferred'
     )
-
     assert mock_create_transfer_invite.call_count == 1
     assert mock_create_transfer_invite.call_args == call(
         sso_session_id=sso_user.session_id, new_owner_email='a@b.com'
