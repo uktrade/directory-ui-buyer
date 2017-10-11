@@ -568,6 +568,12 @@ class AddCollaboratorView(BaseMultiUserAccountManagementView, FormView):
     form_class = forms.AddCollaboratorForm
     template_name = 'company-add-collaborator.html'
 
+    def get_form_kwargs(self):
+        return {
+            **super().get_form_kwargs(),
+            'sso_email_address': self.request.sso_user.email,
+        }
+
     def form_valid(self, form):
         self.add_collaborator(email_address=form.cleaned_data['email_address'])
         return super().form_valid(form)
@@ -577,6 +583,11 @@ class AddCollaboratorView(BaseMultiUserAccountManagementView, FormView):
             sso_session_id=self.request.sso_user.session_id,
             collaborator_email=email_address,
         )
+        if response.status_code == 400:
+            if 'collaborator_email' in response.json():
+                # email already has a collaboration invite, but do not tell
+                # the user to avoid leaking information to bad actors.
+                return
         response.raise_for_status()
 
     def get_success_url(self):
@@ -630,10 +641,12 @@ class TransferAccountWizardView(
     }
 
     def get_form_kwargs(self, step):
-        initial = super().get_form_kwargs(step)
+        kwargs = super().get_form_kwargs(step)
         if step == self.PASSWORD:
-            initial['sso_session_id'] = self.request.sso_user.session_id
-        return initial
+            kwargs['sso_session_id'] = self.request.sso_user.session_id
+        elif step == self.EMAIL:
+            kwargs['sso_email_address'] = self.request.sso_user.email
+        return kwargs
 
     def done(self, *args, **kwargs):
         email_address = self.get_all_cleaned_data()['email_address']
@@ -645,6 +658,12 @@ class TransferAccountWizardView(
             sso_session_id=self.request.sso_user.session_id,
             new_owner_email=email_address,
         )
+
+        if response.status_code == 400:
+            if 'new_owner_email' in response.json():
+                # email already has a collaboration invite, but do not tell
+                # the user to avoid leaking information to bad actors.
+                return
         response.raise_for_status()
 
     def get_success_url(self):

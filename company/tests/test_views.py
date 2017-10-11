@@ -19,11 +19,10 @@ from company.tests.helpers import create_test_image
 default_sector = choices.INDUSTRIES[1][0]
 
 
-def create_response(status_code, json_body=None):
+def create_response(status_code, json_body={}):
     response = requests.Response()
     response.status_code = status_code
-    if json_body:
-        response.json = lambda: json_body
+    response.json = lambda: json_body
     return response
 
 
@@ -45,6 +44,20 @@ def api_response_401():
 @pytest.fixture
 def api_response_404(*args, **kwargs):
     return create_response(http.client.NOT_FOUND)
+
+
+@pytest.fixture
+def api_response_collaborator_email_exists_400(*args, **kwargs):
+    return create_response(
+        http.client.BAD_REQUEST, {'collaborator_email': ['Already exists']}
+    )
+
+
+@pytest.fixture
+def api_response_new_owner_email_exists_400(*args, **kwargs):
+    return create_response(
+        http.client.BAD_REQUEST, {'new_owner_email': ['Already exists']}
+    )
 
 
 @pytest.fixture
@@ -1877,6 +1890,25 @@ def test_add_collaborator_valid_form(
     )
 
 
+@patch.object(views.api_client.company, 'create_collaboration_invite')
+def test_add_collaborator_valid_form_already_exists(
+    mock_create_collaboration_invite, has_company_client, settings,
+    api_response_collaborator_email_exists_400, sso_user
+):
+    settings.FEATURE_MULTI_USER_ACCOUNT_ENABLED = True
+    mock_create_collaboration_invite.return_value = (
+        api_response_collaborator_email_exists_400
+    )
+    url = reverse('add-collaborator')
+
+    response = has_company_client.post(url, {'email_address': 'a@b.com'})
+
+    assert response.status_code == 302
+    assert response.get('Location') == (
+        'http://profile.trade.great.dev:8006/find-a-buyer/?user-added'
+    )
+
+
 @pytest.mark.parametrize('url,data,mock_path', (
     (
         reverse('add-collaborator'),
@@ -1972,7 +2004,7 @@ def test_transfer_owner_invalid_form(
 
 @patch.object(views.api_client.company, 'create_transfer_invite')
 @patch.object(forms.sso_api_client.user, 'check_password')
-def test_transfer_owner_valid_password(
+def test_transfer_owner_invalid_password(
     mock_check_password, mock_create_transfer_invite, has_company_client,
     settings, sso_user, api_response_400
 ):
@@ -2035,10 +2067,46 @@ def test_transfer_owner_valid_form(
     assert response.get('Location') == (
         'http://profile.trade.great.dev:8006/find-a-buyer/?owner-transferred'
     )
-
     assert mock_create_transfer_invite.call_count == 1
     assert mock_create_transfer_invite.call_args == call(
         sso_session_id=sso_user.session_id, new_owner_email='a@b.com'
+    )
+
+
+@patch.object(views.api_client.company, 'create_transfer_invite')
+@patch.object(forms.sso_api_client.user, 'check_password')
+def test_transfer_owner_valid_form_already_exists(
+    mock_check_password, mock_create_transfer_invite, has_company_client,
+    settings, sso_user, api_response_new_owner_email_exists_400,
+    api_response_200
+):
+    settings.FEATURE_MULTI_USER_ACCOUNT_ENABLED = True
+    mock_check_password.return_value = mock_create_transfer_invite
+    mock_create_transfer_invite.return_value = (
+        api_response_new_owner_email_exists_400
+    )
+
+    view = views.TransferAccountWizardView
+    url = reverse('account-transfer')
+
+    response = has_company_client.post(
+        reverse('account-transfer'),
+        {
+            'transfer_account_wizard_view-current_step': view.EMAIL,
+            view.EMAIL + '-email_address': 'a@b.com'
+        }
+    )
+    response = has_company_client.post(
+        url,
+        {
+            'transfer_account_wizard_view-current_step': view.PASSWORD,
+            view.PASSWORD + '-password': 'password'
+        }
+    )
+
+    assert response.status_code == 302
+    assert response.get('Location') == (
+        'http://profile.trade.great.dev:8006/find-a-buyer/?owner-transferred'
     )
 
 

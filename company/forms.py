@@ -502,7 +502,22 @@ class CompaniesHouseOauth2Form(forms.Form):
         return self.cleaned_data['code']
 
 
-class AddCollaboratorForm(AutoFocusFieldMixin, forms.Form):
+class BaseMultiUserEmailForm(
+    AutoFocusFieldMixin, IndentedInvalidFieldsMixin, forms.Form
+):
+    MESSAGE_CANNOT_SEND_TO_SELF = 'Please enter a different email address'
+
+    def __init__(self, sso_email_address, *args, **kwargs):
+        self.sso_email_address = sso_email_address
+        super().__init__(*args, **kwargs)
+
+    def clean_email_address(self):
+        if self.cleaned_data['email_address'] == self.sso_email_address:
+            raise forms.ValidationError(self.MESSAGE_CANNOT_SEND_TO_SELF)
+        return self.cleaned_data['email_address']
+
+
+class AddCollaboratorForm(BaseMultiUserEmailForm):
     email_address = forms.EmailField(
         label=(
             'Enter the new user’s email address.'
@@ -536,7 +551,7 @@ class RemoveCollaboratorForm(AutoFocusFieldMixin, forms.Form):
     )
 
 
-class TransferAccountEmailForm(AutoFocusFieldMixin, forms.Form):
+class TransferAccountEmailForm(BaseMultiUserEmailForm):
     email_address = forms.EmailField(
         label=(
             'Enter the email address you want your profile transferred to.'

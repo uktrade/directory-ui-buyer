@@ -745,3 +745,30 @@ def test_serialize_social_links_form():
 ])
 def test_xss_attack(field):
     assert shared_validators.no_html in field.validators
+
+
+@pytest.mark.parametrize('form_class', [
+    forms.AddCollaboratorForm,
+    forms.TransferAccountEmailForm,
+])
+def test_add_collaborator_prevents_sending_to_self(form_class):
+    form = form_class(
+        sso_email_address='dev@example.com',
+        data={'email_address': 'dev@example.com'}
+    )
+
+    assert form.is_valid() is False
+    assert form.errors['email_address'] == [form.MESSAGE_CANNOT_SEND_TO_SELF]
+
+
+@pytest.mark.parametrize('form_class', [
+    forms.AddCollaboratorForm,
+    forms.TransferAccountEmailForm,
+])
+def test_add_collaborator_allows_sending_to_other(form_class):
+    form = form_class(
+        sso_email_address='dev@example.com',
+        data={'email_address': 'dev+1@example.com'}
+    )
+
+    assert form.is_valid() is True
