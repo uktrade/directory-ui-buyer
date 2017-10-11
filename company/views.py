@@ -583,6 +583,11 @@ class AddCollaboratorView(BaseMultiUserAccountManagementView, FormView):
             sso_session_id=self.request.sso_user.session_id,
             collaborator_email=email_address,
         )
+        if response.status_code == 400:
+            if 'collaborator_email' in response.json():
+                # email already has a collaboration invite, but do not tell
+                # the user to avoid leaking information to bad actors.
+                return
         response.raise_for_status()
 
     def get_success_url(self):
@@ -653,6 +658,12 @@ class TransferAccountWizardView(
             sso_session_id=self.request.sso_user.session_id,
             new_owner_email=email_address,
         )
+
+        if response.status_code == 400:
+            if 'new_owner_email' in response.json():
+                # email already has a collaboration invite, but do not tell
+                # the user to avoid leaking information to bad actors.
+                return
         response.raise_for_status()
 
     def get_success_url(self):
