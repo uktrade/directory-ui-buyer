@@ -80,7 +80,7 @@ class CompaniesHouseClient:
         'address': make_api_url('company/{number}/registered-office-address'),
         'search': make_api_url('search/companies'),
         'oauth2': make_oauth2_url('oauth2/authorise'),
-        'oauth2-verify': make_oauth2_url('oauth2/token'),
+        'oauth2-token': make_oauth2_url('oauth2/token'),
     }
     session = requests.Session()
 
@@ -123,15 +123,15 @@ class CompaniesHouseClient:
 
     @classmethod
     def verify_oauth2_code(cls, code, redirect_uri):
-        url = cls.endpoints['oauth2-verify']
-        data = {
-            'grant_type': 'authorization_code',
-            'code': code,
-            'client_id': cls.client_id,
-            'client_secret': cls.client_secret,
-            'redirect_uri': redirect_uri,
-        }
-        return cls.session.post(url=url, json=data)
+        url = cls.endpoints['oauth2-token']
+        params = OrderedDict([
+            ('grant_type', 'authorization_code'),
+            ('code', code),
+            ('client_id', cls.client_id),
+            ('client_secret', cls.client_secret),
+            ('redirect_uri', redirect_uri),
+        ])
+        return cls.session.post(url=url + '?' + urllib.parse.urlencode(params))
 
 
 def get_date_of_creation_from_session(session):

@@ -533,7 +533,7 @@ class CompaniesHouseOauth2CallbackView(
     def form_valid(self, form):
         response = api_client.company.verify_with_companies_house(
             sso_session_id=self.request.sso_user.session_id,
-            access_token=form.oauth2_response.json()['access-token']
+            access_token=form.oauth2_response.json()['access_token']
         )
         response.raise_for_status()
         return super().form_valid(form)

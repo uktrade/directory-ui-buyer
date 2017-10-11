@@ -50,7 +50,7 @@ def api_response_404(*args, **kwargs):
 @pytest.fixture
 def api_response_oauth2_verify_200():
     return create_response(
-        status_code=http.client.OK, json_body={'access-token': 'abc'}
+        status_code=http.client.OK, json_body={'access_token': 'abc'}
     )
 
 

@@ -199,14 +199,14 @@ def test_verify_oauth2_code():
         assert response.status_code == 200
 
     request = mock.request_history[0]
-
-    assert request.json() == {
-        'client_id': 'debug-client-id',
-        'grant_type': 'authorization_code',
-        'client_secret': 'debug-client-secret',
-        'redirect_uri': 'http://redirect.com',
-        'code': '123'
-    }
+    assert request.url == (
+        'https://account.companieshouse.gov.uk/oauth2/token'
+        '?grant_type=authorization_code'
+        '&code=123'
+        '&client_id=debug-client-id'
+        '&client_secret=debug-client-secret'
+        '&redirect_uri=http%3A%2F%2Fredirect.com'
+    )
 
 
 def test_search():

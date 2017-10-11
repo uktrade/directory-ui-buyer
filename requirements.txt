@@ -5,7 +5,7 @@
 #    pip-compile --output-file requirements.txt requirements.in
 #
 -e git+https://github.com/uktrade/directory-validators.git@v4.0.0#egg=directory_validators
--e git+https://github.com/uktrade/directory-api-client.git@v8.0.0#egg=directory_api_client
+-e git+https://github.com/uktrade/directory-api-client.git@v9.2.1#egg=directory_api_client
 -e git+https://github.com/uktrade/directory-sso-api-client.git@v2.0.0#egg=directory_sso_api_client
 -e git+https://github.com/uktrade/directory-constants.git@v4.0.0#egg=directory_constants
 -e git+https://github.com/uktrade/directory-signature-auth.git@v2.0.0#egg=sigauth
