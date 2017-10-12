@@ -9,8 +9,6 @@
         <meta charset="utf-8" />
         <title>{% block head_title %}Find a Buyer - GREAT.gov.uk{% endblock %}</title>
 
-        <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900" rel="stylesheet">
-
         <link rel="shortcut icon" href="{% static 'govuk-0.18.0/assets/images/favicon.ico' %}" type="image/x-icon" />
         <link rel="mask-icon" href="{% static 'govuk-0.18.0/assets/images/gov.uk_logotype_crown.svg' %}" color="#0b0c0c">
         <link rel="apple-touch-icon-precomposed" sizes="152x152" href="{% static 'govuk-0.18.0/assets/images/apple-touch-icon-152x152.png' %}">
@@ -26,7 +24,7 @@
             <script src="{% static 'Dit-Pattern-Styling/public/js/third-party.js' %}"></script>
             <script src="{% static 'Dit-Pattern-Styling/public/js/script.js' %}"></script>
         {% else %}
-            <link href="{% static 'Dit-Pattern-Styling/public/css/main_old.css' %}" media="all" rel="stylesheet" />
+        <link href="{% static 'Dit-Pattern-Styling/public/css/main_old.css' %}" media="all" rel="stylesheet" />
         {% endif %}
         <link href="{% static 'vendor/bootstrap/css/bootstrap-grid-only.css' %}" media="all" rel="stylesheet" />
         <link href="{% static 'vendor/bootstrap/css/bootstrap-responsive.css' %}" media="all" rel="stylesheet" />
@@ -103,7 +101,9 @@
         {% if not features.FEATURE_NEW_SHARED_HEADER_ENABLED %}
             <script type="text/javascript" src="{% static 'Dit-Pattern-Styling/public/js/navigation.js' %}"></script>
         {% endif %}
-        <script type="text/javascript">GOVUK.page.init();</script>
+        <script type="text/javascript">
+            GOVUK.page.init();
+        </script>
         {% block bodyScripts %}{% endblock bodyScripts %}
     </body>
 </html>
