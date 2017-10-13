@@ -7,11 +7,6 @@ html {
   -moz-box-sizing: border-box;
   box-sizing: border-box;
 }
-*, *:before, *:after {
-  -webkit-box-sizing: inherit;
-  -moz-box-sizing: inherit;
-  box-sizing: inherit;
-}
 
 html input:focus:invalid:focus,
 html textarea:focus:invalid:focus,
@@ -1331,4 +1326,3 @@ a.ed-filled-button-primary {
 @import 'general.scss';
 @import 'registration.scss';
 @import 'components.scss';
-
