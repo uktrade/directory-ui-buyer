@@ -4,9 +4,8 @@ from django.views.generic import RedirectView, TemplateView
 
 from enrolment import views as enrolment_views
 from company import views as company_views
-from company import proxy as company_proxies
 from admin.proxy import AdminProxyView
-
+from proxy.views import APIViewProxy, DirectoryAPIViewProxy
 
 require_get = require_http_methods(['GET'])
 
@@ -153,23 +152,28 @@ urlpatterns = [
     ),
     url(
         r'^api/external(?P<path>/supplier/company/)$',
-        require_get(company_proxies.APIViewProxy.as_view()),
+        require_get(APIViewProxy.as_view()),
         name='api-external-company'
     ),
     url(
         r'^api(?P<path>/external/supplier/)$',
-        require_get(company_proxies.APIViewProxy.as_view()),
+        require_get(APIViewProxy.as_view()),
         name='api-external-supplier'
     ),
     url(
         r'^api(?P<path>/external/supplier-sso/)$',
-        require_get(company_proxies.APIViewProxy.as_view()),
+        require_get(APIViewProxy.as_view()),
         name='api-external-supplier-sso'
     ),
     url(
         r'^api/internal/companies-house-search/$',
         enrolment_views.CompaniesHouseSearchApiView.as_view(),
         name='api-internal-companies-house-search'
+    ),
+    url(
+        r'^directory-api(?P<path>)',
+        DirectoryAPIViewProxy.as_view(),
+        name='directory-api'
     ),
     url(
         r'^errors/image-too-large/$',
