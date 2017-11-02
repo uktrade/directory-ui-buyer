@@ -282,7 +282,7 @@ label, input, button, select, textarea {
 
 .input-field-container {
   margin-bottom: 40px;
-  
+
   label {
     font-size: 18px;
     color: #4a4a4a;
@@ -373,7 +373,7 @@ label, input, button, select, textarea {
     width: 38px;
     -webkit-appearance: none;
   }
-   
+
   input:checked + label:after {
     content: "";
     border-color: $grey-3;
@@ -391,7 +391,7 @@ label, input, button, select, textarea {
     width: 21px;
     z-index: -1;
   }
-  
+
   input:focus + label:before  {
     outline: 3px solid $focus;
   }
@@ -423,7 +423,7 @@ label, input, button, select, textarea {
       width: 38px;
       -webkit-appearance: none;
     }
-     
+
     input:checked + label:after {
       content: "";
       border-color: $grey-3;
@@ -441,7 +441,7 @@ label, input, button, select, textarea {
       width: 21px;
       z-index: -1;
     }
-    
+
     input:focus + label:before  {
       outline: 3px solid $focus;
     }
@@ -637,14 +637,14 @@ body {
     padding: 2px 0px 0 0;
     margin: 0 20px 0 0;
   }
-  
+
   .ed-header-level-one {
     background: #110B29;
     .container {
       max-width: 960px;
       padding: 0;
       width: 100%;
-      
+
     }
     @media (max-width: 960px) {
       padding: 10px 20px;
@@ -691,7 +691,7 @@ body {
       h3 {
         line-height: 23px;
         margin: 0;
-        padding: 0; 
+        padding: 0;
       }
       ul.mobile-secondary-nav {
         list-style-type: none;
@@ -1004,7 +1004,7 @@ a.no-focus-highlight {
   &.ed-has-edit-button {
     padding-right: 70px;
   }
-  
+
   @media (max-width: 767px) {
     &.ed-has-edit-button {
       padding-right: 0;
@@ -1219,7 +1219,7 @@ a.ed-filled-button-primary {
     -moz-border-radius: 50%;
     border-radius: 50%;
   }
-  
+
   input:focus {
     outline: none;
   }
@@ -1326,3 +1326,4 @@ a.ed-filled-button-primary {
 @import 'general.scss';
 @import 'registration.scss';
 @import 'components.scss';
+@import 'header-footer-fixes';
