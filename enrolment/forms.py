@@ -70,7 +70,7 @@ class CompanyExportStatusForm(
                 'I accept the '
                 '<a href="{url}" target="_blank">Find a Buyer terms and '
                 'conditions</a>'.format(
-                    url=urls.TERMS_AND_CONDITIONS_URL)
+                    url=urls.INFO_TERMS_AND_CONDITIONS)
             ),
         ),
     )

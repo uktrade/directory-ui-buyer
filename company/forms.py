@@ -374,7 +374,7 @@ class CompanyClassificationForm(AutoFocusFieldMixin,
     )
     export_destinations = forms.MultipleChoiceField(
         label='Select the countries you would like to export to',
-        choices=choices.EXPORT_DESTINATIONS + (('', 'Other'),),
+        choices=choices.LEAD_GENERATION_EXPORT_DESTINATIONS + (('', 'Other'),),
         widget=CheckboxSelectInlineLabelMultiple,
     )
     export_destinations_other = forms.CharField(
