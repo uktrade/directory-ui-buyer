@@ -81,7 +81,8 @@ DOCKER_SET_DEBUG_ENV_VARS := \
 	export DIRECTORY_UI_BUYER_SERVICES_EXOPPS=http://exred.trade.great.dev:8007/export-opportunities; \
 	export DIRECTORY_UI_BUYER_SERVICES_FAB=http://buyer.trade.great.dev:8001; \
 	export DIRECTORY_UI_BUYER_SERVICES_GET_FINANCE=http://exred.trade.great.dev:8007/finance/get-finance-support-from-government; \
-	export DIRECTORY_UI_BUYER_SERVICES_SOO=http://soo.trade.great.dev:8008
+	export DIRECTORY_UI_BUYER_SERVICES_SOO=http://soo.trade.great.dev:8008; \
+	export DIRECTORY_UI_BUYER_SECURE_SSL_REDIRECT=false
 
 docker_test_env_files:
 	$(DOCKER_SET_DEBUG_ENV_VARS) && \
@@ -164,7 +165,8 @@ DEBUG_SET_ENV_VARS := \
 	export SERVICES_EXOPPS=http://exred.trade.great.dev:8007/export-opportunities; \
 	export SERVICES_FAB=http://buyer.trade.great.dev:8001; \
 	export SERVICES_GET_FINANCE=http://exred.trade.great.dev:8007/finance/get-finance-support-from-government; \
-	export SERVICES_SOO=http://soo.trade.great.dev:8008
+	export SERVICES_SOO=http://soo.trade.great.dev:8008; \
+	export SECURE_SSL_REDIRECT=false
 
 
 debug_webserver:
