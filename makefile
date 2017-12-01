@@ -80,8 +80,11 @@ DOCKER_SET_DEBUG_ENV_VARS := \
 	export DIRECTORY_UI_BUYER_GUIDANCE_OPERATIONS_AND_COMPLIANCE=http://exred.trade.great.dev:8007/operations-and-compliance; \
 	export DIRECTORY_UI_BUYER_SERVICES_EXOPPS=http://exred.trade.great.dev:8007/export-opportunities; \
 	export DIRECTORY_UI_BUYER_SERVICES_FAB=http://buyer.trade.great.dev:8001; \
-	export DIRECTORY_UI_BUYER_SERVICES_GET_FINANCE=http://exred.trade.great.dev:8007/finance/get-finance-support-from-government; \
+	export DIRECTORY_UI_BUYER_SERVICES_GET_FINANCE=http://exred.trade.great.dev:8007/get-finance; \
 	export DIRECTORY_UI_BUYER_SERVICES_SOO=http://soo.trade.great.dev:8008; \
+	export DIRECTORY_UI_BUYER_INFO_ABOUT=http://exred.trade.great.dev:8007/about; \
+	export DIRECTORY_UI_BUYER_INFO_PRIVACY_AND_COOKIES=http://exred.trade.great.dev:8007/privacy-and-cookies; \
+	export DIRECTORY_UI_BUYER_INFO_TERMS_AND_CONDITIONS=http://exred.trade.great.dev:8007/terms-and-conditions; \
 	export DIRECTORY_UI_BUYER_SECURE_SSL_REDIRECT=false
 
 docker_test_env_files:
@@ -164,8 +167,11 @@ DEBUG_SET_ENV_VARS := \
 	export GUIDANCE_OPERATIONS_AND_COMPLIANCE=http://exred.trade.great.dev:8007/operations-and-compliance; \
 	export SERVICES_EXOPPS=http://exred.trade.great.dev:8007/export-opportunities; \
 	export SERVICES_FAB=http://buyer.trade.great.dev:8001; \
-	export SERVICES_GET_FINANCE=http://exred.trade.great.dev:8007/finance/get-finance-support-from-government; \
+	export SERVICES_GET_FINANCE=http://exred.trade.great.dev:8007/get-finance; \
 	export SERVICES_SOO=http://soo.trade.great.dev:8008; \
+	export INFO_ABOUT=http://exred.trade.great.dev:8007/about; \
+	export INFO_PRIVACY_AND_COOKIES=http://exred.trade.great.dev:8007/privacy-and-cookies; \
+	export INFO_TERMS_AND_CONDITIONS=http://exred.trade.great.dev:8007/terms-and-conditions; \
 	export SECURE_SSL_REDIRECT=false
 
 
