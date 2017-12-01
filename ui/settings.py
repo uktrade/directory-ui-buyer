@@ -258,6 +258,10 @@ RAVEN_CONFIG = {
     "dsn": os.getenv("SENTRY_DSN"),
 }
 
+HEADER_FOOTER_CONTACT_US_URL = os.getenv(
+    'HEADER_FOOTER_CONTACT_US_URL',
+    'https://contact-us.export.great.gov.uk/directory',
+)
 SESSION_ENGINE = "django.contrib.sessions.backends.signed_cookies"
 SESSION_COOKIE_SECURE = os.getenv('SESSION_COOKIE_SECURE', 'true') == 'true'
 SESSION_COOKIE_HTTPONLY = True
