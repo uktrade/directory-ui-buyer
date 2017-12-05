@@ -36,7 +36,7 @@ def store_companies_house_profile_in_session(session, company_number):
     session[COMPANIES_HOUSE_PROFILE_SESSION_KEY] = {
         'company_name': details['company_name'],
         'company_status': details['company_status'],
-        'date_of_creation': details['date_of_creation'],
+        'date_of_creation': details.get('date_of_creation'),
         'company_number': company_number,
         'registered_office_address': details['registered_office_address']
     }

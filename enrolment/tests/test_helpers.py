@@ -101,6 +101,37 @@ def test_store_companies_house_profile_in_session_saves_in_session(
 
 
 @patch.object(helpers.CompaniesHouseClient, 'retrieve_profile')
+def test_store_companies_house_profile_in_session_saves_in_session_no_date(
+    mock_retrieve_profile, client
+):
+    data = {
+        'company_name': 'Example corp',
+        'company_status': 'active',
+        'company_number': '01234567',
+        'registered_office_address': {'foo': 'bar'}
+    }
+    response = Response()
+    response.status_code = http.client.OK
+    response.json = lambda: data
+    session = client.session
+    mock_retrieve_profile.return_value = response
+
+    helpers.store_companies_house_profile_in_session(session, '01234567')
+
+    mock_retrieve_profile.assert_called_once_with(number='01234567')
+    expected_data = data = {
+        'company_name': 'Example corp',
+        'company_status': 'active',
+        'company_number': '01234567',
+        'registered_office_address': {'foo': 'bar'},
+        'date_of_creation': None
+    }
+    key = helpers.COMPANIES_HOUSE_PROFILE_SESSION_KEY
+    assert session[key] == expected_data
+    assert session.modified is True
+
+
+@patch.object(helpers.CompaniesHouseClient, 'retrieve_profile')
 def test_store_companies_house_profile_in_session_handles_bad_response(
     mock_retrieve_profile, client
 ):
