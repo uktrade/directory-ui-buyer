@@ -5,12 +5,12 @@ django-revproxy==0.9.13
 django-cors-headers==2.1.0
 gunicorn==19.5.0
 raven==5.19.0
-requests[security]==2.11.1
+requests[security]==2.13.0
 whitenoise==3.1
 phonenumberslite==7.7.4
-pillow==4.0.0
--e git+https://github.com/uktrade/directory-validators.git@v4.0.0#egg=directory_validators
--e git+https://github.com/uktrade/directory-api-client.git@v9.2.1#egg=directory_api_client
+pillow==4.2.1
+-e git+https://github.com/uktrade/directory-validators.git@v4.4.1#egg=directory_validators
+-e git+https://github.com/uktrade/directory-api-client.git@v9.8.0#egg=directory_api_client
 -e git+https://github.com/uktrade/directory-sso-api-client.git@v2.0.0#egg=directory_sso_api_client
 -e git+https://github.com/uktrade/directory-constants.git@v6.0.0#egg=directory_constants
 -e git+https://github.com/uktrade/directory-signature-auth.git@v2.0.0#egg=sigauth
