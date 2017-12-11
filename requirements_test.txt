@@ -37,7 +37,7 @@ pytest-sugar==0.8.0
 pytest==3.0.2
 python-dateutil==2.6.0    # via freezegun
 raven==5.19.0
-requests==2.11.1
+requests[security]==2.11.1
 requests_mock==1.1.0
 setuptools-git==1.2
 six==1.10.0               # via django-extensions, freezegun, python-dateutil, requests-mock
