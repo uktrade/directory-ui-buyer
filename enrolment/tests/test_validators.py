@@ -16,8 +16,9 @@ def test_validate_company_unique_invalid(mock_validate_company_number):
         status_code=http.client.BAD_REQUEST,
         json=lambda: {'number': [error]}
     )
-    with pytest.raises(ValidationError, message=error):
+    with pytest.raises(ValidationError) as excinfo:
         validators.company_unique('01245678')
+    assert excinfo.value.messages == [error]
 
 
 @patch.object(validators.api_client.company, 'validate_company_number')
@@ -28,8 +29,9 @@ def test_validate_company_unique_invalid_unauthorized(
     mock_validate_company_number.return_value = Mock(
         status_code=http.client.UNAUTHORIZED,
     )
-    with pytest.raises(ValidationError, message=error):
+    with pytest.raises(ValidationError) as excinfo:
         validators.company_unique('01245678')
+    assert excinfo.value.messages == [error]
 
 
 @patch.object(validators.api_client.company, 'validate_company_number')
@@ -60,10 +62,9 @@ def test_validate_company_number_present_and_active_valid():
 )
 def test_validate_company_number_present_and_active_invalid():
 
-    with pytest.raises(
-            ValidationError, message=validators.MESSAGE_COMPANY_NOT_ACTIVE
-    ):
+    with pytest.raises(ValidationError) as excinfo:
         validators.company_number_present_and_active('01245678')
+    assert excinfo.value.messages == [validators.MESSAGE_COMPANY_NOT_ACTIVE]
 
 
 @patch(
@@ -73,10 +74,19 @@ def test_validate_company_number_present_and_active_invalid():
     )
 )
 def test_validate_company_number_present_and_active_server_error():
-    with pytest.raises(
-            ValidationError, message=validators.MESSAGE_COMPANY_NOT_ACTIVE
-    ):
+    with pytest.raises(ValidationError) as excinfo:
         validators.company_number_present_and_active('01245678')
+    assert excinfo.value.messages == [validators.MESSAGE_COMPANY_ERROR]
+
+
+@patch(
+    'enrolment.helpers.get_company_from_companies_house',
+    Mock(side_effect=HTTPError(response=None))
+)
+def test_validate_company_number_present_and_active_server_error_none():
+    with pytest.raises(ValidationError) as excinfo:
+        validators.company_number_present_and_active('01245678')
+    assert excinfo.value.messages == [validators.MESSAGE_COMPANY_ERROR]
 
 
 @patch(
@@ -86,7 +96,6 @@ def test_validate_company_number_present_and_active_server_error():
     )
 )
 def test_validate_company_number_present_and_active_not_found():
-    with pytest.raises(
-            ValidationError, message=validators.MESSAGE_COMPANY_NOT_FOUND
-    ):
+    with pytest.raises(ValidationError) as excinfo:
         validators.company_number_present_and_active('01245678')
+    assert excinfo.value.messages == [validators.MESSAGE_COMPANY_NOT_FOUND]
