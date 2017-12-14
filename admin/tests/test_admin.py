@@ -25,7 +25,7 @@ def test_proxy_admin_base_url(mock_urlopen, client):
     assert response.json() == proxied_content
     assert mock_urlopen.call_args == call(
         'GET',
-        'http://api.trade.great.dev:8000/admin/',
+        'http://api.trade.great:8000/admin/',
         body=b'',
         decode_content=False,
         headers={
@@ -59,7 +59,7 @@ def test_proxy_admin_with_path(mock_urlopen, client):
     assert response.json() == proxied_content
     assert mock_urlopen.call_args == call(
         'GET',
-        'http://api.trade.great.dev:8000/admin/some/thing/',
+        'http://api.trade.great:8000/admin/some/thing/',
         body=b'',
         decode_content=False,
         headers={
@@ -93,7 +93,7 @@ def test_proxy_admin_with_path_and_queryparam(mock_urlopen, client):
     assert response.json() == proxied_content
     assert mock_urlopen.call_args == call(
         'GET',
-        'http://api.trade.great.dev:8000/admin/some/thing/?q=test',
+        'http://api.trade.great:8000/admin/some/thing/?q=test',
         body=b'',
         decode_content=False,
         headers={
