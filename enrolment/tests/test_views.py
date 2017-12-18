@@ -279,7 +279,7 @@ def test_submit_enrolment_logged_out_has_company_redirects(
 
     assert response.status_code == http.client.FOUND
     assert response.get('Location') == (
-         'http://sso.trade.great.dev:8004/accounts/signup/'
+         'http://sso.trade.great:8004/accounts/signup/'
          '?next=http%3A//testserver/register-submit'
     )
     mock_has_company.assert_not_called()
