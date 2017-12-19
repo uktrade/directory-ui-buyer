@@ -30,6 +30,7 @@ DEBUG = bool(os.getenv("DEBUG", False))
 # PaaS, we can open ALLOWED_HOSTS
 ALLOWED_HOSTS = ['*']
 
+APPEND_SLASH = True
 
 # Application definition
 
@@ -50,6 +51,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE_CLASSES = [
+    'django.middleware.common.CommonMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',

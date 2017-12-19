@@ -120,7 +120,7 @@ urlpatterns = [
         name='verify-companies-house-callback'
     ),
     url(
-        r'^confirm-company-address$',
+        r'^confirm-company-address/$',
         company_views.CompanyAddressVerificationHistoricView.as_view(),
         name='verify-company-address-historic-url'
     ),
