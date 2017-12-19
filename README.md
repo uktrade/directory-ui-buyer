@@ -29,8 +29,8 @@ Some views allow creating and updating a company. Therefore FAB has a dependency
 
 | Service | Location  | Notes |
 | ------------- | ------------- | ------------- |
-| **[directory-api](https://github.com/uktrade/directory-api)** | http://api.trade.great.dev:8000 | See instructions below under 'SSO' |
-| **[directory-sso-proxy](https://github.com/uktrade/directory-sso-proxy)** | http://sso.trade.great.dev:8004 | See instructions below under 'SSO' |
+| **[directory-api](https://github.com/uktrade/directory-api)** | http://api.trade.great:8000 | See instructions below under 'SSO' |
+| **[directory-sso-proxy](https://github.com/uktrade/directory-sso-proxy)** | http://sso.trade.great:8004 | See instructions below under 'SSO' |
 | **[directory-sso](https://github.com/uktrade/directory-sso)** | http://localhost:8003 | Requests must go through `directory-sso-proxy`. |
 
 **[directory-sso](https://github.com/uktrade/directory-sso)** is required for user authentication and sign up.
@@ -114,15 +114,14 @@ To make sso work locally add the following to your machine's `/etc/hosts`:
 
 | IP Adress | URL                      |
 | --------  | ------------------------ |
-| 127.0.0.1 | ui.trade.great.dev       |
-| 127.0.0.1 | buyer.trade.great.dev    |
-| 127.0.0.1 | supplier.trade.great.dev |
-| 127.0.0.1 | sso.trade.great.dev      |
-| 127.0.0.1 | api.trade.great.dev      |
-| 127.0.0.1 | profile.trade.great.dev  |
-| 127.0.0.1 | exred.trade.great.dev    |
+| 127.0.0.1 | buyer.trade.great    |
+| 127.0.0.1 | supplier.trade.great |
+| 127.0.0.1 | sso.trade.great      |
+| 127.0.0.1 | api.trade.great      |
+| 127.0.0.1 | profile.trade.great  |
+| 127.0.0.1 | exred.trade.great    |
 
-Then log into `directory-sso` via `sso.trade.great.dev:8001`, and use `directory-ui-buyer` on `ui.trade.great.dev:8001`
+Then log into `directory-sso` via `sso.trade.great:8004`, and use `directory-ui-buyer` on `buyer.trade.great:8001`
 
 Note in production, the `directory-sso` session cookie is shared with all subdomains that are on the same parent domain as `directory-sso`. However in development we cannot share cookies between subdomains using `localhost` - that would be like trying to set a cookie for `.com`, which is not supported by any RFC.
 

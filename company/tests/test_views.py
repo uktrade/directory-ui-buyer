@@ -1542,7 +1542,7 @@ def test_companies_house_oauth2_not_logged_in(client, settings):
 
     assert response.status_code == 302
     assert urllib.parse.unquote_plus(response.get('Location')) == (
-        'http://sso.trade.great.dev:8004/accounts/login/?'
+        'http://sso.trade.great:8004/accounts/login/?'
         'next=http://testserver/verify/companies-house/'
     )
 
@@ -1592,7 +1592,7 @@ def test_companies_house_callback_not_logged_in(settings, client):
 
     assert response.status_code == 302
     assert urllib.parse.unquote_plus(response.get('Location')) == (
-        'http://sso.trade.great.dev:8004/accounts/login/?'
+        'http://sso.trade.great:8004/accounts/login/?'
         'next=http://testserver/companies-house-oauth2-callback/'
     )
 
@@ -1699,7 +1699,7 @@ def test_verify_company_anon_user(settings, client):
 
     assert response.status_code == 302
     assert urllib.parse.unquote_plus(response.get('Location')) == (
-        'http://sso.trade.great.dev:8004/accounts/login/?'
+        'http://sso.trade.great:8004/accounts/login/?'
         'next=http://testserver/verify/'
     )
 
@@ -1808,7 +1808,7 @@ def test_multi_user_view_anon_user(url, settings, client):
 
     assert response.status_code == 302
     assert urllib.parse.unquote_plus(response.get('Location')) == (
-        'http://sso.trade.great.dev:8004/accounts/login/?'
+        'http://sso.trade.great:8004/accounts/login/?'
         'next=http://testserver' + url
     )
 
@@ -1880,7 +1880,7 @@ def test_add_collaborator_valid_form(
 
     assert response.status_code == 302
     assert response.get('Location') == (
-        'http://profile.trade.great.dev:8006/find-a-buyer/?user-added'
+        'http://profile.trade.great:8006/find-a-buyer/?user-added'
     )
 
     assert mock_create_collaboration_invite.call_count == 1
@@ -1905,7 +1905,7 @@ def test_add_collaborator_valid_form_already_exists(
 
     assert response.status_code == 302
     assert response.get('Location') == (
-        'http://profile.trade.great.dev:8006/find-a-buyer/?user-added'
+        'http://profile.trade.great:8006/find-a-buyer/?user-added'
     )
 
 
@@ -1970,7 +1970,7 @@ def test_remove_collaborators_valid_form(
 
     assert response.status_code == 302
     assert response.get('Location') == (
-        'http://profile.trade.great.dev:8006/find-a-buyer/?user-removed'
+        'http://profile.trade.great:8006/find-a-buyer/?user-removed'
     )
 
     assert mock_remove_collaborators.call_count == 1
@@ -2065,7 +2065,7 @@ def test_transfer_owner_valid_form(
 
     assert response.status_code == 302
     assert response.get('Location') == (
-        'http://profile.trade.great.dev:8006/find-a-buyer/?owner-transferred'
+        'http://profile.trade.great:8006/find-a-buyer/?owner-transferred'
     )
     assert mock_create_transfer_invite.call_count == 1
     assert mock_create_transfer_invite.call_args == call(
@@ -2106,7 +2106,7 @@ def test_transfer_owner_valid_form_already_exists(
 
     assert response.status_code == 302
     assert response.get('Location') == (
-        'http://profile.trade.great.dev:8006/find-a-buyer/?owner-transferred'
+        'http://profile.trade.great:8006/find-a-buyer/?owner-transferred'
     )
 
 
@@ -2163,7 +2163,7 @@ def test_accept_invite_anon_user(url, client, settings):
 
     assert response.status_code == 302
     assert urllib.parse.unquote_plus(response.get('Location')) == (
-        'http://sso.trade.great.dev:8004/accounts/login/?'
+        'http://sso.trade.great:8004/accounts/login/?'
         'next=http://testserver' + url
     )
 
