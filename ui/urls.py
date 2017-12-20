@@ -7,6 +7,7 @@ from company import views as company_views
 from admin.proxy import AdminProxyView
 from proxy.views import APIViewProxy, DirectoryAPIViewProxy
 
+
 require_get = require_http_methods(['GET'])
 
 
@@ -154,6 +155,11 @@ urlpatterns = [
         r'^api/external(?P<path>/supplier/company/)$',
         require_get(APIViewProxy.as_view()),
         name='api-external-company'
+    ),
+    url(
+        r'^api(?P<path>/healthcheck/ping/)$',
+        require_get(APIViewProxy.as_view()),
+        name='api-external-ping'
     ),
     url(
         r'^api(?P<path>/external/supplier/)$',
