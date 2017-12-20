@@ -2,10 +2,12 @@ from django.conf.urls import url
 from django.views.decorators.http import require_http_methods
 from django.views.generic import RedirectView, TemplateView
 
-from enrolment import views as enrolment_views
-from company import views as company_views
 from admin.proxy import AdminProxyView
+from company import views as company_views
+from enrolment import views as enrolment_views
+import healthcheck.views
 from proxy.views import APIViewProxy, DirectoryAPIViewProxy
+
 
 require_get = require_http_methods(['GET'])
 
@@ -20,6 +22,16 @@ urlpatterns = [
         r'^api-static/admin/',
         AdminProxyView.as_view(),
         name='admin_proxy_static'
+    ),
+    url(
+        r'^healthcheck/api/$',
+        healthcheck.views.APICheckAPIView.as_view(),
+        name='healthcheck-api'
+    ),
+    url(
+        r'^healthcheck/single-sign-on/$',
+        healthcheck.views.SingleSignOnAPIView.as_view(),
+        name='healthcheck-single-sign-on'
     ),
     url(
         r'^$',
