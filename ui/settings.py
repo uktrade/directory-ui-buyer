@@ -35,8 +35,8 @@ APPEND_SLASH = True
 # Application definition
 
 INSTALLED_APPS = [
-    'django.contrib.staticfiles',
-    'django.contrib.humanize',
+    "django.contrib.staticfiles",
+    "django.contrib.humanize",
     "django_extensions",
     "raven.contrib.django.raven_compat",
     "django.contrib.sessions",
@@ -48,6 +48,10 @@ INSTALLED_APPS = [
     "company",
     "directory_constants",
     "directory_header_footer",
+    "directory_healthcheck",
+    "health_check",
+    "health_check.db",
+
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -327,3 +331,6 @@ FEATURE_NEW_SHARED_HEADER_ENABLED = os.getenv(
 
 
 EXPOSE_DIRECTORY_API = os.getenv('EXPOSE_DIRECTORY_API') == 'true'
+
+# healthcheck
+HEALTH_CHECK_TOKEN = os.environ['HEALTH_CHECK_TOKEN']
