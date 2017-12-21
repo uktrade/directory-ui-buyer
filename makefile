@@ -85,7 +85,8 @@ DOCKER_SET_DEBUG_ENV_VARS := \
 	export DIRECTORY_UI_BUYER_INFO_ABOUT=http://exred.trade.great:8007/about; \
 	export DIRECTORY_UI_BUYER_INFO_PRIVACY_AND_COOKIES=http://exred.trade.great:8007/privacy-and-cookies; \
 	export DIRECTORY_UI_BUYER_INFO_TERMS_AND_CONDITIONS=http://exred.trade.great:8007/terms-and-conditions; \
-	export DIRECTORY_UI_BUYER_SECURE_SSL_REDIRECT=false
+	export DIRECTORY_UI_BUYER_SECURE_SSL_REDIRECT=false; \
+	export DIRECTORY_UI_BUYER_HEALTH_CHECK_TOKEN=debug
 
 docker_test_env_files:
 	$(DOCKER_SET_DEBUG_ENV_VARS) && \
@@ -172,7 +173,8 @@ DEBUG_SET_ENV_VARS := \
 	export INFO_ABOUT=http://exred.trade.great:8007/about; \
 	export INFO_PRIVACY_AND_COOKIES=http://exred.trade.great:8007/privacy-and-cookies; \
 	export INFO_TERMS_AND_CONDITIONS=http://exred.trade.great:8007/terms-and-conditions; \
-	export SECURE_SSL_REDIRECT=false
+	export SECURE_SSL_REDIRECT=false; \
+	export HEALTH_CHECK_TOKEN=debug
 
 
 debug_webserver:
