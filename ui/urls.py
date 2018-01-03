@@ -168,7 +168,7 @@ urlpatterns = [
         name='api-external-company'
     ),
     url(
-        r'^api(?P<path>/healthcheck/ping/)$',
+        r'^api/external(?P<path>/healthcheck/ping/)$',
         require_get(APIViewProxy.as_view()),
         name='api-external-ping'
     ),
