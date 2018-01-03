@@ -12,9 +12,9 @@
   "devDependencies": {
     "chai": "^3.5.0",
     "dit-pattern-library": "git+https://github.com/uktrade/dit-pattern-library.git#0.1.0",
-    "govuk-elements-sass": "^1.2.1",
-    "govuk_frontend_toolkit": "^4.13.0",
     "gulp": "^3.9.1",
+    "gulp-sass": "^3.1.0",
+    "gulp-sourcemaps": "^2.6.3",
     "jsdom": "^9.8.3",
     "mocha": "^3.1.2",
     "trade_elements": "0.0.3"

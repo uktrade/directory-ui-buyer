@@ -1,6 +1,6 @@
 $asset-path: '../';
 
-@import 'variables.scss';
+@import 'partials/variables.scss';
 
 @import url(https://fonts.googleapis.com/css?family=Roboto:400,700);
 @import url(https://fonts.googleapis.com/css?family=Overpass:400,800);
@@ -1326,10 +1326,10 @@ a.ed-filled-button-primary {
 
 
 
-@import 'general.scss';
-@import 'registration.scss';
-@import 'components.scss';
-@import 'header-footer-fixes';
+@import 'partials/general.scss';
+@import 'partials/registration.scss';
+@import 'partials/components.scss';
+@import 'partials/header-footer-fixes';
 
 // // work around bootstrap
 // #header-bar .container:before, .container:after {
