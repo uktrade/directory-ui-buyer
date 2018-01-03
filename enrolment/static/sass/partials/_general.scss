@@ -30,12 +30,6 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-input:focus,
-textarea:focus,
-select:focus {
-  outline: 3px solid #ffbf47
-}
-
 .button-primary {
   background-color: $mid-blue;
   color: $white;
