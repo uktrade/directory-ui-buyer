@@ -1331,7 +1331,7 @@ a.ed-filled-button-primary {
 @import 'components.scss';
 @import 'header-footer-fixes';
 
-// work around bootstrap
-#header-bar .container:before, .container:after {
-  content: none;
-}
+// // work around bootstrap
+// #header-bar .container:before, .container:after {
+//   content: none;
+// }
