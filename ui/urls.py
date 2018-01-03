@@ -39,64 +39,64 @@ urlpatterns = [
         name='index'
     ),
     url(
-        r'^register/(?P<step>.+)$',
+        r'^register/(?P<step>.+)/$',
         enrolment_views.EnrolmentView.as_view(
             url_name='register', done_step_name='finished'
         ),
         name='register'
     ),
     url(
-        r'^register-submit$',
+        r'^register-submit/$',
         enrolment_views.SubmitEnrolmentView.as_view(),
         name='register-submit'
     ),
     url(
-        r'^company-profile$',
+        r'^company-profile/$',
         company_views.CompanyProfileDetailView.as_view(),
         name='company-detail'
     ),
     url(
-        r'^company-profile/edit$',
+        r'^company-profile/edit/$',
         company_views.CompanyProfileEditView.as_view(),
         name='company-edit'
     ),
     url(
-        r'^company-profile/edit/logo$',
+        r'^company-profile/edit/logo/$',
         company_views.CompanyProfileLogoEditView.as_view(),
         name='company-edit-logo'
     ),
     url(
-        r'^company-profile/edit/description$',
+        r'^company-profile/edit/description/$',
         company_views.CompanyDescriptionEditView.as_view(),
         name='company-edit-description'
     ),
     url(
-        r'^company-profile/edit/key-facts$',
+        r'^company-profile/edit/key-facts/$',
         company_views.SupplierBasicInfoEditView.as_view(),
         name='company-edit-key-facts'
     ),
     url(
-        r'^company-profile/edit/sectors$',
+        r'^company-profile/edit/sectors/$',
         company_views.SupplierClassificationEditView.as_view(),
         name='company-edit-sectors'
     ),
     url(
-        r'^company-profile/edit/contact$',
+        r'^company-profile/edit/contact/$',
         company_views.SupplierContactEditView.as_view(),
         name='company-edit-contact'
     ),
     url(
-        r'^company-profile/edit/address$',
+        r'^company-profile/edit/address/$',
         company_views.SupplierAddressEditView.as_view(),
         name='company-edit-address'
     ),
     url(
-        r'^company-profile/edit/social-media$',
+        r'^company-profile/edit/social-media/$',
         company_views.CompanySocialLinksEditView.as_view(),
         name='company-edit-social-media'
     ),
     url(
-        r'^company/case-study/edit/(?P<id>[0-9]+)?$',
+        r'^company/case-study/edit/(?P<id>[0-9]+)?/$',
         company_views.SupplierCaseStudyWizardView.as_view(),
         name='company-case-study-edit'
     ),
@@ -112,7 +112,7 @@ urlpatterns = [
         name='verify-company-hub'
     ),
     url(
-        r'^verify/letter-send$',
+        r'^verify/letter-send/$',
         company_views.SendVerificationLetterView.as_view(),
         name='verify-company-address'
     ),
@@ -132,7 +132,7 @@ urlpatterns = [
         name='verify-companies-house-callback'
     ),
     url(
-        r'^confirm-company-address$',
+        r'^confirm-company-address/$',
         company_views.CompanyAddressVerificationHistoricView.as_view(),
         name='verify-company-address-historic-url'
     ),
