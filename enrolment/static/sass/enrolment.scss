@@ -1,6 +1,6 @@
 $asset-path: '../';
 
-@import 'main.scss';
+@import 'partials/base.scss';
 
 .ed-enrolment {
   margin-top: 40px;
@@ -9,7 +9,7 @@ $asset-path: '../';
     border-color: #fafafa;
     background-color: #eee
   }
-  h1 { 
+  h1 {
     margin-bottom: 40px;
   }
   color: #4a4a4a;

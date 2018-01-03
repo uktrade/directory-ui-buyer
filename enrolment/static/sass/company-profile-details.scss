@@ -1,4 +1,4 @@
-@import 'main.scss';
+@import 'partials/base.scss';
 
 .ed-enrolment {
   margin-top: 40px;
@@ -23,7 +23,7 @@
   .company-contact-details {
     margin-left: 0;
   }
-  
+
   .company-description {
     word-wrap: break-word;
   }
@@ -109,7 +109,7 @@
   }
   ul {
     li {
-      list-style-type: disc; 
+      list-style-type: disc;
     }
   }
 }
@@ -205,7 +205,7 @@
     @media (max-width: 767px) {
       text-align: left;
     }
-  } 
+  }
   @media (max-width: 767px) {
     margin-bottom: 20px;
     width: 100%;
@@ -391,7 +391,7 @@
 
 
 .ed-envelope-container {
-  margin-top: 40px; 
+  margin-top: 40px;
   .ed-envelope {
     border: 1px solid #ddd;
     max-width: 35em;
