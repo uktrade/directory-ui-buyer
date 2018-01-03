@@ -5,6 +5,12 @@
 
 @media print {
 
+  // Hide the header and footer
+
+  #header, #footer {
+    display: none;
+  }
+
   /* Adjust visual for easier reading
    ************************************/
   #fabhome-benefits,
@@ -21,6 +27,7 @@
 
     h1, li, p {
       color: $grey-3;
+      text-shadow: none;
     }
   }
 
@@ -57,11 +64,6 @@
     }
   }
 
-  #fabhome-benefits,
-  #fabhome-intro {
-    min-height: auto;
-  }
-
   /* Hide ink heavy elements that don't add value to content
    ************************************************************/
   #content.fabhome,
@@ -75,6 +77,18 @@
   #fabhome-howto li::after,
   #fabhome-screenshot {
     display: none;
+  }
+
+  #fabhome-howto-lookup-area:before {
+    border: none;
+  }
+
+  #fabhome-benefits,
+  #fabhome-intro {
+    min-height: auto;
+    &:after {
+      border: none;
+    }
   }
 
 }
