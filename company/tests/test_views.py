@@ -380,8 +380,13 @@ def supplier_case_study_end_to_end(
         [view.RICH_MEDIA, supplier_case_study_rich_data],
     ]
 
-    def inner(case_study_id=''):
-        url = reverse('company-case-study-edit', kwargs={'id': case_study_id})
+    def inner(case_study_id=None):
+        if case_study_id:
+            url = reverse(
+                'company-case-study-edit', kwargs={'id': case_study_id}
+            )
+        else:
+            url = reverse('company-case-study-create')
         for key, data in data_step_pairs:
             response = has_company_client.post(url, data)
         return response
@@ -2251,3 +2256,11 @@ def test_accept_invite_invite_key_valid_post(
 
         assert response.status_code == 302
         assert response.get('Location') == reverse('company-detail')
+
+
+def test_case_study_create_backwards_compatible_url(client):
+    url = reverse('company-case-study-create-backwards-compatible')
+    response = client.get(url)
+
+    assert response.status_code == 302
+    assert response.get('Location') == reverse('company-case-study-create')

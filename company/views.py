@@ -160,7 +160,7 @@ class SupplierCaseStudyWizardView(
     form_serializer = staticmethod(forms.serialize_case_study_forms)
 
     def get_form_initial(self, step):
-        if not self.kwargs['id']:
+        if 'id' not in self.kwargs:
             return {}
         response = api_client.company.retrieve_private_case_study(
             sso_session_id=self.request.sso_user.session_id,
@@ -181,7 +181,7 @@ class SupplierCaseStudyWizardView(
 
     def done(self, *args, **kwags):
         data = self.serialize_form_data()
-        if self.kwargs['id']:
+        if 'id' in self.kwargs:
             response = api_client.company.update_case_study(
                 data=data,
                 case_study_id=self.kwargs['id'],
