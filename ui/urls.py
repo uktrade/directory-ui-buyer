@@ -96,7 +96,12 @@ urlpatterns = [
         name='company-edit-social-media'
     ),
     url(
-        r'^company/case-study/edit/(?P<id>[0-9]+)?/$',
+        r'^company/case-study/create/$',
+        company_views.SupplierCaseStudyWizardView.as_view(),
+        name='company-case-study-create'
+    ),
+    url(
+        r'^company/case-study/edit/(?P<id>[0-9]+)/$',
         company_views.SupplierCaseStudyWizardView.as_view(),
         name='company-case-study-edit'
     ),
@@ -209,5 +214,12 @@ urlpatterns = [
     url(
         r'^register$',
         RedirectView.as_view(pattern_name='index'),
+    ),
+
+    # the url to create case studies was ../edit/. That was bad naming.
+    url(
+        r'^company/case-study/edit/$',
+        RedirectView.as_view(pattern_name='company-case-study-create'),
+        name='company-case-study-create-backwards-compatible'
     ),
 ]

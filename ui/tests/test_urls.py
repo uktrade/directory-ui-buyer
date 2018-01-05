@@ -18,6 +18,7 @@ from django.urls import resolve
         ('/company-profile/edit/address/', 'company-edit-address'),
         ('/company-profile/edit/social-media/', 'company-edit-social-media'),
         ('/company/case-study/edit/2/', 'company-case-study-edit'),
+        ('/company/case-study/create/', 'company-case-study-create'),
         ('/unsubscribe/', 'unsubscribe'),
         ('/verify/', 'verify-company-hub'),
         ('/verify/letter-send/', 'verify-company-address'),
