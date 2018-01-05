@@ -7,6 +7,25 @@
 @import url(https://fonts.googleapis.com/css?family=Roboto:400,700);
 @import url(https://fonts.googleapis.com/css?family=Overpass:400,800);
 
+html, body, div, span, object, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, cite, dfn, em, img, q, small, strong, sub, sup, b, u, i, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, th, td, article, aside, figure, figcaption, footer, header, nav, section, video {
+  border: 0;
+  box-sizing: border-box;
+  font: inherit;
+  font-style: inherit;
+  font-variant-ligatures: inherit;
+  font-variant-caps: inherit;
+  font-variant-numeric: inherit;
+  font-weight: inherit;
+  font-stretch: inherit;
+  font-size: 100%;
+  line-height: inherit;
+  font-family: inherit;
+  font-size: 100%;
+  margin: 0;
+  padding: 0;
+  vertical-align: baseline;
+}
+
 html {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
