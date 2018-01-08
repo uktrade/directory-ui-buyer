@@ -1,6 +1,16 @@
 
 /* General
- *******************/
+*******************/
+
+body {
+  font-family: "Roboto", arial, helvetica, sans-serif;
+  font-size: 19px;
+  font-weight: 400;
+  line-height: 1.58em;
+  background-color: #ffffff;
+  -webkit-font-smoothing: antialiased;
+}
+
 .button-primary {
   background-color: $mid-blue;
   color: $white;
@@ -29,7 +39,7 @@
   font-size: 16px;
   margin: 0;
   padding: 0;
-  
+
   &:before {
     content: "<";
     margin-right: 5px;
@@ -37,16 +47,16 @@
 }
 
 .ul {
-  /* 
-  Tag as class used to compensate for these 
-  styles not being added earlier in project 
+  /*
+  Tag as class used to compensate for these
+  styles not being added earlier in project
   */
-  
+
   li {
     margin: 0 0 1em 15px;
     padding-left: 30px;
     position: relative;
-  
+
     &:before {
       color: inherit;
       content: ".";

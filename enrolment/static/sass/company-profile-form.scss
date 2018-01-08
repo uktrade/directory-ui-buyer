@@ -1,10 +1,6 @@
-@import 'main.scss';
+@import 'partials/base.scss';
 
 .company-profile-container {
-  @media (min-width: 767px) {
-    padding-top: 60px;
-    padding-bottom: 60px;
-  }
 
   .form-body {
     border-left: 5px solid #1E1348;
@@ -29,5 +25,14 @@
       color: #0000EE;
       text-decoration: underline;
     }
+  }
+}
+
+// TABLET
+
+@media (min-width: 767px) {
+  .company-profile-container {
+    padding-top: 60px;
+    padding-bottom: 60px;
   }
 }

@@ -1,5 +1,5 @@
-@import 'main.scss';
-@import 'landing-page-desktop.scss';
-@import 'landing-page-tablet.scss';
-@import 'landing-page-mobile.scss';
-@import 'landing-page-print.scss';
+@import 'partials/base.scss';
+@import 'responsive/landing-page-desktop.scss';
+@import 'responsive/landing-page-tablet.scss';
+@import 'responsive/landing-page-mobile.scss';
+@import 'responsive/landing-page-print.scss';

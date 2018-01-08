@@ -20,7 +20,6 @@
         <meta property="og:image" content="{% static 'govuk-0.18.0/assets/images/opengraph-image.png' %}">
         {% if features.FEATURE_NEW_SHARED_HEADER_ENABLED %}
             <link href="{% static 'Dit-Pattern-Styling/public/css/main.css' %}" media="all" rel="stylesheet" />
-            <link href="{% static 'Dit-Pattern-Styling/public/css/compatibility.css' %}" media="all" rel="stylesheet" />
             <script src="{% static 'Dit-Pattern-Styling/public/js/third-party.js' %}"></script>
             <script src="{% static 'Dit-Pattern-Styling/public/js/script.js' %}"></script>
         {% else %}
@@ -36,7 +35,7 @@
         <script type="text/javascript" src="{% static 'javascripts/index.js' %}"></script>
 
         {% block css %}
-            <link href="{% static 'main.css' %}" media="all" rel="stylesheet" />
+        <link href="{% static 'main.css' %}" media="all" rel="stylesheet" />
         {% endblock %}
         <style type="text/css">
             .js-disabled-only {
