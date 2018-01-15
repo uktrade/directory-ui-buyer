@@ -38,7 +38,6 @@ label, input, button, select, textarea {
 }
 
 .checkbox {
-  padding-left: 40px;
   position: relative;
 
   input {
@@ -73,6 +72,11 @@ label, input, button, select, textarea {
   input:focus + label:before  {
     outline: 3px solid $focus;
   }
+
+  label {
+    padding-left: 10px;
+  }
+
   label:before {
     content: "";
     border: 2px solid $grey-3;
@@ -87,6 +91,10 @@ label, input, button, select, textarea {
 }
 
 .checkbox {
+  label {
+    margin-left: 40px;
+  }
+
   li {
     padding-left: 40px;
     position: relative;
@@ -123,18 +131,26 @@ label, input, button, select, textarea {
     input:focus + label:before  {
       outline: 3px solid $focus;
     }
-    label:before {
-      content: "";
-      border: 2px solid $grey-3;
-      display: block;
-      height: 34px;
-      left: 0;
-      position: absolute;
-      top: -3px;
-      width: 34px;
-      z-index: -1;
+
+    label {
+      padding-left: 10px;
+      margin-left: 0;
+
+      &:before {
+        content: "";
+        border: 2px solid $grey-3;
+        display: block;
+        height: 34px;
+        left: 0;
+        position: absolute;
+        top: -3px;
+        width: 34px;
+        z-index: -1;
+      }
     }
+
   }
+
 }
 
 .input-field-container {
