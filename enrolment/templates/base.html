@@ -9,9 +9,8 @@
         <meta charset="utf-8" />
         <title>{% block head_title %}Find a Buyer - GREAT.gov.uk{% endblock %}</title>
 
-        <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon" />
-        <link rel="mask-icon" href="{% static 'govuk-0.18.0/assets/images/gov.uk_logotype_crown.svg' %}" color="#0b0c0c">
-        <link rel="apple-touch-icon-precomposed" sizes="192x192" href="{% static 'images/favicon-192x192.png' %}">
+        <link href='{% static 'images/favicon-192x192.png' %}' rel='shortcut icon' type='image/png'>
+        <!--[if IE]> <link rel="icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon" /> <![endif]-->
 
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta property="og:image" content="{% static 'govuk-0.18.0/assets/images/opengraph-image.png' %}">
