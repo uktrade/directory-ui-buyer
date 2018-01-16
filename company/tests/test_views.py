@@ -1719,7 +1719,14 @@ def test_verify_company_no_company_user(settings, no_company_client):
     assert response.get('Location') == reverse('index')
 
 
-def test_verify_company_has_company_user(settings, has_company_client):
+@patch.object(helpers, 'get_company_profile')
+def test_verify_company_has_company_user(
+    mock_get_company_profile, settings, has_company_client,
+    retrieve_profile_data
+):
+    company = retrieve_profile_data
+    company['is_verified'] = False
+    mock_get_company_profile.return_value = company
     settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED = True
 
     url = reverse('verify-company-hub')
@@ -1729,7 +1736,24 @@ def test_verify_company_has_company_user(settings, has_company_client):
     assert response.template_name == [views.CompanyVerifyView.template_name]
 
 
-def test_company_address_verification_backwards_compattible_feature_flag_on(
+@patch.object(helpers, 'get_company_profile')
+def test_verify_company_already_verified(
+    mock_get_company_profile, settings, has_company_client,
+    retrieve_profile_data
+):
+    company = retrieve_profile_data
+    company['is_verified'] = True
+    mock_get_company_profile.return_value = company
+    settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED = True
+
+    url = reverse('verify-company-hub')
+    response = has_company_client.get(url)
+
+    assert response.status_code == 302
+    assert response.url == reverse('company-detail')
+
+
+def test_company_address_verification_backwards_compatible_feature_flag_on(
     settings, client
 ):
     settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED = True
