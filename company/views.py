@@ -42,6 +42,13 @@ class NoCompanyRequiredMixin(CompanyStateRequirement):
         return not has_company(self.request.sso_user.session_id)
 
 
+class UnverifiedCompanyRequiredMixin:
+    def dispatch(self, *args, **kwargs):
+        if self.company_profile['is_verified']:
+            return redirect(reverse('company-detail'))
+        return super().dispatch(*args, **kwargs)
+
+
 class SubmitFormOnGetMixin:
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -74,9 +81,7 @@ class UpdateCompanyProfileOnFormWizardDoneMixin:
         return response
 
 
-class GetCompanyProfileInitialFormDataMixin:
-    def get_form_initial(self, step):
-        return self.company_profile
+class CompanyProfileMixin:
 
     @cached_property
     def company_profile(self):
@@ -120,12 +125,13 @@ class MultiUserAccountFeatureFlagMixin(NotFoundOnDisabledFeature):
 
 class BaseMultiStepCompanyEditView(
     CompanyRequiredMixin,
-    GetCompanyProfileInitialFormDataMixin,
+    CompanyProfileMixin,
     GetTemplateForCurrentStepMixin,
     UpdateCompanyProfileOnFormWizardDoneMixin,
     SessionWizardView
 ):
-    pass
+    def get_form_initial(self, step):
+        return self.company_profile
 
 
 class SupplierCaseStudyWizardView(
@@ -198,14 +204,17 @@ class SupplierCaseStudyWizardView(
             return TemplateResponse(self.request, self.failure_template)
 
 
-class CompanyProfileDetailView(CompanyRequiredMixin, TemplateView):
+class CompanyProfileDetailView(
+    CompanyRequiredMixin, CompanyProfileMixin, TemplateView
+):
     template_name = 'company-profile-detail.html'
 
     def get_context_data(self, **kwargs):
-        profile = helpers.get_company_profile(self.request.sso_user.session_id)
-        show_wizard_links = not forms.is_optional_profile_values_set(profile)
+        show_wizard_links = not forms.is_optional_profile_values_set(
+            self.company_profile
+        )
         return {
-            'company': helpers.format_company_details(profile),
+            'company': helpers.format_company_details(self.company_profile),
             'show_wizard_links': show_wizard_links,
             'SUPPLIER_SEARCH_URL': settings.SUPPLIER_SEARCH_URL,
         }
@@ -343,14 +352,14 @@ class CompanyProfileLogoEditView(BaseMultiStepCompanyEditView):
 
 
 class CompanyVerifyView(
-    Oauth2FeatureFlagMixin, CompanyRequiredMixin, TemplateView,
+    Oauth2FeatureFlagMixin, CompanyRequiredMixin,
+    UnverifiedCompanyRequiredMixin, CompanyProfileMixin, TemplateView
 ):
     template_name = 'company-verify-hub.html'
 
     def get_context_data(self, **kwargs):
-        company = helpers.get_company_profile(self.request.sso_user.session_id)
         return {
-            'company': company,
+            'company': self.company_profile,
         }
 
 
