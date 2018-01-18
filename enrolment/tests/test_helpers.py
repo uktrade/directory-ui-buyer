@@ -3,7 +3,7 @@ from unittest.mock import patch
 
 import pytest
 from requests import Response
-from requests.exceptions import HTTPError
+from requests.exceptions import HTTPError, RequestException
 import requests_mock
 
 from django import forms
@@ -143,6 +143,21 @@ def test_store_companies_house_profile_in_session_handles_bad_response(
 
     with pytest.raises(HTTPError):
         helpers.store_companies_house_profile_in_session(session, '01234567')
+
+
+@patch('enrolment.helpers.store_companies_house_profile_in_session')
+def test_store_companies_house_profile_in_session_handles_response_none(
+    mock_store_in_session, client
+):
+
+    session = client.session
+    mock_store_in_session.side_effect = RequestException(response=None)
+
+    with pytest.raises(forms.ValidationError):
+        helpers.store_companies_house_profile_in_session_and_validate(
+            session,
+            '01234567'
+        )
 
 
 def test_companies_house_client_consumes_auth(settings):
