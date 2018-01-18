@@ -43,8 +43,12 @@ class NoCompanyRequiredMixin(CompanyStateRequirement):
 
 
 class UnverifiedCompanyRequiredMixin:
+
+    def is_company_verified(self):
+        return self.company_profile['is_verified']
+
     def dispatch(self, *args, **kwargs):
-        if self.company_profile['is_verified']:
+        if self.is_company_verified():
             return redirect(reverse('company-detail'))
         return super().dispatch(*args, **kwargs)
 
@@ -300,6 +304,7 @@ class CompanyProfileEditView(BaseMultiStepCompanyEditView):
 
 class SendVerificationLetterView(
     Oauth2FeatureFlagMixin,
+    UnverifiedCompanyRequiredMixin,
     BaseMultiStepCompanyEditView
 ):
     ADDRESS = 'address'
@@ -361,7 +366,11 @@ class CompanyVerifyView(
 
 
 class CompanyAddressVerificationView(
-    CompanyRequiredMixin, GetTemplateForCurrentStepMixin, SessionWizardView
+    CompanyRequiredMixin,
+    CompanyProfileMixin,
+    UnverifiedCompanyRequiredMixin,
+    GetTemplateForCurrentStepMixin,
+    SessionWizardView
 ):
     ADDRESS = 'address'
     SUCCESS = 'success'
@@ -511,8 +520,12 @@ class Oauth2CallbackUrlMixin:
 
 
 class CompaniesHouseOauth2View(
-    Oauth2FeatureFlagMixin, CompanyRequiredMixin,
-    Oauth2CallbackUrlMixin, RedirectView
+    Oauth2FeatureFlagMixin,
+    CompanyRequiredMixin,
+    CompanyProfileMixin,
+    UnverifiedCompanyRequiredMixin,
+    Oauth2CallbackUrlMixin,
+    RedirectView
 ):
 
     def get_redirect_url(self):
@@ -524,8 +537,13 @@ class CompaniesHouseOauth2View(
 
 
 class CompaniesHouseOauth2CallbackView(
-    Oauth2FeatureFlagMixin, CompanyRequiredMixin,
-    SubmitFormOnGetMixin, Oauth2CallbackUrlMixin, FormView
+    Oauth2FeatureFlagMixin,
+    CompanyRequiredMixin,
+    CompanyProfileMixin,
+    UnverifiedCompanyRequiredMixin,
+    SubmitFormOnGetMixin,
+    Oauth2CallbackUrlMixin,
+    FormView
 ):
     form_class = forms.CompaniesHouseOauth2Form
     template_name = 'companies-house-oauth2-callback.html'

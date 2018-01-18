@@ -1136,6 +1136,10 @@ def test_company_profile_confirm_address_context_data(
     )
 
 
+@patch.object(
+    views.SendVerificationLetterView, 'is_company_verified',
+    Mock(return_value=False)
+)
 def test_send_verification_letter_address_context_data(
     company_profile_edit_goto_step, retrieve_profile_data, has_company_client,
     all_company_profile_data, settings
@@ -1162,6 +1166,10 @@ def test_company_profile_initial_data_classification(
     assert response.context_data['form'].initial == expected
 
 
+@patch.object(
+    views.CompanyAddressVerificationView, 'is_company_verified',
+    Mock(return_value=False)
+)
 @patch.object(validators.api_client.company, 'verify_with_code')
 def test_company_address_validation_api_success(
     mock_verify_with_code, address_verification_end_to_end, sso_user,
@@ -1181,6 +1189,10 @@ def test_company_address_validation_api_success(
     )
 
 
+@patch.object(
+    views.CompanyAddressVerificationView, 'is_company_verified',
+    Mock(return_value=False)
+)
 @patch.object(views.api_client.company, 'verify_with_code')
 def test_company_address_validation_api_failure(
     mock_verify_with_code, address_verification_end_to_end, api_response_400
@@ -1563,6 +1575,10 @@ def test_companies_house_oauth2_no_company(settings, no_company_client):
     assert response.get('Location') == reverse('index')
 
 
+@patch.object(
+    views.CompaniesHouseOauth2View, 'is_company_verified',
+    Mock(return_value=False)
+)
 def test_companies_house_oauth2_has_company_redirects(
     settings, has_company_client
 ):
@@ -1613,6 +1629,10 @@ def test_companies_house_callback_no_company(settings, no_company_client):
     assert response.get('Location') == reverse('index')
 
 
+@patch.object(
+    views.CompaniesHouseOauth2CallbackView, 'is_company_verified',
+    Mock(return_value=False)
+)
 @patch.object(forms.CompaniesHouseClient, 'verify_oauth2_code')
 def test_companies_house_callback_missing_code(
     mock_verify_oauth2_code, settings, has_company_client
@@ -1626,6 +1646,10 @@ def test_companies_house_callback_missing_code(
     assert mock_verify_oauth2_code.call_count == 0
 
 
+@patch.object(
+    views.CompaniesHouseOauth2CallbackView, 'is_company_verified',
+    Mock(return_value=False)
+)
 @patch.object(forms.CompaniesHouseClient, 'verify_oauth2_code')
 @patch('api_client.api_client.company.verify_with_companies_house')
 def test_companies_house_callback_has_company_calls_companies_house(
@@ -1658,6 +1682,10 @@ def test_companies_house_callback_has_company_calls_companies_house(
     )
 
 
+@patch.object(
+    views.CompaniesHouseOauth2CallbackView, 'is_company_verified',
+    Mock(return_value=False)
+)
 @patch.object(forms.CompaniesHouseClient, 'verify_oauth2_code')
 def test_companies_house_callback_invalid_code(
     mock_verify_oauth2_code, settings, has_company_client,
@@ -1673,6 +1701,10 @@ def test_companies_house_callback_invalid_code(
     assert b'Invalid code.' in response.content
 
 
+@patch.object(
+    views.CompaniesHouseOauth2CallbackView, 'is_company_verified',
+    Mock(return_value=False)
+)
 @patch.object(forms.CompaniesHouseClient, 'verify_oauth2_code')
 def test_companies_house_callback_unauthorized(
     mock_verify_oauth2_code, settings, has_company_client,
@@ -1737,18 +1769,23 @@ def test_verify_company_has_company_user(
     assert response.template_name == [views.CompanyVerifyView.template_name]
 
 
+@pytest.mark.parametrize('url_name', (
+    'verify-company-hub',
+    'verify-company-address-confirm',
+    'verify-companies-house',
+    'verify-companies-house-callback',
+))
 @patch.object(helpers, 'get_company_profile')
 def test_verify_company_already_verified(
     mock_get_company_profile, settings, has_company_client,
-    retrieve_profile_data
+    retrieve_profile_data, url_name
 ):
     company = retrieve_profile_data
     company['is_verified'] = True
     mock_get_company_profile.return_value = company
     settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED = True
 
-    url = reverse('verify-company-hub')
-    response = has_company_client.get(url)
+    response = has_company_client.get(reverse(url_name))
 
     assert response.status_code == 302
     assert response.url == reverse('company-detail')
@@ -1766,6 +1803,10 @@ def test_company_address_verification_backwards_compatible_feature_flag_on(
     assert response.get('Location') == reverse('verify-company-address')
 
 
+@patch.object(
+    views.CompanyAddressVerificationHistoricView, 'is_company_verified',
+    Mock(return_value=False)
+)
 def test_company_address_verification_backwards_compattible_feature_flag_off(
     settings, has_company_client
 ):
@@ -1785,6 +1826,10 @@ def test_verify_company_address_feature_flag_off(settings, client):
     assert response.status_code == 404
 
 
+@patch.object(
+    views.SendVerificationLetterView, 'is_company_verified',
+    Mock(return_value=False)
+)
 def test_verify_company_address_feature_flag_on(settings, has_company_client):
     settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED = True
 
@@ -1793,6 +1838,10 @@ def test_verify_company_address_feature_flag_on(settings, has_company_client):
     assert response.status_code == 200
 
 
+@patch.object(
+    views.SendVerificationLetterView, 'is_company_verified',
+    Mock(return_value=False)
+)
 @patch.object(views.api_client.company, 'update_profile')
 def test_verify_company_address_end_to_end(
     mock_update_profile, settings, has_company_client,
