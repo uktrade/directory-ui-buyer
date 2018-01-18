@@ -304,8 +304,12 @@ class CompanyProfileEditView(BaseMultiStepCompanyEditView):
 
 class SendVerificationLetterView(
     Oauth2FeatureFlagMixin,
+    CompanyRequiredMixin,
     UnverifiedCompanyRequiredMixin,
-    BaseMultiStepCompanyEditView
+    CompanyProfileMixin,
+    GetTemplateForCurrentStepMixin,
+    UpdateCompanyProfileOnFormWizardDoneMixin,
+    SessionWizardView
 ):
     ADDRESS = 'address'
     SENT = 'sent'
@@ -354,8 +358,11 @@ class CompanyProfileLogoEditView(BaseMultiStepCompanyEditView):
 
 
 class CompanyVerifyView(
-    Oauth2FeatureFlagMixin, CompanyRequiredMixin,
-    UnverifiedCompanyRequiredMixin, CompanyProfileMixin, TemplateView
+    Oauth2FeatureFlagMixin,
+    CompanyRequiredMixin,
+    UnverifiedCompanyRequiredMixin,
+    CompanyProfileMixin,
+    TemplateView
 ):
     template_name = 'company-verify-hub.html'
 

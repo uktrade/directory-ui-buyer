@@ -1826,6 +1826,18 @@ def test_verify_company_address_feature_flag_off(settings, client):
     assert response.status_code == 404
 
 
+def test_verify_company_address_anon_user(settings, client):
+    settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED = True
+
+    response = client.get(reverse('verify-company-address'))
+
+    assert response.status_code == 302
+    assert response.url == (
+        'http://sso.trade.great:8004/accounts/login/'
+        '?next=http%3A//testserver/verify/letter-send/'
+    )
+
+
 @patch.object(
     views.SendVerificationLetterView, 'is_company_verified',
     Mock(return_value=False)
