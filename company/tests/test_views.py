@@ -649,6 +649,7 @@ def test_company_profile_details_exposes_context(
     assert response.context_data['company'] == helpers.format_company_details(
         company
     )
+    assert company['sectors'] == ['SECURITY']
     assert response.context_data['show_wizard_links'] is False
     mock_is_optional_profile_values_set.assert_called_once_with(company)
 

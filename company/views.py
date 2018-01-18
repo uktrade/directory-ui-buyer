@@ -204,17 +204,14 @@ class SupplierCaseStudyWizardView(
             return TemplateResponse(self.request, self.failure_template)
 
 
-class CompanyProfileDetailView(
-    CompanyRequiredMixin, CompanyProfileMixin, TemplateView
-):
+class CompanyProfileDetailView(CompanyRequiredMixin, TemplateView):
     template_name = 'company-profile-detail.html'
 
     def get_context_data(self, **kwargs):
-        show_wizard_links = not forms.is_optional_profile_values_set(
-            self.company_profile
-        )
+        profile = helpers.get_company_profile(self.request.sso_user.session_id)
+        show_wizard_links = not forms.is_optional_profile_values_set(profile)
         return {
-            'company': helpers.format_company_details(self.company_profile),
+            'company': helpers.format_company_details(profile),
             'show_wizard_links': show_wizard_links,
             'SUPPLIER_SEARCH_URL': settings.SUPPLIER_SEARCH_URL,
         }
