@@ -170,7 +170,9 @@ def store_companies_house_profile_in_session_and_validate(
             company_number=company_number,
         )
     except RequestException as error:
-        if error.response.status_code == http.client.NOT_FOUND:
+        error = getattr(error, 'response', None)
+        status_code = getattr(error, 'status_code', None)
+        if status_code == http.client.NOT_FOUND:
             raise ValidationError(validators.MESSAGE_COMPANY_NOT_FOUND)
         else:
             raise ValidationError(validators.MESSAGE_COMPANY_ERROR)
