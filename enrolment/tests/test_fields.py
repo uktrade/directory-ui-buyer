@@ -2,32 +2,13 @@ from directory_validators.enrolment import MESSAGE_INVALID_PHONE_NUMBER
 
 from django import forms
 
-from enrolment import fields
+from enrolment.fields import MobilePhoneNumberField
 
-REQUIRED_MESSAGE = fields.PaddedCharField.default_error_messages['required']
-
-
-class PaddedTestForm(forms.Form):
-    field = fields.PaddedCharField(fillchar='0', max_length=6)
+REQUIRED_MESSAGE = MobilePhoneNumberField.default_error_messages['required']
 
 
 class MobilePhoneNumberTestForm(forms.Form):
-    field = fields.MobilePhoneNumberField()
-
-
-def test_padded_field_padds_value():
-    form = PaddedTestForm(data={'field': 'val'})
-
-    assert form.is_valid()
-    assert form.cleaned_data['field'] == '000val'
-
-
-def test_padded_field_handles_empty():
-    for value in ['', None]:
-        form = PaddedTestForm(data={'field': value})
-
-        assert form.is_valid() is False
-        assert form.errors['field'] == [REQUIRED_MESSAGE]
+    field = MobilePhoneNumberField()
 
 
 def test_mobile_phone_number_handles_empty():

@@ -148,17 +148,6 @@ def test_google_tag_manager():
     assert 'www.googletagmanager.com' in expected_body
 
 
-def test_utm_cookie_domain():
-    context = {
-        'analytics': {
-            'UTM_COOKIE_DOMAIN': '.thing.com',
-        }
-    }
-    html = render_to_string('base.html', context)
-
-    assert '<meta id="utmCookieDomain" value=".thing.com" />' in html
-
-
 def test_templates_render_successfully():
 
     template_list = []
@@ -251,27 +240,3 @@ def test_form_progress_indicator_last_step_active():
     assert html.count('ed-form-progress-indicator-line') == 3
     assert html.count('ed-form-progress-indicator-active') == 1
     assert html.count('ed-form-progress-indicator-prev') == 2
-
-
-def test_new_header_footer_enabled():
-    context = {
-        'features': {
-            'FEATURE_NEW_SHARED_HEADER_ENABLED': True,
-        }
-    }
-    html = render_to_string('base.html', context)
-
-    assert render_to_string('directory_header_footer/header.html') in html
-    assert render_to_string('directory_header_footer/footer.html') in html
-
-
-def test_new_header_footer_disabled():
-    context = {
-        'features': {
-            'FEATURE_NEW_SHARED_HEADER_ENABLED': False,
-        }
-    }
-    html = render_to_string('base.html', context)
-
-    assert render_to_string('directory_header_footer/header_old.html') in html
-    assert render_to_string('directory_header_footer/footer_old.html') in html

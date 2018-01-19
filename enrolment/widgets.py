@@ -20,12 +20,3 @@ class CheckboxWithInlineLabel(widgets.CheckboxInput):
             input_html=input_html, label=self.label, id=attrs['id']
         )
         return mark_safe(wrapper_html)
-
-
-class CheckboxSelectInlineLabelMultiple(widgets.CheckboxSelectMultiple):
-    option_template_name = 'widgets/checkbox_input_option.html'
-    css_class_name = 'form-field checkbox multi'
-
-    def __init__(self, attrs=None):
-        super().__init__(attrs=attrs)
-        self.attrs['class'] = self.attrs.get('class', self.css_class_name)

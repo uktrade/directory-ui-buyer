@@ -1,7 +1,8 @@
 {% extends 'base.html' %}
 {% load staticfiles %}
 {% load trans from i18n %}
-{% block css %}
+{% block head_css %}
+	{{ block.super }}
 	<link href="{% static 'landing-page.css' %}" media="all" rel="stylesheet" />
 {% endblock %}
 {% block sub_header %}{# prevent the subheader from showing on form pages #}{% endblock %}
@@ -10,7 +11,8 @@ Get seen by motivated overseas buyers
 {% endblock %}
 
 {% block css_layout_class %}
-fabhome
+	{{ block.super }}
+	fabhome
 {% endblock %}
 
 {% block content %}
