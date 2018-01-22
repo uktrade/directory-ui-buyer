@@ -42,15 +42,23 @@ class NoCompanyRequiredMixin(CompanyStateRequirement):
         return not has_company(self.request.sso_user.session_id)
 
 
-class UnverifiedCompanyRequiredMixin:
+class UnverifiedCompanyRequiredMixin(CompanyStateRequirement):
+
+    @property
+    def redirect_name(self):
+        if self.has_company:
+            return 'company-detail'
+        return 'index'
 
     def is_company_verified(self):
         return self.company_profile['is_verified']
 
-    def dispatch(self, *args, **kwargs):
-        if self.is_company_verified():
-            return redirect(reverse('company-detail'))
-        return super().dispatch(*args, **kwargs)
+    @cached_property
+    def has_company(self):
+        return has_company(self.request.sso_user.session_id)
+
+    def is_company_state_valid(self):
+        return self.has_company and not self.is_company_verified()
 
 
 class SubmitFormOnGetMixin:
@@ -304,9 +312,8 @@ class CompanyProfileEditView(BaseMultiStepCompanyEditView):
 
 class SendVerificationLetterView(
     Oauth2FeatureFlagMixin,
-    CompanyRequiredMixin,
-    UnverifiedCompanyRequiredMixin,
     CompanyProfileMixin,
+    UnverifiedCompanyRequiredMixin,
     GetTemplateForCurrentStepMixin,
     UpdateCompanyProfileOnFormWizardDoneMixin,
     SessionWizardView
@@ -359,9 +366,8 @@ class CompanyProfileLogoEditView(BaseMultiStepCompanyEditView):
 
 class CompanyVerifyView(
     Oauth2FeatureFlagMixin,
-    CompanyRequiredMixin,
-    UnverifiedCompanyRequiredMixin,
     CompanyProfileMixin,
+    UnverifiedCompanyRequiredMixin,
     TemplateView
 ):
     template_name = 'company-verify-hub.html'
@@ -373,7 +379,6 @@ class CompanyVerifyView(
 
 
 class CompanyAddressVerificationView(
-    CompanyRequiredMixin,
     CompanyProfileMixin,
     UnverifiedCompanyRequiredMixin,
     GetTemplateForCurrentStepMixin,
@@ -528,7 +533,6 @@ class Oauth2CallbackUrlMixin:
 
 class CompaniesHouseOauth2View(
     Oauth2FeatureFlagMixin,
-    CompanyRequiredMixin,
     CompanyProfileMixin,
     UnverifiedCompanyRequiredMixin,
     Oauth2CallbackUrlMixin,
@@ -545,7 +549,6 @@ class CompaniesHouseOauth2View(
 
 class CompaniesHouseOauth2CallbackView(
     Oauth2FeatureFlagMixin,
-    CompanyRequiredMixin,
     CompanyProfileMixin,
     UnverifiedCompanyRequiredMixin,
     SubmitFormOnGetMixin,
