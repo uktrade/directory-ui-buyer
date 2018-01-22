@@ -1,6 +1,10 @@
 from directory_validators import company as shared_validators
 from directory_validators import enrolment as shared_enrolment_validators
 from directory_constants.constants import choices
+from directory_components.widgets import (
+    CheckboxSelectInlineLabelMultiple,
+    CheckboxWithInlineLabel
+)
 
 from django import forms
 from django.conf import settings
@@ -11,10 +15,6 @@ from api_client import api_client
 from company import validators
 from enrolment.forms import IndentedInvalidFieldsMixin, AutoFocusFieldMixin
 from enrolment.helpers import halt_validation_on_failure
-from enrolment.widgets import (
-    CheckboxSelectInlineLabelMultiple,
-    CheckboxWithInlineLabel
-)
 from enrolment.helpers import CompaniesHouseClient
 from sso.utils import sso_api_client
 

@@ -46,12 +46,13 @@ INSTALLED_APPS = [
     "ui",
     "enrolment",
     "company",
+    "core",
     "directory_constants",
     "directory_header_footer",
     "directory_healthcheck",
     "health_check",
     "health_check.db",
-
+    "directory_components",
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -80,7 +81,7 @@ TEMPLATES = [
                 ('directory_header_footer.context_processors.'
                  'header_footer_context_processor'),
                 'ui.context_processors.feature_flags',
-                'ui.context_processors.analytics',
+                'directory_components.context_processors.analytics',
             ],
         },
     },

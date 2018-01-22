@@ -1,7 +1,8 @@
 {% extends 'base.html' %}
 {% load static from staticfiles %}
 {% load chunk_list from company_tags %}
-{% block css %}
+{% block head_css %}
+	{{ block.super }}
 	<link href="{% static 'company-profile-details.css' %}" media="all" rel="stylesheet" />
 {% endblock %}
 {% block hero_title %}Find a Buyer{% endblock %}

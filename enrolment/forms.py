@@ -4,8 +4,9 @@ from django.utils.safestring import mark_safe
 from directory_validators import enrolment as shared_validators
 from directory_validators.company import no_html, no_royal_charter
 from directory_constants.constants import urls
+from directory_components.fields import PaddedCharField
 
-from enrolment import fields, helpers, validators
+from enrolment import helpers, validators
 from enrolment.widgets import CheckboxWithInlineLabel
 
 
@@ -36,7 +37,7 @@ class CompanyForm(
         widget=forms.HiddenInput,
         validators=[no_html],
     )
-    company_number = fields.PaddedCharField(
+    company_number = PaddedCharField(
         label='Company number:',
         widget=forms.HiddenInput,
         max_length=8,
@@ -81,7 +82,7 @@ class CompaniesHouseSearchForm(forms.Form):
 
 
 class CompanyNumberForm(IndentedInvalidFieldsMixin, forms.Form):
-    company_number = fields.PaddedCharField(
+    company_number = PaddedCharField(
         validators=helpers.halt_validation_on_failure(
             shared_validators.company_number,
             validators.company_unique,

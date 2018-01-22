@@ -1,5 +1,6 @@
 from unittest.mock import Mock, patch
 
+from directory_components.fields import PaddedCharField
 from directory_validators.company import no_html
 import pytest
 
@@ -7,7 +8,7 @@ from django.forms import Form, HiddenInput
 from django.forms.fields import CharField, Field
 from django.core.validators import EmailValidator
 
-from enrolment import fields, forms, validators, widgets
+from enrolment import forms, validators, widgets
 
 
 REQUIRED_MESSAGE = Field.default_error_messages['required']
@@ -54,7 +55,7 @@ def test_company_form_rejects_missing_data():
 def test_company_form_fields():
     field = forms.CompanyForm.base_fields['company_number']
 
-    assert isinstance(field, fields.PaddedCharField)
+    assert isinstance(field, PaddedCharField)
     assert field.max_length == 8
     assert field.fillchar == '0'
 
