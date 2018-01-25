@@ -102,6 +102,21 @@ def no_company_client(logged_in_client):
 
 
 @pytest.fixture
+def not_company_owner_client(logged_in_client):
+    response = create_response(
+        status_code=http.client.OK,
+        json_body={'is_company_owner': False, 'company': {'number': 1}},
+    )
+    stub = patch(
+        'api_client.api_client.supplier.retrieve_profile',
+        Mock(return_value=response)
+    )
+    stub.start()
+    yield logged_in_client
+    stub.stop()
+
+
+@pytest.fixture
 def has_company_client(logged_in_client):
     stub = patch.object(views, 'has_company', Mock(return_value=True))
     stub.start()
@@ -1905,12 +1920,12 @@ def test_multi_user_view_anon_user(url, settings, client):
 
 
 @pytest.mark.parametrize('url', multi_user_urls)
-@patch.object(views.CompanyOwnerRequiredMixin, 'is_company_profile_owner',
-              Mock(return_value=False))
-def test_multi_user_view_non_company_owner(url, settings, has_company_client):
+def test_multi_user_view_non_company_owner(
+    url, settings, not_company_owner_client
+):
     settings.FEATURE_MULTI_USER_ACCOUNT_ENABLED = True
 
-    response = has_company_client.get(url)
+    response = not_company_owner_client.get(url)
 
     assert response.status_code == 302
     assert response.get('Location') == reverse('company-detail')
@@ -2280,21 +2295,22 @@ def test_accept_invite_has_company(url, has_company_client, settings):
     ),
 ))
 def test_accept_invite_get_invite(
-    url, mock_path, no_company_client, settings, api_response_get_invite_200
+    url, mock_path, not_company_owner_client, settings,
+    api_response_get_invite_200
 ):
     settings.FEATURE_MULTI_USER_ACCOUNT_ENABLED = True
     with patch(mock_path, return_value=api_response_get_invite_200):
-        response = no_company_client.get(url)
+        response = not_company_owner_client.get(url)
 
         assert response.status_code == 200
         assert response.context_data['invite'] == {'company_name': 'A Company'}
 
 
 @pytest.mark.parametrize('url', invite_urls)
-def test_accept_invite_no_invite_key(url, no_company_client, settings):
+def test_accept_invite_no_invite_key(url, not_company_owner_client, settings):
     settings.FEATURE_MULTI_USER_ACCOUNT_ENABLED = True
 
-    response = no_company_client.post(url, data={})
+    response = not_company_owner_client.post(url, data={})
 
     assert response.status_code == 200
     assert response.context_data['form'].is_valid() is False
@@ -2312,12 +2328,12 @@ def test_accept_invite_no_invite_key(url, no_company_client, settings):
     ),
 ))
 def test_accept_invite_invite_key_invalid(
-    url, mock_path, no_company_client, settings, api_response_400
+    url, mock_path, not_company_owner_client, settings, api_response_400
 ):
     settings.FEATURE_MULTI_USER_ACCOUNT_ENABLED = True
     with patch(mock_path, return_value=api_response_400):
 
-        response = no_company_client.get(url)
+        response = not_company_owner_client.get(url)
 
         assert response.status_code == 200
         assert response.context_data['invite'] is None
