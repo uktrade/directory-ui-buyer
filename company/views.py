@@ -21,11 +21,9 @@ class CompanyStateRequirement(SSOLoginRequiredMixin):
     def dispatch(self, request, *args, **kwargs):
         if request.sso_user is None:
             return self.handle_no_permission()
-        else:
-            if not self.is_company_state_valid():
-                return redirect(self.redirect_name)
-            else:
-                return super().dispatch(request, *args, **kwargs)
+        if not self.is_company_state_valid():
+            return redirect(self.redirect_name)
+        return super().dispatch(request, *args, **kwargs)
 
 
 class CompanyRequiredMixin(CompanyStateRequirement):
@@ -59,6 +57,33 @@ class UnverifiedCompanyRequiredMixin(CompanyStateRequirement):
 
     def is_company_state_valid(self):
         return self.has_company and not self.is_company_verified()
+
+
+class SupplierStateRequirement(SSOLoginRequiredMixin):
+    def dispatch(self, request, *args, **kwargs):
+        if request.sso_user is None:
+            return self.handle_no_permission()
+        if not self.is_supplier_state_valid():
+            return redirect('company-detail')
+        return super().dispatch(request, *args, **kwargs)
+
+    @property
+    def supplier_profile(self):
+        response = api_client.supplier.retrieve_profile(
+            sso_session_id=self.request.sso_user.session_id,
+        )
+        response.raise_for_status()
+        return response.json()
+
+
+class CompanyOwnerRequiredMixin(SupplierStateRequirement):
+    def is_supplier_state_valid(self):
+        return self.supplier_profile['is_company_owner']
+
+
+class NotCompanyOwnerRequiredMixin(SupplierStateRequirement):
+    def is_supplier_state_valid(self):
+        return not self.supplier_profile['is_company_owner']
 
 
 class SubmitFormOnGetMixin:
@@ -573,21 +598,6 @@ class CompaniesHouseOauth2CallbackView(
         return super().form_valid(form)
 
 
-class CompanyOwnerRequiredMixin:
-    def dispatch(self, *args, **kwargs):
-        if not self.is_company_profile_owner():
-            return redirect('company-detail')
-        return super().dispatch(*args, **kwargs)
-
-    def is_company_profile_owner(self):
-        response = api_client.supplier.retrieve_profile(
-            sso_session_id=self.request.sso_user.session_id,
-        )
-        response.raise_for_status()
-        parsed = response.json()
-        return parsed['is_company_owner']
-
-
 class BaseMultiUserAccountManagementView(
     MultiUserAccountFeatureFlagMixin, CompanyRequiredMixin,
     CompanyOwnerRequiredMixin
@@ -705,7 +715,7 @@ class TransferAccountWizardView(
 
 
 class BaseAcceptInviteView(
-    MultiUserAccountFeatureFlagMixin, NoCompanyRequiredMixin, FormView
+    MultiUserAccountFeatureFlagMixin, NotCompanyOwnerRequiredMixin, FormView
 ):
     form_class = forms.AcceptInviteForm
     success_url = reverse_lazy('company-detail')
