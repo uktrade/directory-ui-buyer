@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     "health_check",
     "health_check.db",
     "directory_components",
+    "export_elements",
 ]
 
 MIDDLEWARE_CLASSES = [

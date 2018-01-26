@@ -1,5 +1,8 @@
 @import 'partials/base.scss';
 
+.grid-row {
+  margin: 0;
+}
 .ed-enrolment {
   margin-top: 40px;
   margin-bottom: 40px;
@@ -16,13 +19,22 @@
 
 .company-profile-details-body {
   position: relative;
-  h3 {
+
+  .heading-large {
+    margin-top: 0;
+    margin-bottom: 0;
+  } 
+
+  .heading-medium {
     line-height: 1em;
     margin-top: 0;
     margin-bottom: 10px;
   }
   .company-contact-details {
     margin-left: 0;
+    a {
+      text-decoration: none;
+    }
   }
 
   .company-description {
@@ -47,9 +59,10 @@
       margin-top: 4px;
     }
   }
-  .company-profile-module-description.span8,
+  .company-profile-module-description.column-two-thirds,
   .company-profile-module-details {
     border-right: 1px solid #dedede;
+    padding-bottom: 20px;
     left: 20px;
     padding-left: 0;
     position: relative;
@@ -282,7 +295,6 @@
 }
 
 .company-profile-unpublished {
-  margin-top: 15px;
   margin-bottom: 10px;
   color: #B00D23;
   font-weight: bold;
@@ -299,6 +311,9 @@
 .ed-company-profile-add-case-study-button-container {
   margin-top: 30px;
   margin-bottom: 30px;
+  a {
+    text-decoration: none;
+  }
 }
 
 .ed-company-profile-add-case-study-button {
@@ -401,17 +416,14 @@
   }
 
   .company-profile-details-body {
-    .company-profile-module-details {
-      left: 0;
-      padding-left: 20px;
-    }
-  }
-
-  .company-profile-details-body {
     border: none;
     left: 0;
     margin-left: 0;
     padding-left: 20px;
+    .company-profile-module-details {
+      left: 0;
+      padding-left: 20px;
+    }
   }
 
   .company-profile-box {

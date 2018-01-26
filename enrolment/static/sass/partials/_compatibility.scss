@@ -1,29 +1,4 @@
 /* modifications to make the library render nicely with the tab layout */
-html {
-  box-sizing: border-box
-}
-
-html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
-  border: 0;
-  font: inherit;
-  font-size: 100%;
-  margin: 0;
-  padding: 0;
-  vertical-align: baseline
-}
-
-article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section {
-  display: block
-}
-
-body {
-  line-height: 1
-}
-
-ol,
-ul {
-  list-style: none
-}
 
 blockquote,
 q {
@@ -36,13 +11,15 @@ q:after {
   content: none
 }
 
+ul {
+  list-style: none;
+  li {
+    list-style: none;
+  }
+}
 table {
   border-collapse: collapse;
   border-spacing: 0
-}
-
-.push--bottom {
-  margin-bottom: 20px
 }
 
 .cf:after {
@@ -63,73 +40,11 @@ table {
   width: 1px
 }
 
-body {
-  font-size: 16px;
-  letter-spacing: 0;
-  line-height: 23px;
-  background-color: #fafafa;
-  color: #333;
-  font-family: "Roboto", arial, helvetica, sans-serif;
-  position: relative;
-  font-weight: 300;
-}
-
-.link {
-  font-weight: 400
-}
-
-.h1, h1, h2, h3, h4, h5, h6, strong, .button {
-  font-weight: 500
-}
 
 blockquote {
   font-size: 16px
 }
 
-.h1 {
-  font-size: 48px;
-  letter-spacing: -1px;
-  line-height: 58px
-}
-
-@media screen and (min-width: tablet) {
-  .h1 {
-    font-size: 32px;
-    font-weight: 500
-  }
-}
-
-@media screen and (min-width: mobile) {
-  .h1 {
-    font-size: 30px;
-    margin-bottom: 0
-  }
-}
-
-.h2 {
-  font-size: 32px;
-  letter-spacing: -.6px;
-  line-height: 40px
-}
-
-.h3 {
-  font-size: 24px;
-  letter-spacing: 0;
-  line-height: 32px
-}
-
-@media screen and (min-width: mobile) {
-  .h3 {
-    font-size: 19px
-  }
-}
-
-.h4,
-.button {
-  font-size: 18px;
-  letter-spacing: 0;
-  line-height: 25px
-}
 
 blockquote {
   line-height: 25px
@@ -141,10 +56,6 @@ hr {
   display: block;
   height: 1px;
   padding: 0
-}
-
-p {
-  margin-bottom: 23px
 }
 
 .outer-container {
@@ -175,52 +86,6 @@ p {
   .outer-container {
     margin: 0 10px
   }
-}
-
-a {
-  text-decoration: none
-}
-
-a:focus {
-  outline: 3px solid #ffbf47
-}
-
-.link {
-  border-bottom: 1px solid;
-  color: #00549f;
-  text-decoration: none
-}
-
-.link:hover {
-  border-bottom: 1px dashed;
-  color: #007ea3;
-  margin-bottom: -1px
-}
-
-.list {
-  margin-bottom: 20px;
-  margin-top: 5px;
-  padding: 0
-}
-
-.list-item {
-  margin-bottom: 13px;
-  padding-left: 20px;
-  position: relative
-}
-
-@media screen and (max-width: 767px) {
-  .list-item {
-    font-size: 15px
-  }
-}
-
-.list-item:before {
-  color: #1e1348;
-  content: '\25CF';
-  left: 0;
-  margin-right: 10px;
-  position: absolute
 }
 
 .button-blue {
