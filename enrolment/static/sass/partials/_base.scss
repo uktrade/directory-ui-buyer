@@ -319,33 +319,6 @@ a.no-focus-highlight {
   float: right;
 }
 
-.list {
-   margin: 0 0 1em 0;
-   list-style: none;
-
-   &.list-bullet {
-     padding-left: 0;
-   }
-
-   li {
-     position: relative;
-     list-style: none;
-     padding: 0 0 0 30px;
-   }
-
-   li::before {
-     background-color: $stone;
-     border-radius: 4px;
-     content: "";
-     display: inline-block;
-     height: 8px;
-     left: 0;
-     position: absolute;
-     top: 0.65em;
-     width: 8px;
-   }
-}
-
 #id_classification-export_destinations_other {
   @media (min-width: 979px) {
     width: 50%;
@@ -520,10 +493,6 @@ a.no-focus-highlight {
   p:first-child {
     margin-top: 30px;
     margin-bottom: 30px;
-  }
-  li {
-    list-style: disc;
-    margin-left: 1em;
   }
 }
 

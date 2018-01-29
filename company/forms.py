@@ -552,6 +552,7 @@ class RemoveCollaboratorForm(AutoFocusFieldMixin, forms.Form):
 
 
 class TransferAccountEmailForm(BaseMultiUserEmailForm):
+
     email_address = forms.EmailField(
         label=(
             'Enter the email address you want your profile transferred to.'
@@ -566,6 +567,7 @@ class TransferAccountPasswordForm(
     IndentedInvalidFieldsMixin, AutoFocusFieldMixin, forms.Form
 ):
     MESSAGE_INVALID_PASSWORD = 'Invalid password'
+    use_required_attribute = False
 
     password = forms.CharField(
         label='Your password',
