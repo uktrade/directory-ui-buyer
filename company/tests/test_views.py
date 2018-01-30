@@ -95,10 +95,18 @@ def logged_in_client(client):
 
 @pytest.fixture
 def no_company_client(logged_in_client):
-    stub = patch.object(views, 'has_company', Mock(return_value=False))
-    stub.start()
+    response = create_response(status_code=http.client.NOT_FOUND,)
+
+    stub_one = patch.object(views, 'has_company', Mock(return_value=False))
+    stub_two = patch(
+        'api_client.api_client.supplier.retrieve_profile',
+        Mock(return_value=response)
+    )
+    stub_one.start()
+    stub_two.start()
     yield logged_in_client
-    stub.stop()
+    stub_one.stop()
+    stub_two.stop()
 
 
 @pytest.fixture
@@ -2282,6 +2290,17 @@ def test_accept_invite_has_company(url, has_company_client, settings):
 
     assert response.status_code == 302
     assert response.get('Location') == reverse('company-detail')
+
+
+@pytest.mark.parametrize('url', invite_urls)
+def test_accept_invite_no_company(
+    url, has_company_client, settings, no_company_client
+):
+    settings.FEATURE_MULTI_USER_ACCOUNT_ENABLED = True
+
+    response = no_company_client.get(url)
+
+    assert response.status_code == 200
 
 
 @pytest.mark.parametrize('url,mock_path', (
