@@ -7,6 +7,11 @@ button,
   &-cta {
     background-color: $red-1;
     color: $white;
+
+    &:hover,
+    &:focus {
+      background-color: $red-1;
+    }
   }
 }
 
@@ -32,7 +37,7 @@ button,
     margin-bottom: 5px;
   }
 
-  .text {
+  input {
     background-color: $white;
     border: $grey-2 solid 1px;
     color: $grey-2;

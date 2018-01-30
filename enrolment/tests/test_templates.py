@@ -112,7 +112,7 @@ def test_export_status_common_invalid_form_error_size():
         'form': form
     }
     html = render_to_string('export-status-form.html', context)
-    assert 'span8' in html
+    assert 'column-two-thirds' in html
     assert 'Sorry, this is not the right service for your company' not in html
     assert '<form' in html
 
@@ -124,7 +124,7 @@ def test_company_profile_form_correct_title():
 
 def test_google_tag_manager_project_id():
     context = {
-        'analytics': {
+        'directory_components_analytics': {
             'GOOGLE_TAG_MANAGER_ID': '123456',
         }
     }
