@@ -67,23 +67,30 @@ class SupplierStateRequirement(SSOLoginRequiredMixin):
             return redirect('company-detail')
         return super().dispatch(request, *args, **kwargs)
 
+    def has_company(self):
+        return has_company(self.request.sso_user.session_id)
+
     @property
     def supplier_profile(self):
         response = api_client.supplier.retrieve_profile(
             sso_session_id=self.request.sso_user.session_id,
         )
+        if response.status_code == 404:
+            return {}
         response.raise_for_status()
         return response.json()
 
 
 class CompanyOwnerRequiredMixin(SupplierStateRequirement):
     def is_supplier_state_valid(self):
-        return self.supplier_profile['is_company_owner']
+        profile = self.supplier_profile
+        return profile and profile['is_company_owner']
 
 
 class NotCompanyOwnerRequiredMixin(SupplierStateRequirement):
     def is_supplier_state_valid(self):
-        return not self.supplier_profile['is_company_owner']
+        profile = self.supplier_profile
+        return not profile or not profile['is_company_owner']
 
 
 class SubmitFormOnGetMixin:
