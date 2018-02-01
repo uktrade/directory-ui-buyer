@@ -87,8 +87,15 @@ class APIViewProxy(BaseProxyView):
     upstream = settings.API_CLIENT_BASE_URL
     # setting forwarded_host header cause image returned to use FAB's domain
     set_forwarded_host_header = False
+    whitelisted_paths = (
+        '/directory-api/buyer/csv-dump/',
+        '/directory-api/supplier/csv-dump/'
+    )
 
     def dispatch(self, request, path, *args, **kwargs):
+        path = path or request.get_full_path()
+        if path in self.whitelisted_paths:
+            return super().dispatch(request, path, *args, **kwargs)
         if signature.external_api_checker.test_signature(request) is False:
             return HttpResponseForbidden()
         return super().dispatch(request, path, *args, **kwargs)
