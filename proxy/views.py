@@ -93,7 +93,7 @@ class APIViewProxy(BaseProxyView):
     )
 
     def dispatch(self, request, path, *args, **kwargs):
-        path = path or request.get_full_path()
+        path = path or request.path
         if path in self.whitelisted_paths:
             return super().dispatch(request, path, *args, **kwargs)
         if signature.external_api_checker.test_signature(request) is False:

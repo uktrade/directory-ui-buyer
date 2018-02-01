@@ -207,7 +207,6 @@ def test_directory_api_view_turned_off(client, settings):
 def test_whitelisted_paths_are_allowed(url, client, settings):
     settings.EXPOSE_DIRECTORY_API = True
 
-    url = reverse('directory-api', kwargs={'path': '/buyer/csv-dump/'})
     with patch('urllib3.poolmanager.PoolManager.urlopen') as mock_urlopen:
         proxied_content = {'key': 'value'}
         mock_urlopen.return_value = urllib3.response.HTTPResponse(
@@ -217,7 +216,7 @@ def test_whitelisted_paths_are_allowed(url, client, settings):
             status=http.client.OK
         )
 
-        response = client.get(url)
+        response = client.get(url+'?token=debug')
 
         assert response.json() == proxied_content
         assert 'X-Forwarded-Host' not in mock_urlopen.call_args[1]['headers']
