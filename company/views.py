@@ -777,10 +777,6 @@ class AcceptCollaborationView(BaseAcceptInviteView):
 
 class CSVDumpGenericView(View):
 
-    @staticmethod
-    def get_file(token):
-        return api_client.buyer.get_csv_dump(token)
-
     def get(self, request, *args, **kwargs):
         token = request.GET.get('token')
         if not token:
