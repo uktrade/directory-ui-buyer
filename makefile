@@ -125,7 +125,7 @@ docker_build:
 DEBUG_SET_ENV_VARS := \
 	export PORT=8001; \
 	export SECRET_KEY=debug; \
-	export DEBUG=true ;\
+	export DEBUG=true;\
 	export API_SIGNATURE_SECRET=debug; \
 	export API_CLIENT_BASE_URL=http://api.trade.great:8000; \
 	export SSO_PROXY_SIGNATURE_SECRET=proxy_signature_debug; \
