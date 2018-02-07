@@ -2385,3 +2385,53 @@ def test_case_study_create_backwards_compatible_url(client):
 
     assert response.status_code == 302
     assert response.get('Location') == reverse('company-case-study-create')
+
+
+def test_buyer_csv_dump_no_token(client):
+    url = reverse('buyers-csv-dump')
+    response = client.get(url)
+
+    assert response.status_code == 403
+    assert response.content == b'Token not provided'
+
+
+@patch('company.views.api_client')
+def test_buyer_csv_dump(mocked_api_client, client):
+    mocked_api_client.buyer.get_csv_dump.return_value = Mock(
+        content='abc',
+        headers={
+            'Content-Type': 'foo',
+            'Content-Disposition': 'bar'
+        }
+    )
+    url = reverse('buyers-csv-dump')
+    response = client.get(url+'?token=debug')
+    assert mocked_api_client.buyer.get_csv_dump.called is True
+    assert mocked_api_client.buyer.get_csv_dump.called_once_with(token='debug')
+    assert response.content == b'abc'
+    assert response._headers['content-type'] == ('Content-Type', 'foo')
+    assert response._headers['content-disposition'] == (
+        'Content-Disposition', 'bar'
+    )
+
+
+@patch('company.views.api_client')
+def test_supplier_csv_dump(mocked_api_client, client):
+    mocked_api_client.supplier.get_csv_dump.return_value = Mock(
+        content='abc',
+        headers={
+            'Content-Type': 'foo',
+            'Content-Disposition': 'bar'
+        }
+    )
+    url = reverse('suppliers-csv-dump')
+    response = client.get(url+'?token=debug')
+    assert mocked_api_client.supplier.get_csv_dump.called is True
+    assert mocked_api_client.supplier.get_csv_dump.called_once_with(
+        token='debug'
+    )
+    assert response.content == b'abc'
+    assert response._headers['content-type'] == ('Content-Type', 'foo')
+    assert response._headers['content-disposition'] == (
+        'Content-Disposition', 'bar'
+    )
