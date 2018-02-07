@@ -1,22 +1,5 @@
 /* modifications to make the library render nicely with the tab layout */
 
-blockquote,
-q {
-  quotes: none
-}
-
-q:before,
-q:after {
-  content: '';
-  content: none
-}
-
-ul {
-  list-style: none;
-  li {
-    list-style: none;
-  }
-}
 table {
   border-collapse: collapse;
   border-spacing: 0
@@ -38,24 +21,6 @@ table {
   padding: 0;
   position: absolute;
   width: 1px
-}
-
-
-blockquote {
-  font-size: 16px
-}
-
-
-blockquote {
-  line-height: 25px
-}
-
-hr {
-  background-color: #4f0b7b;
-  border: 0;
-  display: block;
-  height: 1px;
-  padding: 0
 }
 
 .outer-container {
