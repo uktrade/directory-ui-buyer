@@ -1,5 +1,6 @@
 import os
 
+from django.http import HttpResponse, HttpResponseForbidden
 from formtools.wizard.views import SessionWizardView
 
 from django.conf import settings
@@ -8,7 +9,7 @@ from django.core.urlresolvers import reverse, reverse_lazy
 from django.shortcuts import redirect, Http404
 from django.template.response import TemplateResponse
 from django.utils.functional import cached_property
-from django.views.generic import RedirectView, TemplateView
+from django.views.generic import RedirectView, TemplateView, View
 from django.views.generic.edit import FormView
 
 from api_client import api_client
@@ -67,23 +68,30 @@ class SupplierStateRequirement(SSOLoginRequiredMixin):
             return redirect('company-detail')
         return super().dispatch(request, *args, **kwargs)
 
+    def has_company(self):
+        return has_company(self.request.sso_user.session_id)
+
     @property
     def supplier_profile(self):
         response = api_client.supplier.retrieve_profile(
             sso_session_id=self.request.sso_user.session_id,
         )
+        if response.status_code == 404:
+            return {}
         response.raise_for_status()
         return response.json()
 
 
 class CompanyOwnerRequiredMixin(SupplierStateRequirement):
     def is_supplier_state_valid(self):
-        return self.supplier_profile['is_company_owner']
+        profile = self.supplier_profile
+        return profile and profile['is_company_owner']
 
 
 class NotCompanyOwnerRequiredMixin(SupplierStateRequirement):
     def is_supplier_state_valid(self):
-        return not self.supplier_profile['is_company_owner']
+        profile = self.supplier_profile
+        return not profile or not profile['is_company_owner']
 
 
 class SubmitFormOnGetMixin:
@@ -765,3 +773,33 @@ class AcceptCollaborationView(BaseAcceptInviteView):
     template_name = 'company-accept-collaboration.html'
     retrieve_api_method = api_client.company.retrieve_collaboration_invite
     accept_api_method = api_client.company.accept_collaboration_invite
+
+
+class CSVDumpGenericView(View):
+
+    def get(self, request, *args, **kwargs):
+        token = request.GET.get('token')
+        if not token:
+            return HttpResponseForbidden('Token not provided')
+        csv_file = self.get_file(token)
+        response = HttpResponse(
+            csv_file.content, content_type=csv_file.headers['Content-Type']
+        )
+        response['Content-Disposition'] = csv_file.headers[
+            'Content-Disposition'
+        ]
+        return response
+
+
+class BuyerCSVDumpView(CSVDumpGenericView):
+
+    @staticmethod
+    def get_file(token):
+        return api_client.buyer.get_csv_dump(token)
+
+
+class SupplierCSVDumpView(CSVDumpGenericView):
+
+    @staticmethod
+    def get_file(token):
+        return api_client.supplier.get_csv_dump(token)
