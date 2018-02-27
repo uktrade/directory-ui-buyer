@@ -24,7 +24,7 @@ BASE_DIR = os.path.dirname(PROJECT_ROOT)
 SECRET_KEY = os.environ["SECRET_KEY"]
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = bool(os.getenv("DEBUG", False))
+DEBUG = os.getenv("DEBUG", 'false') == 'true'
 
 # As the app is running behind a host-based router supplied by Heroku or other
 # PaaS, we can open ALLOWED_HOSTS
@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     "health_check",
     "health_check.db",
     "directory_components",
+    "export_elements",
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -233,6 +234,8 @@ SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 
 # HEADER/FOOTER URLS
 GREAT_EXPORT_HOME = os.getenv('GREAT_EXPORT_HOME')
+GREAT_HOME = os.getenv('GREAT_HOME')
+CUSTOM_PAGE = os.getenv('CUSTOM_PAGE')
 
 # EXPORTING PERSONAS
 EXPORTING_NEW = os.getenv('EXPORTING_NEW')
@@ -253,12 +256,14 @@ SERVICES_EXOPPS = os.getenv('SERVICES_EXOPPS')
 SERVICES_FAB = os.getenv('SERVICES_FAB')
 SERVICES_GET_FINANCE = os.getenv('SERVICES_GET_FINANCE')
 SERVICES_SOO = os.getenv('SERVICES_SOO')
+SERVICES_EVENTS = os.getenv('SERVICES_EVENTS')
 
 # FOOTER LINKS
 INFO_ABOUT = os.getenv('INFO_ABOUT')
 INFO_CONTACT_US_DIRECTORY = os.getenv('INFO_CONTACT_US_DIRECTORY')
 INFO_PRIVACY_AND_COOKIES = os.getenv('INFO_PRIVACY_AND_COOKIES')
 INFO_TERMS_AND_CONDITIONS = os.getenv('INFO_TERMS_AND_CONDITIONS')
+INFO_DIT = os.getenv('INFO_DIT')
 
 # Sentry
 RAVEN_CONFIG = {

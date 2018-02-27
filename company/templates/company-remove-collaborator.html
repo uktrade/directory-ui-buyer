@@ -4,8 +4,7 @@
 {% block button_finish_label %}Confirm{% endblock%}
 
 {% block form_subtitle %}
-<h2>Remove user from account</h2>
-<br>
+<h2 class="heading-large">Remove user from account</h2>
 <p>
     Select the emails you would like to remove
 </p>
@@ -14,8 +13,7 @@
     {% if form.sso_ids.field.choices %}
     	{{ block.super }}
     {% else %}
-        <p><h2>Your company has no collaborators.</h2></p>
-        <br>
+        <p><h2 class="heading-large">Your company has no collaborators.</h2></p>
         <p>Click <a href="{{ company_profile_url }}">here</a> to go back.</p>
         <br>
     {% endif %}

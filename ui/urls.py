@@ -222,4 +222,14 @@ urlpatterns = [
         RedirectView.as_view(pattern_name='company-case-study-create'),
         name='company-case-study-create-backwards-compatible'
     ),
+    url(
+        r'^data-science/buyers/$',
+        company_views.BuyerCSVDumpView.as_view(),
+        name='buyers-csv-dump'
+    ),
+    url(
+        r'^data-science/suppliers/$',
+        company_views.SupplierCSVDumpView.as_view(),
+        name='suppliers-csv-dump'
+    )
 ]

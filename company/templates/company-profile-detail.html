@@ -12,48 +12,48 @@
 	<div class="company-profile-details-body">
 
 		{% if company.is_published %}
-			<div class="row-fluid clearfix company-profile-published">
-				<div class="span8">
-					<h2 class="h2">Your company is published</h2>
+			<div class="grid-row company-profile-published">
+				<div class="column-two-thirds">
+					<h2 class="heading-large">Your company is published</h2>
 					<p style="font-weight: 400;">Your profile is visible to international buyers</p>
 				</div>
-				<div class="span4">
+				<div class="column-one-third">
 					<a href="{{ company.public_profile_url }}" target="_blank" class="ed-naked-button-primary">
 						View published profile
 					</a>
 				</div>
 			</div>
 		{% elif not company.description or not company.summary %}
-			<div class="row-fluid clearfix company-profile-unpublished">
-				<div class="span8">
-					<h2 class="h2">Your company has no description.</h2>
+			<div class="grid-row company-profile-unpublished">
+				<div class="column-two-thirds">
+					<h2 class="heading-large">Your company has no description.</h2>
 					<p style="font-weight: 400;">Your profile can't be published until your company has a description</p>
 				</div>
-				<div class="span4" style="margin-top: 10px;">
+				<div class="column-one-third">
 					<a href="{% url 'company-edit-description' %}" class="ed-naked-button-error">
 						Set your description
 					</a>
 				</div>
 			</div>
 		{% elif not company.email_address %}
-			<div class="row-fluid clearfix clearfix company-profile-unpublished">
-				<div class="span8">
-					<h2 class="h2">Your company has no contact details.</h2>
+			<div class="grid-row company-profile-unpublished">
+				<div class="column-two-thirds">
+					<h2 class="heading-large">Your company has no contact details.</h2>
 					<p style="font-weight: 400;">Your profile can't be published. Buyers would be unable to contact you</p>
 				</div>
-				<div class="span4" style="margin-top: 10px;">
+				<div class="column-one-third">
 					<a href="{% url 'company-edit-contact' %}" class="ed-naked-button-error">
 						Set your contact email
 					</a>
 				</div>
 			</div>
 		{% elif not company.is_verified %}
-			<div class="row-fluid clearfix clearfix company-profile-unpublished">
-				<div class="span8">
-					<h2 class="h2">Your company has not yet been verified.</h2>
+			<div class="grid-row company-profile-unpublished">
+				<div class="column-two-thirds">
+					<h2 class="heading-large">Your company has not yet been verified.</h2>
 					<p style="font-weight: 400;">Your profile can't be published until your company is verified</p>
 				</div>
-				<div class="span4" style="margin-top: 10px;">
+				<div class="column-one-third">
 					{% if features.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED %}
 						<a href="{% url 'verify-company-hub' %}" class="ed-naked-button-error">
 							Verify your company
@@ -74,9 +74,9 @@
 		{% endif %}
 
 
-		<div class="row-fluid cf">
-			<div class="span12 great-blue-bar ed-has-edit-button">
-				<h1 class="company-name-title">{{company.name}}</h1>
+		<div class="grid-row">
+			<div class="column-full great-blue-bar ed-has-edit-button">
+				<h1 class="heading-xlarge">{{company.name}}</h1>
 				<a class="ed-edit-button" href="{% url show_wizard_links|yesno:'company-edit,company-edit-key-facts' %}">
 					<img src="{% static 'images/pencil-icon-white.png' %}" class="ed-icon-pencil" />
 					<strong>Edit</strong>
@@ -84,9 +84,9 @@
 			</div>
 		</div>
 
-		<div class="row-fluid clearfix company-profile-module-container">
-			<div class="span8 company-profile-module-details">
-				<div class="span4 company-logo company-profile-module-inner">
+		<div class="grid-row company-profile-module-container">
+			<div class="column-two-thirds company-profile-module-details">
+				<div class="column-one-third company-logo company-profile-module-inner">
 					<div class="logo-container">
 						<div>
 							<div class="ed-has-edit-button ed-company-profile-logo-container">	
@@ -102,8 +102,8 @@
 					</div>
 				</div>
 
-				<div class="span8 company-contact-details company-profile-module-inner">
-					<h2>Contact</h2>
+				<div class="column-two-thirds company-contact-details company-profile-module-inner">
+					<h3 class="heading-medium">Contact</h3>
 					{% if company.website %}
 						<p>
 							<a href="{{ company.website}}">{{ company.website }}</a>
@@ -134,9 +134,9 @@
 			</div>
 			<!-- .company-profile-module-details -->
 			
-			<div class="span4 ed-has-edit-button company-profile-module-inner  company-profile-module-facts">
-				<h2>Facts &amp; details</h2>
-				<a class="ed-edit-button" href="{% url show_wizard_links|yesno:'company-edit,company-edit-key-facts' %}" style="top: 20px; right: 20px; color: #004F95;">
+			<div class="column-one-third ed-has-edit-button company-profile-module-inner  company-profile-module-facts">
+				<h3 class="heading-medium">Facts &amp; details</h3>
+				<a class="ed-edit-button" href="{% url show_wizard_links|yesno:'company-edit,company-edit-key-facts' %}" style="top: 20px; right: 35px; color: #004F95;">
 					<img src="{% static 'images/pencil-icon.png' %}" class="ed-icon-pencil" />
 					<strong>Edit</strong>
 				</a>
@@ -148,11 +148,11 @@
 			</div>
 		</div>
 
-		<div class="row-fluid clearfix company-profile-module-container">
+		<div class="grid-row company-profile-module-container">
 
-			<div class="span8 ed-has-edit-button company-profile-module-inner company-description">
-				<h2>Company description</h2>
-				<a class="ed-edit-button" href="{% url 'company-edit-description' %}" style="top: 20px; right: 20px; color: #004F95;">
+			<div class="column-two-thirds ed-has-edit-button company-profile-module-inner company-description">
+				<h3 class="heading-medium">Company description</h3>
+				<a class="ed-edit-button" href="{% url 'company-edit-description' %}" style="top: 20px; right: 5px; color: #004F95;">
 					<img src="{% static 'images/pencil-icon.png' %}" class="ed-icon-pencil" />
 					<strong>Edit</strong>
 				</a>
@@ -168,9 +168,9 @@
 				{% endif %}
 			</div>
 
-			<div class="span4 ed-has-edit-button company-profile-module-inner company-profile-module-social-links">
-				<h2>Online profiles</h2>
-				<a class="ed-edit-button" href="{% url 'company-edit-social-media' %}" style="top: 20px; right: 20px; color: #004F95;">
+			<div class="column-one-third ed-has-edit-button company-profile-module-inner company-profile-module-social-links">
+				<h3 class="heading-medium">Online profiles</h3>
+				<a class="ed-edit-button" href="{% url 'company-edit-social-media' %}" style="top: 20px; right: 35px; color: #004F95;">
 					<img src="{% static 'images/pencil-icon.png' %}" class="ed-icon-pencil" />
 					<strong>Edit</strong>
 				</a>
@@ -214,31 +214,29 @@
 
 		</div>
 
-		<div class="row-fluid cf">
-			<div class="span12 great-blue-bar">
-				<h2 class="element-within company-name-title">
-					<span class="dont-break-out">Recent projects</span>
-				</h2>
+		<div class="grid-row">
+			<div class="column-full great-blue-bar">
+				<h2 class="heading-large">Recent projects</h2>
 			</div>
 		</div>
 
 		<div class="ed-company-profile-sector-case-study-container company-profile-module-container">
 			{% for group in company.supplier_case_studies|chunk_list:3 %}
-				<div class="row-fluid" style="margin-bottom: 0; border-top: 0;">
+				<div class="grid-row" style="margin-bottom: 0; border-top: 0;">
 				{% for case_study in group %}
-					<div class="span4 company-profile-module-inner">
-						<div class="row-fluid">
-							<div class="supplier-case-study-images span12">
+					<div class="column-one-third company-profile-module-inner">
+						<div class="grid-row">
+							<div class="supplier-case-study-images column-full">
 								<img src="{{ case_study.image_one }}" />
 							</div>
 						</div>
-						<div class="row-fluid">
-							<div class="span12">
+						<div class="grid-row">
+							<div class="column-full">
 								<h4 class="h4">{{ case_study.title }}</h4>
 							</div>
 						</div>
-						<div class="row-fluid ed-company-profile-sector-case-study-inner">
-							<div class="span12">
+						<div class="grid-row ed-company-profile-sector-case-study-inner">
+							<div class="column-full">
 								<p>
 									{% if case_study.summary %}
 										{{ case_study.summary|linebreaks }}
@@ -265,11 +263,11 @@
 		</div>
 
 		<div class="group two-column-group ed-special-bottom-border">
-			<div class="row-fluid clearfix company-profile-module-container" style="margin-bottom: 0; border-bottom: 0;">
-				<div class="span6">
+			<div class="grid-row company-profile-module-container" style="margin-bottom: 0; border-bottom: 0;">
+				<div class="column-one-half">
 					<div style="margin-bottom: 0;">
 						<div class="company-profile-module-inner ed-has-edit-button">
-							<h3 class="h3">Core Sector</h3>
+							<h3 class="heading-medium">Core Sector</h3>
 							<a class="ed-edit-button"  style="top: 20px; right: 20px; color: #004F95;" href="{% url show_wizard_links|yesno:'company-edit,company-edit-sectors' %}">
 								<img src="{% static 'images/pencil-icon.png' %}" class="ed-icon-pencil" />
 								<strong>Edit</strong>
@@ -289,10 +287,10 @@
 						</div>
 					</div>
 				</div>
-				<div class="span6">
+				<div class="column-one-half">
 					<div style="margin-bottom: 0;">
 						<div class=" company-profile-module-inner ed-has-edit-button">
-							<h3 class="h3">Keywords</h3>
+							<h3 class="heading-medium">Keywords</h3>
 							<a class="ed-edit-button" href="{% url show_wizard_links|yesno:'company-edit,company-edit-key-facts' %}" style="top: 20px; right: 20px; color: #004F95;">
 								<img src="{% static 'images/pencil-icon.png' %}" class="ed-icon-pencil" />
 								<strong>Edit</strong>

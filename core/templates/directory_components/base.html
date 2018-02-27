@@ -3,9 +3,8 @@
 {% load static from staticfiles %}
 
 {% block head_css %}
+    {{ block.super }}
     <link href="{% static 'Dit-Pattern-Styling/public/css/main.css' %}" media="all" rel="stylesheet" />
-    <link href="{% static 'vendor/bootstrap/css/bootstrap-grid-only.css' %}" media="all" rel="stylesheet" />
-    <link href="{% static 'vendor/bootstrap/css/bootstrap-responsive.css' %}" media="all" rel="stylesheet" />
     <link href="{% static 'main.css' %}" media="all" rel="stylesheet" />
 {% endblock %}
 
@@ -19,13 +18,13 @@
     {% block sub_header %}
         <section class="ed-hero-sub-header">
             <div class="outer-container">
-                <div class="row-fluid">
-                    <span class="span12 ed-hero-sub-header-title">
-                        <h1 class="h1">{% block hero_title %}{% endblock %}</h1>
+                <div class="grid-row">
+                    <span class="column-full ed-hero-sub-header-title">
+                        <h1 class="heading-xlarge">{% block hero_title %}{% endblock %}</h1>
                     </span>
                 </div>
-                <div class="row-fluid ed-hero-sub-header-synopsis">
-                    <span class="span9">
+                <div class="grid-row ed-hero-sub-header-synopsis">
+                    <span class="column-two-thirds">
                         <span>{% block hero_text %}{% endblock %}</span>
                     </span>
                 </div>

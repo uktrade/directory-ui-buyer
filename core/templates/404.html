@@ -7,4 +7,10 @@
     <link href="{% static '404.css' %}" media="all" rel="stylesheet" />
 {% endblock %}
 
+{% block content %}
+<div class="outer-container">
+	{{ block.super }}
+</div>
+{% endblock %}
+
 {% block sub_header %}{# prevent the subheader from showing on form pages #}{% endblock %}
