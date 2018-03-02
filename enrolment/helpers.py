@@ -7,7 +7,7 @@ from urllib.parse import urljoin
 
 from django.conf import settings
 from django.forms import ValidationError
-from django.template.response import SimpleTemplateResponse
+from django.shortcuts import render
 
 import requests
 from requests.exceptions import RequestException
@@ -184,8 +184,5 @@ def store_companies_house_profile_in_session_and_validate(
         validators.company_unique(company_number)
 
 
-def get_error_response(error_message):
-    return SimpleTemplateResponse(
-        'enrolment-error.html',
-        {'validation_error': error_message},
-    )
+def get_error_response(request, context):
+    return render(request, 'enrolment-error.html', context)
