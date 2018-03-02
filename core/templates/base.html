@@ -1,3 +1,10 @@
 {% extends 'directory_components/base.html' %}
 
+{% load static from staticfiles %}
+
+{% block head_css %}
+    <link href="{% static 'main.css' %}" media="all" rel="stylesheet" />
+    {{ block.super }}
+{% endblock %}
+
 {% block head_title %}Find a buyer - great.gov.uk{% endblock %}

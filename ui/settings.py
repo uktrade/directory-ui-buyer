@@ -48,7 +48,6 @@ INSTALLED_APPS = [
     "company",
     "core",
     "directory_constants",
-    "directory_header_footer",
     "directory_healthcheck",
     "health_check",
     "health_check.db",
@@ -77,10 +76,10 @@ TEMPLATES = [
             'context_processors': [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
-                'directory_header_footer.context_processors.sso_processor',
-                'directory_header_footer.context_processors.urls_processor',
-                ('directory_header_footer.context_processors.'
-                 'header_footer_context_processor'),
+                'directory_components.context_processors.sso_processor',
+                'directory_components.context_processors.urls_processor',
+                ('directory_components.context_processors.'
+                 'header_footer_processor'),
                 'ui.context_processors.feature_flags',
                 'directory_components.context_processors.analytics',
             ],
@@ -233,37 +232,12 @@ SECURE_HSTS_SECONDS = int(os.getenv('SECURE_HSTS_SECONDS', '16070400'))
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 
 # HEADER/FOOTER URLS
-GREAT_EXPORT_HOME = os.getenv('GREAT_EXPORT_HOME')
-GREAT_HOME = os.getenv('GREAT_HOME')
-CUSTOM_PAGE = os.getenv('CUSTOM_PAGE')
-
-# EXPORTING PERSONAS
-EXPORTING_NEW = os.getenv('EXPORTING_NEW')
-EXPORTING_REGULAR = os.getenv('EXPORTING_REGULAR')
-EXPORTING_OCCASIONAL = os.getenv('EXPORTING_OCCASIONAL')
-
-# GUIDANCE/ARTICLE SECTIONS
-GUIDANCE_MARKET_RESEARCH = os.getenv('GUIDANCE_MARKET_RESEARCH')
-GUIDANCE_CUSTOMER_INSIGHT = os.getenv('GUIDANCE_CUSTOMER_INSIGHT')
-GUIDANCE_FINANCE = os.getenv('GUIDANCE_FINANCE')
-GUIDANCE_BUSINESS_PLANNING = os.getenv('GUIDANCE_BUSINESS_PLANNING')
-GUIDANCE_GETTING_PAID = os.getenv('GUIDANCE_GETTING_PAID')
-GUIDANCE_OPERATIONS_AND_COMPLIANCE = os.getenv(
-    'GUIDANCE_OPERATIONS_AND_COMPLIANCE')
-
-# SERVICES
-SERVICES_EXOPPS = os.getenv('SERVICES_EXOPPS')
-SERVICES_FAB = os.getenv('SERVICES_FAB')
-SERVICES_GET_FINANCE = os.getenv('SERVICES_GET_FINANCE')
-SERVICES_SOO = os.getenv('SERVICES_SOO')
-SERVICES_EVENTS = os.getenv('SERVICES_EVENTS')
-
-# FOOTER LINKS
-INFO_ABOUT = os.getenv('INFO_ABOUT')
-INFO_CONTACT_US_DIRECTORY = os.getenv('INFO_CONTACT_US_DIRECTORY')
-INFO_PRIVACY_AND_COOKIES = os.getenv('INFO_PRIVACY_AND_COOKIES')
-INFO_TERMS_AND_CONDITIONS = os.getenv('INFO_TERMS_AND_CONDITIONS')
-INFO_DIT = os.getenv('INFO_DIT')
+HEADER_FOOTER_URLS_GREAT_HOME = os.getenv("HEADER_FOOTER_URLS_GREAT_HOME")
+HEADER_FOOTER_URLS_FAB = os.getenv("HEADER_FOOTER_URLS_FAB")
+HEADER_FOOTER_URLS_SOO = os.getenv("HEADER_FOOTER_URLS_SOO")
+HEADER_FOOTER_URLS_EVENTS = os.getenv("HEADER_FOOTER_URLS_EVENTS")
+HEADER_FOOTER_URLS_CONTACT_US = os.getenv("HEADER_FOOTER_URLS_CONTACT_US")
+HEADER_FOOTER_URLS_DIT = os.getenv("HEADER_FOOTER_URLS_DIT")
 
 # Sentry
 RAVEN_CONFIG = {
