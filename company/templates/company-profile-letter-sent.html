@@ -1,13 +1,12 @@
 {% extends 'enrolment-base.html' %}
 {% load staticfiles %}
-{% block head_title %}Company address confirmed - great.gov.uk{% endblock %}
+{% block head_title %}Verification letter request - great.gov.uk{% endblock %}
 {% block sub_header %}{# prevent the subheader from showing on form pages #}{% endblock %}
 {% block formarea %}
 	<div class="outer-container">
-		<h1 class="heading-xlarge">We've sent your verification letter</h1>
-		<p>
-			You should receive your verification letter within a week. When you receive the letter, please log in to GREAT.gov.uk to enter your verification profile to publish your company profile.
-		</p>
-		<p><a href="{% url 'company-detail' %}">View or amend your company profile</p>
+		<h1 class="heading-xlarge">Verification letter request</h1>
++		<p>Your verification letter should arrive within 5 working days. <a href="https://contact-us.export.great.gov.uk/directory/FeedbackForm">Contact us</a> if it doesn’t arrive after 2 weeks.</p>
++		<p>The letter contains a 12 digit verification code. Sign in to great.gov.uk to enter the verification code and publish your company profile.</p>
++		<p><a href="{% url 'company-detail' %}">Go to your company profile</a>.</p>
 	</div>
 {%endblock formarea %}
