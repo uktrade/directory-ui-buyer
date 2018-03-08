@@ -71,7 +71,7 @@ class CaseStudyBasicInfoForm(IndentedInvalidFieldsMixin, AutoFocusFieldMixin,
     short_summary = forms.CharField(
         label='Summary of your case study or project',
         help_text=(
-            'Summarise your case study in 50 words or fewer. This will'
+            'Summarise your case study in 200 characters or fewer. This will'
             ' appear on your main trade profile page.'
         ),
         max_length=200,
