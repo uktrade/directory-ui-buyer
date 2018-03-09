@@ -125,6 +125,35 @@ def not_company_owner_client(logged_in_client):
 
 
 @pytest.fixture
+def letter_sent_client(logged_in_client):
+    response_one = create_response(
+        status_code=http.client.OK,
+        json_body={'is_company_owner': True, 'company': {'number': 1}},
+    )
+    stub_one = patch(
+        'api_client.api_client.supplier.retrieve_profile',
+        Mock(return_value=response_one)
+    )
+    response_two = create_response(
+        status_code=http.client.OK,
+        json_body={
+            'is_verification_letter_sent': True,
+            'sectors': [],
+            'is_verified': False,
+        },
+    )
+    stub_two = patch(
+        'api_client.api_client.company.retrieve_private_profile',
+        Mock(return_value=response_two)
+    )
+    stub_one.start()
+    stub_two.start()
+    yield logged_in_client
+    stub_one.stop()
+    stub_two.stop()
+
+
+@pytest.fixture
 def has_company_client(logged_in_client):
     stub = patch.object(views, 'has_company', Mock(return_value=True))
     stub.start()
@@ -1773,6 +1802,18 @@ def test_verify_company_no_company_user(settings, no_company_client):
 
     assert response.status_code == 302
     assert response.get('Location') == reverse('index')
+
+
+def test_verify_company_letter_sent(settings, letter_sent_client):
+    settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED = True
+
+    url = reverse('verify-company-hub')
+    response = letter_sent_client.get(url)
+
+    assert response.status_code == 302
+    assert (
+        response.get('Location') == reverse('verify-company-address-confirm')
+    )
 
 
 @patch.object(helpers, 'get_company_profile')

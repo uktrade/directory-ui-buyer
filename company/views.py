@@ -60,6 +60,21 @@ class UnverifiedCompanyRequiredMixin(CompanyStateRequirement):
         return self.has_company and not self.is_company_verified()
 
 
+class VerificationLetterNotSentRequiredMixin(UnverifiedCompanyRequiredMixin):
+
+    def is_letter_sent(self):
+        return self.company_profile['is_verification_letter_sent']
+
+    @property
+    def redirect_name(self):
+        if self.has_company and self.is_letter_sent():
+            return 'verify-company-address-confirm'
+        return super().redirect_name
+
+    def is_company_state_valid(self):
+        return super().is_company_state_valid() and not self.is_letter_sent()
+
+
 class SupplierStateRequirement(SSOLoginRequiredMixin):
     def dispatch(self, request, *args, **kwargs):
         if request.sso_user is None:
@@ -400,7 +415,7 @@ class CompanyProfileLogoEditView(BaseMultiStepCompanyEditView):
 class CompanyVerifyView(
     Oauth2FeatureFlagMixin,
     CompanyProfileMixin,
-    UnverifiedCompanyRequiredMixin,
+    VerificationLetterNotSentRequiredMixin,
     TemplateView
 ):
     template_name = 'company-verify-hub.html'
