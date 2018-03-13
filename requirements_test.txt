@@ -4,6 +4,7 @@
 #
 #    pip-compile --output-file requirements_test.txt requirements_test.in
 #
+-e git+https://github.com/uktrade/directory-companies-house-search-client.git@v0.1.0#egg=directory-ch-client
 -e git+https://github.com/uktrade/directory-api-client.git@v9.11.0#egg=directory_api_client
 -e git+https://github.com/uktrade/directory-components.git@v1.0.5#egg=directory_components
 -e git+https://github.com/uktrade/directory-constants.git@v6.4.0#egg=directory_constants

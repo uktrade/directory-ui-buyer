@@ -74,7 +74,9 @@ DOCKER_SET_DEBUG_ENV_VARS := \
 	export DIRECTORY_UI_BUYER_HEADER_FOOTER_URLS_SOO=http://soo.trade.great:8008; \
 	export DIRECTORY_UI_BUYER_HEADER_FOOTER_URLS_CONTACT_US=http://contact.trade.great:8009/directory/; \
 	export DIRECTORY_UI_BUYER_SECURE_SSL_REDIRECT=false; \
-	export DIRECTORY_UI_BUYER_HEALTH_CHECK_TOKEN=debug
+	export DIRECTORY_UI_BUYER_HEALTH_CHECK_TOKEN=debug; \
+	export DIRECTORY_UI_BUYER_INTERNAL_CH_BASE_URL=http://test.com; \
+	export DIRECTORY_UI_BUYER_INTERNAL_CH_API_KEY=debug
 
 docker_test_env_files:
 	$(DOCKER_SET_DEBUG_ENV_VARS) && \
@@ -149,7 +151,9 @@ DEBUG_SET_ENV_VARS := \
 	export HEADER_FOOTER_URLS_SOO=http://soo.trade.great:8008; \
 	export HEADER_FOOTER_URLS_CONTACT_US=http://contact.trade.great:8009/directory/; \
 	export SECURE_SSL_REDIRECT=false; \
-	export HEALTH_CHECK_TOKEN=debug
+	export HEALTH_CHECK_TOKEN=debug; \
+	export INTERNAL_CH_BASE_URL=http://test.com; \
+	export INTERNAL_CH_API_KEY=debug
 
 
 debug_webserver:
