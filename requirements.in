@@ -9,6 +9,7 @@ requests[security]==2.13.0
 whitenoise==3.1
 phonenumberslite==7.7.4
 pillow==4.2.1
+directory-ch-client==0.1.0
 -e git+https://github.com/uktrade/directory-validators.git@v4.4.1#egg=directory_validators
 -e git+https://github.com/uktrade/directory-api-client.git@v9.11.0#egg=directory_api_client
 -e git+https://github.com/uktrade/directory-sso-api-client.git@v2.2.0#egg=directory_sso_api_client
@@ -18,4 +19,4 @@ pillow==4.2.1
 -e git+https://github.com/uktrade/directory-healthcheck.git@v0.3.0#egg=directory_healthcheck
 -e git+https://github.com/uktrade/directory-components.git@v1.0.5#egg=directory_components
 -e git+https://github.com/uktrade/export-elements.git@v0.7.5#egg=export_elements
--e git+https://github.com/uktrade/directory-companies-house-search-client.git@v0.1.0#egg=directory-ch-client
+

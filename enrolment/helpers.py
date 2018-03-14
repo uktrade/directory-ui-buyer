@@ -84,7 +84,7 @@ class CompaniesHouseClient:
         'oauth2-token': make_oauth2_url('oauth2/token'),
     }
     session = requests.Session()
-    ch_internal_client = CompanyCHClient(
+    companies_house_client = CompanyCHClient(
         base_url=settings.INTERNAL_CH_BASE_URL,
         api_key=settings.INTERNAL_CH_API_KEY
     )
@@ -103,7 +103,7 @@ class CompaniesHouseClient:
     @classmethod
     def retrieve_profile(cls, number):
         if settings.FEATURE_USE_INTERNAL_CH_ENABLED:
-            return cls.ch_internal_client.get_company_profile(
+            return cls.companies_house_client.get_company_profile(
                 company_number=number
             )
         else:
@@ -113,7 +113,7 @@ class CompaniesHouseClient:
     @classmethod
     def retrieve_address(cls, number):
         if settings.FEATURE_USE_INTERNAL_CH_ENABLED:
-            return cls.ch_internal_client.get_company_registered_address(
+            return cls.companies_house_client.get_company_registered_address(
                 company_number=number
             )
         else:
@@ -123,7 +123,7 @@ class CompaniesHouseClient:
     @classmethod
     def search(cls, term):
         if settings.FEATURE_USE_INTERNAL_CH_ENABLED:
-            return cls.ch_internal_client.search_companies(
+            return cls.companies_house_client.search_companies(
                 query=term
             )
         else:
