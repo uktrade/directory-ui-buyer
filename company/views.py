@@ -131,13 +131,18 @@ class UpdateCompanyProfileOnFormWizardDoneMixin:
         return TemplateResponse(self.request, self.failure_template)
 
     @staticmethod
-    def send_update_error_to_sentry(sso_id, api_response):
+    def send_update_error_to_sentry(sso_user, api_response):
         # This is needed to not include POST data (e.g. binary image), which
         # was causing sentry to fail at sending
         sentry_client.context.clear()
-        sentry_client.user_context({'sso_id': sso_id})
-        sentry_client.http_context({'api_response': api_response})
-        sentry_client.captureMessage('Updating company profile failed')
+        sentry_client.user_context(
+            {'sso_id': sso_user.id, 'sso_user_email': sso_user.email}
+        )
+        sentry_client.captureMessage(
+            message='Updating company profile failed',
+            data={},
+            extra={'api_response': str(api_response.content)}
+        )
 
     def done(self, *args, **kwargs):
         api_response = api_client.company.update_profile(
@@ -148,7 +153,7 @@ class UpdateCompanyProfileOnFormWizardDoneMixin:
             response = self.handle_profile_update_success()
         else:
             self.send_update_error_to_sentry(
-                sso_id=self.request.sso_user.session_id,
+                sso_user=self.request.sso_user,
                 api_response=api_response
             )
             response = self.handle_profile_update_failure()
