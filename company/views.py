@@ -143,7 +143,7 @@ class UpdateCompanyProfileOnFormWizardDoneMixin:
         else:
             logger.error(
                 'Updating company profile failed',
-                extra={'request': self.request, 'api_response': api_response}
+                extra={'api_response': api_response}
             )
             response = self.handle_profile_update_failure()
         return response
