@@ -56,6 +56,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE_CLASSES = [
+    'core.middleware.MaintenanceModeMiddleware',
     'django.middleware.common.CommonMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
@@ -311,6 +312,10 @@ FEATURE_NEW_SHARED_HEADER_ENABLED = os.getenv(
 
 FEATURE_USE_INTERNAL_CH_ENABLED = os.getenv(
     'FEATURE_USE_INTERNAL_CH_ENABLED',
+) == 'true'
+
+FEATURE_MAINTENANCE_MODE_ENABLED = os.getenv(
+    'FEATURE_MAINTENANCE_MODE_ENABLED'
 ) == 'true'
 
 EXPOSE_DIRECTORY_API = os.getenv('EXPOSE_DIRECTORY_API') == 'true'

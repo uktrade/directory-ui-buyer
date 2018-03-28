@@ -155,7 +155,6 @@ DEBUG_SET_ENV_VARS := \
 	export INTERNAL_CH_BASE_URL=http://test.com; \
 	export INTERNAL_CH_API_KEY=debug
 
-
 debug_webserver:
 	$(DEBUG_SET_ENV_VARS) && $(DJANGO_WEBSERVER)
 
