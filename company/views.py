@@ -1,3 +1,4 @@
+import logging
 import os
 
 from django.http import HttpResponse, HttpResponseForbidden
@@ -16,6 +17,9 @@ from api_client import api_client
 from company import forms, helpers
 from enrolment.helpers import CompaniesHouseClient, has_company
 from sso.utils import SSOLoginRequiredMixin
+
+
+logger = logging.getLogger(__name__)
 
 
 class CompanyStateRequirement(SSOLoginRequiredMixin):
@@ -137,6 +141,10 @@ class UpdateCompanyProfileOnFormWizardDoneMixin:
         if api_response.ok:
             response = self.handle_profile_update_success()
         else:
+            logger.error(
+                'Updating company profile failed',
+                extra={'request': self.request, 'api_response': api_response}
+            )
             response = self.handle_profile_update_failure()
         return response
 
