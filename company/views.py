@@ -132,9 +132,15 @@ class UpdateCompanyProfileOnFormWizardDoneMixin:
 
     @staticmethod
     def send_update_error_to_sentry(sso_id, api_response):
-        sentry_client.user_context({'sso_id': sso_id})
-        sentry_client.http_context({'api_response': api_response})
-        sentry_client.captureMessage('Updating company profile failed')
+        # using captureMessage as sentry was failing to sanitize POST data
+        sentry_client.captureMessage(
+            message='Updating company profile failed',
+            data={},
+            extra={
+                'sso_id': sso_id,
+                'api_response': str(api_response.content)
+            }
+        )
 
     def done(self, *args, **kwargs):
         api_response = api_client.company.update_profile(
