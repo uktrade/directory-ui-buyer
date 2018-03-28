@@ -242,10 +242,6 @@ HEADER_FOOTER_URLS_DIT = os.getenv("HEADER_FOOTER_URLS_DIT")
 # Sentry
 RAVEN_CONFIG = {
     "dsn": os.getenv("SENTRY_DSN"),
-    "processors": (
-        'raven.processors.SanitizePasswordsProcessor',
-        'raven.processors.RemovePostDataProcessor'
-    )
 }
 
 HEADER_FOOTER_CONTACT_US_URL = os.getenv(
