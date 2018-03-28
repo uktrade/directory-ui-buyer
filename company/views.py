@@ -1,9 +1,6 @@
-import logging
 import os
 
 from django.http import HttpResponse, HttpResponseForbidden
-from formtools.wizard.views import SessionWizardView
-
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
 from django.core.urlresolvers import reverse, reverse_lazy
@@ -13,13 +10,13 @@ from django.utils.functional import cached_property
 from django.views.generic import RedirectView, TemplateView, View
 from django.views.generic.edit import FormView
 
+from formtools.wizard.views import SessionWizardView
+from raven.contrib.django.raven_compat.models import client as sentry_client
+
 from api_client import api_client
 from company import forms, helpers
 from enrolment.helpers import CompaniesHouseClient, has_company
 from sso.utils import SSOLoginRequiredMixin
-
-
-logger = logging.getLogger(__name__)
 
 
 class CompanyStateRequirement(SSOLoginRequiredMixin):
@@ -133,6 +130,12 @@ class UpdateCompanyProfileOnFormWizardDoneMixin:
     def handle_profile_update_failure(self):
         return TemplateResponse(self.request, self.failure_template)
 
+    @staticmethod
+    def send_update_error_to_sentry(sso_id, api_response):
+        sentry_client.user_context({'sso_id': sso_id})
+        sentry_client.http_context({'api_response': api_response})
+        sentry_client.captureMessage('Updating company profile failed')
+
     def done(self, *args, **kwargs):
         api_response = api_client.company.update_profile(
             sso_session_id=self.request.sso_user.session_id,
@@ -141,9 +144,9 @@ class UpdateCompanyProfileOnFormWizardDoneMixin:
         if api_response.ok:
             response = self.handle_profile_update_success()
         else:
-            logger.error(
-                'Updating company profile failed',
-                extra={'api_response': api_response}
+            self.send_update_error_to_sentry(
+                sso_id=self.request.sso_user.session_id,
+                api_response=api_response
             )
             response = self.handle_profile_update_failure()
         return response
