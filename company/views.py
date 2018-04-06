@@ -1,113 +1,21 @@
 import os
 
-from django.http import HttpResponse, HttpResponseForbidden
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
-from django.core.urlresolvers import reverse, reverse_lazy
+from django.http import HttpResponse, HttpResponseForbidden
 from django.shortcuts import redirect, Http404
 from django.template.response import TemplateResponse
 from django.utils.functional import cached_property
 from django.views.generic import RedirectView, TemplateView, View
 from django.views.generic.edit import FormView
+from django.urls import reverse, reverse_lazy
 
 from formtools.wizard.views import SessionWizardView
 from raven.contrib.django.raven_compat.models import client as sentry_client
 
 from api_client import api_client
 from company import forms, helpers
-from enrolment.helpers import CompaniesHouseClient, has_company
-from sso.utils import SSOLoginRequiredMixin
-
-
-class CompanyStateRequirement(SSOLoginRequiredMixin):
-    def dispatch(self, request, *args, **kwargs):
-        if request.sso_user is None:
-            return self.handle_no_permission()
-        if not self.is_company_state_valid():
-            return redirect(self.redirect_name)
-        return super().dispatch(request, *args, **kwargs)
-
-
-class CompanyRequiredMixin(CompanyStateRequirement):
-    redirect_name = 'index'
-
-    def is_company_state_valid(self):
-        return has_company(self.request.sso_user.session_id)
-
-
-class NoCompanyRequiredMixin(CompanyStateRequirement):
-    redirect_name = 'company-detail'
-
-    def is_company_state_valid(self):
-        return not has_company(self.request.sso_user.session_id)
-
-
-class UnverifiedCompanyRequiredMixin(CompanyStateRequirement):
-
-    @property
-    def redirect_name(self):
-        if self.has_company:
-            return 'company-detail'
-        return 'index'
-
-    def is_company_verified(self):
-        return self.company_profile['is_verified']
-
-    @cached_property
-    def has_company(self):
-        return has_company(self.request.sso_user.session_id)
-
-    def is_company_state_valid(self):
-        return self.has_company and not self.is_company_verified()
-
-
-class VerificationLetterNotSentRequiredMixin(UnverifiedCompanyRequiredMixin):
-
-    def is_letter_sent(self):
-        return self.company_profile['is_verification_letter_sent']
-
-    @property
-    def redirect_name(self):
-        if self.has_company and self.is_letter_sent():
-            return 'verify-company-address-confirm'
-        return super().redirect_name
-
-    def is_company_state_valid(self):
-        return super().is_company_state_valid() and not self.is_letter_sent()
-
-
-class SupplierStateRequirement(SSOLoginRequiredMixin):
-    def dispatch(self, request, *args, **kwargs):
-        if request.sso_user is None:
-            return self.handle_no_permission()
-        if not self.is_supplier_state_valid():
-            return redirect('company-detail')
-        return super().dispatch(request, *args, **kwargs)
-
-    def has_company(self):
-        return has_company(self.request.sso_user.session_id)
-
-    @property
-    def supplier_profile(self):
-        response = api_client.supplier.retrieve_profile(
-            sso_session_id=self.request.sso_user.session_id,
-        )
-        if response.status_code == 404:
-            return {}
-        response.raise_for_status()
-        return response.json()
-
-
-class CompanyOwnerRequiredMixin(SupplierStateRequirement):
-    def is_supplier_state_valid(self):
-        profile = self.supplier_profile
-        return profile and profile['is_company_owner']
-
-
-class NotCompanyOwnerRequiredMixin(SupplierStateRequirement):
-    def is_supplier_state_valid(self):
-        profile = self.supplier_profile
-        return not profile or not profile['is_company_owner']
+from enrolment.helpers import CompaniesHouseClient
 
 
 class SubmitFormOnGetMixin:
@@ -164,8 +72,15 @@ class CompanyProfileMixin:
 
     @cached_property
     def company_profile(self):
-        profile = helpers.get_company_profile(self.request.sso_user.session_id)
-        if profile['sectors']:
+        response = api_client.company.retrieve_private_profile(
+            sso_session_id=self.request.sso_user.session_id,
+        )
+        if response.status_code == 404:
+            return {}
+        response.raise_for_status()
+        profile = response.json()
+
+        if 'sectors' in profile:
             profile['sectors'] = profile['sectors'][0]
         return profile
 
@@ -203,21 +118,30 @@ class MultiUserAccountFeatureFlagMixin(NotFoundOnDisabledFeature):
 
 
 class BaseMultiStepCompanyEditView(
-    CompanyRequiredMixin,
+    redirects.RedirectRulehandlerMixin,
     CompanyProfileMixin,
     GetTemplateForCurrentStepMixin,
     UpdateCompanyProfileOnFormWizardDoneMixin,
     SessionWizardView
 ):
+    redirect_rules = [
+        redirects.IsLoggedInRule,
+        redirects.CompanyRequiredRule,
+    ]
+
     def get_form_initial(self, step):
         return self.company_profile
 
 
 class SupplierCaseStudyWizardView(
-    CompanyRequiredMixin,
+    redirects.RedirectRulehandlerMixin,,
     GetTemplateForCurrentStepMixin,
     SessionWizardView
 ):
+    redirect_rules = [
+        redirects.IsLoggedInRule,
+        redirects.CompanyRequiredRule,
+    ]
 
     BASIC = 'basic'
     RICH_MEDIA = 'rich-media'
@@ -283,7 +207,13 @@ class SupplierCaseStudyWizardView(
             return TemplateResponse(self.request, self.failure_template)
 
 
-class CompanyProfileDetailView(CompanyRequiredMixin, TemplateView):
+class CompanyProfileDetailView(
+    redirects.RedirectRulehandlerMixin, TemplateView
+):
+    redirect_rules = [
+        redirects.IsLoggedInRule,
+        redirects.CompanyRequiredRule,
+    ]
     template_name = 'company-profile-detail.html'
 
     def get_context_data(self, **kwargs):
@@ -379,12 +309,17 @@ class CompanyProfileEditView(BaseMultiStepCompanyEditView):
 
 class SendVerificationLetterView(
     Oauth2FeatureFlagMixin,
+    redirects.RedirectRulehandlerMixin,
     CompanyProfileMixin,
-    UnverifiedCompanyRequiredMixin,
     GetTemplateForCurrentStepMixin,
     UpdateCompanyProfileOnFormWizardDoneMixin,
     SessionWizardView
 ):
+    redirect_rules = [
+        redirects.IsLoggedInRule,
+        redirects.UnverifiedCompanyRequiredRule
+    ]
+
     ADDRESS = 'address'
     SENT = 'sent'
 
@@ -433,10 +368,15 @@ class CompanyProfileLogoEditView(BaseMultiStepCompanyEditView):
 
 class CompanyVerifyView(
     Oauth2FeatureFlagMixin,
+    redirects.RedirectRulehandlerMixin,
     CompanyProfileMixin,
-    VerificationLetterNotSentRequiredMixin,
     TemplateView
 ):
+    redirect_rules = [
+        redirects.IsLoggedInRule,
+        redirects.UnverifiedCompanyRequiredRule,
+        redirects.VerificationLetterNotSentRequiredRule,
+    ]
     template_name = 'company-verify-hub.html'
 
     def get_context_data(self, **kwargs):
@@ -446,11 +386,15 @@ class CompanyVerifyView(
 
 
 class CompanyAddressVerificationView(
+    redirects.RedirectRulehandlerMixin,
     CompanyProfileMixin,
-    UnverifiedCompanyRequiredMixin,
     GetTemplateForCurrentStepMixin,
     SessionWizardView
 ):
+    redirect_rules = [
+        redirects.IsLoggedInRule,
+        redirects.UnverifiedCompanyRequiredRule,
+    ]
     ADDRESS = 'address'
     SUCCESS = 'success'
 
@@ -565,7 +509,12 @@ class SupplierAddressEditView(BaseMultiStepCompanyEditView):
         )
 
 
-class EmailUnsubscribeView(SSOLoginRequiredMixin, FormView):
+class EmailUnsubscribeView(redirects.RedirectRulehandlerMixin, FormView):
+
+    redirect_rules = [
+        redirects.IsLoggedInRule
+    ]
+
     form_class = forms.EmptyForm
     template_name = 'email-unsubscribe.html'
     success_template = 'email-unsubscribe-success.html'
@@ -600,12 +549,15 @@ class Oauth2CallbackUrlMixin:
 
 class CompaniesHouseOauth2View(
     Oauth2FeatureFlagMixin,
+    redirects.RedirectRulehandlerMixin,
     CompanyProfileMixin,
-    UnverifiedCompanyRequiredMixin,
     Oauth2CallbackUrlMixin,
     RedirectView
 ):
-
+    redirect_rules = [
+        redirects.IsLoggedInRule,
+        redirects.UnverifiedCompanyRequiredRule,
+    ]
     def get_redirect_url(self):
         company = helpers.get_company_profile(self.request.sso_user.session_id)
         return CompaniesHouseClient.make_oauth2_url(
@@ -616,12 +568,17 @@ class CompaniesHouseOauth2View(
 
 class CompaniesHouseOauth2CallbackView(
     Oauth2FeatureFlagMixin,
+    redirects.RedirectRulehandlerMixin,
     CompanyProfileMixin,
-    UnverifiedCompanyRequiredMixin,
     SubmitFormOnGetMixin,
     Oauth2CallbackUrlMixin,
     FormView
 ):
+    redirect_rules = [
+        redirects.IsLoggedInRule,
+        redirects.UnverifiedCompanyRequiredRule,
+    ]
+
     form_class = forms.CompaniesHouseOauth2Form
     template_name = 'companies-house-oauth2-callback.html'
     success_url = reverse_lazy('company-detail')
@@ -641,9 +598,13 @@ class CompaniesHouseOauth2CallbackView(
 
 
 class BaseMultiUserAccountManagementView(
-    MultiUserAccountFeatureFlagMixin, CompanyRequiredMixin,
-    CompanyOwnerRequiredMixin
+    MultiUserAccountFeatureFlagMixin, redirects.RedirectRulehandlerMixin,
 ):
+    redirect_rules = [
+        redirects.IsLoggedInRule,
+        redirects.CompanyRequiredRule,
+        redirects.CompanyOwnerRequiredRule
+    ]
     def get_context_data(self, **kwargs):
         return super().get_context_data(
             **kwargs, company_profile_url=settings.SSO_PROFILE_URL
@@ -757,8 +718,14 @@ class TransferAccountWizardView(
 
 
 class BaseAcceptInviteView(
-    MultiUserAccountFeatureFlagMixin, NotCompanyOwnerRequiredMixin, FormView
+    MultiUserAccountFeatureFlagMixin, redirects.RedirectRulehandlerMixin,
+    FormView
 ):
+    redirect_rules = [
+        reditects.IsLoggedInRule,
+        reditects.CompanyRequiredRule,
+        reditects.NotCompanyOwnerRequiredRule,
+    ]
     form_class = forms.AcceptInviteForm
     success_url = reverse_lazy('company-detail')
     invalid_template_name = 'company-invite-invalid-token.html'

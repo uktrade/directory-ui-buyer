@@ -35,13 +35,10 @@ class SSOAccountStateRequiredMixin:
         """
         Redirects the user to the sso signup page, passing the 'next' page
         """
-        resolved_url = resolve_url(self.sso_redirect_url)
-        login_url_parts = list(urlparse(resolved_url))
-        querystring = QueryDict(login_url_parts[4], mutable=True)
-        querystring[settings.SSO_PROXY_REDIRECT_FIELD_NAME] = next_url
-        login_url_parts[4] = querystring.urlencode(safe='/')
-
-        return HttpResponseRedirect(urlunparse(login_url_parts))
+        url = build_login_url(
+            redirect_url=self.sso_redirect_url, next_url=next_url
+        )
+        return HttpResponseRedirect(url)
 
 
 class SSOLoginRequiredMixin(SSOAccountStateRequiredMixin):
@@ -50,3 +47,12 @@ class SSOLoginRequiredMixin(SSOAccountStateRequiredMixin):
 
 class SSOSignUpRequiredMixin(SSOAccountStateRequiredMixin):
     sso_redirect_url = settings.SSO_PROXY_SIGNUP_URL
+
+
+def build_sso_url(redirect_url, next_url):
+    resolved_url = resolve_url(sso_redirect_url)
+    login_url_parts = list(urlparse(resolved_url))
+    querystring = QueryDict(login_url_parts[4], mutable=True)
+    querystring[settings.SSO_PROXY_REDIRECT_FIELD_NAME] = next_url
+    login_url_parts[4] = querystring.urlencode(safe='/')
+    return urlunparse(login_url_parts)
