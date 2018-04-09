@@ -35,7 +35,7 @@ class SSOAccountStateRequiredMixin:
         """
         Redirects the user to the sso signup page, passing the 'next' page
         """
-        url = build_login_url(
+        url = build_url_with_next(
             redirect_url=self.sso_redirect_url, next_url=next_url
         )
         return HttpResponseRedirect(url)
@@ -49,8 +49,8 @@ class SSOSignUpRequiredMixin(SSOAccountStateRequiredMixin):
     sso_redirect_url = settings.SSO_PROXY_SIGNUP_URL
 
 
-def build_sso_url(redirect_url, next_url):
-    resolved_url = resolve_url(sso_redirect_url)
+def build_url_with_next(redirect_url, next_url):
+    resolved_url = resolve_url(redirect_url)
     login_url_parts = list(urlparse(resolved_url))
     querystring = QueryDict(login_url_parts[4], mutable=True)
     querystring[settings.SSO_PROXY_REDIRECT_FIELD_NAME] = next_url

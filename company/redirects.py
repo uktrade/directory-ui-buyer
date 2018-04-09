@@ -1,82 +1,76 @@
 import abc
 
 from django.conf import settings
+from django.shortcuts import redirect
+from django.urls import reverse_lazy
 
-from api_client import api_client
-from sso.utils import SSOLoginRequiredMixin, build_sso_url
+from sso.utils import build_url_with_next
 
 
 class RedirectRule(abc.ABC):
 
-    def __init__(self, request, company_profile, supplier_profile):
-        self.request = request
-        self.company_profile = company_profile
+    def __init__(self, context):
+        self.context = context
 
     @property
     @abc.abstractmethod
-    def login_required(self):
-       """True if the user must be logged in"""
-       pass
-
-    @property
-    @abstractmethod
     def url(self):
-       """ The url to redirect to"""
-       pass
+        """ The url to redirect to"""
+        pass
 
     @abc.abstractmethod
-    def object_meets_criteria(self):
+    def is_redirect_required(self):
         """Return True if the user should be redirected to `url`"""
         pass
 
 
-class RedirectRulehandlerMixin:
+class RedirectRuleHandlerMixin:
+
     redirect_rules = []
+
     def dispatch(self, *args, **kwargs):
-        for Rule in self.redirect_rules:
-            rule = Rule(
-                request=self.request,
-                company_profile=self.company_profile,
-            )
-            if rule.object_meets_criteria():
+        for rule_class in self.redirect_rules:
+            rule = rule_class(context={'request': self.request, 'view': self})
+            if rule.is_redirect_required():
                 return redirect(rule.url)
         return super().dispatch(*args, **kwargs)
 
 
 class IsLoggedInRule(RedirectRule):
+
     @property
     def url(self):
-        return build_sso_url(
+        return build_url_with_next(
             redirect_url=settings.SSO_PROXY_LOGIN_URL,
-            next_url=self.request.build_absolute_uri(),
+            next_url=self.context['request'].build_absolute_uri(),
         )
 
-    def object_meets_criteria(self):
-        return self.request.sso_user is None
+    def is_redirect_required(self):
+        return self.context['request'].sso_user is None
 
 
 class CompanyRequiredRule(RedirectRule):
 
     url = reverse_lazy('index')
 
-    def object_meets_criteria(self):
-        return not self.company_profile
+    def is_redirect_required(self):
+        return not self.context['view'].company_profile
 
 
 class NoCompanyRequiredRule(RedirectRule):
 
     url = reverse_lazy('company-detail')
 
-    def object_meets_criteria(self):
-        return bool(self.company_profile)
+    def is_redirect_required(self):
+        return bool(self.context['view'].company_profile)
 
 
 class UnverifiedCompanyRequiredRule(RedirectRule):
 
     url = reverse_lazy('company-detail')
 
-    def object_meets_criteria(self):
-        profile = self.company_profile
+    def is_redirect_required(self):
+        profile = self.context['view'].company_profile
         return profile and profile['is_verified']
 
 
@@ -84,38 +78,24 @@ class VerificationLetterNotSentRequiredRule(RedirectRule):
 
     url = reverse_lazy('verify-company-address-confirm')
 
-    def object_meets_criteria(self):
-        return self.company_profile['is_verification_letter_sent']
+    def is_redirect_required(self):
+        profile = self.context['view'].company_profile
+        return profile['is_verification_letter_sent']
 
 
-class SupplierProfileMixin:
-    @property
-    def supplier_profile(self):
-        response = api_client.supplier.retrieve_profile(
-            sso_session_id=self.request.sso_user.session_id,
-        )
-        if response.status_code == 404:
-            return {}
-        response.raise_for_status()
-        return response.json()
-
-
-class CompanyOwnerRequiredRule(SupplierProfileMixin, RedirectRule):
+class CompanyOwnerRequiredRule(RedirectRule):
 
     url = reverse_lazy('company-detail')
 
-    def object_meets_criteria(self):
-        profile = self.supplier_profile
+    def is_redirect_required(self):
+        profile = self.context['view'].supplier_profile
         return not profile or not profile['is_company_owner']
 
 
-class NotCompanyOwnerRequiredRule(SupplierProfileMixin, RedirectRule):
+class NotCompanyOwnerRequiredRule(RedirectRule):
 
     url = reverse_lazy('company-detail')
 
-    def object_meets_criteria(self):
-        profile = self.supplier_profile
-        return not profile or profile['is_company_owner']
-
-
-
+    def is_redirect_required(self):
+        profile = self.context['view'].supplier_profile
+        return profile['is_company_owner'] if profile else False

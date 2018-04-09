@@ -14,7 +14,7 @@ from formtools.wizard.views import SessionWizardView
 from raven.contrib.django.raven_compat.models import client as sentry_client
 
 from api_client import api_client
-from company import forms, helpers
+from company import forms, helpers, redirects
 from enrolment.helpers import CompaniesHouseClient
 
 
@@ -80,9 +80,22 @@ class CompanyProfileMixin:
         response.raise_for_status()
         profile = response.json()
 
-        if 'sectors' in profile:
+        if profile.get('sectors'):
             profile['sectors'] = profile['sectors'][0]
         return profile
+
+
+class SupplierProfileMixin:
+
+    @cached_property
+    def supplier_profile(self):
+        response = api_client.supplier.retrieve_profile(
+            sso_session_id=self.request.sso_user.session_id,
+        )
+        if response.status_code == 404:
+            return {}
+        response.raise_for_status()
+        return response.json()
 
 
 class GetTemplateForCurrentStepMixin:
@@ -118,7 +131,7 @@ class MultiUserAccountFeatureFlagMixin(NotFoundOnDisabledFeature):
 
 
 class BaseMultiStepCompanyEditView(
-    redirects.RedirectRulehandlerMixin,
+    redirects.RedirectRuleHandlerMixin,
     CompanyProfileMixin,
     GetTemplateForCurrentStepMixin,
     UpdateCompanyProfileOnFormWizardDoneMixin,
@@ -134,7 +147,8 @@ class BaseMultiStepCompanyEditView(
 
 
 class SupplierCaseStudyWizardView(
-    redirects.RedirectRulehandlerMixin,,
+    redirects.RedirectRuleHandlerMixin,
+    CompanyProfileMixin,
     GetTemplateForCurrentStepMixin,
     SessionWizardView
 ):
@@ -208,7 +222,7 @@ class SupplierCaseStudyWizardView(
 
 
 class CompanyProfileDetailView(
-    redirects.RedirectRulehandlerMixin, TemplateView
+    CompanyProfileMixin, redirects.RedirectRuleHandlerMixin, TemplateView
 ):
     redirect_rules = [
         redirects.IsLoggedInRule,
@@ -309,7 +323,7 @@ class CompanyProfileEditView(BaseMultiStepCompanyEditView):
 
 class SendVerificationLetterView(
     Oauth2FeatureFlagMixin,
-    redirects.RedirectRulehandlerMixin,
+    redirects.RedirectRuleHandlerMixin,
     CompanyProfileMixin,
     GetTemplateForCurrentStepMixin,
     UpdateCompanyProfileOnFormWizardDoneMixin,
@@ -368,7 +382,7 @@ class CompanyProfileLogoEditView(BaseMultiStepCompanyEditView):
 
 class CompanyVerifyView(
     Oauth2FeatureFlagMixin,
-    redirects.RedirectRulehandlerMixin,
+    redirects.RedirectRuleHandlerMixin,
     CompanyProfileMixin,
     TemplateView
 ):
@@ -386,7 +400,7 @@ class CompanyVerifyView(
 
 
 class CompanyAddressVerificationView(
-    redirects.RedirectRulehandlerMixin,
+    redirects.RedirectRuleHandlerMixin,
     CompanyProfileMixin,
     GetTemplateForCurrentStepMixin,
     SessionWizardView
@@ -509,7 +523,7 @@ class SupplierAddressEditView(BaseMultiStepCompanyEditView):
         )
 
 
-class EmailUnsubscribeView(redirects.RedirectRulehandlerMixin, FormView):
+class EmailUnsubscribeView(redirects.RedirectRuleHandlerMixin, FormView):
 
     redirect_rules = [
         redirects.IsLoggedInRule
@@ -549,7 +563,7 @@ class Oauth2CallbackUrlMixin:
 
 class CompaniesHouseOauth2View(
     Oauth2FeatureFlagMixin,
-    redirects.RedirectRulehandlerMixin,
+    redirects.RedirectRuleHandlerMixin,
     CompanyProfileMixin,
     Oauth2CallbackUrlMixin,
     RedirectView
@@ -558,6 +572,7 @@ class CompaniesHouseOauth2View(
         redirects.IsLoggedInRule,
         redirects.UnverifiedCompanyRequiredRule,
     ]
+
     def get_redirect_url(self):
         company = helpers.get_company_profile(self.request.sso_user.session_id)
         return CompaniesHouseClient.make_oauth2_url(
@@ -568,7 +583,7 @@ class CompaniesHouseOauth2View(
 
 class CompaniesHouseOauth2CallbackView(
     Oauth2FeatureFlagMixin,
-    redirects.RedirectRulehandlerMixin,
+    redirects.RedirectRuleHandlerMixin,
     CompanyProfileMixin,
     SubmitFormOnGetMixin,
     Oauth2CallbackUrlMixin,
@@ -598,13 +613,14 @@ class CompaniesHouseOauth2CallbackView(
 
 
 class BaseMultiUserAccountManagementView(
-    MultiUserAccountFeatureFlagMixin, redirects.RedirectRulehandlerMixin,
+    MultiUserAccountFeatureFlagMixin, CompanyProfileMixin,
+    SupplierProfileMixin, redirects.RedirectRuleHandlerMixin,
 ):
     redirect_rules = [
         redirects.IsLoggedInRule,
-        redirects.CompanyRequiredRule,
         redirects.CompanyOwnerRequiredRule
     ]
+
     def get_context_data(self, **kwargs):
         return super().get_context_data(
             **kwargs, company_profile_url=settings.SSO_PROFILE_URL
@@ -718,14 +734,9 @@ class TransferAccountWizardView(
 
 
 class BaseAcceptInviteView(
-    MultiUserAccountFeatureFlagMixin, redirects.RedirectRulehandlerMixin,
-    FormView
+    MultiUserAccountFeatureFlagMixin, CompanyProfileMixin,
+    redirects.RedirectRuleHandlerMixin, FormView
 ):
-    redirect_rules = [
-        reditects.IsLoggedInRule,
-        reditects.CompanyRequiredRule,
-        reditects.NotCompanyOwnerRequiredRule,
-    ]
     form_class = forms.AcceptInviteForm
     success_url = reverse_lazy('company-detail')
     invalid_template_name = 'company-invite-invalid-token.html'
@@ -764,16 +775,26 @@ class BaseAcceptInviteView(
         response.raise_for_status()
 
 
-class AcceptTransferAccountView(BaseAcceptInviteView):
+class AcceptTransferAccountView(SupplierProfileMixin, BaseAcceptInviteView):
+
     template_name = 'company-accept-transfer-account.html'
     retrieve_api_method = api_client.company.retrieve_transfer_invite
     accept_api_method = api_client.company.accept_transfer_invite
+    redirect_rules = [
+        redirects.IsLoggedInRule,
+        redirects.NotCompanyOwnerRequiredRule,
+    ]
 
 
 class AcceptCollaborationView(BaseAcceptInviteView):
+
     template_name = 'company-accept-collaboration.html'
     retrieve_api_method = api_client.company.retrieve_collaboration_invite
     accept_api_method = api_client.company.accept_collaboration_invite
+    redirect_rules = [
+        redirects.IsLoggedInRule,
+        redirects.NoCompanyRequiredRule,
+    ]
 
 
 class CSVDumpGenericView(View):
