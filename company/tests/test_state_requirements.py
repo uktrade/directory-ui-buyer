@@ -3,7 +3,7 @@ from unittest.mock import Mock
 from django.urls import reverse
 from django.views.generic import TemplateView
 
-from company import redirects
+from company import state_requirements
 
 
 class BaseTestView(TemplateView):
@@ -59,8 +59,10 @@ class NotCompanyOwnerTestView(BaseTestView):
 
 
 def create_view_for_rule(rule_class, ViewClass=BaseTestView):
-    class TestView(redirects.RedirectRuleHandlerMixin, ViewClass):
-        redirect_rules = [rule_class]
+    class TestView(
+        state_requirements.UserStateRequirementHandlerMixin, ViewClass
+    ):
+        required_user_states = [rule_class]
     return TestView.as_view()
 
 
@@ -69,11 +71,11 @@ def test_redirect_rule_handler_mixin_provides_context():
 
 
 def test_redirect_rule_handler_mixin_redirect_required(rf):
-    class RedirectRequired(redirects.RedirectRule):
-        url = '/some/url'
+    class RedirectRequired(state_requirements.RedirectUserStateRule):
+        redirect_url = '/some/url'
 
-        def is_redirect_required(self):
-            return True
+        def is_user_in_required_state(self):
+            return False
 
     view = create_view_for_rule(RedirectRequired, BaseTestView)
     response = view(rf.get('/'))
@@ -83,11 +85,11 @@ def test_redirect_rule_handler_mixin_redirect_required(rf):
 
 
 def test_redirect_rule_handler_mixin_redirect_not_required(rf):
-    class RedirectNotRequired(redirects.RedirectRule):
-        url = '/some/url'
+    class RedirectNotRequired(state_requirements.RedirectUserStateRule):
+        redirect_url = '/some/url'
 
-        def is_redirect_required(self):
-            return False
+        def is_user_in_required_state(self):
+            return True
 
     view = create_view_for_rule(RedirectNotRequired)
     response = view(rf.get('/'))
@@ -99,7 +101,7 @@ def test_is_logged_in_rule_anon_user(rf):
     request = rf.get('/')
     request.sso_user = None
 
-    view = create_view_for_rule(redirects.IsLoggedInRule)
+    view = create_view_for_rule(state_requirements.IsLoggedIn)
     response = view(request)
 
     assert response.status_code == 302
@@ -111,7 +113,7 @@ def test_is_logged_in_rule_anon_user(rf):
 def test_is_logged_in_rule_authed_user(rf):
     request = rf.get('/')
     request.sso_user = Mock()
-    view = create_view_for_rule(redirects.IsLoggedInRule)
+    view = create_view_for_rule(state_requirements.IsLoggedIn)
     response = view(request)
 
     assert response.status_code == 200
@@ -119,7 +121,7 @@ def test_is_logged_in_rule_authed_user(rf):
 
 def test_company_required_rule_has_company(rf):
     view = create_view_for_rule(
-        redirects.CompanyRequiredRule, CompanyTestView
+        state_requirements.HasCompany, CompanyTestView
     )
     response = view(rf.get('/'))
 
@@ -128,7 +130,7 @@ def test_company_required_rule_has_company(rf):
 
 def test_company_required_rule_no_company(rf):
     view = create_view_for_rule(
-        redirects.CompanyRequiredRule, NoCompanyTestView
+        state_requirements.HasCompany, NoCompanyTestView
     )
     response = view(rf.get('/'))
 
@@ -138,7 +140,7 @@ def test_company_required_rule_no_company(rf):
 
 def test_no_company_required_rule_has_company(rf):
     view = create_view_for_rule(
-        redirects.NoCompanyRequiredRule, CompanyTestView
+        state_requirements.NoCompany, CompanyTestView
     )
     response = view(rf.get('/'))
 
@@ -148,7 +150,7 @@ def test_no_company_required_rule_has_company(rf):
 
 def test_no_company_required_rule_no_company(rf):
     view = create_view_for_rule(
-        redirects.NoCompanyRequiredRule, NoCompanyTestView
+        state_requirements.NoCompany, NoCompanyTestView
     )
     response = view(rf.get('/'))
 
@@ -157,7 +159,7 @@ def test_no_company_required_rule_no_company(rf):
 
 def test_unverified_company_required_is_verified(rf):
     view = create_view_for_rule(
-        redirects.UnverifiedCompanyRequiredRule,
+        state_requirements.HasUnverifiedCompany,
         VerifiedCompanyTestView
     )
     response = view(rf.get('/'))
@@ -168,7 +170,7 @@ def test_unverified_company_required_is_verified(rf):
 
 def test_unverified_company_required_is_unverified(rf):
     view = create_view_for_rule(
-        redirects.UnverifiedCompanyRequiredRule,
+        state_requirements.HasUnverifiedCompany,
         UnverifiedCompanyTestView
     )
     response = view(rf.get('/'))
@@ -178,7 +180,7 @@ def test_unverified_company_required_is_unverified(rf):
 
 def test_verification_letter_not_sent_is_sent(rf):
     view = create_view_for_rule(
-        redirects.VerificationLetterNotSentRequiredRule,
+        state_requirements.VerificationLetterNotSent,
         VerificationLetterSentTestView
     )
     response = view(rf.get('/'))
@@ -189,7 +191,7 @@ def test_verification_letter_not_sent_is_sent(rf):
 
 def test_verification_letter_no_sent_is_not_sent(rf):
     view = create_view_for_rule(
-        redirects.VerificationLetterNotSentRequiredRule,
+        state_requirements.VerificationLetterNotSent,
         VerificationLetterNotSentTestView
     )
     response = view(rf.get('/'))
@@ -199,7 +201,7 @@ def test_verification_letter_no_sent_is_not_sent(rf):
 
 def test_company_owner_required_is_company_owner(rf):
     view = create_view_for_rule(
-        redirects.CompanyOwnerRequiredRule,
+        state_requirements.IsCompanyOwner,
         IsCompanyOwnerTestView
     )
     response = view(rf.get('/'))
@@ -209,7 +211,7 @@ def test_company_owner_required_is_company_owner(rf):
 
 def test_company_owner_required_not_company_owner(rf):
     view = create_view_for_rule(
-        redirects.CompanyOwnerRequiredRule,
+        state_requirements.IsCompanyOwner,
         NotCompanyOwnerTestView
     )
     response = view(rf.get('/'))
@@ -220,7 +222,7 @@ def test_company_owner_required_not_company_owner(rf):
 
 def test_not_company_owner_required_is_company_owner(rf):
     view = create_view_for_rule(
-        redirects.NotCompanyOwnerRequiredRule,
+        state_requirements.NotCompanyOwner,
         IsCompanyOwnerTestView
     )
     response = view(rf.get('/'))
@@ -231,7 +233,7 @@ def test_not_company_owner_required_is_company_owner(rf):
 
 def test_not_company_owner_required_not_company_owner(rf):
     view = create_view_for_rule(
-        redirects.NotCompanyOwnerRequiredRule,
+        state_requirements.NotCompanyOwner,
         NotCompanyOwnerTestView
     )
     response = view(rf.get('/'))

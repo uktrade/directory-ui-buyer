@@ -14,7 +14,7 @@ from formtools.wizard.views import SessionWizardView
 from raven.contrib.django.raven_compat.models import client as sentry_client
 
 from api_client import api_client
-from company import forms, helpers, redirects
+from company import forms, helpers, state_requirements
 from enrolment.helpers import CompaniesHouseClient
 
 
@@ -123,23 +123,16 @@ class Oauth2FeatureFlagMixin(NotFoundOnDisabledFeature):
         return settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED
 
 
-class MultiUserAccountFeatureFlagMixin(NotFoundOnDisabledFeature):
-
-    @property
-    def flag(self):
-        return settings.FEATURE_MULTI_USER_ACCOUNT_ENABLED
-
-
 class BaseMultiStepCompanyEditView(
-    redirects.RedirectRuleHandlerMixin,
+    state_requirements.UserStateRequirementHandlerMixin,
     CompanyProfileMixin,
     GetTemplateForCurrentStepMixin,
     UpdateCompanyProfileOnFormWizardDoneMixin,
     SessionWizardView
 ):
-    redirect_rules = [
-        redirects.IsLoggedInRule,
-        redirects.CompanyRequiredRule,
+    required_user_states = [
+        state_requirements.IsLoggedIn,
+        state_requirements.HasCompany,
     ]
 
     def get_form_initial(self, step):
@@ -147,14 +140,14 @@ class BaseMultiStepCompanyEditView(
 
 
 class SupplierCaseStudyWizardView(
-    redirects.RedirectRuleHandlerMixin,
+    state_requirements.UserStateRequirementHandlerMixin,
     CompanyProfileMixin,
     GetTemplateForCurrentStepMixin,
     SessionWizardView
 ):
-    redirect_rules = [
-        redirects.IsLoggedInRule,
-        redirects.CompanyRequiredRule,
+    required_user_states = [
+        state_requirements.IsLoggedIn,
+        state_requirements.HasCompany,
     ]
 
     BASIC = 'basic'
@@ -222,11 +215,12 @@ class SupplierCaseStudyWizardView(
 
 
 class CompanyProfileDetailView(
-    CompanyProfileMixin, redirects.RedirectRuleHandlerMixin, TemplateView
+    CompanyProfileMixin, state_requirements.UserStateRequirementHandlerMixin,
+    TemplateView
 ):
-    redirect_rules = [
-        redirects.IsLoggedInRule,
-        redirects.CompanyRequiredRule,
+    required_user_states = [
+        state_requirements.IsLoggedIn,
+        state_requirements.HasCompany,
     ]
     template_name = 'company-profile-detail.html'
 
@@ -323,15 +317,15 @@ class CompanyProfileEditView(BaseMultiStepCompanyEditView):
 
 class SendVerificationLetterView(
     Oauth2FeatureFlagMixin,
-    redirects.RedirectRuleHandlerMixin,
+    state_requirements.UserStateRequirementHandlerMixin,
     CompanyProfileMixin,
     GetTemplateForCurrentStepMixin,
     UpdateCompanyProfileOnFormWizardDoneMixin,
     SessionWizardView
 ):
-    redirect_rules = [
-        redirects.IsLoggedInRule,
-        redirects.UnverifiedCompanyRequiredRule
+    required_user_states = [
+        state_requirements.IsLoggedIn,
+        state_requirements.HasUnverifiedCompany
     ]
 
     ADDRESS = 'address'
@@ -382,14 +376,14 @@ class CompanyProfileLogoEditView(BaseMultiStepCompanyEditView):
 
 class CompanyVerifyView(
     Oauth2FeatureFlagMixin,
-    redirects.RedirectRuleHandlerMixin,
+    state_requirements.UserStateRequirementHandlerMixin,
     CompanyProfileMixin,
     TemplateView
 ):
-    redirect_rules = [
-        redirects.IsLoggedInRule,
-        redirects.UnverifiedCompanyRequiredRule,
-        redirects.VerificationLetterNotSentRequiredRule,
+    required_user_states = [
+        state_requirements.IsLoggedIn,
+        state_requirements.HasUnverifiedCompany,
+        state_requirements.VerificationLetterNotSent,
     ]
     template_name = 'company-verify-hub.html'
 
@@ -400,14 +394,14 @@ class CompanyVerifyView(
 
 
 class CompanyAddressVerificationView(
-    redirects.RedirectRuleHandlerMixin,
+    state_requirements.UserStateRequirementHandlerMixin,
     CompanyProfileMixin,
     GetTemplateForCurrentStepMixin,
     SessionWizardView
 ):
-    redirect_rules = [
-        redirects.IsLoggedInRule,
-        redirects.UnverifiedCompanyRequiredRule,
+    required_user_states = [
+        state_requirements.IsLoggedIn,
+        state_requirements.HasUnverifiedCompany,
     ]
     ADDRESS = 'address'
     SUCCESS = 'success'
@@ -523,10 +517,12 @@ class SupplierAddressEditView(BaseMultiStepCompanyEditView):
         )
 
 
-class EmailUnsubscribeView(redirects.RedirectRuleHandlerMixin, FormView):
+class EmailUnsubscribeView(
+    state_requirements.UserStateRequirementHandlerMixin, FormView
+):
 
-    redirect_rules = [
-        redirects.IsLoggedInRule
+    required_user_states = [
+        state_requirements.IsLoggedIn
     ]
 
     form_class = forms.EmptyForm
@@ -563,14 +559,14 @@ class Oauth2CallbackUrlMixin:
 
 class CompaniesHouseOauth2View(
     Oauth2FeatureFlagMixin,
-    redirects.RedirectRuleHandlerMixin,
+    state_requirements.UserStateRequirementHandlerMixin,
     CompanyProfileMixin,
     Oauth2CallbackUrlMixin,
     RedirectView
 ):
-    redirect_rules = [
-        redirects.IsLoggedInRule,
-        redirects.UnverifiedCompanyRequiredRule,
+    required_user_states = [
+        state_requirements.IsLoggedIn,
+        state_requirements.HasUnverifiedCompany,
     ]
 
     def get_redirect_url(self):
@@ -583,15 +579,15 @@ class CompaniesHouseOauth2View(
 
 class CompaniesHouseOauth2CallbackView(
     Oauth2FeatureFlagMixin,
-    redirects.RedirectRuleHandlerMixin,
+    state_requirements.UserStateRequirementHandlerMixin,
     CompanyProfileMixin,
     SubmitFormOnGetMixin,
     Oauth2CallbackUrlMixin,
     FormView
 ):
-    redirect_rules = [
-        redirects.IsLoggedInRule,
-        redirects.UnverifiedCompanyRequiredRule,
+    required_user_states = [
+        state_requirements.IsLoggedIn,
+        state_requirements.HasUnverifiedCompany,
     ]
 
     form_class = forms.CompaniesHouseOauth2Form
@@ -613,12 +609,12 @@ class CompaniesHouseOauth2CallbackView(
 
 
 class BaseMultiUserAccountManagementView(
-    MultiUserAccountFeatureFlagMixin, CompanyProfileMixin,
-    SupplierProfileMixin, redirects.RedirectRuleHandlerMixin,
+    CompanyProfileMixin, SupplierProfileMixin,
+    state_requirements.UserStateRequirementHandlerMixin,
 ):
-    redirect_rules = [
-        redirects.IsLoggedInRule,
-        redirects.CompanyOwnerRequiredRule
+    required_user_states = [
+        state_requirements.IsLoggedIn,
+        state_requirements.IsCompanyOwner,
     ]
 
     def get_context_data(self, **kwargs):
@@ -734,8 +730,8 @@ class TransferAccountWizardView(
 
 
 class BaseAcceptInviteView(
-    MultiUserAccountFeatureFlagMixin, CompanyProfileMixin,
-    redirects.RedirectRuleHandlerMixin, FormView
+    CompanyProfileMixin, state_requirements.UserStateRequirementHandlerMixin,
+    FormView
 ):
     form_class = forms.AcceptInviteForm
     success_url = reverse_lazy('company-detail')
@@ -780,9 +776,9 @@ class AcceptTransferAccountView(SupplierProfileMixin, BaseAcceptInviteView):
     template_name = 'company-accept-transfer-account.html'
     retrieve_api_method = api_client.company.retrieve_transfer_invite
     accept_api_method = api_client.company.accept_transfer_invite
-    redirect_rules = [
-        redirects.IsLoggedInRule,
-        redirects.NotCompanyOwnerRequiredRule,
+    required_user_states = [
+        state_requirements.IsLoggedIn,
+        state_requirements.NotCompanyOwner,
     ]
 
 
@@ -791,9 +787,9 @@ class AcceptCollaborationView(BaseAcceptInviteView):
     template_name = 'company-accept-collaboration.html'
     retrieve_api_method = api_client.company.retrieve_collaboration_invite
     accept_api_method = api_client.company.accept_collaboration_invite
-    redirect_rules = [
-        redirects.IsLoggedInRule,
-        redirects.NoCompanyRequiredRule,
+    required_user_states = [
+        state_requirements.IsLoggedIn,
+        state_requirements.NoCompany,
     ]
 
 

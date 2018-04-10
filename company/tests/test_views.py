@@ -13,7 +13,7 @@ from django.core.urlresolvers import reverse
 from django.views.generic import TemplateView
 
 from sso.utils import SSOUser
-from company import forms, helpers, redirects, views, validators
+from company import forms, helpers, state_requirements, views, validators
 from company.tests.helpers import create_test_image
 
 
@@ -21,20 +21,23 @@ default_sector = choices.INDUSTRIES[1][0]
 
 
 patch_check_company_owner_redirect = patch(
-    'company.redirects.CompanyOwnerRequiredRule.is_redirect_required',
-    Mock(return_value=False)
+    'company.state_requirements.IsCompanyOwner.is_user_in_required_state',
+    Mock(return_value=True)
 )
 patch_check_company_unverified_redirect = patch(
-    'company.redirects.UnverifiedCompanyRequiredRule.is_redirect_required',
-    Mock(return_value=False)
+    (
+        'company.state_requirements.HasUnverifiedCompany.'
+        'is_user_in_required_state'
+    ),
+    Mock(return_value=True)
 )
 patch_check_not_company_owner_redirect = patch(
-    'company.redirects.NotCompanyOwnerRequiredRule.is_redirect_required',
-    Mock(return_value=False)
+    'company.state_requirements.NotCompanyOwner.is_user_in_required_state',
+    Mock(return_value=True)
 )
 patch_check_no_company_redirect = patch(
-    'company.redirects.NoCompanyRequiredRule.is_redirect_required',
-    Mock(return_value=False)
+    'company.state_requirements.NoCompany.is_user_in_required_state',
+    Mock(return_value=True)
 )
 
 
@@ -1601,8 +1604,8 @@ def test_verify_company_feature_flag_off(settings, client):
 
 @patch_check_company_unverified_redirect
 @patch.object(
-    redirects.VerificationLetterNotSentRequiredRule, 'is_redirect_required',
-    Mock(return_value=False)
+    state_requirements.VerificationLetterNotSent, 'is_user_in_required_state',
+    Mock(return_value=True)
 )
 def test_verify_company_has_company_user(
     settings, has_company_client
@@ -1674,21 +1677,11 @@ multi_user_urls = [
 
 
 @pytest.mark.parametrize('url', multi_user_urls)
-def test_multi_user_view_feature_flag_off(url, settings, client):
-    settings.FEATURE_MULTI_USER_ACCOUNT_ENABLED = False
-
-    response = client.get(url)
-
-    assert response.status_code == 404
-
-
-@pytest.mark.parametrize('url', multi_user_urls)
 @patch.object(views.api_client.company, 'retrieve_collaborators')
 def test_multi_user_view_has_company(
     mock_retrieve_collaborators, url, has_company_client,
     api_response_collaborators_200
 ):
-    settings.FEATURE_MULTI_USER_ACCOUNT_ENABLED = True
     mock_retrieve_collaborators.return_value = api_response_collaborators_200
 
     response = has_company_client.get(url)
@@ -1699,9 +1692,8 @@ def test_multi_user_view_has_company(
 @patch_check_company_owner_redirect
 @patch.object(views.api_client.company, 'create_collaboration_invite')
 def test_add_collaborator_invalid_form(
-    mock_create_collaboration_invite, has_company_client, settings
+    mock_create_collaboration_invite, has_company_client
 ):
-    settings.FEATURE_MULTI_USER_ACCOUNT_ENABLED = True
 
     url = reverse('add-collaborator')
 
@@ -1720,10 +1712,8 @@ def test_add_collaborator_invalid_form(
     return_value=create_response(200)
 )
 def test_add_collaborator_valid_form(
-    mock_create_collaboration_invite, has_company_client, settings, sso_user
+    mock_create_collaboration_invite, has_company_client, sso_user
 ):
-    settings.FEATURE_MULTI_USER_ACCOUNT_ENABLED = True
-
     url = reverse('add-collaborator')
 
     response = has_company_client.post(url, {'email_address': 'a@b.com'})
@@ -1742,9 +1732,8 @@ def test_add_collaborator_valid_form(
 
 @patch.object(views.api_client.company, 'create_collaboration_invite')
 def test_add_collaborator_valid_form_already_exists(
-    mock_create_collaboration_invite, has_company_client, settings, sso_user
+    mock_create_collaboration_invite, has_company_client, sso_user
 ):
-    settings.FEATURE_MULTI_USER_ACCOUNT_ENABLED = True
     mock_create_collaboration_invite.return_value = create_response(
         400, {'collaborator_email': ['Already exists']}
     )
@@ -1774,9 +1763,8 @@ def test_add_collaborator_valid_form_already_exists(
 @patch_check_company_owner_redirect
 def test_add_collaborator_valid_form_api_error(
     mock_retrieve_collaborators, url, data, mock_path, has_company_client,
-    settings, api_response_collaborators_200
+    api_response_collaborators_200
 ):
-    settings.FEATURE_MULTI_USER_ACCOUNT_ENABLED = True
     mock_retrieve_collaborators.return_value = api_response_collaborators_200
 
     with patch(mock_path, return_value=create_response(400)):
@@ -1789,9 +1777,8 @@ def test_add_collaborator_valid_form_api_error(
 @patch_check_company_owner_redirect
 def test_remove_collaborators_invalid_form(
     mock_remove_collaborators, mock_retrieve_collaborators,
-    has_company_client, settings, api_response_collaborators_200
+    has_company_client, api_response_collaborators_200
 ):
-    settings.FEATURE_MULTI_USER_ACCOUNT_ENABLED = True
     mock_retrieve_collaborators.return_value = api_response_collaborators_200
 
     url = reverse('remove-collaborator')
@@ -1813,10 +1800,8 @@ def test_remove_collaborators_invalid_form(
 @patch_check_company_owner_redirect
 def test_remove_collaborators_valid_form(
     mock_remove_collaborators, mock_retrieve_collaborators,
-    has_company_client, settings,
-    api_response_collaborators_200, sso_user
+    has_company_client, api_response_collaborators_200, sso_user
 ):
-    settings.FEATURE_MULTI_USER_ACCOUNT_ENABLED = True
     mock_retrieve_collaborators.return_value = api_response_collaborators_200
 
     url = reverse('remove-collaborator')
@@ -1837,9 +1822,8 @@ def test_remove_collaborators_valid_form(
 
 @patch.object(views.api_client.company, 'create_transfer_invite')
 def test_transfer_owner_invalid_form(
-    ock_create_transfer_invite, has_company_client, settings
+    ock_create_transfer_invite, has_company_client
 ):
-    settings.FEATURE_MULTI_USER_ACCOUNT_ENABLED = True
     view = views.TransferAccountWizardView
 
     response = has_company_client.post(
@@ -1874,9 +1858,8 @@ def test_company_address_verification_backwards_compatible_feature_flag_on(
 @patch_check_company_owner_redirect
 def test_transfer_owner_invalid_password(
     mock_check_password, mock_create_transfer_invite, has_company_client,
-    settings, sso_user
+    sso_user
 ):
-    settings.FEATURE_MULTI_USER_ACCOUNT_ENABLED = True
     mock_check_password.return_value = create_response(400)
 
     view = views.TransferAccountWizardView
@@ -1910,11 +1893,8 @@ def test_transfer_owner_invalid_password(
 )
 @patch_check_company_owner_redirect
 def test_transfer_owner_valid_form(
-    mock_create_transfer_invite, has_company_client,
-    settings, sso_user
+    mock_create_transfer_invite, has_company_client, sso_user
 ):
-    settings.FEATURE_MULTI_USER_ACCOUNT_ENABLED = True
-
     view = views.TransferAccountWizardView
 
     has_company_client.post(
@@ -1947,9 +1927,8 @@ def test_transfer_owner_valid_form(
 @patch_check_company_owner_redirect
 def test_transfer_owner_valid_form_already_exists(
     mock_check_password, mock_create_transfer_invite, has_company_client,
-    settings, sso_user
+    sso_user
 ):
-    settings.FEATURE_MULTI_USER_ACCOUNT_ENABLED = True
     mock_check_password.return_value = mock_create_transfer_invite
     mock_create_transfer_invite.return_value = create_response(
         http.client.BAD_REQUEST, {'new_owner_email': ['Already exists']}
@@ -1985,10 +1964,8 @@ def test_transfer_owner_valid_form_already_exists(
 )
 @patch_check_company_owner_redirect
 def test_transfer_owner_valid_form_api_error(
-    mock_check_password, mock_create_transfer_invite, has_company_client,
-    settings
+    mock_check_password, mock_create_transfer_invite, has_company_client
 ):
-    settings.FEATURE_MULTI_USER_ACCOUNT_ENABLED = True
     mock_create_transfer_invite.return_value = create_response(400)
 
     view = views.TransferAccountWizardView
@@ -2017,23 +1994,12 @@ invite_urls = (
 )
 
 
-@pytest.mark.parametrize('url', invite_urls)
-def test_accept_invite_feature_flag_off(url, client, settings):
-    settings.FEATURE_MULTI_USER_ACCOUNT_ENABLED = False
-
-    response = client.get(url)
-
-    assert response.status_code == 404
-
-
 @patch('company.views.AcceptTransferAccountView.retrieve_api_method')
 @patch_check_not_company_owner_redirect
 def test_accept_ownership_invite_get_invite(
-    mock_retrieve_api_method, logged_in_client, settings,
-    api_response_get_invite_200
+    mock_retrieve_api_method, logged_in_client, api_response_get_invite_200
 ):
     url = reverse('account-transfer-accept')
-    settings.FEATURE_MULTI_USER_ACCOUNT_ENABLED = True
     mock_retrieve_api_method.return_value = api_response_get_invite_200
     response = logged_in_client.get(url)
 
@@ -2044,11 +2010,9 @@ def test_accept_ownership_invite_get_invite(
 @patch('company.views.AcceptCollaborationView.retrieve_api_method')
 @patch_check_no_company_redirect
 def test_accept_collaborate_invite_get_invite(
-    mock_retrieve_api_method, logged_in_client, settings,
-    api_response_get_invite_200
+    mock_retrieve_api_method, logged_in_client, api_response_get_invite_200
 ):
     url = reverse('account-collaborate-accept')
-    settings.FEATURE_MULTI_USER_ACCOUNT_ENABLED = True
     mock_retrieve_api_method.return_value = api_response_get_invite_200
     response = logged_in_client.get(url)
 
@@ -2059,11 +2023,9 @@ def test_accept_collaborate_invite_get_invite(
 @patch('company.views.AcceptTransferAccountView.retrieve_api_method')
 @patch_check_not_company_owner_redirect
 def test_accept_ownership_invite_no_invite_key(
-    mock_retrieve_api_method, logged_in_client, settings,
-    api_response_get_invite_200
+    mock_retrieve_api_method, logged_in_client, api_response_get_invite_200
 ):
     url = reverse('account-transfer-accept')
-    settings.FEATURE_MULTI_USER_ACCOUNT_ENABLED = True
     mock_retrieve_api_method.return_value = api_response_get_invite_200
     response = logged_in_client.post(url, data={})
 
@@ -2075,11 +2037,9 @@ def test_accept_ownership_invite_no_invite_key(
 @patch('company.views.AcceptCollaborationView.retrieve_api_method')
 @patch_check_no_company_redirect
 def test_accept_collaborate_invite_no_invite_key(
-    mock_retrieve_api_method, logged_in_client, settings,
-    api_response_get_invite_200
+    mock_retrieve_api_method, logged_in_client, api_response_get_invite_200
 ):
     url = reverse('account-collaborate-accept')
-    settings.FEATURE_MULTI_USER_ACCOUNT_ENABLED = True
     mock_retrieve_api_method.return_value = api_response_get_invite_200
     response = logged_in_client.post(url, data={})
 
@@ -2095,12 +2055,10 @@ def test_accept_collaborate_invite_no_invite_key(
 )
 @patch_check_not_company_owner_redirect
 def test_accept_ownership_invite_valid_invite_key(
-    mock_retrieve_api_method, logged_in_client,
-    settings, api_response_get_invite_200
+    mock_retrieve_api_method, logged_in_client, api_response_get_invite_200
 ):
     mock_retrieve_api_method.return_value = api_response_get_invite_200
     url = reverse('account-transfer-accept')
-    settings.FEATURE_MULTI_USER_ACCOUNT_ENABLED = True
 
     response = logged_in_client.post(url, data={'invite_key': '123'})
 
@@ -2115,12 +2073,10 @@ def test_accept_ownership_invite_valid_invite_key(
 )
 @patch_check_no_company_redirect
 def test_accept_collaborate_invite_valid_invite_key(
-    mock_retrieve_api_method, logged_in_client, settings,
-    api_response_get_invite_200
+    mock_retrieve_api_method, logged_in_client, api_response_get_invite_200
 ):
     mock_retrieve_api_method.return_value = api_response_get_invite_200
     url = reverse('account-collaborate-accept')
-    settings.FEATURE_MULTI_USER_ACCOUNT_ENABLED = True
 
     response = logged_in_client.post(url, data={'invite_key': '123'})
 
@@ -2131,10 +2087,9 @@ def test_accept_collaborate_invite_valid_invite_key(
 @patch_check_not_company_owner_redirect
 @patch('company.views.AcceptTransferAccountView.retrieve_api_method')
 def test_accept_invite_transfer_invite_key_invalid(
-    mock_retrieve_api_method, has_company_client, settings
+    mock_retrieve_api_method, has_company_client
 ):
     mock_retrieve_api_method.return_value = create_response(400)
-    settings.FEATURE_MULTI_USER_ACCOUNT_ENABLED = True
     url = reverse('account-transfer-accept')
 
     response = has_company_client.get(url)
@@ -2146,9 +2101,8 @@ def test_accept_invite_transfer_invite_key_invalid(
 @patch_check_no_company_redirect
 @patch('company.views.AcceptCollaborationView.retrieve_api_method')
 def test_accept_invite_collaborate_invitekey_invalid(
-    mock_retrieve_api_method, logged_in_client, settings
+    mock_retrieve_api_method, logged_in_client
 ):
-    settings.FEATURE_MULTI_USER_ACCOUNT_ENABLED = True
     url = reverse('account-collaborate-accept')
     mock_retrieve_api_method.return_value = create_response(400)
 
@@ -2255,94 +2209,107 @@ def test_supplier_profile_mixin_404(mock_retrieve_profile, rf):
 @pytest.mark.parametrize('view_class,expected', [
     (
         views.SupplierCaseStudyWizardView,
-        [redirects.IsLoggedInRule, redirects.CompanyRequiredRule]
+        [state_requirements.IsLoggedIn, state_requirements.HasCompany]
     ),
     (
         views.CompanyProfileDetailView,
-        [redirects.IsLoggedInRule, redirects.CompanyRequiredRule]
+        [state_requirements.IsLoggedIn, state_requirements.HasCompany]
     ),
     (
         views.CompanyProfileEditView,
-        [redirects.IsLoggedInRule, redirects.CompanyRequiredRule]
+        [state_requirements.IsLoggedIn, state_requirements.HasCompany]
     ),
     (
         views.CompanyProfileLogoEditView,
-        [redirects.IsLoggedInRule, redirects.CompanyRequiredRule]
+        [state_requirements.IsLoggedIn, state_requirements.HasCompany]
     ),
     (
         views.CompanyDescriptionEditView,
-        [redirects.IsLoggedInRule, redirects.CompanyRequiredRule]
+        [state_requirements.IsLoggedIn, state_requirements.HasCompany]
     ),
     (
         views.CompanySocialLinksEditView,
-        [redirects.IsLoggedInRule, redirects.CompanyRequiredRule]
+        [state_requirements.IsLoggedIn, state_requirements.HasCompany]
     ),
     (
         views.SupplierBasicInfoEditView,
-        [redirects.IsLoggedInRule, redirects.CompanyRequiredRule]
+        [state_requirements.IsLoggedIn, state_requirements.HasCompany]
     ),
     (
         views.SupplierClassificationEditView,
-        [redirects.IsLoggedInRule, redirects.CompanyRequiredRule]
+        [state_requirements.IsLoggedIn, state_requirements.HasCompany]
     ),
     (
         views.SupplierContactEditView,
-        [redirects.IsLoggedInRule, redirects.CompanyRequiredRule]
+        [state_requirements.IsLoggedIn, state_requirements.HasCompany]
     ),
     (
         views.SupplierAddressEditView,
-        [redirects.IsLoggedInRule, redirects.CompanyRequiredRule]
+        [state_requirements.IsLoggedIn, state_requirements.HasCompany]
     ),
     (
         views.SendVerificationLetterView,
-        [redirects.IsLoggedInRule, redirects.UnverifiedCompanyRequiredRule]
+        [
+            state_requirements.IsLoggedIn,
+            state_requirements.HasUnverifiedCompany
+        ]
     ),
     (
         views.CompanyVerifyView,
         [
-            redirects.IsLoggedInRule,
-            redirects.UnverifiedCompanyRequiredRule,
-            redirects.VerificationLetterNotSentRequiredRule,
+            state_requirements.IsLoggedIn,
+            state_requirements.HasUnverifiedCompany,
+            state_requirements.VerificationLetterNotSent,
         ]
     ),
     (
         views.CompanyAddressVerificationView,
-        [redirects.IsLoggedInRule, redirects.UnverifiedCompanyRequiredRule]
+        [
+            state_requirements.IsLoggedIn,
+            state_requirements.HasUnverifiedCompany
+        ]
     ),
     (
         views.EmailUnsubscribeView,
-        [redirects.IsLoggedInRule]
+        [state_requirements.IsLoggedIn]
     ),
     (
         views.CompaniesHouseOauth2View,
-        [redirects.IsLoggedInRule, redirects.UnverifiedCompanyRequiredRule]
+        [
+            state_requirements.IsLoggedIn,
+            state_requirements.HasUnverifiedCompany,
+        ]
     ),
     (
         views.CompaniesHouseOauth2CallbackView,
-        [redirects.IsLoggedInRule, redirects.UnverifiedCompanyRequiredRule]
+        [
+            state_requirements.IsLoggedIn,
+            state_requirements.HasUnverifiedCompany,
+        ]
     ),
     (
         views.AddCollaboratorView,
-        [redirects.IsLoggedInRule, redirects.CompanyOwnerRequiredRule]
+        [state_requirements.IsLoggedIn, state_requirements.IsCompanyOwner]
     ),
     (
         views.RemoveCollaboratorView,
-        [redirects.IsLoggedInRule, redirects.CompanyOwnerRequiredRule]
+        [state_requirements.IsLoggedIn, state_requirements.IsCompanyOwner]
     ),
     (
         views.TransferAccountWizardView,
-        [redirects.IsLoggedInRule, redirects.CompanyOwnerRequiredRule]
+        [state_requirements.IsLoggedIn, state_requirements.IsCompanyOwner]
     ),
     (
         views.AcceptTransferAccountView,
-        [redirects.IsLoggedInRule, redirects.NotCompanyOwnerRequiredRule]
+        [state_requirements.IsLoggedIn, state_requirements.NotCompanyOwner]
     ),
     (
         views.AcceptCollaborationView,
-        [redirects.IsLoggedInRule, redirects.NoCompanyRequiredRule]
+        [state_requirements.IsLoggedIn, state_requirements.NoCompany]
     ),
 ])
-def test_redirect_rules(view_class, expected):
-    assert issubclass(view_class, redirects.RedirectRuleHandlerMixin)
+def test_required_user_states(view_class, expected):
+    mixin_class = state_requirements.UserStateRequirementHandlerMixin
+    assert issubclass(view_class, mixin_class)
     for rule in expected:
-        assert rule in view_class.redirect_rules
+        assert rule in view_class.required_user_states
