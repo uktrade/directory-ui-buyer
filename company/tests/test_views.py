@@ -1620,6 +1620,23 @@ def test_verify_company_has_company_user(
 
 
 @patch_check_company_unverified_redirect
+@patch.object(
+    state_requirements.VerificationLetterNotSent, 'is_user_in_required_state',
+    Mock(return_value=False)
+)
+def test_send_letter_redirects_to_enter_code_when_letter_sent(
+    settings, has_company_client
+):
+    settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED = True
+
+    url = reverse('verify-company-address')
+    response = has_company_client.get(url)
+
+    assert response.status_code == 302
+    assert response.url == reverse('verify-company-address-confirm')
+
+
+@patch_check_company_unverified_redirect
 def test_company_address_verification_backwards_compattible_feature_flag_off(
     settings, has_company_client
 ):
@@ -2251,7 +2268,8 @@ def test_supplier_profile_mixin_404(mock_retrieve_profile, rf):
         views.SendVerificationLetterView,
         [
             state_requirements.IsLoggedIn,
-            state_requirements.HasUnverifiedCompany
+            state_requirements.HasUnverifiedCompany,
+            state_requirements.VerificationLetterNotSent
         ]
     ),
     (
