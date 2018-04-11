@@ -325,7 +325,8 @@ class SendVerificationLetterView(
 ):
     required_user_states = [
         state_requirements.IsLoggedIn,
-        state_requirements.HasUnverifiedCompany
+        state_requirements.HasUnverifiedCompany,
+        state_requirements.VerificationLetterNotSent
     ]
 
     ADDRESS = 'address'
