@@ -8,7 +8,6 @@
 -e git+https://github.com/uktrade/directory-constants.git@v6.4.0#egg=directory_constants
 -e git+https://github.com/uktrade/directory-healthcheck.git@v0.3.0#egg=directory_healthcheck
 -e git+https://github.com/uktrade/directory-sso-api-client.git@v2.2.0#egg=directory_sso_api_client
--e git+https://github.com/uktrade/directory-validators.git@v4.4.1#egg=directory_validators
 -e git+https://github.com/uktrade/directory-signature-auth.git@v2.0.1#egg=sigauth
 asn1crypto==0.23.0        # via cryptography
 cffi==1.11.2              # via cryptography
@@ -16,6 +15,7 @@ contextlib2==0.5.5        # via raven
 cryptography==2.1.4       # via pyopenssl, requests
 directory-ch-client==0.1.0
 directory-components==1.8.3
+directory_validators==5.0.0
 django-cors-headers==2.1.0
 django-formtools==2.0
 django-health-check==3.0.0
@@ -28,12 +28,12 @@ gunicorn==19.5.0
 idna==2.6                 # via cryptography, requests
 mohawk==0.3.4             # via directory-ch-client
 monotonic==1.2            # via directory-ch-client
-olefile==0.44             # via pillow
+olefile==0.44             # via directory-validators, pillow
 phonenumberslite==7.7.4
 pillow==4.2.1
 pycparser==2.18           # via cffi
 pyopenssl==17.5.0         # via requests
-pytz==2017.2              # via directory-ch-client, django
+pytz==2017.2              # via directory-ch-client, directory-validators, django
 raven==5.19.0
 requests[security]==2.13.0
 six==1.11.0               # via cryptography, directory-ch-client, django-extensions, mohawk, pyopenssl
