@@ -282,7 +282,7 @@ class CompanyBasicInfoForm(AutoFocusFieldMixin, IndentedInvalidFieldsMixin,
     name = forms.CharField(
         label='Company name',
         help_text=(
-            'Enter your preferred business name'
+            'Enter your trading name'
         ),
         max_length=255,
         validators=[shared_validators.no_html],
