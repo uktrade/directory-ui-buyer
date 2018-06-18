@@ -10,13 +10,35 @@ import requests
 from django.conf import settings
 from django.core.files.uploadedfile import UploadedFile
 from django.core.urlresolvers import reverse
+from django.views.generic import TemplateView
 
 from sso.utils import SSOUser
-from company import forms, helpers, views, validators
+from company import forms, helpers, state_requirements, views, validators
 from company.tests.helpers import create_test_image
 
 
 default_sector = choices.INDUSTRIES[1][0]
+
+
+patch_check_company_owner_redirect = patch(
+    'company.state_requirements.IsCompanyOwner.is_user_in_required_state',
+    Mock(return_value=True)
+)
+patch_check_company_unverified_redirect = patch(
+    (
+        'company.state_requirements.HasUnverifiedCompany.'
+        'is_user_in_required_state'
+    ),
+    Mock(return_value=True)
+)
+patch_check_not_company_owner_redirect = patch(
+    'company.state_requirements.NotCompanyOwner.is_user_in_required_state',
+    Mock(return_value=True)
+)
+patch_check_no_company_redirect = patch(
+    'company.state_requirements.NoCompany.is_user_in_required_state',
+    Mock(return_value=True)
+)
 
 
 def create_response(status_code, json_body={}):
@@ -24,47 +46,6 @@ def create_response(status_code, json_body={}):
     response.status_code = status_code
     response.json = lambda: json_body
     return response
-
-
-@pytest.fixture
-def api_response_200():
-    return create_response(http.client.OK)
-
-
-@pytest.fixture
-def api_response_400():
-    return create_response(http.client.BAD_REQUEST)
-
-
-@pytest.fixture
-def api_response_401():
-    return create_response(http.client.UNAUTHORIZED)
-
-
-@pytest.fixture
-def api_response_404(*args, **kwargs):
-    return create_response(http.client.NOT_FOUND)
-
-
-@pytest.fixture
-def api_response_collaborator_email_exists_400(*args, **kwargs):
-    return create_response(
-        http.client.BAD_REQUEST, {'collaborator_email': ['Already exists']}
-    )
-
-
-@pytest.fixture
-def api_response_new_owner_email_exists_400(*args, **kwargs):
-    return create_response(
-        http.client.BAD_REQUEST, {'new_owner_email': ['Already exists']}
-    )
-
-
-@pytest.fixture
-def api_response_oauth2_verify_200():
-    return create_response(
-        status_code=http.client.OK, json_body={'access_token': 'abc'}
-    )
 
 
 @pytest.fixture
@@ -85,6 +66,9 @@ def api_response_collaborators_200():
 
 @pytest.fixture
 def logged_in_client(client):
+    def process_request(self, request):
+        request.sso_user = sso_user()
+
     stub = patch(
         'sso.middleware.SSOUserMiddleware.process_request', process_request
     )
@@ -94,53 +78,18 @@ def logged_in_client(client):
 
 
 @pytest.fixture
-def no_company_client(logged_in_client):
-    response = create_response(status_code=http.client.NOT_FOUND,)
-
-    stub_one = patch.object(views, 'has_company', Mock(return_value=False))
-    stub_two = patch(
-        'api_client.api_client.supplier.retrieve_profile',
-        Mock(return_value=response)
-    )
-    stub_one.start()
-    stub_two.start()
-    yield logged_in_client
-    stub_one.stop()
-    stub_two.stop()
-
-
-@pytest.fixture
-def not_company_owner_client(logged_in_client):
+def has_company_client(logged_in_client, retrieve_profile_data):
     response = create_response(
         status_code=http.client.OK,
-        json_body={'is_company_owner': False, 'company': {'number': 1}},
+        json_body={**retrieve_profile_data, 'is_verified': True}
     )
     stub = patch(
-        'api_client.api_client.supplier.retrieve_profile',
+        'api_client.api_client.company.retrieve_private_profile',
         Mock(return_value=response)
     )
     stub.start()
     yield logged_in_client
     stub.stop()
-
-
-@pytest.fixture
-def has_company_client(logged_in_client):
-    stub = patch.object(views, 'has_company', Mock(return_value=True))
-    stub.start()
-    yield logged_in_client
-    stub.stop()
-
-
-@pytest.fixture
-def retrieve_supplier_case_study_200(api_response_200):
-    response = api_response_200
-    response.json = lambda: {'field': 'value'}
-    return response
-
-
-def process_request(self, request):
-    request.sso_user = sso_user()
 
 
 @pytest.fixture
@@ -461,8 +410,7 @@ def send_verification_letter_end_to_end(
 @pytest.fixture
 def company_profile_edit_end_to_end(
     has_company_client, company_profile_address_data,
-    company_profile_basic_data, company_profile_classification_data,
-    api_response_200
+    company_profile_basic_data, company_profile_classification_data
 ):
     # loop over each step in the supplier case study wizard and post valid data
     view = views.CompanyProfileEditView
@@ -484,7 +432,6 @@ def company_profile_edit_end_to_end(
 def company_profile_letter_already_sent_edit_end_to_end(
     has_company_client, company_profile_address_data,
     company_profile_basic_data, company_profile_classification_data,
-    api_response_200
 ):
     # loop over each step in the supplier case study wizard and post valid data
     view = views.CompanyProfileEditView
@@ -505,7 +452,6 @@ def company_profile_letter_already_sent_edit_end_to_end(
 def company_profile_edit_goto_step(
     has_company_client, company_profile_address_data,
     company_profile_basic_data, company_profile_classification_data,
-    api_response_200
 ):
     # loop over each step in the supplier case study wizard and post valid data
     view = views.CompanyProfileEditView
@@ -543,13 +489,11 @@ def test_case_study_edit_retrieves_data(
     )
 
 
-@patch('api_client.api_client.company.retrieve_private_case_study')
-def test_case_study_edit_exposes_api_response_data(
-    mock_retrieve_case_study, has_company_client,
-    retrieve_supplier_case_study_200
-):
-    mock_retrieve_case_study.return_value = retrieve_supplier_case_study_200
-
+@patch(
+    'api_client.api_client.company.retrieve_private_case_study',
+    Mock(return_value=create_response(200, {'field': 'value'}))
+)
+def test_case_study_edit_exposes_api_response_data(has_company_client):
     url = reverse('company-case-study-edit', kwargs={'id': '2'})
     response = has_company_client.get(url)
 
@@ -558,25 +502,26 @@ def test_case_study_edit_exposes_api_response_data(
 
 @patch('api_client.api_client.company.retrieve_private_case_study')
 def test_case_study_edit_handles_api_error(
-    mock_retrieve_case_study, has_company_client, api_response_400
+    mock_retrieve_case_study, has_company_client
 ):
-    mock_retrieve_case_study.return_value = api_response_400
+    mock_retrieve_case_study.return_value = create_response(400)
 
     url = reverse('company-case-study-edit', kwargs={'id': '2'})
     with pytest.raises(requests.exceptions.HTTPError):
         has_company_client.get(url)
 
 
-@patch.object(views.api_client.company, 'create_case_study')
+@patch(
+    'company.views.api_client.company.create_case_study',
+    return_value=create_response(200)
+)
 def test_case_study_create_api_success(
     mock_create_case_study, supplier_case_study_end_to_end, sso_user,
-    all_case_study_data, api_response_200
+    all_case_study_data
 ):
-    mock_create_case_study.return_value = api_response_200
-
     response = supplier_case_study_end_to_end()
     assert response.status_code == http.client.FOUND
-    assert response.get('Location') == reverse('company-detail')
+    assert response.url == reverse('company-detail')
     data = {
         **all_case_study_data,
         'image_one': ANY, 'image_two': ANY, 'image_three': ANY,
@@ -593,9 +538,9 @@ def test_case_study_create_api_success(
 
 @patch.object(views.api_client.company, 'create_case_study')
 def test_case_study_create_api_failure(
-    mock_create_case_study, supplier_case_study_end_to_end, api_response_400
+    mock_create_case_study, supplier_case_study_end_to_end
 ):
-    mock_create_case_study.return_value = api_response_400
+    mock_create_case_study.return_value = create_response(400)
 
     response = supplier_case_study_end_to_end()
 
@@ -604,17 +549,18 @@ def test_case_study_create_api_failure(
     assert response.template_name == view.failure_template
 
 
-@patch.object(views.api_client.company, 'update_case_study')
+@patch(
+    'company.views.api_client.company.update_case_study',
+    return_value=create_response(200)
+)
 def test_case_study_update_api_success(
     mock_update_case_study, supplier_case_study_end_to_end, sso_user,
-    all_case_study_data, api_response_200
+    all_case_study_data
 ):
-    mock_update_case_study.return_value = api_response_200
-
     response = supplier_case_study_end_to_end(case_study_id='1')
 
     assert response.status_code == http.client.FOUND
-    assert response.get('Location') == reverse('company-detail')
+    assert response.url == reverse('company-detail')
     # django converts uploaded files to UploadedFile, which makes
     # `assert_called_once_with` tricky.
     data = {
@@ -630,9 +576,9 @@ def test_case_study_update_api_success(
 
 @patch.object(views.api_client.company, 'retrieve_private_case_study')
 def test_case_study_get_api_not_found(
-    mock_retrieve_private_case_study, api_response_404, has_company_client
+    mock_retrieve_private_case_study, has_company_client
 ):
-    mock_retrieve_private_case_study.return_value = api_response_404
+    mock_retrieve_private_case_study.return_value = create_response(404)
     url = reverse('company-case-study-edit', kwargs={'id': 1221})
 
     response = has_company_client.get(url)
@@ -642,9 +588,9 @@ def test_case_study_get_api_not_found(
 
 @patch.object(views.api_client.company, 'update_case_study')
 def test_case_study_update_api_failure(
-    mock_update_case_study, supplier_case_study_end_to_end, api_response_400
+    mock_update_case_study, supplier_case_study_end_to_end
 ):
-    mock_update_case_study.return_value = api_response_400
+    mock_update_case_study.return_value = create_response(400)
 
     response = supplier_case_study_end_to_end(case_study_id='1')
 
@@ -677,7 +623,6 @@ def test_company_profile_details_exposes_context(
     mock_is_optional_profile_values_set.assert_called_once_with(company)
 
 
-@patch.object(views, 'has_company', Mock(return_value=True))
 @patch.object(helpers, 'get_company_profile')
 @patch.object(views.api_client.company, 'retrieve_private_profile')
 def test_company_profile_details_calls_api(
@@ -692,14 +637,13 @@ def test_company_profile_details_calls_api(
     assert mock_retrieve_profile.called_once_with(1)
 
 
-@patch.object(views, 'has_company', Mock(return_value=True))
 @patch.object(helpers, 'get_company_profile_from_response')
 @patch.object(views.api_client.company, 'retrieve_private_profile')
 def test_company_profile_details_handles_bad_status(
     mock_retrieve_profile, mock_get_company_profile_from_response,
-    sso_request, api_response_400
+    sso_request
 ):
-    mock_retrieve_profile.return_value = api_response_400
+    mock_retrieve_profile.return_value = create_response(400)
     mock_get_company_profile_from_response.return_value = {}
     view = views.CompanyProfileDetailView.as_view()
 
@@ -707,7 +651,6 @@ def test_company_profile_details_handles_bad_status(
         view(sso_request)
 
 
-@patch.object(views, 'has_company', Mock(return_value=True))
 @patch.object(views.CompanyDescriptionEditView, 'serialize_form_data',
               Mock(return_value={'field': 'value'}))
 @patch.object(views.api_client.company, 'update_profile')
@@ -722,29 +665,28 @@ def test_company_profile_description_api_client_call(mock_update_profile,
     )
 
 
-@patch.object(views, 'has_company', Mock(return_value=True))
-@patch.object(views.CompanyDescriptionEditView, 'serialize_form_data',
-              Mock(return_value={}))
-@patch.object(views.api_client.company, 'update_profile')
-def test_company_profile_description_api_client_success(
-    mock_update_profile, company_request, api_response_200
-):
-    mock_update_profile.return_value = api_response_200
-
+@patch(
+    'company.views.CompanyDescriptionEditView.serialize_form_data',
+    Mock(return_value={})
+)
+@patch(
+    'company.views.api_client.company.update_profile',
+    Mock(return_value=create_response(200))
+)
+def test_company_profile_description_api_client_success(company_request):
     view = views.CompanyDescriptionEditView()
     view.request = company_request
     response = view.done()
     assert response.status_code == http.client.FOUND
 
 
-@patch.object(views, 'has_company', Mock(return_value=True))
 @patch.object(views.CompanyDescriptionEditView, 'serialize_form_data',
               Mock(return_value={}))
 @patch.object(views.api_client.company, 'update_profile')
 def test_company_profile_description_api_client_failure(
-    mock_update_profile, company_request, api_response_400
+    mock_update_profile, company_request
 ):
-    mock_update_profile.return_value = api_response_400
+    mock_update_profile.return_value = create_response(400)
 
     view = views.CompanyDescriptionEditView()
     view.request = company_request
@@ -756,7 +698,6 @@ def test_company_profile_description_api_client_failure(
     assert response.template_name == expected_template_name
 
 
-@patch.object(views, 'has_company', Mock(return_value=True))
 @patch.object(views.api_client.company, 'retrieve_private_profile')
 def test_company_description_edit_calls_api(
     mock_retrieve_profile, company_request, api_response_company_profile_200
@@ -769,7 +710,6 @@ def test_company_description_edit_calls_api(
     assert mock_retrieve_profile.called_once_with(1)
 
 
-@patch.object(views, 'has_company', Mock(return_value=True))
 @patch.object(views.api_client.company, 'retrieve_private_profile')
 def test_company_profile_description_exposes_api_result_to_form(
     mock_retrieve_profile, company_request, api_response_company_profile_200
@@ -786,20 +726,18 @@ def test_company_profile_description_exposes_api_result_to_form(
     }
 
 
-@patch.object(views, 'has_company', Mock(return_value=True))
 @patch.object(views.api_client.company, 'retrieve_private_profile')
 def test_company_description_edit_handles_bad_api_response(
-    mock_retrieve_profile, company_request, api_response_400
+    mock_retrieve_profile, company_request
 ):
 
-    mock_retrieve_profile.return_value = api_response_400
+    mock_retrieve_profile.return_value = create_response(400)
     view = views.CompanyDescriptionEditView.as_view()
 
     with pytest.raises(requests.exceptions.HTTPError):
         view(company_request)
 
 
-@patch.object(views, 'has_company', Mock(return_value=True))
 def test_company_description_edit_views_use_correct_template(
         client, rf, sso_user):
     request = rf.get(reverse('company-edit-description'))
@@ -815,7 +753,6 @@ def test_company_description_edit_views_use_correct_template(
         assert response.template_name == [view_class.templates[step_name]]
 
 
-@patch.object(views, 'has_company', Mock(return_value=True))
 @patch.object(views.CompanyProfileEditView, 'serialize_form_data',
               Mock(return_value={'field': 'value'}))
 @patch.object(views.api_client.company, 'update_profile')
@@ -831,18 +768,17 @@ def test_company_profile_edit_api_client_call(
     )
 
 
-@patch.object(views, 'has_company', Mock(return_value=True))
-@patch.object(views.CompanyProfileEditView, 'serialize_form_data',
-              Mock(return_value={}))
-@patch.object(views.api_client.company, 'update_profile')
+@patch.object(
+    views.CompanyProfileEditView, 'serialize_form_data', Mock(return_value={})
+)
+@patch(
+    'company.views.api_client.company.update_profile',
+    Mock(return_value=create_response(200))
+)
 def test_company_profile_edit_api_client_success(
-    mock_update_profile, company_request, api_response_200,
-    retrieve_profile_data, settings
+    company_request, retrieve_profile_data, settings
 ):
     settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED = False
-
-    mock_update_profile.return_value = api_response_200
-
     view = views.CompanyProfileEditView()
     view.request = company_request
     view.company_profile = retrieve_profile_data
@@ -851,15 +787,13 @@ def test_company_profile_edit_api_client_success(
     assert response.template_name == view.templates[view.SENT]
 
 
-@patch.object(views, 'has_company', Mock(return_value=True))
 @patch.object(views.CompanyProfileEditView, 'serialize_form_data',
               Mock(return_value={}))
 @patch.object(views.api_client.company, 'update_profile')
 def test_company_profile_edit_api_client_failure(
-    mock_update_profile, company_request, api_response_400,
-    retrieve_profile_data
+    mock_update_profile, company_request, retrieve_profile_data
 ):
-    mock_update_profile.return_value = api_response_400
+    mock_update_profile.return_value = create_response(400)
 
     view = views.CompanyProfileEditView()
     view.company_profile = retrieve_profile_data
@@ -871,7 +805,6 @@ def test_company_profile_edit_api_client_failure(
     )
 
 
-@patch.object(views, 'has_company', Mock(return_value=True))
 @patch.object(views.api_client.company, 'retrieve_private_profile')
 def test_company_profile_edit_calls_api(
     mock_retrieve_profile, company_request, api_response_company_profile_200
@@ -885,7 +818,6 @@ def test_company_profile_edit_calls_api(
     assert mock_retrieve_profile.called_once_with(1)
 
 
-@patch.object(views, 'has_company', Mock(return_value=True))
 @patch.object(views.api_client.company, 'retrieve_private_profile')
 def test_company_profile_edit_exposes_api_result_to_form(
     mock_retrieve_profile, company_request, api_response_company_profile_200
@@ -899,33 +831,17 @@ def test_company_profile_edit_exposes_api_result_to_form(
     assert response.context_data['form'].initial == expected
 
 
-@patch.object(views, 'has_company', Mock(return_value=True))
 @patch.object(views.api_client.company, 'retrieve_private_profile')
 def test_company_profile_edit_handles_bad_api_response(
-    mock_retrieve_profile, company_request, api_response_400
+    mock_retrieve_profile, company_request
 ):
-    mock_retrieve_profile.return_value = api_response_400
+    mock_retrieve_profile.return_value = create_response(400)
     view = views.CompanyProfileEditView.as_view()
 
     with pytest.raises(requests.exceptions.HTTPError):
         view(company_request)
 
 
-@patch.object(views, 'has_company', Mock(return_value=False))
-def test_company_redirect_non_verified_company(sso_request):
-    view_classes = [
-        views.CompanyProfileEditView,
-        views.CompanyProfileLogoEditView,
-        views.CompanyDescriptionEditView,
-    ]
-    for ViewClass in view_classes:
-        response = ViewClass.as_view()(sso_request)
-
-        assert response.status_code == http.client.FOUND
-        assert response.get('Location') == reverse('index')
-
-
-@patch.object(views, 'has_company', Mock(return_value=True))
 def test_company_edit_views_use_correct_template(
     client, rf, sso_user, settings
 ):
@@ -944,7 +860,6 @@ def test_company_edit_views_use_correct_template(
         assert response.template_name == [view_class.templates[step_name]]
 
 
-@patch.object(views, 'has_company', Mock(return_value=True))
 @patch.object(views.CompanyProfileLogoEditView, 'serialize_form_data',
               Mock(return_value={'field': 'value'}))
 @patch.object(views.api_client.company, 'update_profile')
@@ -958,31 +873,28 @@ def test_company_profile_logo_api_client_call(mock_update_profile,
     )
 
 
-@patch.object(views, 'has_company', Mock(return_value=True))
 @patch.object(views.CompanyProfileLogoEditView, 'serialize_form_data',
               Mock(return_value={}))
-@patch.object(views.api_client.company, 'update_profile')
-def test_company_profile_logo_api_client_success(
-    mock_update_profile, company_request, api_response_200
-):
-    mock_update_profile.return_value = api_response_200
-
+@patch(
+    'company.views.api_client.company.update_profile',
+    Mock(return_value=create_response(200))
+)
+def test_company_profile_logo_api_client_success(company_request):
     view = views.CompanyProfileLogoEditView()
     view.request = company_request
     response = view.done()
     assert response.status_code == http.client.FOUND
 
 
-@patch.object(views, 'has_company', Mock(return_value=True))
 @patch.object(views.CompanyProfileLogoEditView, 'serialize_form_data',
               Mock(return_value={}))
 @patch.object(views.api_client.company, 'update_profile')
 def test_company_profile_logo_api_client_failure(
-    mock_update_profile, company_request, api_response_400, settings
+    mock_update_profile, company_request, settings
 ):
     settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED = False
 
-    mock_update_profile.return_value = api_response_400
+    mock_update_profile.return_value = create_response(400)
 
     view = views.CompanyProfileLogoEditView()
     view.request = company_request
@@ -994,14 +906,16 @@ def test_company_profile_logo_api_client_failure(
     assert response.template_name == expected_template_name
 
 
-@patch.object(views.api_client.company, 'update_profile')
+@patch(
+    'company.views.api_client.company.update_profile',
+    return_value=create_response(200)
+)
 def test_company_profile_edit_create_api_success(
     mock_update_profile, company_profile_edit_end_to_end, sso_user,
-    all_company_profile_data, api_response_200, settings
+    all_company_profile_data, settings
 ):
     settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED = False
 
-    mock_update_profile.return_value = api_response_200
     view = views.CompanyProfileEditView
 
     response = company_profile_edit_end_to_end()
@@ -1027,54 +941,57 @@ def test_company_profile_edit_create_api_success(
     )
 
 
-@patch.object(views.api_client.company, 'update_profile')
+@patch(
+    'company.views.api_client.company.update_profile',
+    Mock(return_value=create_response(200))
+)
 def test_company_profile_edit_last_step_feature_flag_enabled_not_verified(
-    mock_update_profile, company_profile_letter_already_sent_edit_end_to_end,
-    all_company_profile_data, api_response_200, settings,
-    retrieve_profile_unverified
+    company_profile_letter_already_sent_edit_end_to_end,
+    all_company_profile_data, settings, retrieve_profile_unverified
 ):
     settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED = True
-
-    mock_update_profile.return_value = api_response_200
 
     response = company_profile_letter_already_sent_edit_end_to_end()
 
     assert response.status_code == 302
-    assert response.get('Location') == reverse('verify-company-hub')
+    assert response.url == reverse('verify-company-hub')
 
 
-@patch.object(views.api_client.company, 'update_profile')
+@patch(
+    'company.views.api_client.company.update_profile',
+    Mock(return_value=create_response(200))
+)
 def test_company_profile_edit_last_step_feature_flag_enabled_verified(
-    mock_update_profile, company_profile_letter_already_sent_edit_end_to_end,
-    all_company_profile_data, api_response_200, settings,
+    company_profile_letter_already_sent_edit_end_to_end,
+    all_company_profile_data, settings,
 ):
     settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED = True
-
-    mock_update_profile.return_value = api_response_200
 
     response = company_profile_letter_already_sent_edit_end_to_end()
 
     assert response.status_code == 302
-    assert response.get('Location') == reverse('company-detail')
+    assert response.url == reverse('company-detail')
 
 
-@patch.object(views.api_client.company, 'update_profile')
+@patch(
+    'company.views.api_client.company.update_profile',
+    return_value=create_response(200)
+)
 @patch('api_client.api_client.company.retrieve_private_profile')
 def test_company_profile_letter_already_sent_edit_create_api_success(
     mock_retrieve_profile, mock_update_profile,
-    api_response_company_profile_letter_sent_200,
-    api_response_200, sso_user, all_company_profile_data,
+    api_response_company_profile_letter_sent_200, sso_user,
+    all_company_profile_data,
     company_profile_letter_already_sent_edit_end_to_end,
 ):
     mock_retrieve_profile.return_value = (
         api_response_company_profile_letter_sent_200
     )
-    mock_update_profile.return_value = api_response_200
 
     response = company_profile_letter_already_sent_edit_end_to_end()
 
     assert response.status_code == http.client.FOUND
-    assert response.get('Location') == reverse('company-detail')
+    assert response.url == reverse('company-detail')
 
     assert mock_update_profile.call_count == 1
     assert mock_update_profile.call_args == call(
@@ -1093,12 +1010,12 @@ def test_company_profile_letter_already_sent_edit_create_api_success(
 
 @patch.object(views.api_client.company, 'update_profile')
 def test_company_profile_edit_create_api_failure(
-    mock_create_case_study, company_profile_edit_end_to_end, api_response_400,
+    mock_create_case_study, company_profile_edit_end_to_end,
     settings
 ):
     settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED = False
 
-    mock_create_case_study.return_value = api_response_400
+    mock_create_case_study.return_value = create_response(400)
 
     response = company_profile_edit_end_to_end()
 
@@ -1159,10 +1076,7 @@ def test_company_profile_confirm_address_context_data(
     )
 
 
-@patch.object(
-    views.SendVerificationLetterView, 'is_company_verified',
-    Mock(return_value=False)
-)
+@patch_check_company_unverified_redirect
 def test_send_verification_letter_address_context_data(
     company_profile_edit_goto_step, retrieve_profile_data, has_company_client,
     all_company_profile_data, settings
@@ -1189,17 +1103,15 @@ def test_company_profile_initial_data_classification(
     assert response.context_data['form'].initial == expected
 
 
-@patch.object(
-    views.CompanyAddressVerificationView, 'is_company_verified',
-    Mock(return_value=False)
+@patch_check_company_unverified_redirect
+@patch(
+    'company.validators.api_client.company.verify_with_code',
+    return_value=create_response(200)
 )
-@patch.object(validators.api_client.company, 'verify_with_code')
 def test_company_address_validation_api_success(
     mock_verify_with_code, address_verification_end_to_end, sso_user,
-    all_address_verification_data, api_response_200, settings
+    all_address_verification_data, settings
 ):
-    mock_verify_with_code.return_value = api_response_200
-
     view = views.CompanyAddressVerificationView
 
     response = address_verification_end_to_end()
@@ -1212,15 +1124,12 @@ def test_company_address_validation_api_success(
     )
 
 
-@patch.object(
-    views.CompanyAddressVerificationView, 'is_company_verified',
-    Mock(return_value=False)
-)
+@patch_check_company_unverified_redirect
 @patch.object(views.api_client.company, 'verify_with_code')
 def test_company_address_validation_api_failure(
-    mock_verify_with_code, address_verification_end_to_end, api_response_400
+    mock_verify_with_code, address_verification_end_to_end
 ):
-    mock_verify_with_code.return_value = api_response_400
+    mock_verify_with_code.return_value = create_response(400)
 
     response = address_verification_end_to_end()
     expected = [validators.MESSAGE_INVALID_CODE]
@@ -1240,12 +1149,14 @@ def test_supplier_address_edit_standalone_initial_data(
     }
 
 
-@patch.object(views.api_client.company, 'update_profile')
+@patch(
+    'company.views.api_client.company.update_profile',
+    return_value=create_response(200)
+)
 def test_supplier_address_edit_standalone_view_api_success(
     mock_update_profile, has_company_client, supplier_address_data_standalone,
-    sso_user, api_response_200,
+    sso_user,
 ):
-    mock_update_profile.return_value = api_response_200
 
     url = reverse('company-edit-address')
     has_company_client.post(url, supplier_address_data_standalone)
@@ -1269,13 +1180,14 @@ def test_supplier_contact_edit_standalone_initial_data(
     }
 
 
-@patch.object(views.api_client.company, 'update_profile')
+@patch(
+    'company.views.api_client.company.update_profile',
+    return_value=create_response(200)
+)
 def test_supplier_contact_edit_standalone_view_api_success(
     mock_update_profile, has_company_client,
-    company_profile_contact_standalone_data, api_response_200, sso_user,
+    company_profile_contact_standalone_data, sso_user,
 ):
-    mock_update_profile.return_value = api_response_200
-
     url = reverse('company-edit-contact')
     has_company_client.post(url, company_profile_contact_standalone_data)
 
@@ -1300,15 +1212,14 @@ def test_supplier_sectors_edit_standalone_initial_data(
     }
 
 
-@patch.object(views.api_client.company, 'update_profile')
+@patch(
+    'company.views.api_client.company.update_profile',
+    return_value=create_response(200)
+)
 def test_supplier_sectors_edit_standalone_view_api_success(
     mock_update_profile, has_company_client,
-    company_profile_sectors_standalone_data,
-    api_response_200,
-    sso_user,
+    company_profile_sectors_standalone_data, sso_user,
 ):
-    mock_update_profile.return_value = api_response_200
-
     url = reverse('company-edit-sectors')
     has_company_client.post(url, company_profile_sectors_standalone_data)
     assert mock_update_profile.call_count == 1
@@ -1322,15 +1233,14 @@ def test_supplier_sectors_edit_standalone_view_api_success(
     )
 
 
-@patch.object(views.api_client.company, 'update_profile')
+@patch(
+    'company.views.api_client.company.update_profile',
+    return_value=create_response(200)
+)
 def test_supplier_sectors_edit_standalone_view_api_multiple_sectors(
     mock_update_profile, has_company_client,
-    company_profile_sectors_standalone_data,
-    api_response_200,
-    sso_user,
+    company_profile_sectors_standalone_data, sso_user,
 ):
-    mock_update_profile.return_value = api_response_200
-
     url = reverse('company-edit-sectors')
     has_company_client.post(url, company_profile_sectors_standalone_data)
 
@@ -1356,13 +1266,14 @@ def test_supplier_key_facts_edit_standalone_initial_data(
     }
 
 
-@patch.object(views.api_client.company, 'update_profile')
+@patch(
+    'company.views.api_client.company.update_profile',
+    return_value=create_response(200)
+)
 def test_supplier_key_facts_edit_standalone_view_api_success(
     mock_update_profile, has_company_client,
-    company_profile_key_facts_standalone_data, api_response_200, sso_user,
+    company_profile_key_facts_standalone_data, sso_user,
 ):
-    mock_update_profile.return_value = api_response_200
-
     url = reverse('company-edit-key-facts')
 
     has_company_client.post(url, company_profile_key_facts_standalone_data)
@@ -1388,13 +1299,15 @@ def test_supplier_social_links_edit_standalone_initial_data(
     }
 
 
-@patch.object(views.api_client.company, 'update_profile')
+@patch(
+    'company.views.api_client.company.update_profile',
+    return_value=create_response(200)
+)
 def test_supplier_social_links_edit_standalone_view_api_success(
     mock_update_profile, has_company_client,
-    company_profile_social_links_data, api_response_200,
+    company_profile_social_links_data,
     sso_user, all_social_links_data,
 ):
-    mock_update_profile.return_value = api_response_200
     url = reverse('company-edit-social-media')
 
     has_company_client.post(url, company_profile_social_links_data)
@@ -1420,13 +1333,11 @@ def test_unsubscribe_anon_user(client):
 
 
 @patch.object(views.api_client.supplier, 'unsubscribe')
-def test_unsubscribe_api_failure(
-    mock_unsubscribe, api_response_400, logged_in_client
-):
+def test_unsubscribe_api_failure(mock_unsubscribe, logged_in_client):
     logged_in_client.cookies = SimpleCookie(
         {settings.SSO_PROXY_SESSION_COOKIE: 1}
     )
-    mock_unsubscribe.return_value = api_response_400
+    mock_unsubscribe.return_value = create_response(400)
 
     response = logged_in_client.post(reverse('unsubscribe'))
 
@@ -1436,12 +1347,11 @@ def test_unsubscribe_api_failure(
     assert response.template_name == view.failure_template
 
 
-@patch.object(views.api_client.supplier, 'unsubscribe')
-def test_unsubscribe_api_success(
-    mock_unsubscribe, api_response_200, logged_in_client
-):
-    mock_unsubscribe.return_value = api_response_200
-
+@patch(
+    'company.views.api_client.supplier.unsubscribe',
+    return_value=create_response(200)
+)
+def test_unsubscribe_api_success(mock_unsubscribe, logged_in_client):
     response = logged_in_client.post(reverse('unsubscribe'))
 
     mock_unsubscribe.assert_called_once_with(sso_session_id='213')
@@ -1475,7 +1385,7 @@ def test_image_too_large_with_referrer(client):
     response = client.get(reverse('request-payload-too-large'))
 
     assert response.status_code == 302
-    assert response.get('Location') == reverse('index')
+    assert response.url == reverse('index')
 
 
 def test_company_profile_edit_form_labels_show_address():
@@ -1575,33 +1485,7 @@ def test_companies_house_oauth2_feature_flag_disbaled(settings, client):
     assert response.status_code == 404
 
 
-def test_companies_house_oauth2_not_logged_in(client, settings):
-    settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED = True
-
-    url = reverse('verify-companies-house')
-    response = client.get(url)
-
-    assert response.status_code == 302
-    assert urllib.parse.unquote_plus(response.get('Location')) == (
-        'http://sso.trade.great:8004/accounts/login/?'
-        'next=http://testserver/verify/companies-house/'
-    )
-
-
-def test_companies_house_oauth2_no_company(settings, no_company_client):
-    settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED = True
-
-    url = reverse('verify-companies-house')
-    response = no_company_client.get(url)
-
-    assert response.status_code == 302
-    assert response.get('Location') == reverse('index')
-
-
-@patch.object(
-    views.CompaniesHouseOauth2View, 'is_company_verified',
-    Mock(return_value=False)
-)
+@patch_check_company_unverified_redirect
 def test_companies_house_oauth2_has_company_redirects(
     settings, has_company_client
 ):
@@ -1611,7 +1495,7 @@ def test_companies_house_oauth2_has_company_redirects(
     response = has_company_client.get(url)
 
     assert response.status_code == 302
-    assert urllib.parse.unquote_plus(response.get('Location')) == (
+    assert urllib.parse.unquote_plus(response.url) == (
         'https://account.companieshouse.gov.uk/oauth2/authorise'
         '?client_id=debug-client-id'
         '&redirect_uri=http://testserver/companies-house-oauth2-callback/'
@@ -1629,33 +1513,7 @@ def test_companies_house_callback_feature_flag_disbaled(settings, client):
     assert response.status_code == 404
 
 
-def test_companies_house_callback_not_logged_in(settings, client):
-    settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED = True
-
-    url = reverse('verify-companies-house-callback')
-    response = client.get(url)
-
-    assert response.status_code == 302
-    assert urllib.parse.unquote_plus(response.get('Location')) == (
-        'http://sso.trade.great:8004/accounts/login/?'
-        'next=http://testserver/companies-house-oauth2-callback/'
-    )
-
-
-def test_companies_house_callback_no_company(settings, no_company_client):
-    settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED = True
-
-    url = reverse('verify-companies-house-callback')
-    response = no_company_client.get(url)
-
-    assert response.status_code == 302
-    assert response.get('Location') == reverse('index')
-
-
-@patch.object(
-    views.CompaniesHouseOauth2CallbackView, 'is_company_verified',
-    Mock(return_value=False)
-)
+@patch_check_company_unverified_redirect
 @patch.object(forms.CompaniesHouseClient, 'verify_oauth2_code')
 def test_companies_house_callback_missing_code(
     mock_verify_oauth2_code, settings, has_company_client
@@ -1669,26 +1527,26 @@ def test_companies_house_callback_missing_code(
     assert mock_verify_oauth2_code.call_count == 0
 
 
-@patch.object(
-    views.CompaniesHouseOauth2CallbackView, 'is_company_verified',
-    Mock(return_value=False)
-)
+@patch_check_company_unverified_redirect
 @patch.object(forms.CompaniesHouseClient, 'verify_oauth2_code')
-@patch('api_client.api_client.company.verify_with_companies_house')
+@patch(
+    'api_client.api_client.company.verify_with_companies_house',
+    return_value=create_response(200)
+)
 def test_companies_house_callback_has_company_calls_companies_house(
     mock_verify_with_companies_house, mock_verify_oauth2_code, settings,
-    has_company_client, api_response_oauth2_verify_200, api_response_200,
-    sso_user
+    has_company_client, sso_user
 ):
     settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED = True
-    mock_verify_oauth2_code.return_value = api_response_oauth2_verify_200
-    mock_verify_with_companies_house.return_value = api_response_200
+    mock_verify_oauth2_code.return_value = create_response(
+        status_code=200, json_body={'access_token': 'abc'}
+    )
 
     url = reverse('verify-companies-house-callback')
     response = has_company_client.get(url, {'code': '123'})
 
     assert response.status_code == 302
-    assert response.get('Location') == str(
+    assert response.url == str(
         views.CompaniesHouseOauth2CallbackView.success_url
     )
 
@@ -1705,17 +1563,13 @@ def test_companies_house_callback_has_company_calls_companies_house(
     )
 
 
-@patch.object(
-    views.CompaniesHouseOauth2CallbackView, 'is_company_verified',
-    Mock(return_value=False)
-)
+@patch_check_company_unverified_redirect
 @patch.object(forms.CompaniesHouseClient, 'verify_oauth2_code')
 def test_companies_house_callback_invalid_code(
-    mock_verify_oauth2_code, settings, has_company_client,
-    api_response_400,
+    mock_verify_oauth2_code, settings, has_company_client
 ):
     settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED = True
-    mock_verify_oauth2_code.return_value = api_response_400
+    mock_verify_oauth2_code.return_value = create_response(400)
 
     url = reverse('verify-companies-house-callback')
     response = has_company_client.get(url, {'code': '123'})
@@ -1724,17 +1578,13 @@ def test_companies_house_callback_invalid_code(
     assert b'Invalid code.' in response.content
 
 
-@patch.object(
-    views.CompaniesHouseOauth2CallbackView, 'is_company_verified',
-    Mock(return_value=False)
-)
+@patch_check_company_unverified_redirect
 @patch.object(forms.CompaniesHouseClient, 'verify_oauth2_code')
 def test_companies_house_callback_unauthorized(
     mock_verify_oauth2_code, settings, has_company_client,
-    api_response_401,
 ):
     settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED = True
-    mock_verify_oauth2_code.return_value = api_response_401
+    mock_verify_oauth2_code.return_value = create_response(401)
 
     url = reverse('verify-companies-house-callback')
     response = has_company_client.get(url, {'code': '123'})
@@ -1752,37 +1602,14 @@ def test_verify_company_feature_flag_off(settings, client):
     assert response.status_code == 404
 
 
-def test_verify_company_anon_user(settings, client):
-    settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED = True
-
-    url = reverse('verify-company-hub')
-    response = client.get(url)
-
-    assert response.status_code == 302
-    assert urllib.parse.unquote_plus(response.get('Location')) == (
-        'http://sso.trade.great:8004/accounts/login/?'
-        'next=http://testserver/verify/'
-    )
-
-
-def test_verify_company_no_company_user(settings, no_company_client):
-    settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED = True
-
-    url = reverse('verify-company-hub')
-    response = no_company_client.get(url)
-
-    assert response.status_code == 302
-    assert response.get('Location') == reverse('index')
-
-
-@patch.object(helpers, 'get_company_profile')
+@patch_check_company_unverified_redirect
+@patch.object(
+    state_requirements.VerificationLetterNotSent, 'is_user_in_required_state',
+    Mock(return_value=True)
+)
 def test_verify_company_has_company_user(
-    mock_get_company_profile, settings, has_company_client,
-    retrieve_profile_data
+    settings, has_company_client
 ):
-    company = retrieve_profile_data
-    company['is_verified'] = False
-    mock_get_company_profile.return_value = company
     settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED = True
 
     url = reverse('verify-company-hub')
@@ -1792,44 +1619,24 @@ def test_verify_company_has_company_user(
     assert response.template_name == [views.CompanyVerifyView.template_name]
 
 
-@pytest.mark.parametrize('url_name', (
-    'verify-company-hub',
-    'verify-company-address-confirm',
-    'verify-companies-house',
-    'verify-companies-house-callback',
-))
-@patch.object(helpers, 'get_company_profile')
-def test_verify_company_already_verified(
-    mock_get_company_profile, settings, has_company_client,
-    retrieve_profile_data, url_name
-):
-    company = retrieve_profile_data
-    company['is_verified'] = True
-    mock_get_company_profile.return_value = company
-    settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED = True
-
-    response = has_company_client.get(reverse(url_name))
-
-    assert response.status_code == 302
-    assert response.url == reverse('company-detail')
-
-
-def test_company_address_verification_backwards_compatible_feature_flag_on(
-    settings, client
-):
-    settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED = True
-
-    url = reverse('verify-company-address-historic-url')
-    response = client.get(url)
-
-    assert response.status_code == 302
-    assert response.get('Location') == reverse('verify-company-address')
-
-
+@patch_check_company_unverified_redirect
 @patch.object(
-    views.CompanyAddressVerificationHistoricView, 'is_company_verified',
+    state_requirements.VerificationLetterNotSent, 'is_user_in_required_state',
     Mock(return_value=False)
 )
+def test_send_letter_redirects_to_enter_code_when_letter_sent(
+    settings, has_company_client
+):
+    settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED = True
+
+    url = reverse('verify-company-address')
+    response = has_company_client.get(url)
+
+    assert response.status_code == 302
+    assert response.url == reverse('verify-company-address-confirm')
+
+
+@patch_check_company_unverified_redirect
 def test_company_address_verification_backwards_compattible_feature_flag_off(
     settings, has_company_client
 ):
@@ -1849,22 +1656,7 @@ def test_verify_company_address_feature_flag_off(settings, client):
     assert response.status_code == 404
 
 
-def test_verify_company_address_anon_user(settings, client):
-    settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED = True
-
-    response = client.get(reverse('verify-company-address'))
-
-    assert response.status_code == 302
-    assert response.url == (
-        'http://sso.trade.great:8004/accounts/login/'
-        '?next=http%3A//testserver/verify/letter-send/'
-    )
-
-
-@patch.object(
-    views.SendVerificationLetterView, 'is_company_verified',
-    Mock(return_value=False)
-)
+@patch_check_company_unverified_redirect
 def test_verify_company_address_feature_flag_on(settings, has_company_client):
     settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED = True
 
@@ -1873,14 +1665,10 @@ def test_verify_company_address_feature_flag_on(settings, has_company_client):
     assert response.status_code == 200
 
 
-@patch.object(
-    views.SendVerificationLetterView, 'is_company_verified',
-    Mock(return_value=False)
-)
+@patch_check_company_unverified_redirect
 @patch.object(views.api_client.company, 'update_profile')
 def test_verify_company_address_end_to_end(
-    mock_update_profile, settings, has_company_client,
-    send_verification_letter_end_to_end
+    mock_update_profile, settings, send_verification_letter_end_to_end
 ):
     settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED = True
     view = views.SendVerificationLetterView
@@ -1906,56 +1694,11 @@ multi_user_urls = [
 
 
 @pytest.mark.parametrize('url', multi_user_urls)
-def test_multi_user_view_feature_flag_off(url, settings, client):
-    settings.FEATURE_MULTI_USER_ACCOUNT_ENABLED = False
-
-    response = client.get(url)
-
-    assert response.status_code == 404
-
-
-@pytest.mark.parametrize('url', multi_user_urls)
-def test_multi_user_view_anon_user(url, settings, client):
-    settings.FEATURE_MULTI_USER_ACCOUNT_ENABLED = True
-
-    response = client.get(url)
-
-    assert response.status_code == 302
-    assert urllib.parse.unquote_plus(response.get('Location')) == (
-        'http://sso.trade.great:8004/accounts/login/?'
-        'next=http://testserver' + url
-    )
-
-
-@pytest.mark.parametrize('url', multi_user_urls)
-def test_multi_user_view_non_company_owner(
-    url, settings, not_company_owner_client
-):
-    settings.FEATURE_MULTI_USER_ACCOUNT_ENABLED = True
-
-    response = not_company_owner_client.get(url)
-
-    assert response.status_code == 302
-    assert response.get('Location') == reverse('company-detail')
-
-
-@pytest.mark.parametrize('url', multi_user_urls)
-def test_multi_user_view_no_company(url, no_company_client):
-    settings.FEATURE_MULTI_USER_ACCOUNT_ENABLED = True
-
-    response = no_company_client.get(url)
-
-    assert response.status_code == 302
-    assert response.get('Location') == reverse('index')
-
-
-@pytest.mark.parametrize('url', multi_user_urls)
 @patch.object(views.api_client.company, 'retrieve_collaborators')
 def test_multi_user_view_has_company(
     mock_retrieve_collaborators, url, has_company_client,
     api_response_collaborators_200
 ):
-    settings.FEATURE_MULTI_USER_ACCOUNT_ENABLED = True
     mock_retrieve_collaborators.return_value = api_response_collaborators_200
 
     response = has_company_client.get(url)
@@ -1963,11 +1706,11 @@ def test_multi_user_view_has_company(
     assert response.status_code == 200
 
 
+@patch_check_company_owner_redirect
 @patch.object(views.api_client.company, 'create_collaboration_invite')
 def test_add_collaborator_invalid_form(
-    mock_create_collaboration_invite, has_company_client, settings
+    mock_create_collaboration_invite, has_company_client
 ):
-    settings.FEATURE_MULTI_USER_ACCOUNT_ENABLED = True
 
     url = reverse('add-collaborator')
 
@@ -1980,20 +1723,20 @@ def test_add_collaborator_invalid_form(
     assert mock_create_collaboration_invite.call_count == 0
 
 
-@patch.object(views.api_client.company, 'create_collaboration_invite')
+@patch_check_company_owner_redirect
+@patch(
+    'company.views.api_client.company.create_collaboration_invite',
+    return_value=create_response(200)
+)
 def test_add_collaborator_valid_form(
-    mock_create_collaboration_invite, has_company_client, settings,
-    api_response_200, sso_user
+    mock_create_collaboration_invite, has_company_client, sso_user
 ):
-    settings.FEATURE_MULTI_USER_ACCOUNT_ENABLED = True
-    mock_create_collaboration_invite.return_value = api_response_200
-
     url = reverse('add-collaborator')
 
     response = has_company_client.post(url, {'email_address': 'a@b.com'})
 
     assert response.status_code == 302
-    assert response.get('Location') == (
+    assert response.url == (
         'http://profile.trade.great:8006/find-a-buyer/?user-added'
     )
 
@@ -2006,12 +1749,10 @@ def test_add_collaborator_valid_form(
 
 @patch.object(views.api_client.company, 'create_collaboration_invite')
 def test_add_collaborator_valid_form_already_exists(
-    mock_create_collaboration_invite, has_company_client, settings,
-    api_response_collaborator_email_exists_400, sso_user
+    mock_create_collaboration_invite, has_company_client, sso_user
 ):
-    settings.FEATURE_MULTI_USER_ACCOUNT_ENABLED = True
-    mock_create_collaboration_invite.return_value = (
-        api_response_collaborator_email_exists_400
+    mock_create_collaboration_invite.return_value = create_response(
+        400, {'collaborator_email': ['Already exists']}
     )
     url = reverse('add-collaborator')
 
@@ -2036,25 +1777,25 @@ def test_add_collaborator_valid_form_already_exists(
     )
 ))
 @patch.object(views.api_client.company, 'retrieve_collaborators')
+@patch_check_company_owner_redirect
 def test_add_collaborator_valid_form_api_error(
     mock_retrieve_collaborators, url, data, mock_path, has_company_client,
-    settings, api_response_400, api_response_collaborators_200
+    api_response_collaborators_200
 ):
-    settings.FEATURE_MULTI_USER_ACCOUNT_ENABLED = True
     mock_retrieve_collaborators.return_value = api_response_collaborators_200
 
-    with patch(mock_path, return_value=api_response_400):
+    with patch(mock_path, return_value=create_response(400)):
         with pytest.raises(requests.exceptions.HTTPError):
             has_company_client.post(url, data)
 
 
 @patch.object(views.api_client.company, 'retrieve_collaborators')
 @patch.object(views.api_client.company, 'remove_collaborators')
+@patch_check_company_owner_redirect
 def test_remove_collaborators_invalid_form(
-    mock_remove_collaborators, mock_retrieve_collaborators, has_company_client,
-    settings, api_response_collaborators_200
+    mock_remove_collaborators, mock_retrieve_collaborators,
+    has_company_client, api_response_collaborators_200
 ):
-    settings.FEATURE_MULTI_USER_ACCOUNT_ENABLED = True
     mock_retrieve_collaborators.return_value = api_response_collaborators_200
 
     url = reverse('remove-collaborator')
@@ -2069,13 +1810,15 @@ def test_remove_collaborators_invalid_form(
 
 
 @patch.object(views.api_client.company, 'retrieve_collaborators')
-@patch.object(views.api_client.company, 'remove_collaborators')
+@patch(
+    'company.views.api_client.company.remove_collaborators',
+    return_value=create_response(200)
+)
+@patch_check_company_owner_redirect
 def test_remove_collaborators_valid_form(
-    mock_remove_collaborators, mock_retrieve_collaborators, has_company_client,
-    settings, api_response_200, api_response_collaborators_200, sso_user
+    mock_remove_collaborators, mock_retrieve_collaborators,
+    has_company_client, api_response_collaborators_200, sso_user
 ):
-    settings.FEATURE_MULTI_USER_ACCOUNT_ENABLED = True
-    mock_remove_collaborators.return_value = api_response_200
     mock_retrieve_collaborators.return_value = api_response_collaborators_200
 
     url = reverse('remove-collaborator')
@@ -2083,7 +1826,7 @@ def test_remove_collaborators_valid_form(
     response = has_company_client.post(url, {'sso_ids': ['1']})
 
     assert response.status_code == 302
-    assert response.get('Location') == (
+    assert response.url == (
         'http://profile.trade.great:8006/find-a-buyer/?user-removed'
     )
 
@@ -2096,9 +1839,8 @@ def test_remove_collaborators_valid_form(
 
 @patch.object(views.api_client.company, 'create_transfer_invite')
 def test_transfer_owner_invalid_form(
-    ock_create_transfer_invite, has_company_client, settings
+    ock_create_transfer_invite, has_company_client
 ):
-    settings.FEATURE_MULTI_USER_ACCOUNT_ENABLED = True
     view = views.TransferAccountWizardView
 
     response = has_company_client.post(
@@ -2116,19 +1858,30 @@ def test_transfer_owner_invalid_form(
     assert ock_create_transfer_invite.call_count == 0
 
 
+def test_company_address_verification_backwards_compatible_feature_flag_on(
+    settings, client
+):
+    settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED = True
+
+    url = reverse('verify-company-address-historic-url')
+    response = client.get(url)
+
+    assert response.status_code == 302
+    assert response.get('Location') == reverse('verify-company-address')
+
+
 @patch.object(views.api_client.company, 'create_transfer_invite')
 @patch.object(forms.sso_api_client.user, 'check_password')
+@patch_check_company_owner_redirect
 def test_transfer_owner_invalid_password(
     mock_check_password, mock_create_transfer_invite, has_company_client,
-    settings, sso_user, api_response_400
+    sso_user
 ):
-    settings.FEATURE_MULTI_USER_ACCOUNT_ENABLED = True
-    mock_check_password.return_value = api_response_400
+    mock_check_password.return_value = create_response(400)
 
     view = views.TransferAccountWizardView
-    url = reverse('account-transfer')
 
-    response = has_company_client.post(
+    has_company_client.post(
         reverse('account-transfer'),
         {
             'transfer_account_wizard_view-current_step': view.EMAIL,
@@ -2136,7 +1889,7 @@ def test_transfer_owner_invalid_password(
         }
     )
     response = has_company_client.post(
-        url,
+        reverse('account-transfer'),
         {
             'transfer_account_wizard_view-current_step': view.PASSWORD,
             view.PASSWORD + '-password': 'password'
@@ -2151,18 +1904,17 @@ def test_transfer_owner_invalid_password(
 
 
 @patch.object(views.api_client.company, 'create_transfer_invite')
-@patch.object(forms.sso_api_client.user, 'check_password')
+@patch(
+    'company.forms.sso_api_client.user.check_password',
+    Mock(return_value=create_response(200))
+)
+@patch_check_company_owner_redirect
 def test_transfer_owner_valid_form(
-    mock_check_password, mock_create_transfer_invite, has_company_client,
-    settings, sso_user, api_response_200
+    mock_create_transfer_invite, has_company_client, sso_user
 ):
-    settings.FEATURE_MULTI_USER_ACCOUNT_ENABLED = True
-    mock_check_password.return_value = api_response_200
-
     view = views.TransferAccountWizardView
-    url = reverse('account-transfer')
 
-    response = has_company_client.post(
+    has_company_client.post(
         reverse('account-transfer'),
         {
             'transfer_account_wizard_view-current_step': view.EMAIL,
@@ -2170,7 +1922,7 @@ def test_transfer_owner_valid_form(
         }
     )
     response = has_company_client.post(
-        url,
+        reverse('account-transfer'),
         {
             'transfer_account_wizard_view-current_step': view.PASSWORD,
             view.PASSWORD + '-password': 'password'
@@ -2178,7 +1930,7 @@ def test_transfer_owner_valid_form(
     )
 
     assert response.status_code == 302
-    assert response.get('Location') == (
+    assert response.url == (
         'http://profile.trade.great:8006/find-a-buyer/?owner-transferred'
     )
     assert mock_create_transfer_invite.call_count == 1
@@ -2189,21 +1941,19 @@ def test_transfer_owner_valid_form(
 
 @patch.object(views.api_client.company, 'create_transfer_invite')
 @patch.object(forms.sso_api_client.user, 'check_password')
+@patch_check_company_owner_redirect
 def test_transfer_owner_valid_form_already_exists(
     mock_check_password, mock_create_transfer_invite, has_company_client,
-    settings, sso_user, api_response_new_owner_email_exists_400,
-    api_response_200
+    sso_user
 ):
-    settings.FEATURE_MULTI_USER_ACCOUNT_ENABLED = True
     mock_check_password.return_value = mock_create_transfer_invite
-    mock_create_transfer_invite.return_value = (
-        api_response_new_owner_email_exists_400
+    mock_create_transfer_invite.return_value = create_response(
+        http.client.BAD_REQUEST, {'new_owner_email': ['Already exists']}
     )
 
     view = views.TransferAccountWizardView
-    url = reverse('account-transfer')
 
-    response = has_company_client.post(
+    has_company_client.post(
         reverse('account-transfer'),
         {
             'transfer_account_wizard_view-current_step': view.EMAIL,
@@ -2211,7 +1961,7 @@ def test_transfer_owner_valid_form_already_exists(
         }
     )
     response = has_company_client.post(
-        url,
+        reverse('account-transfer'),
         {
             'transfer_account_wizard_view-current_step': view.PASSWORD,
             view.PASSWORD + '-password': 'password'
@@ -2219,20 +1969,21 @@ def test_transfer_owner_valid_form_already_exists(
     )
 
     assert response.status_code == 302
-    assert response.get('Location') == (
+    assert response.url == (
         'http://profile.trade.great:8006/find-a-buyer/?owner-transferred'
     )
 
 
 @patch.object(views.api_client.company, 'create_transfer_invite')
-@patch.object(forms.sso_api_client.user, 'check_password')
+@patch(
+    'company.forms.sso_api_client.user.check_password',
+    return_value=create_response(200)
+)
+@patch_check_company_owner_redirect
 def test_transfer_owner_valid_form_api_error(
-    mock_check_password, mock_create_transfer_invite, has_company_client,
-    settings, api_response_200, api_response_400
+    mock_check_password, mock_create_transfer_invite, has_company_client
 ):
-    settings.FEATURE_MULTI_USER_ACCOUNT_ENABLED = True
-    mock_create_transfer_invite.return_value = api_response_400
-    mock_check_password.return_value = api_response_200
+    mock_create_transfer_invite.return_value = create_response(400)
 
     view = views.TransferAccountWizardView
     url = reverse('account-transfer')
@@ -2260,123 +2011,122 @@ invite_urls = (
 )
 
 
-@pytest.mark.parametrize('url', invite_urls)
-def test_accept_invite_feature_flag_off(url, client, settings):
-    settings.FEATURE_MULTI_USER_ACCOUNT_ENABLED = False
-
-    response = client.get(url)
-
-    assert response.status_code == 404
-
-
-@pytest.mark.parametrize('url', invite_urls)
-def test_accept_invite_anon_user(url, client, settings):
-    settings.FEATURE_MULTI_USER_ACCOUNT_ENABLED = True
-
-    response = client.get(url)
-
-    assert response.status_code == 302
-    assert urllib.parse.unquote_plus(response.get('Location')) == (
-        'http://sso.trade.great:8004/accounts/login/?'
-        'next=http://testserver' + url
-    )
-
-
-@pytest.mark.parametrize('url', invite_urls)
-def test_accept_invite_has_company(url, has_company_client, settings):
-    settings.FEATURE_MULTI_USER_ACCOUNT_ENABLED = True
-
-    response = has_company_client.get(url)
-
-    assert response.status_code == 302
-    assert response.get('Location') == reverse('company-detail')
-
-
-@pytest.mark.parametrize('url', invite_urls)
-def test_accept_invite_no_company(
-    url, has_company_client, settings, no_company_client
+@patch('company.views.AcceptTransferAccountView.retrieve_api_method')
+@patch_check_not_company_owner_redirect
+def test_accept_ownership_invite_get_invite(
+    mock_retrieve_api_method, logged_in_client, api_response_get_invite_200
 ):
-    settings.FEATURE_MULTI_USER_ACCOUNT_ENABLED = True
-
-    response = no_company_client.get(url)
+    url = reverse('account-transfer-accept')
+    mock_retrieve_api_method.return_value = api_response_get_invite_200
+    response = logged_in_client.get(url)
 
     assert response.status_code == 200
+    assert response.context_data['invite'] == {'company_name': 'A Company'}
 
 
-@pytest.mark.parametrize('url,mock_path', (
-    (
-        reverse('account-transfer-accept'),
-        'company.views.AcceptTransferAccountView.retrieve_api_method'
-    ),
-    (
-        reverse('account-collaborate-accept'),
-        'company.views.AcceptCollaborationView.retrieve_api_method'
-    ),
-))
-def test_accept_invite_get_invite(
-    url, mock_path, not_company_owner_client, settings,
-    api_response_get_invite_200
+@patch('company.views.AcceptCollaborationView.retrieve_api_method')
+@patch_check_no_company_redirect
+def test_accept_collaborate_invite_get_invite(
+    mock_retrieve_api_method, logged_in_client, api_response_get_invite_200
 ):
-    settings.FEATURE_MULTI_USER_ACCOUNT_ENABLED = True
-    with patch(mock_path, return_value=api_response_get_invite_200):
-        response = not_company_owner_client.get(url)
+    url = reverse('account-collaborate-accept')
+    mock_retrieve_api_method.return_value = api_response_get_invite_200
+    response = logged_in_client.get(url)
 
-        assert response.status_code == 200
-        assert response.context_data['invite'] == {'company_name': 'A Company'}
+    assert response.status_code == 200
+    assert response.context_data['invite'] == {'company_name': 'A Company'}
 
 
-@pytest.mark.parametrize('url', invite_urls)
-def test_accept_invite_no_invite_key(url, not_company_owner_client, settings):
-    settings.FEATURE_MULTI_USER_ACCOUNT_ENABLED = True
-
-    response = not_company_owner_client.post(url, data={})
+@patch('company.views.AcceptTransferAccountView.retrieve_api_method')
+@patch_check_not_company_owner_redirect
+def test_accept_ownership_invite_no_invite_key(
+    mock_retrieve_api_method, logged_in_client, api_response_get_invite_200
+):
+    url = reverse('account-transfer-accept')
+    mock_retrieve_api_method.return_value = api_response_get_invite_200
+    response = logged_in_client.post(url, data={})
 
     assert response.status_code == 200
     assert response.context_data['form'].is_valid() is False
     assert 'invite_key' in response.context_data['form'].errors
 
 
-@pytest.mark.parametrize('url,mock_path', (
-    (
-        reverse('account-transfer-accept'),
-        'company.views.AcceptTransferAccountView.retrieve_api_method'
-    ),
-    (
-        reverse('account-collaborate-accept'),
-        'company.views.AcceptCollaborationView.retrieve_api_method'
-    ),
-))
-def test_accept_invite_invite_key_invalid(
-    url, mock_path, not_company_owner_client, settings, api_response_400
+@patch('company.views.AcceptCollaborationView.retrieve_api_method')
+@patch_check_no_company_redirect
+def test_accept_collaborate_invite_no_invite_key(
+    mock_retrieve_api_method, logged_in_client, api_response_get_invite_200
 ):
-    settings.FEATURE_MULTI_USER_ACCOUNT_ENABLED = True
-    with patch(mock_path, return_value=api_response_400):
+    url = reverse('account-collaborate-accept')
+    mock_retrieve_api_method.return_value = api_response_get_invite_200
+    response = logged_in_client.post(url, data={})
 
-        response = not_company_owner_client.get(url)
+    assert response.status_code == 200
+    assert response.context_data['form'].is_valid() is False
+    assert 'invite_key' in response.context_data['form'].errors
 
-        assert response.status_code == 200
-        assert response.context_data['invite'] is None
 
-
-@pytest.mark.parametrize('url,mock_path', (
-    (
-        reverse('account-transfer-accept'),
-        'company.views.AcceptTransferAccountView.accept_api_method'
-    ),
-    (
-        reverse('account-collaborate-accept'),
-        'company.views.AcceptCollaborationView.accept_api_method'
-    ),
-))
-def test_accept_invite_invite_key_valid_post(
-    url, mock_path, no_company_client, settings, api_response_200
+@patch('company.views.AcceptTransferAccountView.retrieve_api_method')
+@patch(
+    'company.views.AcceptTransferAccountView.accept_api_method',
+    Mock(return_value=create_response(200))
+)
+@patch_check_not_company_owner_redirect
+def test_accept_ownership_invite_valid_invite_key(
+    mock_retrieve_api_method, logged_in_client, api_response_get_invite_200
 ):
-    settings.FEATURE_MULTI_USER_ACCOUNT_ENABLED = True
-    with patch(mock_path, return_value=api_response_200):
-        response = no_company_client.post(url, {'invite_key': 123})
+    mock_retrieve_api_method.return_value = api_response_get_invite_200
+    url = reverse('account-transfer-accept')
 
-        assert response.status_code == 302
-        assert response.get('Location') == reverse('company-detail')
+    response = logged_in_client.post(url, data={'invite_key': '123'})
+
+    assert response.status_code == 302
+    assert response.url == reverse('company-detail')
+
+
+@patch('company.views.AcceptCollaborationView.retrieve_api_method')
+@patch(
+    'company.views.AcceptCollaborationView.accept_api_method',
+    Mock(return_value=create_response(200))
+)
+@patch_check_no_company_redirect
+def test_accept_collaborate_invite_valid_invite_key(
+    mock_retrieve_api_method, logged_in_client, api_response_get_invite_200
+):
+    mock_retrieve_api_method.return_value = api_response_get_invite_200
+    url = reverse('account-collaborate-accept')
+
+    response = logged_in_client.post(url, data={'invite_key': '123'})
+
+    assert response.status_code == 302
+    assert response.url == reverse('company-detail')
+
+
+@patch_check_not_company_owner_redirect
+@patch('company.views.AcceptTransferAccountView.retrieve_api_method')
+def test_accept_invite_transfer_invite_key_invalid(
+    mock_retrieve_api_method, has_company_client
+):
+    mock_retrieve_api_method.return_value = create_response(400)
+    url = reverse('account-transfer-accept')
+
+    response = has_company_client.get(url)
+
+    assert response.status_code == 200
+    assert response.context_data['invite'] is None
+
+
+@patch_check_no_company_redirect
+@patch('company.views.AcceptCollaborationView.retrieve_api_method')
+def test_accept_invite_collaborate_invitekey_invalid(
+    mock_retrieve_api_method, logged_in_client
+):
+    url = reverse('account-collaborate-accept')
+    mock_retrieve_api_method.return_value = create_response(400)
+
+    response = logged_in_client.get(url)
+
+    assert response.status_code == 200
+    assert response.context_data['invite'] is None
 
 
 def test_case_study_create_backwards_compatible_url(client):
@@ -2384,7 +2134,7 @@ def test_case_study_create_backwards_compatible_url(client):
     response = client.get(url)
 
     assert response.status_code == 302
-    assert response.get('Location') == reverse('company-case-study-create')
+    assert response.url == reverse('company-case-study-create')
 
 
 def test_buyer_csv_dump_no_token(client):
@@ -2435,3 +2185,149 @@ def test_supplier_csv_dump(mocked_api_client, client):
     assert response._headers['content-disposition'] == (
         'Content-Disposition', 'bar'
     )
+
+
+@patch('api_client.api_client.company.retrieve_private_profile')
+def test_company_profile_mixin_404(mock_retrieve_profile, rf):
+    mock_retrieve_profile.return_value = create_response(404)
+
+    class TestView(views.CompanyProfileMixin, TemplateView):
+        template_name = 'company-profile-detail.html'
+
+        def get_context_data(self, *args, **kwargs):
+            return {'company_profile': self.company_profile}
+
+    request = rf.get('/')
+    request.sso_user = Mock()
+    view = TestView.as_view()
+
+    response = view(request)
+    assert response.context_data['company_profile'] == {}
+
+
+@patch('api_client.api_client.supplier.retrieve_profile')
+def test_supplier_profile_mixin_404(mock_retrieve_profile, rf):
+    mock_retrieve_profile.return_value = create_response(404)
+
+    class TestView(views.SupplierProfileMixin, TemplateView):
+        template_name = 'company-profile-detail.html'
+
+        def get_context_data(self, *args, **kwargs):
+            return {'supplier_profile': self.supplier_profile}
+
+    request = rf.get('/')
+    request.sso_user = Mock()
+    view = TestView.as_view()
+
+    response = view(request)
+    assert response.context_data['supplier_profile'] == {}
+
+
+@pytest.mark.parametrize('view_class,expected', [
+    (
+        views.SupplierCaseStudyWizardView,
+        [state_requirements.IsLoggedIn, state_requirements.HasCompany]
+    ),
+    (
+        views.CompanyProfileDetailView,
+        [state_requirements.IsLoggedIn, state_requirements.HasCompany]
+    ),
+    (
+        views.CompanyProfileEditView,
+        [state_requirements.IsLoggedIn, state_requirements.HasCompany]
+    ),
+    (
+        views.CompanyProfileLogoEditView,
+        [state_requirements.IsLoggedIn, state_requirements.HasCompany]
+    ),
+    (
+        views.CompanyDescriptionEditView,
+        [state_requirements.IsLoggedIn, state_requirements.HasCompany]
+    ),
+    (
+        views.CompanySocialLinksEditView,
+        [state_requirements.IsLoggedIn, state_requirements.HasCompany]
+    ),
+    (
+        views.SupplierBasicInfoEditView,
+        [state_requirements.IsLoggedIn, state_requirements.HasCompany]
+    ),
+    (
+        views.SupplierClassificationEditView,
+        [state_requirements.IsLoggedIn, state_requirements.HasCompany]
+    ),
+    (
+        views.SupplierContactEditView,
+        [state_requirements.IsLoggedIn, state_requirements.HasCompany]
+    ),
+    (
+        views.SupplierAddressEditView,
+        [state_requirements.IsLoggedIn, state_requirements.HasCompany]
+    ),
+    (
+        views.SendVerificationLetterView,
+        [
+            state_requirements.IsLoggedIn,
+            state_requirements.HasUnverifiedCompany,
+            state_requirements.VerificationLetterNotSent
+        ]
+    ),
+    (
+        views.CompanyVerifyView,
+        [
+            state_requirements.IsLoggedIn,
+            state_requirements.HasUnverifiedCompany,
+            state_requirements.VerificationLetterNotSent,
+        ]
+    ),
+    (
+        views.CompanyAddressVerificationView,
+        [
+            state_requirements.IsLoggedIn,
+            state_requirements.HasUnverifiedCompany
+        ]
+    ),
+    (
+        views.EmailUnsubscribeView,
+        [state_requirements.IsLoggedIn]
+    ),
+    (
+        views.CompaniesHouseOauth2View,
+        [
+            state_requirements.IsLoggedIn,
+            state_requirements.HasUnverifiedCompany,
+        ]
+    ),
+    (
+        views.CompaniesHouseOauth2CallbackView,
+        [
+            state_requirements.IsLoggedIn,
+            state_requirements.HasUnverifiedCompany,
+        ]
+    ),
+    (
+        views.AddCollaboratorView,
+        [state_requirements.IsLoggedIn, state_requirements.IsCompanyOwner]
+    ),
+    (
+        views.RemoveCollaboratorView,
+        [state_requirements.IsLoggedIn, state_requirements.IsCompanyOwner]
+    ),
+    (
+        views.TransferAccountWizardView,
+        [state_requirements.IsLoggedIn, state_requirements.IsCompanyOwner]
+    ),
+    (
+        views.AcceptTransferAccountView,
+        [state_requirements.IsLoggedIn, state_requirements.NotCompanyOwner]
+    ),
+    (
+        views.AcceptCollaborationView,
+        [state_requirements.IsLoggedIn, state_requirements.NoCompany]
+    ),
+])
+def test_required_user_states(view_class, expected):
+    mixin_class = state_requirements.UserStateRequirementHandlerMixin
+    assert issubclass(view_class, mixin_class)
+    for rule in expected:
+        assert rule in view_class.required_user_states

@@ -56,6 +56,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE_CLASSES = [
+    'core.middleware.MaintenanceModeMiddleware',
     'django.middleware.common.CommonMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
@@ -301,16 +302,19 @@ FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED = os.getenv(
     'FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED'
 ) == 'true'
 
-FEATURE_MULTI_USER_ACCOUNT_ENABLED = os.getenv(
-    'FEATURE_MULTI_USER_ACCOUNT_ENABLED'
+FEATURE_USE_INTERNAL_CH_ENABLED = os.getenv(
+    'FEATURE_USE_INTERNAL_CH_ENABLED',
 ) == 'true'
 
-FEATURE_NEW_SHARED_HEADER_ENABLED = os.getenv(
-    'FEATURE_NEW_SHARED_HEADER_ENABLED'
+FEATURE_MAINTENANCE_MODE_ENABLED = os.getenv(
+    'FEATURE_MAINTENANCE_MODE_ENABLED'
 ) == 'true'
-
 
 EXPOSE_DIRECTORY_API = os.getenv('EXPOSE_DIRECTORY_API') == 'true'
 
 # healthcheck
 HEALTH_CHECK_TOKEN = os.environ['HEALTH_CHECK_TOKEN']
+
+# Internal CH
+INTERNAL_CH_BASE_URL = os.getenv('INTERNAL_CH_BASE_URL')
+INTERNAL_CH_API_KEY = os.getenv('INTERNAL_CH_API_KEY')
