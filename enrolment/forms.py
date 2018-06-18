@@ -71,7 +71,7 @@ class CompanyExportStatusForm(
         widget=CheckboxWithInlineLabel(
             label=mark_safe(
                 'I accept the '
-                '<a href="{url}" target="_blank">Find a Buyer terms and '
+                '<a href="{url}" target="_blank">Trade profile terms and '
                 'conditions</a>'.format(
                     url=urls.INFO_TERMS_AND_CONDITIONS)
             ),
