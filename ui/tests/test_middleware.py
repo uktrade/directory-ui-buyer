@@ -38,3 +38,13 @@ def test_no_cache_middlware_anon_user(rf):
 
     assert output == response
     assert 'Cache-Control' not in output
+
+
+def test_no_cache_middleware_sso_user_not_in_request(rf):
+    request = rf.get('/')
+    response = HttpResponse()
+
+    output = middleware.NoCacheMiddlware().process_response(request, response)
+
+    assert output == response
+    assert 'Cache-Control' not in output

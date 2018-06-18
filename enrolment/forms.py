@@ -2,10 +2,13 @@ from django import forms
 from django.utils.safestring import mark_safe
 
 from directory_validators import enrolment as shared_validators
-from directory_validators.company import no_html
+from directory_validators.company import (
+    no_html, no_company_with_insufficient_companies_house_data
+)
 from directory_constants.constants import urls
+from directory_components.fields import PaddedCharField
 
-from enrolment import fields, helpers, validators
+from enrolment import helpers, validators
 from enrolment.widgets import CheckboxWithInlineLabel
 
 
@@ -36,7 +39,7 @@ class CompanyForm(
         widget=forms.HiddenInput,
         validators=[no_html],
     )
-    company_number = fields.PaddedCharField(
+    company_number = PaddedCharField(
         label='Company number:',
         widget=forms.HiddenInput,
         max_length=8,
@@ -68,9 +71,9 @@ class CompanyExportStatusForm(
         widget=CheckboxWithInlineLabel(
             label=mark_safe(
                 'I accept the '
-                '<a href="{url}" target="_blank">Find a Buyer terms and '
+                '<a href="{url}" target="_blank">Terms and '
                 'conditions</a>'.format(
-                    url=urls.TERMS_AND_CONDITIONS_URL)
+                    url=urls.INFO_TERMS_AND_CONDITIONS)
             ),
         ),
     )
@@ -81,11 +84,12 @@ class CompaniesHouseSearchForm(forms.Form):
 
 
 class CompanyNumberForm(IndentedInvalidFieldsMixin, forms.Form):
-    company_number = fields.PaddedCharField(
+    company_number = PaddedCharField(
         validators=helpers.halt_validation_on_failure(
             shared_validators.company_number,
             validators.company_unique,
             validators.company_number_present_and_active,
+            no_company_with_insufficient_companies_house_data,
         ),
         max_length=8,
         fillchar='0',

@@ -7,9 +7,9 @@
 	</div>
 	<label>
 		<span class="label">{% trans "Enter your Companies House number" %}</span>
-		<input name="company_number" class="text" type="text" placeholder="{% trans 'Companies House number' %}" />
+		<input name="company_number"type="text" placeholder="{% trans 'Companies House number' %}" />
 	</label>
-	<input class="button button-cta" type="submit" value="{% trans 'Get promoted' %}" />
+	<button class="button button-cta" type="submit">{% trans 'Get promoted' %}</button>
 </form>
 
 {# company name lookup. shows only when js is turned on #}
@@ -19,9 +19,9 @@
 	</div>
 	<label>
 		<span class="label">{% trans "Enter your company name" %}</span>
-		<input name="company_name" class="text" type="text" placeholder="{% trans 'Company name' %}" autofocus="autofocus" />
+		<input name="company_name" type="text" placeholder="{% trans 'Company name' %}" autofocus="autofocus" />
 	</label>
 	<input type="hidden" name="company_number" />
-	<input class="button button-cta" type="submit" value="{% trans 'Get promoted' %}" />
+	<button class="button button-cta" type="submit">{% trans 'Get promoted' %}</button>
 </form>
 

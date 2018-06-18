@@ -1,0 +1,20 @@
+django==1.11.5
+django_extensions==1.9.0
+django-formtools==2.0
+django-revproxy==0.9.13
+django-cors-headers==2.1.0
+gunicorn==19.5.0
+raven==5.19.0
+requests[security]==2.13.0
+whitenoise==3.1
+phonenumberslite==7.7.4
+pillow==4.2.1
+directory-ch-client==0.1.0
+directory_validators==5.0.0
+-e git+https://github.com/uktrade/directory-api-client.git@v9.11.0#egg=directory_api_client
+-e git+https://github.com/uktrade/directory-sso-api-client.git@v2.2.0#egg=directory_sso_api_client
+-e git+https://github.com/uktrade/directory-constants.git@v6.4.0#egg=directory_constants
+-e git+https://github.com/uktrade/directory-signature-auth.git@v2.0.1#egg=sigauth
+-e git+https://github.com/uktrade/directory-healthcheck.git@v0.3.0#egg=directory_healthcheck
+export-elements==0.10.2
+directory-components==1.8.3

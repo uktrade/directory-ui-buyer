@@ -7,7 +7,7 @@ class SSOUserMiddleware:
 
     def process_request(self, request):
         request.sso_user = None
-        session_id = request.COOKIES.get(settings.SSO_SESSION_COOKIE)
+        session_id = request.COOKIES.get(settings.SSO_PROXY_SESSION_COOKIE)
 
         if session_id:
             sso_response = sso_api_client.user.get_session_user(session_id)

@@ -1,5 +1,7 @@
 from unittest.mock import patch, Mock
 
+from django.urls import reverse
+
 
 def api_response_ok(*args, **kwargs):
     return Mock(
@@ -22,7 +24,7 @@ def test_sso_middleware_installed(settings):
 @patch('sso.utils.sso_api_client.user.get_session_user')
 def test_sso_middleware_no_cookie(mock_get_session_user, settings, client):
     settings.MIDDLEWARE_CLASSES = ['sso.middleware.SSOUserMiddleware']
-    response = client.get('/')
+    response = client.get(reverse('robots'))
 
     mock_get_session_user.assert_not_called()
     assert response._request.sso_user is None
@@ -33,9 +35,9 @@ def test_sso_middleware_api_response_ok(
     mock_get_session_user, settings, client
 ):
     mock_get_session_user.return_value = api_response_ok()
-    client.cookies[settings.SSO_SESSION_COOKIE] = '123'
+    client.cookies[settings.SSO_PROXY_SESSION_COOKIE] = '123'
     settings.MIDDLEWARE_CLASSES = ['sso.middleware.SSOUserMiddleware']
-    response = client.get('/')
+    response = client.get(reverse('robots'))
 
     mock_get_session_user.assert_called_with('123')
     assert response._request.sso_user.id == 1

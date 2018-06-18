@@ -1,21 +1,22 @@
 from directory_validators import company as shared_validators
 from directory_validators import enrolment as shared_enrolment_validators
 from directory_constants.constants import choices
-
-from django import forms
-from django.conf import settings
-from django.core.signing import Signer
-from django.utils.functional import cached_property
-from django.utils.safestring import mark_safe
-
-from company import validators
-from enrolment.forms import IndentedInvalidFieldsMixin, AutoFocusFieldMixin
-from enrolment.helpers import halt_validation_on_failure
-from enrolment.widgets import (
+from directory_components.widgets import (
     CheckboxSelectInlineLabelMultiple,
     CheckboxWithInlineLabel
 )
+
+from django import forms
+from django.conf import settings
+from django.utils.functional import cached_property
+from django.utils.safestring import mark_safe
+
+from api_client import api_client
+from company import validators
+from enrolment.forms import IndentedInvalidFieldsMixin, AutoFocusFieldMixin
+from enrolment.helpers import halt_validation_on_failure
 from enrolment.helpers import CompaniesHouseClient
+from sso.utils import sso_api_client
 
 
 class SocialLinksForm(IndentedInvalidFieldsMixin, AutoFocusFieldMixin,
@@ -70,7 +71,7 @@ class CaseStudyBasicInfoForm(IndentedInvalidFieldsMixin, AutoFocusFieldMixin,
     short_summary = forms.CharField(
         label='Summary of your case study or project',
         help_text=(
-            'Summarise your case study in 50 words or fewer. This will'
+            'Summarise your case study in 200 characters or fewer. This will'
             ' appear on your main trade profile page.'
         ),
         max_length=200,
@@ -281,7 +282,7 @@ class CompanyBasicInfoForm(AutoFocusFieldMixin, IndentedInvalidFieldsMixin,
     name = forms.CharField(
         label='Company name',
         help_text=(
-            'Enter your preferred business name'
+            'Enter your trading name'
         ),
         max_length=255,
         validators=[shared_validators.no_html],
@@ -373,7 +374,7 @@ class CompanyClassificationForm(AutoFocusFieldMixin,
     )
     export_destinations = forms.MultipleChoiceField(
         label='Select the countries you would like to export to',
-        choices=choices.EXPORT_DESTINATIONS + (('', 'Other'),),
+        choices=choices.LEAD_GENERATION_EXPORT_DESTINATIONS + (('', 'Other'),),
         widget=CheckboxSelectInlineLabelMultiple,
     )
     export_destinations_other = forms.CharField(
@@ -420,93 +421,14 @@ class CompanyContactDetailsForm(AutoFocusFieldMixin,
     )
 
 
-class PreventTamperMixin(forms.Form):
-
-    NO_TAMPER_MESSAGE = 'Form tamper detected.'
-
-    signature = forms.CharField(
-        widget=forms.HiddenInput
-    )
-
-    def __init__(self, initial=None, *args, **kwargs):
-        fields = self.tamper_proof_fields
-        assert fields
-        # `self.tamper_proof_fields` must use data type that preserves order
-        assert isinstance(fields, list) or isinstance(fields, tuple)
-        initial = initial or {}
-        initial['signature'] = self.create_signature(initial)
-        super().__init__(initial=initial, *args, **kwargs)
-
-    def create_signature(self, values):
-        value = [values.get(field, '') for field in self.tamper_proof_fields]
-        return Signer().sign(','.join(value))
-
-    def is_form_tampered(self):
-        data = self.cleaned_data
-        return data.get('signature') != self.create_signature(data)
-
-    def clean(self):
-        data = super().clean()
-        if self.is_form_tampered():
-            raise forms.ValidationError(self.NO_TAMPER_MESSAGE)
-        return data
-
-
-class CompanyAddressVerificationForm(PreventTamperMixin,
-                                     AutoFocusFieldMixin,
+class CompanyAddressVerificationForm(AutoFocusFieldMixin,
                                      IndentedInvalidFieldsMixin,
                                      forms.Form):
-
-    tamper_proof_fields = [
-        'address_line_1',
-        'address_line_2',
-        'locality',
-        'country',
-        'postal_code',
-        'po_box',
-    ]
 
     postal_full_name = forms.CharField(
         label='Add your name',
         max_length=255,
         help_text='This is the full name that letters will be addressed to.',
-        validators=[shared_validators.no_html],
-    )
-    address_line_1 = forms.CharField(
-        max_length=200,
-        widget=forms.HiddenInput,
-        validators=[shared_validators.no_html],
-    )
-    address_line_2 = forms.CharField(
-        max_length=200,
-        required=False,
-        widget=forms.HiddenInput,
-        validators=[shared_validators.no_html],
-    )
-    locality = forms.CharField(
-        label='City:',
-        max_length=200,
-        required=False,
-        widget=forms.HiddenInput,
-        validators=[shared_validators.no_html],
-    )
-    country = forms.CharField(
-        max_length=200,
-        required=False,
-        widget=forms.HiddenInput,
-        validators=[shared_validators.no_html],
-    )
-    postal_code = forms.CharField(
-        label='Postcode:',
-        max_length=200,
-        widget=forms.HiddenInput,
-        validators=[shared_validators.no_html],
-    )
-    po_box = forms.CharField(
-        label='PO box',
-        max_length=200,
-        required=False,
-        widget=forms.HiddenInput,
         validators=[shared_validators.no_html],
     )
     address_confirmed = forms.BooleanField(
@@ -515,18 +437,10 @@ class CompanyAddressVerificationForm(PreventTamperMixin,
             label=mark_safe(
                 '<span>Tick to confirm address.</span> '
                 '<small> If you can’t collect the letter yourself, you’ll '
-                'need to make sure someone can send it on to you..</small>'
+                'need to make sure someone can send it on to you.</small>'
             ),
         ),
     )
-
-    def build_address(self):
-        address_parts = []
-        for field_name in self.tamper_proof_fields:
-            field_value = self[field_name].value()
-            if field_value:
-                address_parts.append(field_value)
-        return ', '.join(address_parts)
 
     def visible_fields(self):
         skip = ['postal_full_name']
@@ -579,13 +493,106 @@ class CompaniesHouseOauth2Form(forms.Form):
     def oauth2_response(self):
         return CompaniesHouseClient.verify_oauth2_code(
             code=self.cleaned_data['code'],
-            redirect_url=self.redirect_uri
+            redirect_uri=self.redirect_uri
         )
 
     def clean_code(self):
         if not self.oauth2_response.ok:
             raise forms.ValidationError(self.MESSAGE_INVALID_CODE)
         return self.cleaned_data['code']
+
+
+class BaseMultiUserEmailForm(
+    AutoFocusFieldMixin, IndentedInvalidFieldsMixin, forms.Form
+):
+    MESSAGE_CANNOT_SEND_TO_SELF = 'Please enter a different email address'
+
+    def __init__(self, sso_email_address, *args, **kwargs):
+        self.sso_email_address = sso_email_address
+        super().__init__(*args, **kwargs)
+
+    def clean_email_address(self):
+        if self.cleaned_data['email_address'] == self.sso_email_address:
+            raise forms.ValidationError(self.MESSAGE_CANNOT_SEND_TO_SELF)
+        return self.cleaned_data['email_address']
+
+
+class AddCollaboratorForm(BaseMultiUserEmailForm):
+    email_address = forms.EmailField(
+        label=(
+            'Enter the new user’s email address.'
+        ),
+        widget=forms.EmailInput(
+            attrs={'placeholder': 'Email address'}
+        )
+    )
+
+
+class RemoveCollaboratorForm(AutoFocusFieldMixin, forms.Form):
+
+    def __init__(self, sso_session_id, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['sso_ids'].choices = self.get_supplier_ids_choices(
+            sso_session_id=sso_session_id
+        )
+
+    def get_supplier_ids_choices(self, sso_session_id):
+        response = api_client.company.retrieve_collaborators(
+            sso_session_id=sso_session_id
+        )
+        response.raise_for_status()
+        parsed = response.json()
+        return [(i['sso_id'], i['company_email']) for i in parsed]
+
+    sso_ids = forms.MultipleChoiceField(
+        label='',
+        choices=[],  # updated on __init__
+        widget=CheckboxSelectInlineLabelMultiple,
+    )
+
+
+class TransferAccountEmailForm(BaseMultiUserEmailForm):
+
+    email_address = forms.EmailField(
+        label=(
+            'Enter the email address you want your profile transferred to.'
+        ),
+        widget=forms.EmailInput(
+            attrs={'placeholder': 'Email address'}
+        )
+    )
+
+
+class TransferAccountPasswordForm(
+    IndentedInvalidFieldsMixin, AutoFocusFieldMixin, forms.Form
+):
+    MESSAGE_INVALID_PASSWORD = 'Invalid password'
+    use_required_attribute = False
+
+    password = forms.CharField(
+        label='Your password',
+        help_text='For your security, please enter your current password',
+        widget=forms.PasswordInput,
+    )
+
+    def __init__(self, sso_session_id, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.sso_session_id = sso_session_id
+
+    def clean_password(self):
+        response = sso_api_client.user.check_password(
+            session_id=self.sso_session_id,
+            password=self.cleaned_data['password'],
+        )
+        if not response.ok:
+            raise forms.ValidationError(self.MESSAGE_INVALID_PASSWORD)
+        return self.cleaned_data['password']
+
+
+class AcceptInviteForm(forms.Form):
+    invite_key = forms.CharField(
+        widget=forms.HiddenInput
+    )
 
 
 class EmptyForm(forms.Form):
@@ -649,12 +656,6 @@ def serialize_company_profile_forms(cleaned_data):
         'export_destinations': cleaned_data['export_destinations'],
         'export_destinations_other': cleaned_data['export_destinations_other'],
         'sectors': [cleaned_data['sectors']],
-        'address_line_1': cleaned_data['address_line_1'],
-        'address_line_2': cleaned_data['address_line_2'],
-        'country': cleaned_data['country'],
-        'locality': cleaned_data['locality'],
-        'po_box': cleaned_data['po_box'],
-        'postal_code': cleaned_data['postal_code'],
         'postal_full_name': cleaned_data['postal_full_name'],
 
     }
@@ -772,12 +773,6 @@ def serialize_company_address_form(cleaned_data):
     """
 
     return {
-        'address_line_1': cleaned_data['address_line_1'],
-        'address_line_2': cleaned_data['address_line_2'],
-        'country': cleaned_data['country'],
-        'locality': cleaned_data['locality'],
-        'po_box': cleaned_data['po_box'],
-        'postal_code': cleaned_data['postal_code'],
         'postal_full_name': cleaned_data['postal_full_name'],
     }
 

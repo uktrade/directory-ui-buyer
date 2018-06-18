@@ -1,5 +1,8 @@
-@import 'main.scss';
+@import 'partials/base.scss';
 
+.grid-row {
+  margin: 0;
+}
 .ed-enrolment {
   margin-top: 40px;
   margin-bottom: 40px;
@@ -13,17 +16,27 @@
   margin-left: 10px;
   padding: 0 0 0 5px;
 }
+
 .company-profile-details-body {
   position: relative;
-  h3 {
+
+  .heading-large {
+    margin-top: 0;
+    margin-bottom: 0;
+  } 
+
+  .heading-medium {
     line-height: 1em;
     margin-top: 0;
     margin-bottom: 10px;
   }
   .company-contact-details {
     margin-left: 0;
+    a {
+      text-decoration: none;
+    }
   }
-  
+
   .company-description {
     word-wrap: break-word;
   }
@@ -46,9 +59,10 @@
       margin-top: 4px;
     }
   }
-  .company-profile-module-description.span8,
+  .company-profile-module-description.column-two-thirds,
   .company-profile-module-details {
     border-right: 1px solid #dedede;
+    padding-bottom: 20px;
     left: 20px;
     padding-left: 0;
     position: relative;
@@ -80,12 +94,7 @@
       top: 0;
     }
   }
-  @media (max-width: 767px) {
-    .company-profile-module-details {
-      left: 0;
-      padding-left: 20px;
-    }
-  }
+
   .company-profile-module-social-links,
   .company-profile-module-facts {
     border-left: 1px solid #dedede;
@@ -93,14 +102,7 @@
     margin-left: -1px;
     padding-left: 21px;
     position: relative;
-    @media (max-width: 767px) {
-      & {
-        border: none;
-        left: 0;
-        margin-left: 0;
-        padding-left: 20px;
-      }
-    }
+
     .ed-social-icon {
       margin-bottom: 2px;
       margin-right: 5px;
@@ -109,7 +111,7 @@
   }
   ul {
     li {
-      list-style-type: disc; 
+      list-style-type: disc;
     }
   }
 }
@@ -127,11 +129,7 @@
   margin-bottom: 20px;
   padding: 20px;
   position: relative;
-  @media (max-width: 767px) {
-    .key-facts {
-      margin-bottom: 20px;
-    }
-  }
+
   .description-content,
   .company-number-content {
     margin-bottom: 10px;
@@ -172,11 +170,6 @@
       }
     }
   }
-  @media (max-width: 767px) {
-    .element-within {
-      display: block;
-    }
-  }
 }
 
 .web-address {
@@ -201,14 +194,6 @@
         text-decoration: none;
       }
     }
-
-    @media (max-width: 767px) {
-      text-align: left;
-    }
-  } 
-  @media (max-width: 767px) {
-    margin-bottom: 20px;
-    width: 100%;
   }
 }
 
@@ -218,9 +203,6 @@
 }
 
 .company-profile-details-hero-logo {
-  @media (max-width: 767px) {
-    text-align: center
-  }
   img {
       height: 154px;
   }
@@ -251,11 +233,6 @@
     color: white;
   }
 
-  @media (max-width: 767px) {
-    left: 0;
-    margin-top: 20px;
-    position: relative;
-  }
 }
 
 .supplier-case-study-title {
@@ -318,7 +295,6 @@
 }
 
 .company-profile-unpublished {
-  margin-top: 15px;
   margin-bottom: 10px;
   color: #B00D23;
   font-weight: bold;
@@ -335,6 +311,9 @@
 .ed-company-profile-add-case-study-button-container {
   margin-top: 30px;
   margin-bottom: 30px;
+  a {
+    text-decoration: none;
+  }
 }
 
 .ed-company-profile-add-case-study-button {
@@ -389,9 +368,8 @@
   }
 }
 
-
 .ed-envelope-container {
-  margin-top: 40px; 
+  margin-top: 40px;
   .ed-envelope {
     border: 1px solid #ddd;
     max-width: 35em;
@@ -422,4 +400,50 @@
   color: #004F95;
   text-decoration: underline;
   font-size: 16px;
+}
+
+// TABLET
+
+@media (max-width: 767px) {
+  .company-profile-details-hero-edit-button {
+    left: 0;
+    margin-top: 20px;
+    position: relative;
+  }
+
+  .company-profile-details-hero-logo {
+    text-align: center
+  }
+
+  .company-profile-details-body {
+    border: none;
+    left: 0;
+    margin-left: 0;
+    padding-left: 20px;
+    .company-profile-module-details {
+      left: 0;
+      padding-left: 20px;
+    }
+  }
+
+  .company-profile-box {
+    .key-facts {
+      margin-bottom: 20px;
+    }
+  }
+
+  .mid-blue-bar {
+    .element-within {
+      display: block;
+    }
+  }
+
+  .web-address {
+    a {
+      text-align: left;
+    }
+    margin-bottom: 20px;
+    width: 100%;
+  }
+
 }

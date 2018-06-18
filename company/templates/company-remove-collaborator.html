@@ -1,0 +1,24 @@
+{% extends "form-wrapper.html" %}
+{% block head_title %}Remove collaborator - Find a Buyer - GREAT.gov.uk{% endblock %}
+{% block button_next_label %}Next{% endblock%}
+{% block button_finish_label %}Confirm{% endblock%}
+
+{% block form_subtitle %}
+<h2 class="heading-large">Remove user from account</h2>
+<p>
+    Select the emails you would like to remove
+</p>
+{% endblock %}
+{% block formarea %}
+    {% if form.sso_ids.field.choices %}
+    	{{ block.super }}
+    {% else %}
+        <p><h2 class="heading-large">Your company has no collaborators.</h2></p>
+        <p>Click <a href="{{ company_profile_url }}">here</a> to go back.</p>
+        <br>
+    {% endif %}
+{% endblock %}
+{% block extra_buttons %}
+    <a href="{{ company_profile_url }} " class="register-btn button" style="color: #4A4A4F; background: white;" target="_self">Cancel</a>
+    <br>
+{% endblock %}

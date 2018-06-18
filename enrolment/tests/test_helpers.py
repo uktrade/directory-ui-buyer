@@ -3,7 +3,7 @@ from unittest.mock import patch
 
 import pytest
 from requests import Response
-from requests.exceptions import HTTPError
+from requests.exceptions import HTTPError, RequestException
 import requests_mock
 
 from django import forms
@@ -101,6 +101,37 @@ def test_store_companies_house_profile_in_session_saves_in_session(
 
 
 @patch.object(helpers.CompaniesHouseClient, 'retrieve_profile')
+def test_store_companies_house_profile_in_session_saves_in_session_no_date(
+    mock_retrieve_profile, client
+):
+    data = {
+        'company_name': 'Example corp',
+        'company_status': 'active',
+        'company_number': '01234567',
+        'registered_office_address': {'foo': 'bar'}
+    }
+    response = Response()
+    response.status_code = http.client.OK
+    response.json = lambda: data
+    session = client.session
+    mock_retrieve_profile.return_value = response
+
+    helpers.store_companies_house_profile_in_session(session, '01234567')
+
+    mock_retrieve_profile.assert_called_once_with(number='01234567')
+    expected_data = data = {
+        'company_name': 'Example corp',
+        'company_status': 'active',
+        'company_number': '01234567',
+        'registered_office_address': {'foo': 'bar'},
+        'date_of_creation': None
+    }
+    key = helpers.COMPANIES_HOUSE_PROFILE_SESSION_KEY
+    assert session[key] == expected_data
+    assert session.modified is True
+
+
+@patch.object(helpers.CompaniesHouseClient, 'retrieve_profile')
 def test_store_companies_house_profile_in_session_handles_bad_response(
     mock_retrieve_profile, client
 ):
@@ -112,6 +143,21 @@ def test_store_companies_house_profile_in_session_handles_bad_response(
 
     with pytest.raises(HTTPError):
         helpers.store_companies_house_profile_in_session(session, '01234567')
+
+
+@patch('enrolment.helpers.store_companies_house_profile_in_session')
+def test_store_companies_house_profile_in_session_handles_response_none(
+    mock_store_in_session, client
+):
+
+    session = client.session
+    mock_store_in_session.side_effect = RequestException(response=None)
+
+    with pytest.raises(forms.ValidationError):
+        helpers.store_companies_house_profile_in_session_and_validate(
+            session,
+            '01234567'
+        )
 
 
 def test_companies_house_client_consumes_auth(settings):
@@ -160,12 +206,12 @@ def test_get_companies_house_contact_details():
     assert response.json() == contact_details
 
 
-def test_get_company_date_of_creation_from_session(client):
+def test_get_date_of_creation_from_session(client):
     session = client.session
     key = helpers.COMPANIES_HOUSE_PROFILE_SESSION_KEY
     session[key] = {'date_of_creation': '2000-10-10'}
 
-    actual = helpers.get_company_date_of_creation_from_session(session)
+    actual = helpers.get_date_of_creation_from_session(session)
 
     assert actual == '2000-10-10'
 
@@ -199,14 +245,14 @@ def test_verify_oauth2_code():
         assert response.status_code == 200
 
     request = mock.request_history[0]
-
-    assert request.json() == {
-        'client_id': 'debug-client-id',
-        'grant_type': 'authorization_code',
-        'client_secret': 'debug-client-secret',
-        'redirect_uri': 'http://redirect.com',
-        'code': '123'
-    }
+    assert request.url == (
+        'https://account.companieshouse.gov.uk/oauth2/token'
+        '?grant_type=authorization_code'
+        '&code=123'
+        '&client_id=debug-client-id'
+        '&client_secret=debug-client-secret'
+        '&redirect_uri=http%3A%2F%2Fredirect.com'
+    )
 
 
 def test_search():
@@ -223,3 +269,50 @@ def test_search():
     request = mock.request_history[0]
 
     assert request.query == 'q=green'
+
+
+def test_search_internal_ch(settings):
+    settings.FEATURE_USE_INTERNAL_CH_ENABLED = True
+
+    with requests_mock.mock() as mock:
+        mock.get(
+            'http://test.com/api/search/companies/'
+        )
+        helpers.CompaniesHouseClient.search(
+            term='foo',
+        )
+        request = mock.request_history[0]
+
+        assert request.query == 'q=foo'
+
+
+def test_retrieve_company_profile_internal_ch(settings):
+    settings.FEATURE_USE_INTERNAL_CH_ENABLED = True
+
+    with requests_mock.mock() as mock:
+        mock.get(
+            'http://test.com/api/company/12345678/'
+        )
+        helpers.CompaniesHouseClient.retrieve_profile(
+            number='12345678'
+        )
+        request = mock.request_history[0]
+
+        assert request.url == 'http://test.com/api/company/12345678/'
+
+
+def test_retrieve_company_address_internal_ch(settings):
+    settings.FEATURE_USE_INTERNAL_CH_ENABLED = True
+
+    with requests_mock.mock() as mock:
+        mock.get(
+            'http://test.com/api/company/12345678/registered-office-address/'
+        )
+        helpers.CompaniesHouseClient.retrieve_address(
+            number='12345678'
+        )
+        request = mock.request_history[0]
+
+        expected_url = \
+            'http://test.com/api/company/12345678/registered-office-address/'
+        assert request.url == expected_url

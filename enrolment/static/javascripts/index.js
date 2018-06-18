@@ -360,6 +360,7 @@ GOVUK.components = (new function() {
     }
   }
   SelectiveLookup.prototype.search = function() {
+   this._private.$errors.empty();
    this._private.service.update(this.param());
   }
   SelectiveLookup.prototype.param = function() {
@@ -412,9 +413,6 @@ GOVUK.components = (new function() {
     }
   }
 
-  $(document.body).on("click.SelectiveLookupCloseAll", SelectiveLookup.closeAll);
-
-
   /* Extends SelectiveLookup to perform specific requirements
    * for Companies House company search by name, and resulting
    * form field population.
@@ -442,11 +440,6 @@ GOVUK.components = (new function() {
         instance._private.$errors.empty();
         instance._private.$errors.append("<p>Check that you entered the company name correctly and select the matching company name from the list.</p>");
       }
-    });
-    
-    // Clear previously shown errors.
-    this._private.$input.on("focus.CompaniesHouseNameLookup", function(e) {
-      instance._private.$errors.empty();
     });
   }
   CompaniesHouseNameLookup.prototype = new SelectiveLookup;
@@ -507,6 +500,10 @@ GOVUK.page = (new function() {
       // Apply JS lookup functionality.
       new GOVUK.components.CompaniesHouseNameLookup($companyName, $companyNumber);
     });
+    $(document.body).on(
+      "click.SelectiveLookupCloseAll",
+      GOVUK.components.SelectiveLookup.closeAll
+    );
   }
 
 });

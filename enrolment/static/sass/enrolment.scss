@@ -1,7 +1,8 @@
-$asset-path: '../';
+@import 'partials/base.scss';
 
-@import 'main.scss';
-
+#id_exports-terms_agreed {
+  width: 40px;
+}
 .ed-enrolment {
   margin-top: 40px;
   margin-bottom: 40px;
@@ -9,7 +10,7 @@ $asset-path: '../';
     border-color: #fafafa;
     background-color: #eee
   }
-  h1 { 
+  h1 {
     margin-bottom: 40px;
   }
   color: #4a4a4a;
@@ -36,6 +37,7 @@ $asset-path: '../';
   }
   .cancel-button {
     color: #4A4A4F;
+    background: none;
   }
 }
 

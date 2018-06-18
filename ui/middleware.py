@@ -18,6 +18,6 @@ class NoCacheMiddlware:
         super().__init__(*args, **kwargs)
 
     def process_response(self, request, response):
-        if request.sso_user:
+        if getattr(request, 'sso_user', None):
             response['Cache-Control'] = 'no-store, no-cache'
         return response

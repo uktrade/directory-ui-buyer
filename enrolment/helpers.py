@@ -5,9 +5,10 @@ import logging
 import urllib
 from urllib.parse import urljoin
 
+from directory_ch_client.company import CompanyCHClient
 from django.conf import settings
 from django.forms import ValidationError
-from django.template.response import SimpleTemplateResponse
+from django.shortcuts import render
 
 import requests
 from requests.exceptions import RequestException
@@ -36,7 +37,7 @@ def store_companies_house_profile_in_session(session, company_number):
     session[COMPANIES_HOUSE_PROFILE_SESSION_KEY] = {
         'company_name': details['company_name'],
         'company_status': details['company_status'],
-        'date_of_creation': details['date_of_creation'],
+        'date_of_creation': details.get('date_of_creation'),
         'company_number': company_number,
         'registered_office_address': details['registered_office_address']
     }
@@ -80,9 +81,13 @@ class CompaniesHouseClient:
         'address': make_api_url('company/{number}/registered-office-address'),
         'search': make_api_url('search/companies'),
         'oauth2': make_oauth2_url('oauth2/authorise'),
-        'oauth2-verify': make_oauth2_url('oauth2/token'),
+        'oauth2-token': make_oauth2_url('oauth2/token'),
     }
     session = requests.Session()
+    companies_house_client = CompanyCHClient(
+        base_url=settings.INTERNAL_CH_BASE_URL,
+        api_key=settings.INTERNAL_CH_API_KEY
+    )
 
     @classmethod
     def get_auth(cls):
@@ -97,18 +102,33 @@ class CompaniesHouseClient:
 
     @classmethod
     def retrieve_profile(cls, number):
-        url = cls.endpoints['profile'].format(number=number)
-        return cls.get(url)
+        if settings.FEATURE_USE_INTERNAL_CH_ENABLED:
+            return cls.companies_house_client.get_company_profile(
+                company_number=number
+            )
+        else:
+            url = cls.endpoints['profile'].format(number=number)
+            return cls.get(url)
 
     @classmethod
     def retrieve_address(cls, number):
-        url = cls.endpoints['address'].format(number=number)
-        return cls.get(url)
+        if settings.FEATURE_USE_INTERNAL_CH_ENABLED:
+            return cls.companies_house_client.get_company_registered_address(
+                company_number=number
+            )
+        else:
+            url = cls.endpoints['address'].format(number=number)
+            return cls.get(url)
 
     @classmethod
     def search(cls, term):
-        url = cls.endpoints['search']
-        return cls.get(url, params={'q': term})
+        if settings.FEATURE_USE_INTERNAL_CH_ENABLED:
+            return cls.companies_house_client.search_companies(
+                query=term
+            )
+        else:
+            url = cls.endpoints['search']
+            return cls.get(url, params={'q': term})
 
     @classmethod
     def make_oauth2_url(cls, redirect_uri, company_number):
@@ -123,43 +143,42 @@ class CompaniesHouseClient:
 
     @classmethod
     def verify_oauth2_code(cls, code, redirect_uri):
-        url = cls.endpoints['oauth2-verify']
-        data = {
-            'grant_type': 'authorization_code',
-            'code': code,
-            'client_id': cls.client_id,
-            'client_secret': cls.client_secret,
-            'redirect_uri': redirect_uri,
-        }
-        return cls.session.post(url=url, json=data)
+        url = cls.endpoints['oauth2-token']
+        params = OrderedDict([
+            ('grant_type', 'authorization_code'),
+            ('code', code),
+            ('client_id', cls.client_id),
+            ('client_secret', cls.client_secret),
+            ('redirect_uri', redirect_uri),
+        ])
+        return cls.session.post(url=url + '?' + urllib.parse.urlencode(params))
 
 
-def get_company_date_of_creation_from_session(session):
+def get_date_of_creation_from_session(session):
     return session[
         COMPANIES_HOUSE_PROFILE_SESSION_KEY
     ]['date_of_creation']
 
 
 def get_company_number_from_session(session):
-    return session.get(
-        COMPANIES_HOUSE_PROFILE_SESSION_KEY, {}
-    ).get('company_number')
+    key = 'company_number'
+    return session.get(COMPANIES_HOUSE_PROFILE_SESSION_KEY, {}).get(key)
 
 
 def get_company_name_from_session(session):
-    return session[
-        COMPANIES_HOUSE_PROFILE_SESSION_KEY
-    ]['company_name']
+    return get_company_from_session(session)['company_name']
 
 
 def get_company_status_from_session(session):
-    return session[
-        COMPANIES_HOUSE_PROFILE_SESSION_KEY
-    ]['company_status']
+    return get_company_from_session(session)['company_status']
+
+
+def get_company_address_from_session(session):
+    return get_company_from_session(session)['registered_office_address']
 
 
 def get_company_from_session(session):
-    return session.get(COMPANIES_HOUSE_PROFILE_SESSION_KEY)
+    return session.get(COMPANIES_HOUSE_PROFILE_SESSION_KEY, {})
 
 
 def store_companies_house_profile_in_session_and_validate(
@@ -171,7 +190,9 @@ def store_companies_house_profile_in_session_and_validate(
             company_number=company_number,
         )
     except RequestException as error:
-        if error.response.status_code == http.client.NOT_FOUND:
+        error = getattr(error, 'response', None)
+        status_code = getattr(error, 'status_code', None)
+        if status_code == http.client.NOT_FOUND:
             raise ValidationError(validators.MESSAGE_COMPANY_NOT_FOUND)
         else:
             raise ValidationError(validators.MESSAGE_COMPANY_ERROR)
@@ -183,8 +204,5 @@ def store_companies_house_profile_in_session_and_validate(
         validators.company_unique(company_number)
 
 
-def get_error_response(error_message):
-    return SimpleTemplateResponse(
-        'enrolment-error.html',
-        {'validation_error': error_message},
-    )
+def get_error_response(request, context):
+    return render(request, 'enrolment-error.html', context)

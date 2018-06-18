@@ -7,6 +7,16 @@ import pytest
 
 
 @pytest.fixture
+def retrieve_supplier_profile_data():
+    return {
+        'company': 1,
+        'company_email': 'test@example.com',
+        'sso_id': 1,
+        'is_company_owner': True,
+    }
+
+
+@pytest.fixture
 def retrieve_profile_data():
     return {
         'address_line_1': '123 Fake Street',
@@ -86,6 +96,14 @@ def company_profile_companies_house_data():
         'po_box': '',
         'country': 'GB',
     }
+
+
+@pytest.fixture
+def api_response_supplier_profile_200(retrieve_supplier_profile_data):
+    response = requests.Response()
+    response.status_code = http.client.OK
+    response.json = lambda: deepcopy(retrieve_supplier_profile_data)
+    return response
 
 
 @pytest.fixture
@@ -204,6 +222,17 @@ def retrieve_profile(api_response_company_profile_200):
     stub.stop()
 
 
+@pytest.fixture(autouse=True)
+def retrieve_supplier_profile(api_response_supplier_profile_200):
+    stub = patch(
+        'api_client.api_client.supplier.retrieve_profile',
+        return_value=api_response_supplier_profile_200,
+    )
+    stub.start()
+    yield
+    stub.stop()
+
+
 @pytest.fixture
 def retrieve_profile_unverified(api_response_company_profile_unverified_200):
     stub = patch(
@@ -220,7 +249,7 @@ def get_companies_house_office_address(
     api_response_company_profile_companies_house_200
 ):
     stub = patch(
-        'company.helpers.CompaniesHouseClient.retrieve_address',
+        'enrolment.helpers.CompaniesHouseClient.retrieve_address',
         return_value=api_response_company_profile_companies_house_200,
     )
     stub.start()

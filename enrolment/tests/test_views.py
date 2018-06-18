@@ -1,5 +1,5 @@
 import http
-from unittest.mock import patch, Mock
+from unittest.mock import call, patch, Mock
 
 from django.core.urlresolvers import reverse
 from django.forms import ValidationError
@@ -189,7 +189,6 @@ def test_submit_enrolment_api_client_success(client):
 @patch('enrolment.helpers.has_company', Mock(return_value=False))
 @patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
 def test_submit_enrolment_api_client_success_correct_data(client):
-
     with patch.object(api_client.enrolment, 'send_form') as send_form_mock:
         client.get(
             reverse('register-submit'),
@@ -199,7 +198,8 @@ def test_submit_enrolment_api_client_success_correct_data(client):
             }
         )
 
-    send_form_mock.assert_called_once_with({
+    assert send_form_mock.call_count == 1
+    assert send_form_mock.call_args == call({
         'sso_id': 1,
         'company_email': 'jim@example.com',
         'contact_email_address': 'jim@example.com',
@@ -207,6 +207,12 @@ def test_submit_enrolment_api_client_success_correct_data(client):
         'date_of_creation': 'date_of_creation',
         'company_name': 'company_name',
         'has_exported_before': True,
+        'address_line_1': 'address_line_1',
+        'address_line_2': 'address_line_2',
+        'locality': 'locality',
+        'country': 'country',
+        'postal_code': 'postal_code',
+        'po_box': 'po_box',
     })
 
 
@@ -273,8 +279,8 @@ def test_submit_enrolment_logged_out_has_company_redirects(
 
     assert response.status_code == http.client.FOUND
     assert response.get('Location') == (
-         'http://sso.trade.great.dev:8004/accounts/signup/'
-         '?next=http%3A//testserver/register-submit'
+         'http://sso.trade.great:8004/accounts/signup/'
+         '?next=http%3A//testserver/register-submit/'
     )
     mock_has_company.assert_not_called()
 
@@ -428,7 +434,7 @@ def test_landing_page_submit_valid_form_redirects(client):
     params = {'company_number': '12345678'}
     response = client.post(url, params)
 
-    expected_url = '/register/company?company_number=12345678'
+    expected_url = '/register/company/?company_number=12345678'
     assert response.status_code == 302
     assert response.get('Location') == expected_url
 
@@ -446,7 +452,7 @@ def test_confirm_company_resets_storage(client):
         params = {'company_number': company_number}
         response = client.post(reverse('index'), params)
 
-        expected_url = '/register/company?company_number={}'.format(
+        expected_url = '/register/company/?company_number={}'.format(
             company_number
         )
         assert response.status_code == 302
@@ -608,6 +614,7 @@ def test_company_enrolment_step_handles_company_already_registered(client):
     Mock(return_value=MOCK_COMPANIES_HOUSE_API_COMPANY_PROFILE)
 )
 @patch('enrolment.helpers.has_company', Mock(return_value=False))
+@patch('api_client.api_client.enrolment.send_form', Mock())
 @patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
 def test_submit_enrolment_caches_profile(client):
     client.get(
@@ -754,6 +761,6 @@ def test_enrolment_form_complete_redirects_to_submit_enrolment(
 
     assert response.status_code == 302
     assert response.get('Location') == (
-        '/register-submit?company_number=12345678&'
+        '/register-submit/?company_number=12345678&'
         'has_exported_before=True'
     )

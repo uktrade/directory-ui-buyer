@@ -36,7 +36,7 @@ def company_number_present_and_active(value):
             company_number=value
         )
     except RequestException as error:
-        if error.response.status_code == http.client.NOT_FOUND:
+        if error.response and error.response.status_code == 404:
             raise ValidationError(MESSAGE_COMPANY_NOT_FOUND)
         else:
             raise ValidationError(MESSAGE_COMPANY_ERROR)

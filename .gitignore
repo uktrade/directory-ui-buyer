@@ -5,6 +5,7 @@ __pycache__/
 .sass-cache/
 .venv/
 enrolment/staticfiles/
+ui/staticfiles/
 BrowserStackLocal
 node_modules/
 
@@ -101,6 +102,7 @@ Temporary Items
 
 # JS
 node_modules/
+package-lock.json
 
 # Docker
 .env

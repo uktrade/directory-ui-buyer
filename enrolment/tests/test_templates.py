@@ -112,7 +112,7 @@ def test_export_status_common_invalid_form_error_size():
         'form': form
     }
     html = render_to_string('export-status-form.html', context)
-    assert 'span8' in html
+    assert 'column-two-thirds' in html
     assert 'Sorry, this is not the right service for your company' not in html
     assert '<form' in html
 
@@ -124,7 +124,7 @@ def test_company_profile_form_correct_title():
 
 def test_google_tag_manager_project_id():
     context = {
-        'analytics': {
+        'directory_components_analytics': {
             'GOOGLE_TAG_MANAGER_ID': '123456',
         }
     }
@@ -139,24 +139,13 @@ def test_google_tag_manager():
     expected_head = render_to_string('google_tag_manager_head.html', {})
     expected_body = render_to_string('google_tag_manager_body.html', {})
 
-    html = render_to_string('govuk_layout.html', {})
+    html = render_to_string('base.html', {})
 
     assert expected_head in html
     assert expected_body in html
     # sanity check
     assert 'www.googletagmanager.com' in expected_head
     assert 'www.googletagmanager.com' in expected_body
-
-
-def test_utm_cookie_domain():
-    context = {
-        'analytics': {
-            'UTM_COOKIE_DOMAIN': '.thing.com',
-        }
-    }
-    html = render_to_string('govuk_layout.html', context)
-
-    assert '<meta id="utmCookieDomain" value=".thing.com" />' in html
 
 
 def test_templates_render_successfully():
@@ -189,7 +178,11 @@ def test_form_progress_indicator_no_steps():
 
 def test_form_progress_indicator_first_step_active():
     context = {
-        'form_labels': ['one', 'two', 'three'],
+        'form_labels': [
+            ('one', 'One'),
+            ('two', 'Two'),
+            ('three', 'Three'),
+        ],
         'wizard': {
             'steps':
                 {
@@ -207,7 +200,11 @@ def test_form_progress_indicator_first_step_active():
 
 def test_form_progress_indicator_second_step_active():
     context = {
-        'form_labels': ['one', 'two', 'three'],
+        'form_labels': [
+            ('one', 'One'),
+            ('two', 'Two'),
+            ('three', 'Three'),
+        ],
         'wizard': {
             'steps':
                 {
@@ -225,7 +222,11 @@ def test_form_progress_indicator_second_step_active():
 
 def test_form_progress_indicator_last_step_active():
     context = {
-        'form_labels': ['one', 'two', 'three'],
+        'form_labels': [
+            ('one', 'One'),
+            ('two', 'Two'),
+            ('three', 'Three'),
+        ],
         'wizard': {
             'steps':
                 {
