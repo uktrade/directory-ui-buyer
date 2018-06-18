@@ -8,7 +8,7 @@ test_requirements:
 	pip install -r requirements_test.txt
 
 FLAKE8 := flake8 . --exclude=migrations,.venv,node_modules
-PYTEST := pytest . --cov=. --cov-config=.coveragerc --capture=no $(pytest_args)
+PYTEST := pytest . -v --ignore=node_modules --cov=. --cov-config=.coveragerc --capture=no $(pytest_args)
 COLLECT_STATIC := python manage.py collectstatic --noinput
 CODECOV := \
 	if [ "$$CODECOV_REPO_TOKEN" != "" ]; then \
@@ -63,31 +63,19 @@ DOCKER_SET_DEBUG_ENV_VARS := \
 	export DIRECTORY_UI_BUYER_COMPANIES_HOUSE_CLIENT_ID=debug-client-id; \
 	export DIRECTORY_UI_BUYER_COMPANIES_HOUSE_CLIENT_SECRET=debug-client-secret; \
 	export DIRECTORY_UI_BUYER_FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED=true; \
-	export DIRECTORY_UI_BUYER_FEATURE_MULTI_USER_ACCOUNT_ENABLED=true; \
 	export DIRECTORY_UI_BUYER_FEATURE_NEW_SHARED_HEADER_ENABLED=true; \
 	export DIRECTORY_UI_BUYER_SECURE_HSTS_SECONDS=0; \
 	export DIRECTORY_UI_BUYER_PYTHONWARNINGS=all; \
 	export DIRECTORY_UI_BUYER_PYTHONDEBUG=true; \
 	export DIRECTORY_UI_BUYER_EXPOSE_DIRECTORY_API=true; \
-	export DIRECTORY_UI_BUYER_GREAT_EXPORT_HOME=http://exred.trade.great:8007; \
-	export DIRECTORY_UI_BUYER_EXPORTING_NEW=http://exred.trade.great:8007/new; \
-	export DIRECTORY_UI_BUYER_EXPORTING_OCCASIONAL=http://exred.trade.great:8007/occasional; \
-	export DIRECTORY_UI_BUYER_EXPORTING_REGULAR=http://exred.trade.great:8007/regular; \
-	export DIRECTORY_UI_BUYER_GUIDANCE_MARKET_RESEARCH=http://exred.trade.great:8007/market-research; \
-	export DIRECTORY_UI_BUYER_GUIDANCE_CUSTOMER_INSIGHT=http://exred.trade.great:8007/customer-insight; \
-	export DIRECTORY_UI_BUYER_GUIDANCE_FINANCE=http://exred.trade.great:8007/finance; \
-	export DIRECTORY_UI_BUYER_GUIDANCE_BUSINESS_PLANNING=http://exred.trade.great:8007/business-planning; \
-	export DIRECTORY_UI_BUYER_GUIDANCE_GETTING_PAID=http://exred.trade.great:8007/getting-paid; \
-	export DIRECTORY_UI_BUYER_GUIDANCE_OPERATIONS_AND_COMPLIANCE=http://exred.trade.great:8007/operations-and-compliance; \
-	export DIRECTORY_UI_BUYER_SERVICES_EXOPPS=http://exred.trade.great:8007/export-opportunities; \
-	export DIRECTORY_UI_BUYER_SERVICES_FAB=http://buyer.trade.great:8001; \
-	export DIRECTORY_UI_BUYER_SERVICES_GET_FINANCE=http://exred.trade.great:8007/get-finance; \
-	export DIRECTORY_UI_BUYER_SERVICES_SOO=http://soo.trade.great:8008; \
-	export DIRECTORY_UI_BUYER_INFO_ABOUT=http://exred.trade.great:8007/about; \
-	export DIRECTORY_UI_BUYER_INFO_PRIVACY_AND_COOKIES=http://exred.trade.great:8007/privacy-and-cookies; \
-	export DIRECTORY_UI_BUYER_INFO_TERMS_AND_CONDITIONS=http://exred.trade.great:8007/terms-and-conditions; \
+	export DIRECTORY_UI_BUYER_HEADER_FOOTER_URLS_GREAT_HOME=http://exred.trade.great:8007/; \
+	export DIRECTORY_UI_BUYER_HEADER_FOOTER_URLS_FAB=/; \
+	export DIRECTORY_UI_BUYER_HEADER_FOOTER_URLS_SOO=http://soo.trade.great:8008; \
+	export DIRECTORY_UI_BUYER_HEADER_FOOTER_URLS_CONTACT_US=http://contact.trade.great:8009/directory/; \
 	export DIRECTORY_UI_BUYER_SECURE_SSL_REDIRECT=false; \
-	export DIRECTORY_UI_BUYER_HEALTH_CHECK_TOKEN=debug
+	export DIRECTORY_UI_BUYER_HEALTH_CHECK_TOKEN=debug; \
+	export DIRECTORY_UI_BUYER_INTERNAL_CH_BASE_URL=http://test.com; \
+	export DIRECTORY_UI_BUYER_INTERNAL_CH_API_KEY=debug
 
 docker_test_env_files:
 	$(DOCKER_SET_DEBUG_ENV_VARS) && \
@@ -125,7 +113,7 @@ docker_build:
 DEBUG_SET_ENV_VARS := \
 	export PORT=8001; \
 	export SECRET_KEY=debug; \
-	export DEBUG=true ;\
+	export DEBUG=true;\
 	export API_SIGNATURE_SECRET=debug; \
 	export API_CLIENT_BASE_URL=http://api.trade.great:8000; \
 	export SSO_PROXY_SIGNATURE_SECRET=proxy_signature_debug; \
@@ -137,7 +125,7 @@ DEBUG_SET_ENV_VARS := \
 	export SSO_PROXY_REDIRECT_FIELD_NAME=next; \
 	export SSO_PROXY_SESSION_COOKIE=debug_sso_session_cookie; \
 	export SESSION_COOKIE_SECURE=false; \
-	export COMPANIES_HOUSE_API_KEY=1sprpaa-SuDihDC_9qofhm48Qz5PoJjGgBCX6hR_; \
+	export COMPANIES_HOUSE_API_KEY=$$DIRECTORY_UI_BUYER_COMPANIES_HOUSE_API_KEY; \
 	export FEATURE_PUBLIC_PROFILES_ENABLED=true; \
 	export SUPPLIER_CASE_STUDY_URL=http://supplier.trade.great:8005/case-study/{id}; \
 	export SUPPLIER_PROFILE_LIST_URL=http://supplier.trade.great:8005/suppliers?sectors={sectors}; \
@@ -151,32 +139,19 @@ DEBUG_SET_ENV_VARS := \
 	export COMPANIES_HOUSE_CLIENT_ID=debug-client-id; \
 	export COMPANIES_HOUSE_CLIENT_SECRET=debug-client-secret; \
 	export FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED=true; \
-	export FEATURE_MULTI_USER_ACCOUNT_ENABLED=true; \
 	export SECURE_HSTS_SECONDS=0; \
 	export PYTHONWARNINGS=all; \
 	export PYTHONDEBUG=true; \
 	export FEATURE_NEW_SHARED_HEADER_ENABLED=true; \
 	export EXPOSE_DIRECTORY_API=true; \
-	export GREAT_EXPORT_HOME=http://exred.trade.great:8007; \
-	export EXPORTING_NEW=http://exred.trade.great:8007/new; \
-	export EXPORTING_OCCASIONAL=http://exred.trade.great:8007/occasional; \
-	export EXPORTING_REGULAR=http://exred.trade.great:8007/regular; \
-	export GUIDANCE_MARKET_RESEARCH=http://exred.trade.great:8007/market-research; \
-	export GUIDANCE_CUSTOMER_INSIGHT=http://exred.trade.great:8007/customer-insight; \
-	export GUIDANCE_FINANCE=http://exred.trade.great:8007/finance; \
-	export GUIDANCE_BUSINESS_PLANNING=http://exred.trade.great:8007/business-planning; \
-	export GUIDANCE_GETTING_PAID=http://exred.trade.great:8007/getting-paid; \
-	export GUIDANCE_OPERATIONS_AND_COMPLIANCE=http://exred.trade.great:8007/operations-and-compliance; \
-	export SERVICES_EXOPPS=http://exred.trade.great:8007/export-opportunities; \
-	export SERVICES_FAB=http://buyer.trade.great:8001; \
-	export SERVICES_GET_FINANCE=http://exred.trade.great:8007/get-finance; \
-	export SERVICES_SOO=http://soo.trade.great:8008; \
-	export INFO_ABOUT=http://exred.trade.great:8007/about; \
-	export INFO_PRIVACY_AND_COOKIES=http://exred.trade.great:8007/privacy-and-cookies; \
-	export INFO_TERMS_AND_CONDITIONS=http://exred.trade.great:8007/terms-and-conditions; \
+	export HEADER_FOOTER_URLS_GREAT_HOME=http://exred.trade.great:8007/; \
+	export HEADER_FOOTER_URLS_FAB=/; \
+	export HEADER_FOOTER_URLS_SOO=http://soo.trade.great:8008; \
+	export HEADER_FOOTER_URLS_CONTACT_US=http://contact.trade.great:8009/directory/; \
 	export SECURE_SSL_REDIRECT=false; \
-	export HEALTH_CHECK_TOKEN=debug
-
+	export HEALTH_CHECK_TOKEN=debug; \
+	export INTERNAL_CH_BASE_URL=http://test.com; \
+	export INTERNAL_CH_API_KEY=debug
 
 debug_webserver:
 	$(DEBUG_SET_ENV_VARS) && $(DJANGO_WEBSERVER)
@@ -196,8 +171,10 @@ debug_shell:
 debug: test_requirements debug_test
 
 heroku_deploy_dev:
-	docker build -t registry.heroku.com/directory-ui-buyer-dev/web .
-	docker push registry.heroku.com/directory-ui-buyer-dev/web
+	./docker/install_heroku_cli.sh
+	docker login --username=$$HEROKU_EMAIL --password=$$HEROKU_TOKEN registry.heroku.com
+	~/bin/heroku-cli/bin/heroku container:push web --app directory-ui-buyer-dev
+	~/bin/heroku-cli/bin/heroku container:release web --app directory-ui-buyer-dev
 
 integration_tests:
 	cd $(mktemp -d) && \

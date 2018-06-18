@@ -7,6 +7,7 @@ from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.views.generic import FormView, View
 from django.forms import ValidationError
+from django.shortcuts import render
 
 from formtools.wizard.views import NamedUrlSessionWizardView
 
@@ -121,9 +122,8 @@ class EnrolmentView(NamedUrlSessionWizardView):
                         company_number=requested_number
                     )
             except ValidationError as error:
-                return helpers.get_error_response(
-                    error_message=error.message
-                )
+                context = {'validation_error': error.message}
+                return helpers.get_error_response(self.request, context)
         elif kwargs.get('step') == self.STATUS:
             # status step is dependant on using having specified a company, so
             # if company is not selected send the user back to the start
@@ -214,9 +214,8 @@ class SubmitEnrolmentView(SSOSignUpRequiredMixin, View):
                 company_number=self.get_company_number()
             )
         except ValidationError as error:
-            return helpers.get_error_response(
-                error_message=error.message
-            )
+            context = {'validation_error': error.message}
+            return render(request, 'enrolment-error.html', context)
 
         data = self.get_enrolment_data(has_exported_before=has_exported_before)
         api_response = api_client.enrolment.send_form(data)

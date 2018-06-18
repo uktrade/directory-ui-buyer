@@ -5,9 +5,10 @@ import logging
 import urllib
 from urllib.parse import urljoin
 
+from directory_ch_client.company import CompanyCHClient
 from django.conf import settings
 from django.forms import ValidationError
-from django.template.response import SimpleTemplateResponse
+from django.shortcuts import render
 
 import requests
 from requests.exceptions import RequestException
@@ -83,6 +84,10 @@ class CompaniesHouseClient:
         'oauth2-token': make_oauth2_url('oauth2/token'),
     }
     session = requests.Session()
+    companies_house_client = CompanyCHClient(
+        base_url=settings.INTERNAL_CH_BASE_URL,
+        api_key=settings.INTERNAL_CH_API_KEY
+    )
 
     @classmethod
     def get_auth(cls):
@@ -97,18 +102,33 @@ class CompaniesHouseClient:
 
     @classmethod
     def retrieve_profile(cls, number):
-        url = cls.endpoints['profile'].format(number=number)
-        return cls.get(url)
+        if settings.FEATURE_USE_INTERNAL_CH_ENABLED:
+            return cls.companies_house_client.get_company_profile(
+                company_number=number
+            )
+        else:
+            url = cls.endpoints['profile'].format(number=number)
+            return cls.get(url)
 
     @classmethod
     def retrieve_address(cls, number):
-        url = cls.endpoints['address'].format(number=number)
-        return cls.get(url)
+        if settings.FEATURE_USE_INTERNAL_CH_ENABLED:
+            return cls.companies_house_client.get_company_registered_address(
+                company_number=number
+            )
+        else:
+            url = cls.endpoints['address'].format(number=number)
+            return cls.get(url)
 
     @classmethod
     def search(cls, term):
-        url = cls.endpoints['search']
-        return cls.get(url, params={'q': term})
+        if settings.FEATURE_USE_INTERNAL_CH_ENABLED:
+            return cls.companies_house_client.search_companies(
+                query=term
+            )
+        else:
+            url = cls.endpoints['search']
+            return cls.get(url, params={'q': term})
 
     @classmethod
     def make_oauth2_url(cls, redirect_uri, company_number):
@@ -184,8 +204,5 @@ def store_companies_house_profile_in_session_and_validate(
         validators.company_unique(company_number)
 
 
-def get_error_response(error_message):
-    return SimpleTemplateResponse(
-        'enrolment-error.html',
-        {'validation_error': error_message},
-    )
+def get_error_response(request, context):
+    return render(request, 'enrolment-error.html', context)
