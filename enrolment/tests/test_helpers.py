@@ -269,3 +269,50 @@ def test_search():
     request = mock.request_history[0]
 
     assert request.query == 'q=green'
+
+
+def test_search_internal_ch(settings):
+    settings.FEATURE_USE_INTERNAL_CH_ENABLED = True
+
+    with requests_mock.mock() as mock:
+        mock.get(
+            'http://test.com/api/search/companies/'
+        )
+        helpers.CompaniesHouseClient.search(
+            term='foo',
+        )
+        request = mock.request_history[0]
+
+        assert request.query == 'q=foo'
+
+
+def test_retrieve_company_profile_internal_ch(settings):
+    settings.FEATURE_USE_INTERNAL_CH_ENABLED = True
+
+    with requests_mock.mock() as mock:
+        mock.get(
+            'http://test.com/api/company/12345678/'
+        )
+        helpers.CompaniesHouseClient.retrieve_profile(
+            number='12345678'
+        )
+        request = mock.request_history[0]
+
+        assert request.url == 'http://test.com/api/company/12345678/'
+
+
+def test_retrieve_company_address_internal_ch(settings):
+    settings.FEATURE_USE_INTERNAL_CH_ENABLED = True
+
+    with requests_mock.mock() as mock:
+        mock.get(
+            'http://test.com/api/company/12345678/registered-office-address/'
+        )
+        helpers.CompaniesHouseClient.retrieve_address(
+            number='12345678'
+        )
+        request = mock.request_history[0]
+
+        expected_url = \
+            'http://test.com/api/company/12345678/registered-office-address/'
+        assert request.url == expected_url

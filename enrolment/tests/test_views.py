@@ -614,6 +614,7 @@ def test_company_enrolment_step_handles_company_already_registered(client):
     Mock(return_value=MOCK_COMPANIES_HOUSE_API_COMPANY_PROFILE)
 )
 @patch('enrolment.helpers.has_company', Mock(return_value=False))
+@patch('api_client.api_client.enrolment.send_form', Mock())
 @patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
 def test_submit_enrolment_caches_profile(client):
     client.get(

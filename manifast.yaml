@@ -1,5 +1,0 @@
----
-applications:
-- name: directory-ui-buyer
-  memory: 512M
-  buildpack: python_buildpack

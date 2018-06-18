@@ -13,11 +13,11 @@ html, body, div, span, object, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, ab
   font-size: 100%;
   margin: 0;
   padding: 0;
-  vertical-align: baseline; 
+  vertical-align: baseline;
 }
 
 blockquote, q {
-  quotes: none; 
+  quotes: none;
 }
 
 #content {
@@ -126,7 +126,6 @@ body {
   @media (max-width: 979px) {
     padding: 0;
     .container {
-      max-width: 960px;
       padding: 0 20px;
       width: 100%;
     }
@@ -134,7 +133,6 @@ body {
 
   @media (min-width: 979px) {
     .container {
-      max-width: 960px;
       width: 100%;
     }
   }
