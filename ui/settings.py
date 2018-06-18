@@ -24,7 +24,7 @@ BASE_DIR = os.path.dirname(PROJECT_ROOT)
 SECRET_KEY = os.environ["SECRET_KEY"]
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = bool(os.getenv("DEBUG", False))
+DEBUG = os.getenv("DEBUG", 'false') == 'true'
 
 # As the app is running behind a host-based router supplied by Heroku or other
 # PaaS, we can open ALLOWED_HOSTS
@@ -48,7 +48,6 @@ INSTALLED_APPS = [
     "company",
     "core",
     "directory_constants",
-    "directory_header_footer",
     "directory_healthcheck",
     "health_check",
     "health_check.db",
@@ -57,6 +56,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE_CLASSES = [
+    'core.middleware.MaintenanceModeMiddleware',
     'django.middleware.common.CommonMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
@@ -77,10 +77,10 @@ TEMPLATES = [
             'context_processors': [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
-                'directory_header_footer.context_processors.sso_processor',
-                'directory_header_footer.context_processors.urls_processor',
-                ('directory_header_footer.context_processors.'
-                 'header_footer_context_processor'),
+                'directory_components.context_processors.sso_processor',
+                'directory_components.context_processors.urls_processor',
+                ('directory_components.context_processors.'
+                 'header_footer_processor'),
                 'ui.context_processors.feature_flags',
                 'directory_components.context_processors.analytics',
             ],
@@ -233,33 +233,12 @@ SECURE_HSTS_SECONDS = int(os.getenv('SECURE_HSTS_SECONDS', '16070400'))
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 
 # HEADER/FOOTER URLS
-GREAT_EXPORT_HOME = os.getenv('GREAT_EXPORT_HOME')
-
-# EXPORTING PERSONAS
-EXPORTING_NEW = os.getenv('EXPORTING_NEW')
-EXPORTING_REGULAR = os.getenv('EXPORTING_REGULAR')
-EXPORTING_OCCASIONAL = os.getenv('EXPORTING_OCCASIONAL')
-
-# GUIDANCE/ARTICLE SECTIONS
-GUIDANCE_MARKET_RESEARCH = os.getenv('GUIDANCE_MARKET_RESEARCH')
-GUIDANCE_CUSTOMER_INSIGHT = os.getenv('GUIDANCE_CUSTOMER_INSIGHT')
-GUIDANCE_FINANCE = os.getenv('GUIDANCE_FINANCE')
-GUIDANCE_BUSINESS_PLANNING = os.getenv('GUIDANCE_BUSINESS_PLANNING')
-GUIDANCE_GETTING_PAID = os.getenv('GUIDANCE_GETTING_PAID')
-GUIDANCE_OPERATIONS_AND_COMPLIANCE = os.getenv(
-    'GUIDANCE_OPERATIONS_AND_COMPLIANCE')
-
-# SERVICES
-SERVICES_EXOPPS = os.getenv('SERVICES_EXOPPS')
-SERVICES_FAB = os.getenv('SERVICES_FAB')
-SERVICES_GET_FINANCE = os.getenv('SERVICES_GET_FINANCE')
-SERVICES_SOO = os.getenv('SERVICES_SOO')
-
-# FOOTER LINKS
-INFO_ABOUT = os.getenv('INFO_ABOUT')
-INFO_CONTACT_US_DIRECTORY = os.getenv('INFO_CONTACT_US_DIRECTORY')
-INFO_PRIVACY_AND_COOKIES = os.getenv('INFO_PRIVACY_AND_COOKIES')
-INFO_TERMS_AND_CONDITIONS = os.getenv('INFO_TERMS_AND_CONDITIONS')
+HEADER_FOOTER_URLS_GREAT_HOME = os.getenv("HEADER_FOOTER_URLS_GREAT_HOME")
+HEADER_FOOTER_URLS_FAB = os.getenv("HEADER_FOOTER_URLS_FAB")
+HEADER_FOOTER_URLS_SOO = os.getenv("HEADER_FOOTER_URLS_SOO")
+HEADER_FOOTER_URLS_EVENTS = os.getenv("HEADER_FOOTER_URLS_EVENTS")
+HEADER_FOOTER_URLS_CONTACT_US = os.getenv("HEADER_FOOTER_URLS_CONTACT_US")
+HEADER_FOOTER_URLS_DIT = os.getenv("HEADER_FOOTER_URLS_DIT")
 
 # Sentry
 RAVEN_CONFIG = {
@@ -323,16 +302,19 @@ FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED = os.getenv(
     'FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED'
 ) == 'true'
 
-FEATURE_MULTI_USER_ACCOUNT_ENABLED = os.getenv(
-    'FEATURE_MULTI_USER_ACCOUNT_ENABLED'
+FEATURE_USE_INTERNAL_CH_ENABLED = os.getenv(
+    'FEATURE_USE_INTERNAL_CH_ENABLED',
 ) == 'true'
 
-FEATURE_NEW_SHARED_HEADER_ENABLED = os.getenv(
-    'FEATURE_NEW_SHARED_HEADER_ENABLED'
+FEATURE_MAINTENANCE_MODE_ENABLED = os.getenv(
+    'FEATURE_MAINTENANCE_MODE_ENABLED'
 ) == 'true'
-
 
 EXPOSE_DIRECTORY_API = os.getenv('EXPOSE_DIRECTORY_API') == 'true'
 
 # healthcheck
 HEALTH_CHECK_TOKEN = os.environ['HEALTH_CHECK_TOKEN']
+
+# Internal CH
+INTERNAL_CH_BASE_URL = os.getenv('INTERNAL_CH_BASE_URL')
+INTERNAL_CH_API_KEY = os.getenv('INTERNAL_CH_API_KEY')
