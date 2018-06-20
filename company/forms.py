@@ -459,14 +459,7 @@ class CompanyCodeVerificationForm(AutoFocusFieldMixin,
     }
 
     code = forms.CharField(
-        label=(
-            'Enter the verification code from the letter we sent to you after '
-            ' you created your company profile:'
-        ),
-        help_text=mark_safe(
-            'We sent you a letter through the mail containing a twelve digit '
-            'code.'
-        ),
+        label='',
         max_length=12,
         min_length=12,
     )
