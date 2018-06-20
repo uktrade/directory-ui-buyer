@@ -432,6 +432,7 @@ class CompanyAddressVerificationView(
             **kwargs
         )
 
+
 # once the feature flag is removed, turn this into a RedirectView
 class CompanyAddressVerificationHistoricView(CompanyAddressVerificationView):
     def dispatch(self, *args, **kwargs):
