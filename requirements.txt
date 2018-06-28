@@ -14,7 +14,7 @@ cffi==1.11.2              # via cryptography
 contextlib2==0.5.5        # via raven
 cryptography==2.1.4       # via pyopenssl, requests
 directory-ch-client==0.1.0
-directory-components==1.8.3
+directory-components==2.5.1
 directory_validators==5.0.0
 django-cors-headers==2.1.0
 django-formtools==2.0
@@ -23,7 +23,7 @@ django-revproxy==0.9.13
 django==1.11.5
 django_extensions==1.9.0
 djangorestframework==3.4.7  # via directory-ch-client
-export-elements==0.10.2
+export-elements==0.10.6
 gunicorn==19.5.0
 idna==2.6                 # via cryptography, requests
 mohawk==0.3.4             # via directory-ch-client
