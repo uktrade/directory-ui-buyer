@@ -426,6 +426,12 @@ class CompanyAddressVerificationView(
             self.templates[self.SUCCESS]
         )
 
+    def get_context_data(self, **kwargs):
+        return super().get_context_data(
+            company=self.company_profile,
+            **kwargs
+        )
+
 
 # once the feature flag is removed, turn this into a RedirectView
 class CompanyAddressVerificationHistoricView(CompanyAddressVerificationView):
