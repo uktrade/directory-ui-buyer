@@ -20,6 +20,9 @@ blockquote, q {
   quotes: none;
 }
 
+body hr {
+  background: $light-grey;
+}
 #content {
   max-width: none;
 }
