@@ -599,6 +599,7 @@ class CompaniesHouseOauth2CallbackView(
 
     form_class = forms.CompaniesHouseOauth2Form
     template_name = 'companies-house-oauth2-callback.html'
+    error_template = 'companies-house-oauth2-error.html'
     success_url = reverse_lazy('company-detail')
 
     def get_form_kwargs(self):
@@ -611,8 +612,10 @@ class CompaniesHouseOauth2CallbackView(
             sso_session_id=self.request.sso_user.session_id,
             access_token=form.oauth2_response.json()['access_token']
         )
-        response.raise_for_status()
-        return super().form_valid(form)
+        if response.status_code == 500:
+            return TemplateResponse(self.request, self.error_template)
+        else:
+            return super().form_valid(form)
 
 
 class BaseMultiUserAccountManagementView(
