@@ -1,4 +1,5 @@
 @import 'partials/base.scss';
+@import 'partials/variables.scss';
 
 #id_exports-terms_agreed {
   width: 40px;
@@ -38,6 +39,35 @@
   .cancel-button {
     color: #4A4A4F;
     background: none;
+  }
+}
+
+#ed-company-edit-address-container {
+  dl {
+    border-left-color: #e2d9cb;
+    border-left-width: 6px;
+    border-left-style: solid;
+    padding-left: 20px;
+    dt {
+      font-weight: bold;
+      font-size: 24px;
+      line-height: 1.42;
+      color: $dark-grey;
+    }
+    dd {
+      margin-bottom: 30px;
+    }
+  }
+  h3 {
+    margin-top: 30px;
+    margin-bottom: 20px;
+  }
+  .authorised-checkbox {
+    margin-top: 50px;
+    margin-bottom: 60px;
+    label {
+      padding-top: 5px;
+    }
   }
 }
 
