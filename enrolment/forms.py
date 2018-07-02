@@ -51,6 +51,16 @@ class CompanyForm(
         validators=[no_html],
     )
 
+    confirmed = forms.BooleanField(
+        label='',
+        widget=CheckboxWithInlineLabel(
+            label=(
+                'I confirm that I am authorised to sign this '
+                'company up to great.gov.uk services'
+            ),
+        ),
+    )
+
     def visible_fields(self):
         return []
 
