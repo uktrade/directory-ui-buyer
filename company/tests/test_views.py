@@ -1565,6 +1565,30 @@ def test_companies_house_callback_has_company_calls_companies_house(
 
 @patch_check_company_unverified_redirect
 @patch.object(forms.CompaniesHouseClient, 'verify_oauth2_code')
+@patch(
+    'api_client.api_client.company.verify_with_companies_house',
+    return_value=create_response(500)
+)
+def test_companies_house_callback_error(
+    mock_verify_with_companies_house, mock_verify_oauth2_code, settings,
+    has_company_client, sso_user
+):
+    settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED = True
+    mock_verify_oauth2_code.return_value = create_response(
+        status_code=200, json_body={'access_token': 'abc'}
+    )
+
+    url = reverse('verify-companies-house-callback')
+    response = has_company_client.get(url, {'code': '123'})
+
+    assert response.status_code == 200
+    assert response.template_name == (
+        views.CompaniesHouseOauth2CallbackView.error_template
+    )
+
+
+@patch_check_company_unverified_redirect
+@patch.object(forms.CompaniesHouseClient, 'verify_oauth2_code')
 def test_companies_house_callback_invalid_code(
     mock_verify_oauth2_code, settings, has_company_client
 ):

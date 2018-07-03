@@ -51,6 +51,16 @@ class CompanyForm(
         validators=[no_html],
     )
 
+    confirmed = forms.BooleanField(
+        label='',
+        widget=CheckboxWithInlineLabel(
+            label=(
+                'I confirm that I am authorised to sign this '
+                'company up to great.gov.uk services'
+            ),
+        ),
+    )
+
     def visible_fields(self):
         return []
 
@@ -71,7 +81,7 @@ class CompanyExportStatusForm(
         widget=CheckboxWithInlineLabel(
             label=mark_safe(
                 'I accept the '
-                '<a href="{url}" target="_blank">Trade profile terms and '
+                '<a href="{url}" target="_blank">Terms and '
                 'conditions</a>'.format(
                     url=urls.INFO_TERMS_AND_CONDITIONS)
             ),

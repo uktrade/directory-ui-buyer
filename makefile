@@ -171,8 +171,10 @@ debug_shell:
 debug: test_requirements debug_test
 
 heroku_deploy_dev:
-	docker build -t registry.heroku.com/directory-ui-buyer-dev/web .
-	docker push registry.heroku.com/directory-ui-buyer-dev/web
+	./docker/install_heroku_cli.sh
+	docker login --username=$$HEROKU_EMAIL --password=$$HEROKU_TOKEN registry.heroku.com
+	~/bin/heroku-cli/bin/heroku container:push web --app directory-ui-buyer-dev
+	~/bin/heroku-cli/bin/heroku container:release web --app directory-ui-buyer-dev
 
 integration_tests:
 	cd $(mktemp -d) && \

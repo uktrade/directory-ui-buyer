@@ -282,7 +282,7 @@ class CompanyBasicInfoForm(AutoFocusFieldMixin, IndentedInvalidFieldsMixin,
     name = forms.CharField(
         label='Company name',
         help_text=(
-            'Enter your preferred business name'
+            'Enter your trading name'
         ),
         max_length=255,
         validators=[shared_validators.no_html],
@@ -459,14 +459,7 @@ class CompanyCodeVerificationForm(AutoFocusFieldMixin,
     }
 
     code = forms.CharField(
-        label=(
-            'Enter the verification code from the letter we sent to you after '
-            ' you created your company profile:'
-        ),
-        help_text=mark_safe(
-            'We sent you a letter through the mail containing a twelve digit '
-            'code.'
-        ),
+        label='',
         max_length=12,
         min_length=12,
     )
