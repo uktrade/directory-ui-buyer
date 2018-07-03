@@ -1,9 +1,9 @@
 from directory_validators import company as shared_validators
 from directory_validators import enrolment as shared_enrolment_validators
 from directory_constants.constants import choices
+from directory_components.fields import BooleanField
 from directory_components.widgets import (
-    CheckboxSelectInlineLabelMultiple,
-    CheckboxWithInlineLabel
+    CheckboxSelectInlineLabelMultiple
 )
 
 from django import forms
@@ -431,14 +431,11 @@ class CompanyAddressVerificationForm(AutoFocusFieldMixin,
         help_text='This is the full name that letters will be addressed to.',
         validators=[shared_validators.no_html],
     )
-    address_confirmed = forms.BooleanField(
-        label='',
-        widget=CheckboxWithInlineLabel(
-            label=mark_safe(
-                '<span>Tick to confirm address.</span> '
-                '<small> If you can’t collect the letter yourself, you’ll '
-                'need to make sure someone can send it on to you.</small>'
-            ),
+    address_confirmed = BooleanField(
+        label=mark_safe(
+            '<span>Tick to confirm address.</span> '
+            '<small> If you can’t collect the letter yourself, you’ll '
+            'need to make sure someone can send it on to you.</small>'
         ),
     )
 
