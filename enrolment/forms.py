@@ -6,10 +6,10 @@ from directory_validators.company import (
     no_html, no_company_with_insufficient_companies_house_data
 )
 from directory_constants.constants import urls
-from directory_components.fields import PaddedCharField
+from directory_components import fields, widgets
+from directory_components.forms import Form
 
 from enrolment import helpers, validators
-from enrolment.widgets import CheckboxWithInlineLabel
 
 
 class IndentedInvalidFieldsMixin:
@@ -28,9 +28,9 @@ class AutoFocusFieldMixin:
 class CompanyForm(
     AutoFocusFieldMixin,
     IndentedInvalidFieldsMixin,
-    forms.Form
+    Form
 ):
-    company_name = forms.CharField(
+    company_name = fields.CharField(
         label='Company name:',
         help_text=(
             "If this is not your company then click back in your browser "
@@ -39,26 +39,23 @@ class CompanyForm(
         widget=forms.HiddenInput,
         validators=[no_html],
     )
-    company_number = PaddedCharField(
+    company_number = fields.PaddedCharField(
         label='Company number:',
         widget=forms.HiddenInput,
         max_length=8,
         fillchar='0',
     )
-    company_address = forms.CharField(
+    company_address = fields.CharField(
         label='Company registered office address:',
         widget=forms.HiddenInput,
         validators=[no_html],
     )
 
-    confirmed = forms.BooleanField(
-        label='',
-        widget=CheckboxWithInlineLabel(
-            label=(
-                'I confirm that I am authorised to sign this '
-                'company up to great.gov.uk services'
-            ),
-        ),
+    confirmed = fields.BooleanField(
+        label=(
+            'I confirm that I am authorised to sign this '
+            'company up to great.gov.uk services'
+        )
     )
 
     def visible_fields(self):
@@ -66,7 +63,7 @@ class CompanyForm(
 
 
 class CompanyExportStatusForm(
-    AutoFocusFieldMixin, IndentedInvalidFieldsMixin, forms.Form
+    AutoFocusFieldMixin, IndentedInvalidFieldsMixin, Form
 ):
     has_exported_before = forms.TypedChoiceField(
         label=(
@@ -74,27 +71,22 @@ class CompanyExportStatusForm(
         ),
         coerce=lambda x: x == 'True',
         choices=[(True, 'Yes'), (False, 'No')],
-        widget=forms.RadioSelect()
+        widget=widgets.RadioSelect()
     )
-    terms_agreed = forms.BooleanField(
-        label='',
-        widget=CheckboxWithInlineLabel(
-            label=mark_safe(
-                'I accept the '
-                '<a href="{url}" target="_blank">Terms and '
-                'conditions</a>'.format(
-                    url=urls.INFO_TERMS_AND_CONDITIONS)
-            ),
-        ),
+    terms_agreed = fields.BooleanField(
+        label=mark_safe(
+            'I accept the <a href="{url}" target="_blank">Terms and '
+            'conditions</a>'.format(url=urls.INFO_TERMS_AND_CONDITIONS)
+        )
     )
 
 
-class CompaniesHouseSearchForm(forms.Form):
-    term = forms.CharField()
+class CompaniesHouseSearchForm(Form):
+    term = fields.CharField()
 
 
-class CompanyNumberForm(IndentedInvalidFieldsMixin, forms.Form):
-    company_number = PaddedCharField(
+class CompanyNumberForm(IndentedInvalidFieldsMixin, Form):
+    company_number = fields.PaddedCharField(
         validators=helpers.halt_validation_on_failure(
             shared_validators.company_number,
             validators.company_unique,

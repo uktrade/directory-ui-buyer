@@ -394,68 +394,9 @@ a.no-focus-highlight {
 
 #id_exports-has_exported_before {
   li {
-    margin-right: 20px;
     display: inline-block;
-    position: relative;
-    width: 90px;
+    float: none;
     margin-bottom: 0;
-  }
-  input {
-    height: 40px;
-    width: 40px;
-    display: inline-block;
-    vertical-align: middle;
-    margin-bottom: 0;
-    cursor: pointer;
-    -webkit-appearance: none;
-    appearance: none;
-    -moz-appearance: none;
-    background: white;
-    border: none;
-  }
-
-  input::before {
-    content: "";
-    border: 2px solid;
-    background: transparent;
-    width: 34px;
-    height: 34px;
-    position: absolute;
-    top: 0;
-    left: 0;
-    -webkit-border-radius: 50%;
-    -moz-border-radius: 50%;
-    border-radius: 50%;
-  }
-
-  input:focus {
-    outline: none;
-  }
-
-  input:focus::before {
-    -webkit-box-shadow: 0 0 0 4px #ffbf47;
-    -moz-box-shadow: 0 0 0 4px #ffbf47;
-    box-shadow: 0 0 0 4px #ffbf47;
-  }
-
-  input:checked::after {
-    zoom: 1;
-    filter: alpha(opacity=100);
-    opacity: 1;
-  }
-  input::after {
-    content: "";
-    border: 9px solid;
-    height: 0;
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    -webkit-border-radius: 50%;
-    -moz-border-radius: 50%;
-    border-radius: 50%;
-    zoom: 1;
-    filter: alpha(opacity=0);
-    opacity: 0;
   }
 }
 

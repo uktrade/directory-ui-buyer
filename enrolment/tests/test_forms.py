@@ -8,7 +8,7 @@ from django.forms import Form, HiddenInput
 from django.forms.fields import CharField, Field
 from django.core.validators import EmailValidator
 
-from enrolment import forms, validators, widgets
+from enrolment import forms, validators
 
 
 REQUIRED_MESSAGE = Field.default_error_messages['required']
@@ -78,12 +78,6 @@ def test_company_export_status_not_exported():
 
     assert form.is_valid() is True
     assert form.cleaned_data['has_exported_before'] is False
-
-
-def test_company_export_status_terms_agreed_checkbox_widget():
-    field = forms.CompanyExportStatusForm().fields['terms_agreed']
-
-    assert isinstance(field.widget, widgets.CheckboxWithInlineLabel)
 
 
 def test_get_company_name_form_initial_data():
