@@ -16,5 +16,5 @@ directory_validators==5.0.0
 -e git+https://github.com/uktrade/directory-constants.git@v6.4.0#egg=directory_constants
 -e git+https://github.com/uktrade/directory-signature-auth.git@v2.0.1#egg=sigauth
 -e git+https://github.com/uktrade/directory-healthcheck.git@v0.3.0#egg=directory_healthcheck
-export-elements==0.10.2
-directory-components==1.8.3
+export-elements==0.10.6
+directory-components==2.5.1
