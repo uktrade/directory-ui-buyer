@@ -68,7 +68,7 @@ def test_aims_form_renders_title():
 
 def test_company_form_renders_title():
     html = render_to_string('company-form.html', {})
-    assert "Create your company’s profile" in html
+    assert "Create your business profile" in html
 
 
 def test_form_wrapper_hides_hidden_fields():
