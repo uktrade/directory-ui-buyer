@@ -21,14 +21,16 @@
 				{{ form.confirmed }}
 			</div>
 		</div>
-		<div id="ed-account-create-explainer">
-			<a href="{{ sso_login_url }}" class="link">Sign in here</a> if you have already registered.
-			<h3 class="heading-medium">Creating an account means you can:</h3>
-			<ul class="list list-bullet">
-				<li>create a free business profile to promote your products and services to overseas buyers</li>
-				<li>apply for opportunities sourced by overseas trade professionals or provided by a third party</li>
-			</ul>
-		</div>
+		{% if not sso_is_logged_in %}
+			<div id="ed-account-create-explainer">
+				<a href="{{ sso_login_url }}" class="link">Sign in here</a> if you have already registered.
+				<h3 class="heading-medium">Creating an account means you can:</h3>
+				<ul class="list list-bullet">
+					<li>create a free business profile to promote your products and services to overseas buyers</li>
+					<li>apply for opportunities sourced by overseas trade professionals or provided by a third party</li>
+				</ul>
+			</div>
+		{% endif %}
 	</div>
 </div>
 {% endblock %}

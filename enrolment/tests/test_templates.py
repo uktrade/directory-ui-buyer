@@ -1,5 +1,7 @@
 import os
 
+import pytest
+
 from django.conf import settings
 from django.forms import CharField, Form, HiddenInput
 from django.template.loader import render_to_string
@@ -67,6 +69,24 @@ def test_aims_form_renders_title():
 
 
 def test_company_form_renders_title():
+    html = render_to_string('company-form.html', {})
+    assert "Create your business profile" in html
+
+
+@pytest.mark.parametrize(
+    'sso_is_logged_in,create_account_prompt_expected',
+    ((True, False), (False, True))
+)
+def test_company_form_anon_user_create_account(
+    sso_is_logged_in, create_account_prompt_expected
+):
+    html = render_to_string(
+        'company-form.html', {'sso_is_logged_in': sso_is_logged_in}
+    )
+    assert ("Sign in here" in html) is create_account_prompt_expected
+
+
+def test_company_form_auth_user():
     html = render_to_string('company-form.html', {})
     assert "Create your business profile" in html
 
