@@ -43,6 +43,7 @@
 }
 
 #ed-company-edit-address-container {
+  margin-bottom: 0;
   dl {
     border-left-color: #e2d9cb;
     border-left-width: 6px;
@@ -64,13 +65,16 @@
   }
   .authorised-checkbox {
     margin-top: 50px;
-    margin-bottom: 60px;
+    margin-bottom: 0;
     label {
       padding-top: 5px;
     }
   }
 }
 
+#ed-account-create-explainer {
+  margin-top: 45px;
+}
 @media (max-width: 992px) {
   .connections-platform-form-container {
     width: 100%;
