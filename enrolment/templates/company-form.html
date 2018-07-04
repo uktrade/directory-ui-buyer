@@ -2,7 +2,7 @@
 {% load static from staticfiles %}
 
 {% block form_title %}Create your business profile{% endblock%}
-{% block button_next_label %}{{ sso_is_logged_in|yesno:'Continue,Register'}}{% endblock%}
+{% block button_next_label %}Create account{% endblock%}
 
 {% block form_subtitle %}
 <div class="grid-row">
@@ -21,16 +21,16 @@
 				{{ form.confirmed }}
 			</div>
 		</div>
-		{% if not sso_is_logged_in %}
-			<div id="ed-account-create-explainer">
+		<div id="ed-account-create-explainer">
+			{% if not sso_is_logged_in %}
 				<a href="{{ sso_login_url }}" class="link">Sign in here</a> if you have already registered.
-				<h3 class="heading-medium">Registering will create a great.gov.uk account which will give you:</h3>
-				<ul class="list list-bullet">
-					<li>a free business profile visible to overseas buyers</li>
-					<li>access to hundreds of export opportunities</li>
-				</ul>
-			</div>
-		{% endif %}
+			{% endif %}
+			<h3 class="heading-medium">Creating an account means you can:</h3>
+			<ul class="list list-bullet">
+				<li>create a free business profile visible to overseas buyers</li>
+				<li>apply for opportunities sourced by overseas trade professionals or provided by a third party</li>
+			</ul>
+		</div>
 	</div>
 </div>
 {% endblock %}
