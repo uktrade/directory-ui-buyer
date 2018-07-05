@@ -1,0 +1,5 @@
+{% extends 'robots.txt' %}
+{% block records %}
+{{ block.super }}
+Disallow: {% url 'request-payload-too-large' %}
+{% endblock %}

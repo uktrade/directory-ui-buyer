@@ -4,7 +4,7 @@ import conf.sitemaps
 from django.conf.urls import url
 from django.contrib.sitemaps.views import sitemap
 from django.views.decorators.http import require_http_methods
-from django.views.generic import RedirectView, TemplateView
+from django.views.generic import RedirectView
 
 import company.views
 import enrolment.views
@@ -21,6 +21,15 @@ require_get = require_http_methods(['GET'])
 
 
 urlpatterns = [
+    url(
+        r"^robots\.txt$",
+        directory_components.views.RobotsView.as_view(),
+        name='robots'
+    ),
+    url(
+        r"^sitemap\.xml$", sitemap, {'sitemaps': sitemaps},
+        name='sitemap'
+    ),
     url(
         r'^healthcheck/api/$',
         healthcheck.views.APICheckAPIView.as_view(),
@@ -199,15 +208,6 @@ urlpatterns = [
         r'^errors/image-too-large/$',
         company.views.RequestPaylodTooLargeErrorView.as_view(),
         name='request-payload-too-large'
-    ),
-    url(
-        r"^robots\.txt$",
-        directory_components.views.RobotsView.as_view(),
-        name='robots'
-    ),
-    url(
-        r"^sitemap\.xml$", sitemap, {'sitemaps': sitemaps},
-        name='sitemap'
     ),
     # first step of enrolment was /register. It's moved to the landing page
     url(

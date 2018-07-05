@@ -14,7 +14,7 @@ cffi==1.11.2              # via cryptography
 contextlib2==0.5.5        # via raven
 cryptography==2.1.4       # via pyopenssl, requests
 directory-ch-client==0.1.0
-directory-components==2.6.0
+directory-components==2.7.1
 directory_validators==5.0.0
 django-cors-headers==2.1.0
 django-formtools==2.0
