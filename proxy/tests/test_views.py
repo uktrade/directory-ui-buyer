@@ -87,7 +87,7 @@ test_names = (
 @pytest.mark.parametrize('url', urls, ids=test_names)
 def test_proxy_api_view_bad_signature(url, client):
     with patch(
-            'ui.signature.external_api_checker.test_signature'
+            'conf.signature.external_api_checker.test_signature'
     ) as mock_test_signature:
         mock_test_signature.return_value = False
 
@@ -99,7 +99,7 @@ def test_proxy_api_view_bad_signature(url, client):
 @pytest.mark.parametrize('url', urls, ids=test_names)
 def test_proxy_api_view_rejects_unsafe_methods(url, client):
     with patch(
-            'ui.signature.external_api_checker.test_signature'
+            'conf.signature.external_api_checker.test_signature'
     ) as mock_test_signature:
         mock_test_signature.return_value = True
 
@@ -113,7 +113,7 @@ def test_proxy_api_view_rejects_unsafe_methods(url, client):
 @pytest.mark.parametrize('url', urls, ids=test_names)
 def test_proxy_api_view_accepts_get(url, client):
     with patch(
-            'ui.signature.external_api_checker.test_signature'
+            'conf.signature.external_api_checker.test_signature'
     ) as mock_test_signature, patch(
             'urllib3.poolmanager.PoolManager.urlopen') as mock_urlopen:
         proxied_content = {'key': 'value'}
@@ -138,7 +138,7 @@ def test_directory_api_view_bad_signature(client, settings):
     settings.EXPOSE_DIRECTORY_API = True
 
     with patch(
-            'ui.signature.external_api_checker.test_signature'
+            'conf.signature.external_api_checker.test_signature'
     ) as mock_test_signature:
         mock_test_signature.return_value = False
 
@@ -151,7 +151,7 @@ def test_directory_api_view_does_not_reject_unsafe_methods(client, settings):
     settings.EXPOSE_DIRECTORY_API = True
 
     with patch(
-            'ui.signature.external_api_checker.test_signature'
+            'conf.signature.external_api_checker.test_signature'
     ) as mock_test_signature, patch(
             'urllib3.poolmanager.PoolManager.urlopen') as mock_urlopen:
         proxied_content = {'key': 'value'}
@@ -174,7 +174,7 @@ def test_directory_api_view_accepts_get(client, settings):
     settings.EXPOSE_DIRECTORY_API = True
 
     with patch(
-            'ui.signature.external_api_checker.test_signature'
+            'conf.signature.external_api_checker.test_signature'
     ) as mock_test_signature, patch(
             'urllib3.poolmanager.PoolManager.urlopen') as mock_urlopen:
         proxied_content = {'key': 'value'}

@@ -43,7 +43,6 @@ INSTALLED_APPS = [
     "revproxy",
     "formtools",
     "corsheaders",
-    "ui",
     "enrolment",
     "company",
     "core",
@@ -63,10 +62,10 @@ MIDDLEWARE_CLASSES = [
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'sso.middleware.SSOUserMiddleware',
-    'ui.middleware.NoCacheMiddlware',
+    'core.middleware.NoCacheMiddlware',
 ]
 
-ROOT_URLCONF = 'ui.urls'
+ROOT_URLCONF = 'conf.urls'
 
 TEMPLATES = [
     {
@@ -81,14 +80,14 @@ TEMPLATES = [
                 'directory_components.context_processors.urls_processor',
                 ('directory_components.context_processors.'
                  'header_footer_processor'),
-                'ui.context_processors.feature_flags',
+                'core.context_processors.feature_flags',
                 'directory_components.context_processors.analytics',
             ],
         },
     },
 ]
 
-WSGI_APPLICATION = 'ui.wsgi.application'
+WSGI_APPLICATION = 'conf.wsgi.application'
 
 
 # # Database
