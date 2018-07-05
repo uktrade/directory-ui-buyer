@@ -37,13 +37,13 @@ APPEND_SLASH = True
 INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django.contrib.humanize",
+    "django.contrib.sitemaps",
     "django_extensions",
     "raven.contrib.django.raven_compat",
     "django.contrib.sessions",
     "revproxy",
     "formtools",
     "corsheaders",
-    "ui",
     "enrolment",
     "company",
     "core",
@@ -63,10 +63,10 @@ MIDDLEWARE_CLASSES = [
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'sso.middleware.SSOUserMiddleware',
-    'ui.middleware.NoCacheMiddlware',
+    'core.middleware.NoCacheMiddlware',
 ]
 
-ROOT_URLCONF = 'ui.urls'
+ROOT_URLCONF = 'conf.urls'
 
 TEMPLATES = [
     {
@@ -81,14 +81,14 @@ TEMPLATES = [
                 'directory_components.context_processors.urls_processor',
                 ('directory_components.context_processors.'
                  'header_footer_processor'),
-                'ui.context_processors.feature_flags',
+                'core.context_processors.feature_flags',
                 'directory_components.context_processors.analytics',
             ],
         },
     },
 ]
 
-WSGI_APPLICATION = 'ui.wsgi.application'
+WSGI_APPLICATION = 'conf.wsgi.application'
 
 
 # # Database
@@ -308,6 +308,11 @@ FEATURE_USE_INTERNAL_CH_ENABLED = os.getenv(
 
 FEATURE_MAINTENANCE_MODE_ENABLED = os.getenv(
     'FEATURE_MAINTENANCE_MODE_ENABLED'
+) == 'true'
+
+# used by directory-components
+FEATURE_SEARCH_ENGINE_INDEXING_DISABLED = os.getenv(
+    'FEATURE_SEARCH_ENGINE_INDEXING_DISABLED'
 ) == 'true'
 
 EXPOSE_DIRECTORY_API = os.getenv('EXPOSE_DIRECTORY_API') == 'true'

@@ -7,7 +7,7 @@ from django.shortcuts import redirect, Http404
 from revproxy.response import get_django_response
 from revproxy.views import ProxyView
 
-from ui import signature
+from conf import signature
 
 
 class BaseProxyView(ProxyView):
