@@ -72,7 +72,7 @@ class CaseStudyBasicInfoForm(IndentedInvalidFieldsMixin, AutoFocusFieldMixin,
         label='Summary of your case study or project',
         help_text=(
             'Summarise your case study in 200 characters or fewer. This will'
-            ' appear on your main trade profile page.'
+            ' appear on your main business profile page.'
         ),
         max_length=200,
         validators=[
