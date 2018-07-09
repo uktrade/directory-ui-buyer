@@ -1,13 +1,11 @@
-from django import forms
-from django.utils.safestring import mark_safe
-
+from directory_components import fields
+from directory_components.forms import Form
 from directory_validators import enrolment as shared_validators
 from directory_validators.company import (
     no_html, no_company_with_insufficient_companies_house_data
 )
-from directory_constants.constants import urls
-from directory_components import fields, widgets
-from directory_components.forms import Form
+
+from django import forms
 
 from enrolment import helpers, validators
 
@@ -60,25 +58,6 @@ class CompanyForm(
 
     def visible_fields(self):
         return []
-
-
-class CompanyExportStatusForm(
-    AutoFocusFieldMixin, IndentedInvalidFieldsMixin, Form
-):
-    has_exported_before = forms.TypedChoiceField(
-        label=(
-            'Have you exported before?'
-        ),
-        coerce=lambda x: x == 'True',
-        choices=[(True, 'Yes'), (False, 'No')],
-        widget=widgets.RadioSelect()
-    )
-    terms_agreed = fields.BooleanField(
-        label=mark_safe(
-            'I accept the <a href="{url}" target="_blank">Terms and '
-            'conditions</a>'.format(url=urls.INFO_TERMS_AND_CONDITIONS)
-        )
-    )
 
 
 class CompaniesHouseSearchForm(Form):

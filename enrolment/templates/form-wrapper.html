@@ -12,10 +12,14 @@
 {% block sub_header %}{# prevent the subheader from showing on form pages #}{% endblock %}
 
 {% block content %}
-	<div class="outer-container" style="margin-top: 20px; margin-bottom: 10px;">
-		<h3 class="heading-medium">{% block form_title %}{% endblock form_title %}</h3>
-	</div>
-	{% include 'form_progress_indicator.html' %}
+	{% block form_container_title %}
+		<div class="outer-container" style="margin-top: 20px; margin-bottom: 10px;">
+			<h3 class="heading-medium">{% block form_title %}{% endblock form_title %}</h3>
+		</div>
+	{% endblock %}
+	{% block progress_indicator %}
+		{% include 'form_progress_indicator.html' %}
+	{% endblock %}
 	{{ block.super }}
 {% endblock %}
 
