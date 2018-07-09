@@ -30,7 +30,6 @@ def auto_focus_field_autofocus():
 def test_auto_focus_mixin_installed():
     FormClasses = [
         forms.CompanyForm,
-        forms.CompanyExportStatusForm,
     ]
     for FormClass in FormClasses:
         assert issubclass(FormClass, forms.AutoFocusFieldMixin)
@@ -39,7 +38,6 @@ def test_auto_focus_mixin_installed():
 def test_indent_invalid_mixin_installed():
     FormClasses = [
         forms.CompanyForm,
-        forms.CompanyExportStatusForm,
     ]
     for FormClass in FormClasses:
         assert issubclass(FormClass, forms.IndentedInvalidFieldsMixin)
@@ -58,26 +56,6 @@ def test_company_form_fields():
     assert isinstance(field, PaddedCharField)
     assert field.max_length == 8
     assert field.fillchar == '0'
-
-
-def test_company_export_status_has_exported():
-    form = forms.CompanyExportStatusForm(data={
-        'has_exported_before': 'True',
-        'terms_agreed': True,
-    })
-
-    assert form.is_valid() is True
-    assert form.cleaned_data['has_exported_before'] is True
-
-
-def test_company_export_status_not_exported():
-    form = forms.CompanyExportStatusForm(data={
-        'has_exported_before': 'False',
-        'terms_agreed': True,
-    })
-
-    assert form.is_valid() is True
-    assert form.cleaned_data['has_exported_before'] is False
 
 
 def test_get_company_name_form_initial_data():
