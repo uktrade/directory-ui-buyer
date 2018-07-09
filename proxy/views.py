@@ -97,6 +97,6 @@ class APIViewProxy(BaseProxyView):
 class DirectoryAPIViewProxy(APIViewProxy):
 
     def dispatch(self, *args, **kwargs):
-        if not settings.EXPOSE_DIRECTORY_API:
+        if not settings.FEATURE_FLAGS['DIRECTORY_API_ON']:
             raise Http404()
         return super().dispatch(*args, **kwargs)

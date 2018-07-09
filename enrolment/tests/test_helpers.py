@@ -272,7 +272,7 @@ def test_search():
 
 
 def test_search_internal_ch(settings):
-    settings.FEATURE_USE_INTERNAL_CH_ENABLED = True
+    settings.FEATURE_FLAGS['INTERNAL_CH_ON'] = True
 
     with requests_mock.mock() as mock:
         mock.get(
@@ -287,7 +287,7 @@ def test_search_internal_ch(settings):
 
 
 def test_retrieve_company_profile_internal_ch(settings):
-    settings.FEATURE_USE_INTERNAL_CH_ENABLED = True
+    settings.FEATURE_FLAGS['INTERNAL_CH_ON'] = True
 
     with requests_mock.mock() as mock:
         mock.get(
@@ -302,7 +302,7 @@ def test_retrieve_company_profile_internal_ch(settings):
 
 
 def test_retrieve_company_address_internal_ch(settings):
-    settings.FEATURE_USE_INTERNAL_CH_ENABLED = True
+    settings.FEATURE_FLAGS['INTERNAL_CH_ON'] = True
 
     with requests_mock.mock() as mock:
         mock.get(
