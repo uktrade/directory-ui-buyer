@@ -1,14 +1,22 @@
 {% extends "form-wrapper.html" %}
 {% load static from staticfiles %}
 
-{% block form_title %}Create your business profile{% endblock%}
-{% block button_next_label %}Create account{% endblock%}
+{% block button_finish_label %}{{ sso_is_logged_in|yesno:"Continue,Create account" }}{% endblock%}
+
+{% block progress_indicator %}{% endblock %}
+
+{% block form_container_title %}
+	<div class="outer-container">
+		<h2 class="heading-large">Confirm your company</h2>
+	</div>
+{% endblock %}
 
 {% block form_subtitle %}
 <div class="grid-row">
 	<div class="column-two-thirds">
 		<div class="input-field-container" id="ed-company-edit-address-container">
 			<dl>
+				{{ sso_is_logged_in }}
 				<dt>Registered name</dt>
 				<dd>{{ company_name }}</dd>
 				<dt>Company number</dt>
@@ -21,16 +29,12 @@
 				{{ form.confirmed }}
 			</div>
 		</div>
-		<div id="ed-account-create-explainer">
-			{% if not sso_is_logged_in %}
-				<a href="{{ sso_login_url }}" class="link">Sign in here</a> if you have already registered.
-			{% endif %}
-			<h3 class="heading-medium">Creating an account means you can:</h3>
-			<ul class="list list-bullet">
-				<li>create a free business profile visible to overseas buyers</li>
-				<li>apply for opportunities sourced by overseas trade professionals or provided by a third party</li>
-			</ul>
-		</div>
+		{% if not sso_is_logged_in %}
+			<div id="ed-account-create-explainer">
+				<p>To create a business profile for this company you must <a href="{{ sso_login_url }}" class="link">Sign in</a> to your account.</p>
+				<p>If you do not have a great.gov.uk account you can create one here.</p>
+			</div>
+		{% endif %}
 	</div>
 </div>
 {% endblock %}

@@ -6,7 +6,6 @@ from django.conf import settings
 from django.forms import CharField, Form, HiddenInput
 from django.template.loader import render_to_string
 
-from enrolment import forms
 
 supplier_context = {
     'supplier': {
@@ -68,11 +67,6 @@ def test_aims_form_renders_title():
     assert 'Your exporting aims' in html
 
 
-def test_company_form_renders_title():
-    html = render_to_string('company-form.html', {})
-    assert "Create your business profile" in html
-
-
 @pytest.mark.parametrize(
     'sso_is_logged_in,create_account_prompt_expected',
     ((True, False), (False, True))
@@ -83,12 +77,12 @@ def test_company_form_anon_user_create_account(
     html = render_to_string(
         'company-form.html', {'sso_is_logged_in': sso_is_logged_in}
     )
-    assert ("Sign in here" in html) is create_account_prompt_expected
+    assert (">Sign in</a> to your" in html) is create_account_prompt_expected
 
 
-def test_company_form_auth_user():
+def test_company_form_renders_title():
     html = render_to_string('company-form.html', {})
-    assert "Create your business profile" in html
+    assert "Confirm your company" in html
 
 
 def test_form_wrapper_hides_hidden_fields():
@@ -104,37 +98,6 @@ def test_form_wrapper_hides_hidden_fields():
 
     assert '<label for="id_visible">Visible:</label>' in html
     assert '<label for="id_hidden">Hidden:</label>' not in html
-
-
-def test_export_status_form_sso_user():
-    context = {
-        'sso_user': {'email': 'thing@thing.com'},
-        'form': forms.CompanyExportStatusForm(),
-    }
-    html = render_to_string('export-status-form.html', context)
-    assert MUST_CREATE_ACCOUNT_LABEL not in html
-
-
-def test_export_status_form_anon_user():
-    context = {
-        'sso_user': None,
-        'form': forms.CompanyExportStatusForm(),
-    }
-    html = render_to_string('export-status-form.html', context)
-    assert MUST_CREATE_ACCOUNT_LABEL in html
-
-
-def test_export_status_common_invalid_form_error_size():
-    form = forms.CompanyExportStatusForm(data={
-        'export_status': ''
-    })
-    context = {
-        'form': form
-    }
-    html = render_to_string('export-status-form.html', context)
-    assert 'column-two-thirds' in html
-    assert 'Sorry, this is not the right service for your company' not in html
-    assert '<form' in html
 
 
 def test_company_profile_form_correct_title():
