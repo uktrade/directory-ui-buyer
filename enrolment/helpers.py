@@ -102,7 +102,7 @@ class CompaniesHouseClient:
 
     @classmethod
     def retrieve_profile(cls, number):
-        if settings.FEATURE_USE_INTERNAL_CH_ENABLED:
+        if settings.FEATURE_FLAGS['INTERNAL_CH_ON']:
             return cls.companies_house_client.get_company_profile(
                 company_number=number
             )
@@ -112,7 +112,7 @@ class CompaniesHouseClient:
 
     @classmethod
     def retrieve_address(cls, number):
-        if settings.FEATURE_USE_INTERNAL_CH_ENABLED:
+        if settings.FEATURE_FLAGS['INTERNAL_CH_ON']:
             return cls.companies_house_client.get_company_registered_address(
                 company_number=number
             )
@@ -122,7 +122,7 @@ class CompaniesHouseClient:
 
     @classmethod
     def search(cls, term):
-        if settings.FEATURE_USE_INTERNAL_CH_ENABLED:
+        if settings.FEATURE_FLAGS['INTERNAL_CH_ON']:
             return cls.companies_house_client.search_companies(
                 query=term
             )
