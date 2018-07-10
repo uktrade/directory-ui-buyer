@@ -108,21 +108,6 @@ class GetTemplateForCurrentStepMixin:
         return [self.templates[self.steps.current]]
 
 
-class NotFoundOnDisabledFeature:
-
-    def dispatch(self, *args, **kwargs):
-        if not self.flag:
-            raise Http404()
-        return super().dispatch(*args, **kwargs)
-
-
-class Oauth2FeatureFlagMixin(NotFoundOnDisabledFeature):
-
-    @property
-    def flag(self):
-        return settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED
-
-
 class BaseMultiStepCompanyEditView(
     state_requirements.UserStateRequirementHandlerMixin,
     CompanyProfileMixin,
@@ -275,9 +260,6 @@ class CompanyProfileEditView(BaseMultiStepCompanyEditView):
         return super().render_next_step(form, **kwargs)
 
     def condition_show_address(self):
-        # once this feature flag is removed, this view will never show address
-        if settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED:
-            return False
         return not any([
             self.company_profile['is_verification_letter_sent'],
             self.company_profile['verified_with_preverified_enrolment'],
@@ -307,16 +289,14 @@ class CompanyProfileEditView(BaseMultiStepCompanyEditView):
         return context
 
     def handle_profile_update_success(self):
-        if settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED:
-            if not self.company_profile['is_verified']:
-                return redirect('verify-company-hub')
-        elif self.condition_show_address():
+        if self.condition_show_address():
             return TemplateResponse(self.request, self.templates[self.SENT])
+        elif not self.company_profile['is_verified']:
+            return redirect('verify-company-hub')
         return super().handle_profile_update_success()
 
 
 class SendVerificationLetterView(
-    Oauth2FeatureFlagMixin,
     state_requirements.UserStateRequirementHandlerMixin,
     CompanyProfileMixin,
     GetTemplateForCurrentStepMixin,
@@ -376,7 +356,6 @@ class CompanyProfileLogoEditView(BaseMultiStepCompanyEditView):
 
 
 class CompanyVerifyView(
-    Oauth2FeatureFlagMixin,
     state_requirements.UserStateRequirementHandlerMixin,
     CompanyProfileMixin,
     TemplateView
@@ -433,13 +412,8 @@ class CompanyAddressVerificationView(
         )
 
 
-# once the feature flag is removed, turn this into a RedirectView
-class CompanyAddressVerificationHistoricView(CompanyAddressVerificationView):
-    def dispatch(self, *args, **kwargs):
-        if settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED:
-            # redirect to the same view, bit with the new url
-            return redirect('verify-company-address')
-        return super().dispatch(*args, **kwargs)
+class CompanyAddressVerificationHistoricView(RedirectView):
+    pattern_name = 'verify-company-address'
 
 
 class CompanyDescriptionEditView(BaseMultiStepCompanyEditView):
@@ -565,7 +539,6 @@ class Oauth2CallbackUrlMixin:
 
 
 class CompaniesHouseOauth2View(
-    Oauth2FeatureFlagMixin,
     state_requirements.UserStateRequirementHandlerMixin,
     CompanyProfileMixin,
     Oauth2CallbackUrlMixin,
@@ -585,7 +558,6 @@ class CompaniesHouseOauth2View(
 
 
 class CompaniesHouseOauth2CallbackView(
-    Oauth2FeatureFlagMixin,
     state_requirements.UserStateRequirementHandlerMixin,
     CompanyProfileMixin,
     SubmitFormOnGetMixin,

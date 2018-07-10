@@ -135,7 +135,7 @@ DIRECTORY_API_URL = reverse('directory-api', kwargs={'path': '/anything/'})
 
 
 def test_directory_api_view_bad_signature(client, settings):
-    settings.EXPOSE_DIRECTORY_API = True
+    settings.FEATURE_FLAGS['DIRECTORY_API_ON'] = True
 
     with patch(
             'conf.signature.external_api_checker.test_signature'
@@ -148,7 +148,7 @@ def test_directory_api_view_bad_signature(client, settings):
 
 
 def test_directory_api_view_does_not_reject_unsafe_methods(client, settings):
-    settings.EXPOSE_DIRECTORY_API = True
+    settings.FEATURE_FLAGS['DIRECTORY_API_ON'] = True
 
     with patch(
             'conf.signature.external_api_checker.test_signature'
@@ -171,7 +171,7 @@ def test_directory_api_view_does_not_reject_unsafe_methods(client, settings):
 
 
 def test_directory_api_view_accepts_get(client, settings):
-    settings.EXPOSE_DIRECTORY_API = True
+    settings.FEATURE_FLAGS['DIRECTORY_API_ON'] = True
 
     with patch(
             'conf.signature.external_api_checker.test_signature'
@@ -193,7 +193,7 @@ def test_directory_api_view_accepts_get(client, settings):
 
 
 def test_directory_api_view_turned_off(client, settings):
-    settings.EXPOSE_DIRECTORY_API = False
+    settings.FEATURE_FLAGS['DIRECTORY_API_ON'] = False
 
     response = client.get(DIRECTORY_API_URL)
 

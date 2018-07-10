@@ -912,14 +912,15 @@ def test_company_profile_logo_api_client_failure(
     'company.views.api_client.company.update_profile',
     return_value=create_response(200)
 )
+@patch.dict(
+    views.CompanyProfileEditView.condition_dict,
+    {views.CompanyProfileEditView.ADDRESS: Mock(return_value=True)}
+)
 def test_company_profile_edit_create_api_success(
     mock_update_profile, company_profile_edit_end_to_end, sso_user,
     all_company_profile_data, settings
 ):
-    settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED = False
-
     view = views.CompanyProfileEditView
-
     response = company_profile_edit_end_to_end()
 
     assert response.status_code == http.client.OK
@@ -948,12 +949,18 @@ def test_company_profile_edit_create_api_success(
     'company.views.api_client.company.update_profile',
     Mock(return_value=create_response(200))
 )
-def test_company_profile_edit_last_step_feature_flag_enabled_not_verified(
+@patch.dict(
+    views.CompanyProfileEditView.condition_dict,
+    {views.CompanyProfileEditView.ADDRESS: Mock(return_value=False)}
+)
+@patch.object(
+    views.CompanyProfileEditView, 'condition_show_address',
+    Mock(return_value=False)
+)
+def test_company_profile_edit_last_step_not_verified(
     company_profile_letter_already_sent_edit_end_to_end,
     all_company_profile_data, settings, retrieve_profile_unverified
 ):
-    settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED = True
-
     response = company_profile_letter_already_sent_edit_end_to_end()
 
     assert response.status_code == 302
@@ -964,15 +971,21 @@ def test_company_profile_edit_last_step_feature_flag_enabled_not_verified(
     'company.views.api_client.company.update_profile',
     Mock(return_value=create_response(200))
 )
-def test_company_profile_edit_last_step_feature_flag_enabled_verified(
+@patch.dict(
+    views.CompanyProfileEditView.condition_dict,
+    {views.CompanyProfileEditView.ADDRESS: Mock(return_value=False)}
+)
+@patch.object(
+    views.CompanyProfileEditView, 'condition_show_address',
+    Mock(return_value=False)
+)
+def test_company_profile_edit_last_step_verified(
     company_profile_letter_already_sent_edit_end_to_end,
     all_company_profile_data, settings,
 ):
-    settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED = True
-
     response = company_profile_letter_already_sent_edit_end_to_end()
 
-    assert response.status_code == 302
+    assert response.status_code == 302, response.template_name
     assert response.url == reverse('company-detail')
 
 
@@ -1414,14 +1427,6 @@ def test_company_profile_edit_form_labels_hide_address():
         ]
 
 
-def test_company_profile_edit_condition_address_feature_flag_on(settings):
-    settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED = True
-
-    view = views.CompanyProfileEditView()
-
-    assert view.condition_show_address() is False
-
-
 @pytest.mark.parametrize('letter_sent,preverified,expected', [
     [False, False, True],
     [True,  False, False],
@@ -1481,15 +1486,6 @@ def test_render_next_step_skips_to_done_if_letter_not_sent(
     assert mock_render_next_step.call_args == call(form)
 
 
-def test_companies_house_oauth2_feature_flag_disbaled(settings, client):
-    settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED = False
-
-    url = reverse('verify-companies-house')
-    response = client.get(url)
-
-    assert response.status_code == 404
-
-
 @patch_check_company_unverified_redirect
 def test_companies_house_oauth2_has_company_redirects(
     settings, has_company_client
@@ -1507,15 +1503,6 @@ def test_companies_house_oauth2_has_company_redirects(
         '&response_type=code'
         '&scope=https://api.companieshouse.gov.uk/company/123456'
     )
-
-
-def test_companies_house_callback_feature_flag_disbaled(settings, client):
-    settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED = False
-
-    url = reverse('verify-companies-house-callback')
-    response = client.get(url)
-
-    assert response.status_code == 404
 
 
 @patch_check_company_unverified_redirect
@@ -1622,15 +1609,6 @@ def test_companies_house_callback_unauthorized(
     assert b'Invalid code.' in response.content
 
 
-def test_verify_company_feature_flag_off(settings, client):
-    settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED = False
-
-    url = reverse('verify-company-hub')
-    response = client.get(url)
-
-    assert response.status_code == 404
-
-
 @patch_check_company_unverified_redirect
 @patch.object(
     state_requirements.VerificationLetterNotSent, 'is_user_in_required_state',
@@ -1663,26 +1641,6 @@ def test_send_letter_redirects_to_enter_code_when_letter_sent(
 
     assert response.status_code == 302
     assert response.url == reverse('verify-company-address-confirm')
-
-
-@patch_check_company_unverified_redirect
-def test_company_address_verification_backwards_compattible_feature_flag_off(
-    settings, has_company_client
-):
-    settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED = False
-
-    url = reverse('verify-company-address-historic-url')
-    response = has_company_client.get(url)
-
-    assert response.status_code == 200
-
-
-def test_verify_company_address_feature_flag_off(settings, client):
-    settings.FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED = False
-
-    response = client.get(reverse('verify-company-address'))
-
-    assert response.status_code == 404
 
 
 @patch_check_company_unverified_redirect

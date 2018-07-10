@@ -141,24 +141,6 @@ def test_company_profile_details_renders_keywords():
         assert keyword in html
 
 
-def test_company_private_profile_details_renders_standalone_edit_links():
-    context = {
-        'show_wizard_links': False,
-        'company': {
-            'description': 'description description',
-            'summary': 'summary summary',
-            'email_address': 'thing@example.com',
-            'verified_with_code': False,
-            'is_published': False,
-        }
-    }
-    html = render_to_string('company-profile-detail.html', context)
-
-    assert reverse('company-edit-address') in html
-    assert reverse('company-edit-sectors') in html
-    assert reverse('company-edit-key-facts') in html
-
-
 def test_company_private_profile_details_renders_wizard_links():
     context = {
         'show_wizard_links': True,
@@ -249,9 +231,6 @@ def test_company_profile_unpublished_published():
 def test_company_profile_details_feature_flag_on():
     template_name = 'company-profile-detail.html'
     context = {
-        'features': {
-            'FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED': True,
-        },
         'company': {
             'description': 'thing',
             'summary': 'thing',
@@ -262,48 +241,6 @@ def test_company_profile_details_feature_flag_on():
     html = render_to_string(template_name, context)
 
     assert '"' + reverse('verify-company-hub') + '"' in html
-
-
-def test_company_profile_details_feature_flag_off_valid_address():
-    template_name = 'company-profile-detail.html'
-    context = {
-        'features': {
-            'FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED': False,
-        },
-        'company': {
-            'description': 'thing',
-            'summary': 'thing',
-            'email_address': 'thing@example.com',
-            'has_valid_address': True
-        },
-    }
-
-    html = render_to_string(template_name, context)
-
-    assert '"' + reverse('verify-company-hub') + '"' not in html
-    assert reverse('verify-company-address-confirm') in html
-    assert reverse('company-edit-address') not in html
-
-
-def test_company_profile_details_feature_flag_off_invalid_address():
-    template_name = 'company-profile-detail.html'
-    context = {
-        'features': {
-            'FEATURE_COMPANIES_HOUSE_OAUTH2_ENABLED': False,
-        },
-        'company': {
-            'description': 'thing',
-            'summary': 'thing',
-            'email_address': 'thing@example.com',
-            'has_valid_address': False
-        },
-    }
-
-    html = render_to_string(template_name, context)
-
-    assert '"' + reverse('verify-company-hub') + '"' not in html
-    assert reverse('verify-company-address-confirm') not in html
-    assert reverse('company-edit-address') in html
 
 
 def test_company_verify_hub_letter_sent():
