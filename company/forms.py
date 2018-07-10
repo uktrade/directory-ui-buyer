@@ -636,31 +636,6 @@ def serialize_case_study_forms(cleaned_data):
 
 def serialize_company_profile_forms(cleaned_data):
     """
-    Return the shape directory-api-client expects for company profile edit.
-
-    @param {dict} cleaned_data - All the fields in `CompanyBasicInfoForm`
-                                 `CompanyLogoForm`,
-                                 `CompanyClassificationForm`, and
-                                 `CompanyAddressVerificationForm`.
-    @returns dict
-
-    """
-
-    return {
-        'name': cleaned_data['name'],
-        'website': cleaned_data['website'],
-        'keywords': cleaned_data['keywords'],
-        'employees': cleaned_data['employees'],
-        'export_destinations': cleaned_data['export_destinations'],
-        'export_destinations_other': cleaned_data['export_destinations_other'],
-        'sectors': [cleaned_data['sectors']],
-        'postal_full_name': cleaned_data['postal_full_name'],
-        'has_exported_before': cleaned_data['has_exported_before'],
-    }
-
-
-def serialize_company_profile_without_address_forms(cleaned_data):
-    """
     Return the shape directory-api-client expects for company profile edit,
     excluding address fields.
 

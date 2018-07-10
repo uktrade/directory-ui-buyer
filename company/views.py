@@ -220,7 +220,6 @@ class CompanyProfileDetailView(
 
 
 class CompanyProfileEditView(BaseMultiStepCompanyEditView):
-    ADDRESS = 'address'
     BASIC = 'basic'
     CLASSIFICATION = 'classification'
     SENT = 'sent'
@@ -228,70 +227,27 @@ class CompanyProfileEditView(BaseMultiStepCompanyEditView):
     form_list = (
         (BASIC, forms.CompanyBasicInfoForm),
         (CLASSIFICATION, forms.CompanyClassificationForm),
-        (ADDRESS, forms.CompanyAddressVerificationForm),
     )
+    form_labels = [
+        (BASIC, 'About your company'),
+        (CLASSIFICATION, 'Industry and exporting'),
+    ]
     templates = {
         BASIC: 'company-profile-form.html',
         CLASSIFICATION: 'company-profile-form-classification.html',
-        ADDRESS: 'company-profile-form-address.html',
-        SENT: 'company-profile-form-letter-sent.html',
     }
 
     failure_template = 'company-profile-update-error.html'
 
-    @property
-    def form_labels(self):
-        labels = [
-            (self.BASIC, 'About your company'),
-            (self.CLASSIFICATION, 'Industry and exporting'),
-        ]
-        if self.condition_show_address():
-            labels.append((self.ADDRESS, 'Review and send'))
-        return labels
-
-    def render_next_step(self, form, **kwargs):
-        # when the final step is posted, formtools `current_step` is
-        # "address". However, `form_labels` does not return "confirm" because
-        # the letter has now been sent - resulting in ValueError
-        # https://sentry.ci.uktrade.io/dit/directory-ui-buyer-dev/issues/1588/
-        if self.steps.current == self.ADDRESS:
-            if not self.condition_show_address():
-                return self.render_done(form, **kwargs)
-        return super().render_next_step(form, **kwargs)
-
-    def condition_show_address(self):
-        return not any([
-            self.company_profile['is_verification_letter_sent'],
-            self.company_profile['verified_with_preverified_enrolment'],
-        ])
-
-    condition_dict = {
-        ADDRESS: condition_show_address,
-    }
-
-    @property
-    def form_serializer(self):
-        if self.condition_show_address():
-            return forms.serialize_company_profile_forms
-        return forms.serialize_company_profile_without_address_forms
+    form_serializer = staticmethod(forms.serialize_company_profile_forms)
 
     def get_context_data(self, form, **kwargs):
-        context = super().get_context_data(
+        return super().get_context_data(
             form=form, form_labels=self.form_labels, **kwargs,
         )
-        if self.steps.current == self.ADDRESS:
-            all_cleaned_data = self.get_all_cleaned_data()
-            context['company_name'] = all_cleaned_data.get('name')
-            context['company_number'] = self.company_profile['number']
-            context['company_address'] = helpers.build_company_address(
-                self.company_profile
-            )
-        return context
 
     def handle_profile_update_success(self):
-        if self.condition_show_address():
-            return TemplateResponse(self.request, self.templates[self.SENT])
-        elif not self.company_profile['is_verified']:
+        if not self.company_profile['is_verified']:
             return redirect('verify-company-hub')
         return super().handle_profile_update_success()
 

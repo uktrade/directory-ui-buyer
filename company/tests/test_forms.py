@@ -421,32 +421,6 @@ def test_serialize_company_profile_forms():
         'employees': '1-10',
         'keywords': 'Jolly good exporter',
         'name': 'Example ltd.',
-        'postal_full_name': 'Jeremy postal',
-        'sectors': '1',
-        'website': 'http://example.com',
-        'export_destinations': ['CN'],
-        'export_destinations_other': 'Portland',
-        'has_exported_before': True,
-    })
-    expected = {
-        'keywords': 'Jolly good exporter',
-        'employees': '1-10',
-        'name': 'Example ltd.',
-        'sectors': ['1'],
-        'website': 'http://example.com',
-        'postal_full_name': 'Jeremy postal',
-        'export_destinations': ['CN'],
-        'export_destinations_other': 'Portland',
-        'has_exported_before': True,
-    }
-    assert actual == expected
-
-
-def test_serialize_company_profile_without_address_forms():
-    actual = forms.serialize_company_profile_without_address_forms({
-        'employees': '1-10',
-        'keywords': 'Jolly good exporter',
-        'name': 'Example ltd.',
         'sectors': '1',
         'website': 'http://example.com',
         'export_destinations': ['CN'],
@@ -506,11 +480,13 @@ def test_serialize_company_sectors_form():
         'sectors': 'one',
         'export_destinations': ['CN'],
         'export_destinations_other': 'Portland',
+        'has_exported_before': True,
     }
     expected = {
         'sectors': ['one'],
         'export_destinations': ['CN'],
         'export_destinations_other': 'Portland',
+        'has_exported_before': True,
     }
     assert forms.serialize_company_sectors_form(data) == expected
 
