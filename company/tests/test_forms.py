@@ -426,6 +426,7 @@ def test_serialize_company_profile_forms():
         'website': 'http://example.com',
         'export_destinations': ['CN'],
         'export_destinations_other': 'Portland',
+        'has_exported_before': True,
     })
     expected = {
         'keywords': 'Jolly good exporter',
@@ -436,6 +437,7 @@ def test_serialize_company_profile_forms():
         'postal_full_name': 'Jeremy postal',
         'export_destinations': ['CN'],
         'export_destinations_other': 'Portland',
+        'has_exported_before': True,
     }
     assert actual == expected
 
@@ -449,6 +451,7 @@ def test_serialize_company_profile_without_address_forms():
         'website': 'http://example.com',
         'export_destinations': ['CN'],
         'export_destinations_other': 'Portland',
+        'has_exported_before': True,
     })
     expected = {
         'employees': '1-10',
@@ -458,6 +461,7 @@ def test_serialize_company_profile_without_address_forms():
         'website': 'http://example.com',
         'export_destinations': ['CN'],
         'export_destinations_other': 'Portland',
+        'has_exported_before': True,
     }
     assert actual == expected
 

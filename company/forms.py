@@ -3,7 +3,7 @@ from directory_validators import enrolment as shared_enrolment_validators
 from directory_constants.constants import choices
 from directory_components.fields import BooleanField
 from directory_components.widgets import (
-    CheckboxSelectInlineLabelMultiple
+    CheckboxSelectInlineLabelMultiple, RadioSelect
 )
 
 from django import forms
@@ -372,6 +372,14 @@ class CompanyClassificationForm(AutoFocusFieldMixin,
         ),
         choices=choices.INDUSTRIES,
     )
+    has_exported_before = forms.TypedChoiceField(
+        label=(
+            'Have you exported before?'
+        ),
+        coerce=lambda x: x == 'True',
+        choices=[(True, 'Yes'), (False, 'No')],
+        widget=RadioSelect(attrs={'class': 'exported-before'})
+    )
     export_destinations = forms.MultipleChoiceField(
         label='Select the countries you would like to export to',
         choices=choices.LEAD_GENERATION_EXPORT_DESTINATIONS + (('', 'Other'),),
@@ -647,7 +655,7 @@ def serialize_company_profile_forms(cleaned_data):
         'export_destinations_other': cleaned_data['export_destinations_other'],
         'sectors': [cleaned_data['sectors']],
         'postal_full_name': cleaned_data['postal_full_name'],
-
+        'has_exported_before': cleaned_data['has_exported_before'],
     }
 
 
@@ -671,6 +679,7 @@ def serialize_company_profile_without_address_forms(cleaned_data):
         'export_destinations': cleaned_data['export_destinations'],
         'export_destinations_other': cleaned_data['export_destinations_other'],
         'sectors': [cleaned_data['sectors']],
+        'has_exported_before': cleaned_data['has_exported_before'],
     }
 
 
@@ -733,6 +742,7 @@ def serialize_company_sectors_form(cleaned_data):
         'sectors': [cleaned_data['sectors']],
         'export_destinations': cleaned_data['export_destinations'],
         'export_destinations_other': cleaned_data['export_destinations_other'],
+        'has_exported_before': cleaned_data['has_exported_before'],
     }
 
 

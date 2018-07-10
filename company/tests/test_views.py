@@ -218,6 +218,7 @@ def all_company_profile_data():
         'country': 'GB',
         'export_destinations': ['CN', 'IN'],
         'export_destinations_other': 'West Philadelphia',
+        'has_exported_before': True,
     }
 
 
@@ -298,6 +299,7 @@ def company_profile_classification_data(all_company_profile_data):
         step + '-sectors': data['sectors'],
         step + '-export_destinations': data['export_destinations'],
         step + '-export_destinations_other': data['export_destinations_other'],
+        step + '-has_exported_before': data['has_exported_before'],
     }
 
 
@@ -936,6 +938,7 @@ def test_company_profile_edit_create_api_success(
             'export_destinations_other': (
                 all_company_profile_data['export_destinations_other']
             ),
+            'has_exported_before': True,
         },
         sso_session_id=sso_user.session_id,
     )
@@ -1002,7 +1005,8 @@ def test_company_profile_letter_already_sent_edit_create_api_success(
             'export_destinations': ['CN', 'IN'],
             'export_destinations_other': 'West Philadelphia',
             'name': 'Example Corp.',
-            'website': 'http://www.example.com'
+            'website': 'http://www.example.com',
+            'has_exported_before': True,
         },
         sso_session_id='213'
     )
@@ -1251,6 +1255,7 @@ def test_supplier_sectors_edit_standalone_view_api_multiple_sectors(
             'sectors': ['AGRICULTURE_HORTICULTURE_AND_FISHERIES'],
             'export_destinations': ['CN', 'IN'],
             'export_destinations_other': 'West Philadelphia',
+            'has_exported_before': True,
         }
     )
 

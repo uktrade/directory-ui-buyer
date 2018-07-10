@@ -19,6 +19,7 @@ directory-ch-client==0.1.0
 directory-components==2.7.2
 directory_validators==5.0.0
 django-cors-headers==2.1.0
+django-environ==0.4.5
 django-formtools==2.0
 django-health-check==3.0.0
 django-revproxy==0.9.13
