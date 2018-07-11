@@ -1,6 +1,9 @@
 @import 'partials/base.scss';
 @import 'partials/variables.scss';
 
+.exported-before li {
+  margin-bottom: 10px;
+}
 #id_exports-terms_agreed {
   width: 40px;
 }
