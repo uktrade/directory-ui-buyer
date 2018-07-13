@@ -41,7 +41,9 @@ def company_number_present_and_active(value):
         else:
             raise ValidationError(MESSAGE_COMPANY_ERROR)
     else:
-        company_active(company['company_status'])
+        # Sometimes CH response does not contain company_status - we treat
+        # these as inactive
+        company_active(company.get('company_status'))
 
 
 def email_address(value):

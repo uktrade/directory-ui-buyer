@@ -69,6 +69,19 @@ def test_validate_company_number_present_and_active_invalid():
 
 @patch(
     'enrolment.helpers.get_company_from_companies_house',
+    Mock(return_value={
+        'company_name': 'company_name'
+    })
+)
+def test_validate_company_number_present_and_active_no_company_status():
+
+    with pytest.raises(ValidationError) as excinfo:
+        validators.company_number_present_and_active('01245678')
+    assert excinfo.value.messages == [validators.MESSAGE_COMPANY_NOT_ACTIVE]
+
+
+@patch(
+    'enrolment.helpers.get_company_from_companies_house',
     Mock(side_effect=HTTPError(
         response=Mock(status_code=http.client.INTERNAL_SERVER_ERROR))
     )
