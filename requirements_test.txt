@@ -16,7 +16,7 @@ contextlib2==0.5.5        # via raven
 coverage==4.4.1           # via codecov, pytest-cov
 cryptography==2.1.4       # via pyopenssl, requests
 directory-ch-client==0.1.0
-directory-components==2.8.1
+directory-components==2.11.0
 directory_validators==5.0.0
 django-cors-headers==2.1.0
 django-environ==0.4.5
@@ -26,7 +26,7 @@ django-revproxy==0.9.13
 django==1.11.5
 django_extensions==1.9.0
 djangorestframework==3.4.7  # via directory-ch-client
-export-elements==0.10.6
+export-elements==0.14.5   # via directory-components
 flake8==3.0.4
 freezegun==0.3.8
 gunicorn==19.5.0
