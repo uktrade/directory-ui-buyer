@@ -12,7 +12,7 @@ coverage==4.4.1           # via codecov, pytest-cov
 directory-api-client==9.15.3
 directory-ch-client==0.2.0
 directory-client-core==0.2.2  # via directory-api-client, directory-sso-api-client
-directory-components==2.11.0
+directory-components==2.14.0
 directory-constants==7.0.0
 directory-healthcheck==0.4.2
 directory-sso-api-client==2.5.1
@@ -25,7 +25,7 @@ django-revproxy==0.9.15
 django==1.11.5
 django_extensions==1.9.0
 djangorestframework==3.4.7  # via sigauth
-export-elements==0.14.5   # via directory-components
+export-elements==0.15.0   # via directory-components
 flake8==3.0.4
 freezegun==0.3.8
 gunicorn==19.5.0
