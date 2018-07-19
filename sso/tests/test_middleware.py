@@ -1,5 +1,6 @@
 from unittest.mock import patch, Mock
 
+import pytest
 import requests
 
 from django.urls import reverse
@@ -39,7 +40,7 @@ def test_sso_middleware_api_response_ok(
     mock_get_session_user, settings, client
 ):
     mock_get_session_user.return_value = api_response_ok()
-    client.cookies[settings.SSO_PROXY_SESSION_COOKIE] = '123'
+    client.cookies[settings.SSO_SESSION_COOKIE] = '123'
     settings.MIDDLEWARE_CLASSES = ['sso.middleware.SSOUserMiddleware']
     response = client.get(reverse('robots'))
 
@@ -57,12 +58,15 @@ def test_sso_middleware_bad_response(settings, client):
     assert response._request.sso_user is None
 
 
+@pytest.mark.parametrize(
+    'excpetion_class', requests.exceptions.RequestException.__subclasses__()
+)
 @patch('sso.utils.sso_api_client.user.get_session_user')
 def test_sso_middleware_timeout(
-    mock_get_session_user, settings, client, caplog
+    mock_get_session_user, settings, client, caplog, excpetion_class
 ):
-    mock_get_session_user.side_effect = requests.exceptions.ReadTimeout()
-    client.cookies[settings.SSO_PROXY_SESSION_COOKIE] = '123'
+    mock_get_session_user.side_effect = excpetion_class()
+    client.cookies[settings.SSO_SESSION_COOKIE] = '123'
     settings.MIDDLEWARE_CLASSES = [
         'django.contrib.sessions.middleware.SessionMiddleware',
         'sso.middleware.SSOUserMiddleware'

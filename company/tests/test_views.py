@@ -1196,7 +1196,7 @@ def test_unsubscribe_anon_user(client):
 @patch.object(views.api_client.supplier, 'unsubscribe')
 def test_unsubscribe_api_failure(mock_unsubscribe, logged_in_client):
     logged_in_client.cookies = SimpleCookie(
-        {settings.SSO_PROXY_SESSION_COOKIE: 1}
+        {settings.SSO_SESSION_COOKIE: 1}
     )
     mock_unsubscribe.return_value = create_response(400)
 
