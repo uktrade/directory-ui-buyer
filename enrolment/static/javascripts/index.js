@@ -457,7 +457,7 @@ GOVUK.components = (new function() {
     });
   }
   CompaniesHouseNameLookup.prototype.param = function() {
-    return "term=" + this._private.$input.val();
+    return "term=" + escape(this._private.$input.val());
   }
   CompaniesHouseNameLookup.prototype.setContent = function() {
     SelectiveLookup.prototype.setContent.call(this, {
