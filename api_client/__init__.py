@@ -6,4 +6,5 @@ ClientClass = import_string(settings.API_CLIENT_CLASS)
 api_client = ClientClass(
     base_url=settings.API_CLIENT_BASE_URL,
     api_key=settings.API_SIGNATURE_SECRET,
+    timeout=15
 )
