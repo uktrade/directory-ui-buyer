@@ -11,7 +11,7 @@ from conf import signature
 
 
 class BaseProxyView(ProxyView):
-    upstream = settings.API_CLIENT_BASE_URL
+    upstream = settings.DIRECTORY_API_CLIENT_BASE_URL
     set_forwarded_host_header = True
 
     def __init__(self, *args, **kwargs):
@@ -84,7 +84,7 @@ class BaseProxyView(ProxyView):
 
 
 class APIViewProxy(BaseProxyView):
-    upstream = settings.API_CLIENT_BASE_URL
+    upstream = settings.DIRECTORY_API_CLIENT_BASE_URL
     # setting forwarded_host header cause image returned to use FAB's domain
     set_forwarded_host_header = False
 

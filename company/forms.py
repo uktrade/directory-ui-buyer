@@ -16,7 +16,8 @@ from company import validators
 from enrolment.forms import IndentedInvalidFieldsMixin, AutoFocusFieldMixin
 from enrolment.helpers import halt_validation_on_failure
 from enrolment.helpers import CompaniesHouseClient
-from sso.utils import sso_api_client
+
+from directory_sso_api_client.client import sso_api_client
 
 
 class SocialLinksForm(IndentedInvalidFieldsMixin, AutoFocusFieldMixin,
