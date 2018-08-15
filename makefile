@@ -35,10 +35,10 @@ docker_run:
 
 DOCKER_SET_DEBUG_ENV_VARS := \
 	export DIRECTORY_UI_BUYER_API_CLIENT_CLASS_NAME=unit-test; \
-	export DIRECTORY_UI_BUYER_API_SIGNATURE_SECRET=debug; \
-	export DIRECTORY_UI_BUYER_API_CLIENT_BASE_URL=http://api.trade.great:8000; \
-	export DIRECTORY_UI_BUYER_SSO_SIGNATURE_SECRET=api_signature_debug; \
-	export DIRECTORY_UI_BUYER_SSO_API_CLIENT_BASE_URL=http://sso.trade.great:8003; \
+	export DIRECTORY_UI_BUYER_DIRECTORY_API_CLIENT_API_KEY=debug; \
+	export DIRECTORY_UI_BUYER_DIRECTORY_API_CLIENT_BASE_URL=http://api.trade.great:8000; \
+	export DIRECTORY_UI_BUYER_DIRECTORY_SSO_API_CLIENT_API_KEY=api_signature_debug; \
+	export DIRECTORY_UI_BUYER_DIRECTORY_SSO_API_CLIENT_BASE_URL=http://sso.trade.great:8003; \
 	export DIRECTORY_UI_BUYER_SSO_PROXY_LOGIN_URL=http://sso.trade.great:8004/accounts/login/; \
 	export DIRECTORY_UI_BUYER_SSO_PROXY_LOGOUT_URL=http://sso.trade.great:8004/accounts/logout/?next=http://buyer.trade.great:8001; \
 	export DIRECTORY_UI_BUYER_SSO_PROXY_SIGNUP_URL=http://sso.trade.great:8004/accounts/signup/; \
@@ -71,8 +71,8 @@ DOCKER_SET_DEBUG_ENV_VARS := \
 	export DIRECTORY_UI_BUYER_HEADER_FOOTER_URLS_CONTACT_US=http://contact.trade.great:8009/directory/; \
 	export DIRECTORY_UI_BUYER_SECURE_SSL_REDIRECT=false; \
 	export DIRECTORY_UI_BUYER_HEALTH_CHECK_TOKEN=debug; \
-	export DIRECTORY_UI_BUYER_INTERNAL_CH_BASE_URL=http://test.com; \
-	export DIRECTORY_UI_BUYER_INTERNAL_CH_API_KEY=debug
+	export DIRECTORY_UI_BUYER_DIRECTORY_CH_SEARCH_CLIENT_BASE_URL=http://test.com; \
+	export DIRECTORY_UI_BUYER_DIRECTORY_CH_SEARCH_CLIENT_API_KEY=debug
 
 docker_test_env_files:
 	$(DOCKER_SET_DEBUG_ENV_VARS) && \
@@ -111,10 +111,10 @@ DEBUG_SET_ENV_VARS := \
 	export PORT=8001; \
 	export SECRET_KEY=debug; \
 	export DEBUG=true;\
-	export API_SIGNATURE_SECRET=debug; \
-	export API_CLIENT_BASE_URL=http://api.trade.great:8000; \
-	export SSO_SIGNATURE_SECRET=api_signature_debug; \
-	export SSO_API_CLIENT_BASE_URL=http://sso.trade.great:8003/; \
+	export DIRECTORY_API_CLIENT_API_KEY=debug; \
+	export DIRECTORY_API_CLIENT_BASE_URL=http://api.trade.great:8000; \
+	export DIRECTORY_SSO_API_CLIENT_API_KEY=api_signature_debug; \
+	export DIRECTORY_SSO_API_CLIENT_BASE_URL=http://sso.trade.great:8003/; \
 	export SSO_PROXY_LOGIN_URL=http://sso.trade.great:8004/accounts/login/; \
 	export SSO_PROXY_LOGOUT_URL=http://sso.trade.great:8004/accounts/logout/?next=http://buyer.trade.great:8001; \
 	export SSO_PROXY_SIGNUP_URL=http://sso.trade.great:8004/accounts/signup/; \
@@ -144,8 +144,8 @@ DEBUG_SET_ENV_VARS := \
 	export HEADER_FOOTER_URLS_CONTACT_US=http://contact.trade.great:8009/directory/; \
 	export SECURE_SSL_REDIRECT=false; \
 	export HEALTH_CHECK_TOKEN=debug; \
-	export INTERNAL_CH_BASE_URL=http://test.com; \
-	export INTERNAL_CH_API_KEY=debug
+	export DIRECTORY_CH_SEARCH_CLIENT_BASE_URL=http://test.com; \
+	export DIRECTORY_CH_SEARCH_CLIENT_API_KEY=debug
 
 debug_webserver:
 	$(DEBUG_SET_ENV_VARS) && $(DJANGO_WEBSERVER)
@@ -178,10 +178,6 @@ integration_tests:
 
 compile_requirements:
 	python3 -m piptools compile requirements.in
-
-compile_test_requirements:
 	python3 -m piptools compile requirements_test.in
-
-compile_all_requirements: compile_requirements compile_test_requirements
 
 .PHONY: build clean test_requirements docker_run docker_debug docker_webserver_bash docker_test debug_webserver debug_test debug heroku_deploy_dev heroku_deploy_demo

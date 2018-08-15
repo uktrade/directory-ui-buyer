@@ -85,8 +85,10 @@ class CompaniesHouseClient:
     }
     session = requests.Session()
     companies_house_client = CompanyCHClient(
-        base_url=settings.INTERNAL_CH_BASE_URL,
-        api_key=settings.INTERNAL_CH_API_KEY
+        base_url=settings.DIRECTORY_CH_SEARCH_CLIENT_BASE_URL,
+        api_key=settings.DIRECTORY_CH_SEARCH_CLIENT_API_KEY,
+        sender_id=settings.DIRECTORY_CH_SEARCH_CLIENT_SENDER_ID,
+        timeout=settings.DIRECTORY_CH_SEARCH_CLIENT_DEFAULT_TIMEOUT,
     )
 
     @classmethod
