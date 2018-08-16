@@ -88,6 +88,7 @@ TEMPLATES = [
                  'header_footer_processor'),
                 'directory_components.context_processors.feature_flags',
                 'directory_components.context_processors.analytics',
+                'directory_components.context_processors.cookie_notice',
             ],
         },
     },
@@ -282,6 +283,7 @@ HEADER_FOOTER_URLS_SOO = env.str('HEADER_FOOTER_URLS_SOO', '')
 HEADER_FOOTER_URLS_EVENTS = env.str('HEADER_FOOTER_URLS_EVENTS', '')
 HEADER_FOOTER_URLS_CONTACT_US = env.str('HEADER_FOOTER_URLS_CONTACT_US', '')
 HEADER_FOOTER_URLS_DIT = env.str('HEADER_FOOTER_URLS_DIT', '')
+PRIVACY_COOKIE_DOMAIN = env.str('PRIVACY_COOKIE_DOMAIN')
 
 # Sentry
 RAVEN_CONFIG = {
