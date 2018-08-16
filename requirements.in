@@ -13,7 +13,7 @@ pillow==4.2.1
 directory-ch-client==1.0.0
 directory_validators==5.0.0
 directory-healthcheck==0.4.2
-directory_components==2.17.2
+directory_components==2.18.0
 export_elements==0.17.3
 directory-sso-api-client==3.0.2
 directory-api-client==10.0.2

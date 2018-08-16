@@ -16,7 +16,7 @@ directory-client-core==4.0.2  # via directory-api-client, directory-ch-client, d
 directory-constants==7.0.0
 directory-healthcheck==0.4.2
 directory-sso-api-client==3.0.2
-directory_components==2.17.2
+directory_components==2.18.0
 directory_validators==5.0.0
 django-cors-headers==2.1.0
 django-environ==0.4.5

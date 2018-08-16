@@ -55,7 +55,7 @@ DOCKER_SET_DEBUG_ENV_VARS := \
 	export DIRECTORY_UI_BUYER_SUPPLIER_PROFILE_URL=http://supplier.trade.great:8005/suppliers/{number}; \
 	export DIRECTORY_UI_BUYER_GOOGLE_TAG_MANAGER_ID=GTM-TC46J8K; \
 	export DIRECTORY_UI_BUYER_GOOGLE_TAG_MANAGER_ENV=&gtm_auth=kH9XolShYWhOJg8TA9bW_A&gtm_preview=env-32&gtm_cookies_win=x; \
-	export DIRECTORY_UI_BUYER_UTM_COOKIE_DOMAIN=.great; \
+	export DIRECTORY_UI_BUYER_UTM_COOKIE_DOMAIN=.trade.great; \
 	export DIRECTORY_UI_BUYER_DIRECTORY_EXTERNAL_API_SIGNATURE_SECRET=debug; \
 	export DIRECTORY_UI_BUYER_CORS_ORIGIN_ALLOW_ALL=true; \
 	export DIRECTORY_UI_BUYER_SUPPLIER_SEARCH_URL=http://supplier.trade.great:8005/search; \
@@ -72,7 +72,8 @@ DOCKER_SET_DEBUG_ENV_VARS := \
 	export DIRECTORY_UI_BUYER_SECURE_SSL_REDIRECT=false; \
 	export DIRECTORY_UI_BUYER_HEALTH_CHECK_TOKEN=debug; \
 	export DIRECTORY_UI_BUYER_DIRECTORY_CH_SEARCH_CLIENT_BASE_URL=http://test.com; \
-	export DIRECTORY_UI_BUYER_DIRECTORY_CH_SEARCH_CLIENT_API_KEY=debug
+	export DIRECTORY_UI_BUYER_DIRECTORY_CH_SEARCH_CLIENT_API_KEY=debug; \
+	export DIRECTORY_UI_BUYER_PRIVACY_COOKIE_DOMAIN=.trade.great
 
 docker_test_env_files:
 	$(DOCKER_SET_DEBUG_ENV_VARS) && \
@@ -128,7 +129,7 @@ DEBUG_SET_ENV_VARS := \
 	export SUPPLIER_PROFILE_URL=http://supplier.trade.great:8005/suppliers/{number}; \
 	export GOOGLE_TAG_MANAGER_ID=GTM-TC46J8K; \
 	export GOOGLE_TAG_MANAGER_ENV=&gtm_auth=kH9XolShYWhOJg8TA9bW_A&gtm_preview=env-32&gtm_cookies_win=x; \
-	export UTM_COOKIE_DOMAIN=.great; \
+	export UTM_COOKIE_DOMAIN=.trade.great; \
 	export DIRECTORY_EXTERNAL_API_SIGNATURE_SECRET=debug; \
 	export CORS_ORIGIN_ALLOW_ALL=true; \
 	export SUPPLIER_SEARCH_URL=http://supplier.trade.great:8005/search; \
@@ -145,7 +146,9 @@ DEBUG_SET_ENV_VARS := \
 	export SECURE_SSL_REDIRECT=false; \
 	export HEALTH_CHECK_TOKEN=debug; \
 	export DIRECTORY_CH_SEARCH_CLIENT_BASE_URL=http://test.com; \
-	export DIRECTORY_CH_SEARCH_CLIENT_API_KEY=debug
+	export DIRECTORY_CH_SEARCH_CLIENT_API_KEY=debug; \
+	export PRIVACY_COOKIE_DOMAIN=.trade.great
+
 
 debug_webserver:
 	$(DEBUG_SET_ENV_VARS) && $(DJANGO_WEBSERVER)
