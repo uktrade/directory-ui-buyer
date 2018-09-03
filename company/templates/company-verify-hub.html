@@ -21,7 +21,7 @@
             <div class="column-one-half">
                 <h2 class="heading-large">Get confirmation letter</h2>
                 <br>
-                <p>We’ll then send a confirmation letter to your company’s registered address address within 5 working days. If you can’t collect the letter yourself, you’ll need to make sure someone can send it on to you.</p>
+                <p>We’ll then send a confirmation letter to your company’s registered address within 5 working days. If you can’t collect the letter yourself, you’ll need to make sure someone can send it on to you.</p>
                 <br>
                 {% if company.is_verification_letter_sent %}
                     <a href="{% url 'verify-company-address-confirm' %}" class="button button-primary">Verify with your address</a>
