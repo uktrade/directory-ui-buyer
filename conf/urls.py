@@ -1,3 +1,4 @@
+import directory_healthcheck.views
 import directory_components.views
 import conf.sitemaps
 
@@ -8,7 +9,6 @@ from django.views.generic import RedirectView
 
 import company.views
 import enrolment.views
-import healthcheck.views
 import proxy.views
 
 
@@ -32,13 +32,18 @@ urlpatterns = [
     ),
     url(
         r'^healthcheck/api/$',
-        healthcheck.views.APICheckAPIView.as_view(),
+        directory_healthcheck.views.APIHealthcheckView.as_view(),
         name='healthcheck-api'
     ),
     url(
         r'^healthcheck/single-sign-on/$',
-        healthcheck.views.SingleSignOnAPIView.as_view(),
+        directory_healthcheck.views.SingleSignOnHealthcheckView.as_view(),
         name='healthcheck-single-sign-on'
+    ),
+    url(
+        r'^healthcheck/sentry/$',
+        directory_healthcheck.views.SentryHealthcheckView.as_view(),
+        name='healthcheck-sentry'
     ),
     url(
         r'^$',
