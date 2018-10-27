@@ -5,7 +5,7 @@ import conf.urls
 
 urlpatterns = [
     url(
-        r'^find-a-buyer/',
+        r'^buyer/',
         include(conf.urls.urlpatterns)
     )
 ]
