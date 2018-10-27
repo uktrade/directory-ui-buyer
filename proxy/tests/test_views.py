@@ -56,7 +56,7 @@ def test_handles_http_error(mock_urlopen, rf, caplog):
     with pytest.raises(urllib3.exceptions.HTTPError):
         view(request)
 
-    log = caplog.records[-1]
+    log = caplog.records()[-1]
 
     assert log.levelname == 'ERROR'
     assert log.msg == error

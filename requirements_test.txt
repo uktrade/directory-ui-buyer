@@ -16,7 +16,7 @@ directory-client-core==4.0.2  # via directory-api-client, directory-ch-client, d
 directory-constants==7.0.0
 directory-healthcheck==0.6.0
 directory-sso-api-client==3.0.2
-directory_components==2.18.0
+directory_components==2.28.0
 directory_validators==5.0.0
 django-cors-headers==2.1.0
 django-environ==0.4.5
@@ -26,7 +26,7 @@ django-revproxy==0.9.15
 django==1.11.15
 django_extensions==1.9.0
 djangorestframework==3.4.7  # via sigauth
-export-elements==0.17.3
+export-elements==0.22.0   # via directory-components
 flake8==3.0.4
 freezegun==0.3.8
 gunicorn==19.5.0
@@ -37,10 +37,10 @@ monotonic==1.2            # via directory-ch-client, directory-client-core
 olefile==0.44             # via directory-validators, pillow
 phonenumberslite==7.7.4
 pillow==4.2.1
-py==1.4.34                # via pytest, pytest-catchlog
+py==1.4.34                # via pytest, pytest-capturelog
 pycodestyle==2.0.0        # via flake8
 pyflakes==1.2.3           # via flake8
-pytest-catchlog==1.2.2
+pytest-capturelog==0.7.0
 pytest-cov==2.3.1
 pytest-django==3.1.2
 pytest-sugar==0.8.0

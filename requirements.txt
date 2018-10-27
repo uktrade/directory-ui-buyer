@@ -14,7 +14,7 @@ directory-client-core==4.0.2  # via directory-api-client, directory-ch-client, d
 directory-constants==7.0.0
 directory-healthcheck==0.6.0
 directory-sso-api-client==3.0.2
-directory_components==2.18.0
+directory_components==2.28.0
 directory_validators==5.0.0
 django-cors-headers==2.1.0
 django-environ==0.4.5
@@ -24,7 +24,7 @@ django-revproxy==0.9.15
 django==1.11.15
 django_extensions==1.9.0
 djangorestframework==3.4.7  # via sigauth
-export-elements==0.17.3
+export-elements==0.22.0   # via directory-components
 gunicorn==19.5.0
 idna==2.6                 # via requests
 mohawk==0.3.4             # via sigauth
