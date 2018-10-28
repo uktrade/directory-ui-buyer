@@ -302,6 +302,7 @@ HEADER_FOOTER_CONTACT_US_URL = env.str(
 )
 SESSION_ENGINE = 'django.contrib.sessions.backends.signed_cookies'
 SESSION_COOKIE_SECURE = env.bool('SESSION_COOKIE_SECURE', True)
+SESSION_COOKIE_NAME = env.str('SESSION_COOKIE_NAME', 'buyer_sessionid')
 SESSION_COOKIE_HTTPONLY = True
 CSRF_COOKIE_SECURE = True
 
