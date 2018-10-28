@@ -148,7 +148,8 @@ DEBUG_SET_ENV_VARS := \
 	export DIRECTORY_CH_SEARCH_CLIENT_BASE_URL=http://test.com; \
 	export DIRECTORY_CH_SEARCH_CLIENT_API_KEY=debug; \
 	export PRIVACY_COOKIE_DOMAIN=.trade.great; \
-	export FEATURE_URL_PREFIX_ENABLED=true
+	export FEATURE_URL_PREFIX_ENABLED=true; \
+	export STATIC_HOST=/buyer
 
 
 debug_webserver:
