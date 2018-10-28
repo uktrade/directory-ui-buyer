@@ -163,7 +163,7 @@
 					<strong>Edit</strong>
 				</a>
 				<p>
-					<img class="ed-social-icon" src="/static/images/icon-linkedin-white.png">
+					<img class="ed-social-icon" src="{% static 'images/icon-linkedin-white.png' %}">
 					{% if company.linkedin_url %}
 						<span>
 							<a class="link" href="{{ company.linkedin_url }}" target="_blank">Visit LinkedIn</a>
@@ -175,7 +175,7 @@
 					{% endif %}
 				</p>
 				<p>
-					<img class="ed-social-icon" src="/static/images/icon-twitter.png">
+					<img class="ed-social-icon" src="{% static 'images/icon-twitter.png' %}">
 					{% if company.twitter_url %}
 						<span>
 							<a class="link" href="{{ company.twitter_url }}" target="_blank">Visit Twitter</a>
@@ -187,7 +187,7 @@
 					{% endif %}
 				</p>
 				<p>
-					<img class="ed-social-icon" src="/static/images/icon-facebook-white.png">
+					<img class="ed-social-icon" src="{% static 'images/icon-facebook-white.png' %}">
 					{% if company.facebook_url %}
 						<span>
 							<a class="link" href="{{ company.facebook_url }}" target="_blank">Visit Facebook</a>
