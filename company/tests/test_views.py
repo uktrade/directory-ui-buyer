@@ -1326,6 +1326,40 @@ def test_companies_house_callback_has_company_calls_companies_house(
 @patch.object(forms.CompaniesHouseClient, 'verify_oauth2_code')
 @patch(
     'api_client.api_client.company.verify_with_companies_house',
+    return_value=create_response(200)
+)
+def test_companies_house_callback_has_company_calls_url_prefix(
+    mock_verify_with_companies_house, mock_verify_oauth2_code, settings,
+    has_company_client, sso_user
+):
+    settings.ROOT_URLCONF = 'conf.urls_prefixed'
+    settings.FEATURE_URL_PREFIX_ENABLED = True
+    mock_verify_oauth2_code.return_value = create_response(
+        status_code=200, json_body={'access_token': 'abc'}
+    )
+
+    url = reverse('verify-companies-house-callback')
+    response = has_company_client.get(url, {'code': '123'})
+
+    assert response.status_code == 302
+    assert response.url == str(
+        views.CompaniesHouseOauth2CallbackView.success_url
+    )
+
+    assert mock_verify_oauth2_code.call_count == 1
+    assert mock_verify_oauth2_code.call_args == call(
+        code='123',
+        redirect_uri=(
+            'https://find-a-buyer.export.great.gov.uk/'
+            'companies-house-oauth2-callback/'
+        )
+    )
+
+
+@patch_check_company_unverified_redirect
+@patch.object(forms.CompaniesHouseClient, 'verify_oauth2_code')
+@patch(
+    'api_client.api_client.company.verify_with_companies_house',
     return_value=create_response(500)
 )
 def test_companies_house_callback_error(
