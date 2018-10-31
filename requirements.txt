@@ -24,7 +24,7 @@ django-revproxy==0.9.15
 django==1.11.15
 django_extensions==1.9.0
 djangorestframework==3.4.7  # via sigauth
-export-elements==0.22.0   # via directory-components
+export-elements==0.17.3   # via directory-components
 gunicorn==19.5.0
 idna==2.6                 # via requests
 mohawk==0.3.4             # via sigauth
