@@ -282,7 +282,7 @@ def test_submit_enrolment_logged_out_has_company_redirects(
 
 
 def test_companies_house_search_validation_error(client):
-    url = reverse('api-internal-companies-house-search')
+    url = reverse('api:internal-companies-house-search')
     response = client.get(url)  # notice absense of `term`
 
     assert response.status_code == 400
@@ -293,7 +293,7 @@ def test_companies_house_search_api_error(
     mock_search, client, api_response_400
 ):
     mock_search.return_value = api_response_400
-    url = reverse('api-internal-companies-house-search')
+    url = reverse('api:internal-companies-house-search')
 
     with pytest.raises(requests.exceptions.HTTPError):
         client.get(url, data={'term': 'thing'})
@@ -304,7 +304,7 @@ def test_companies_house_search_api_success(
     mock_search, client, api_response_companies_house_search_200
 ):
     mock_search.return_value = api_response_companies_house_search_200
-    url = reverse('api-internal-companies-house-search')
+    url = reverse('api:internal-companies-house-search')
 
     response = client.get(url, data={'term': 'thing'})
 
