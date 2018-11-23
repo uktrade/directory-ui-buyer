@@ -2,7 +2,7 @@ import directory_healthcheck.views
 import directory_components.views
 import conf.sitemaps
 
-from django.conf.urls import url
+from django.conf.urls import include, url
 from django.contrib.sitemaps.views import sitemap
 from django.views.decorators.http import require_http_methods
 from django.views.generic import RedirectView
@@ -20,7 +20,70 @@ sitemaps = {
 require_get = require_http_methods(['GET'])
 
 
+healthcheck_urls = [
+    url(
+        r'^api/$',
+        directory_healthcheck.views.APIHealthcheckView.as_view(),
+        name='healthcheck-api'
+    ),
+    url(
+        r'^single-sign-on/$',
+        directory_healthcheck.views.SingleSignOnHealthcheckView.as_view(),
+        name='healthcheck-single-sign-on'
+    ),
+    url(
+        r'^sentry/$',
+        directory_healthcheck.views.SentryHealthcheckView.as_view(),
+        name='healthcheck-sentry'
+    ),
+]
+
+
+api_urls = [
+    url(
+        r'^api/external(?P<path>/supplier/company/)$',
+        require_get(proxy.views.APIViewProxy.as_view()),
+        name='external-company'
+    ),
+    url(
+        r'^api/external(?P<path>/healthcheck/ping/)$',
+        require_get(proxy.views.APIViewProxy.as_view()),
+        name='external-ping'
+    ),
+    url(
+        r'^api(?P<path>/external/supplier/)$',
+        require_get(proxy.views.APIViewProxy.as_view()),
+        name='external-supplier'
+    ),
+    url(
+        r'^api(?P<path>/external/supplier-sso/)$',
+        require_get(proxy.views.APIViewProxy.as_view()),
+        name='external-supplier-sso'
+    ),
+    url(
+        r'^api/internal/companies-house-search/$',
+        enrolment.views.CompaniesHouseSearchApiView.as_view(),
+        name='internal-companies-house-search'
+    ),
+    url(
+        r'^directory-api(?P<path>)',
+        proxy.views.DirectoryAPIViewProxy.as_view(),
+        name='directory-api'
+    ),
+]
+
+
 urlpatterns = [
+    url(
+        r'^healthcheck/',
+        include(
+            healthcheck_urls, namespace='healthcheck', app_name='healthcheck'
+        )
+    ),
+    url(
+        r'^',
+        include(api_urls, namespace='api', app_name='api')
+    ),
     url(
         r"^robots\.txt$",
         directory_components.views.RobotsView.as_view(),
@@ -30,21 +93,7 @@ urlpatterns = [
         r"^sitemap\.xml$", sitemap, {'sitemaps': sitemaps},
         name='sitemap'
     ),
-    url(
-        r'^healthcheck/api/$',
-        directory_healthcheck.views.APIHealthcheckView.as_view(),
-        name='healthcheck-api'
-    ),
-    url(
-        r'^healthcheck/single-sign-on/$',
-        directory_healthcheck.views.SingleSignOnHealthcheckView.as_view(),
-        name='healthcheck-single-sign-on'
-    ),
-    url(
-        r'^healthcheck/sentry/$',
-        directory_healthcheck.views.SentryHealthcheckView.as_view(),
-        name='healthcheck-sentry'
-    ),
+
     url(
         r'^$',
         enrolment.views.DomesticLandingView.as_view(),
@@ -178,36 +227,6 @@ urlpatterns = [
         r'^account/collaborate/accept/$',
         company.views.AcceptCollaborationView.as_view(),
         name='account-collaborate-accept'
-    ),
-    url(
-        r'^api/external(?P<path>/supplier/company/)$',
-        require_get(proxy.views.APIViewProxy.as_view()),
-        name='api-external-company'
-    ),
-    url(
-        r'^api/external(?P<path>/healthcheck/ping/)$',
-        require_get(proxy.views.APIViewProxy.as_view()),
-        name='api-external-ping'
-    ),
-    url(
-        r'^api(?P<path>/external/supplier/)$',
-        require_get(proxy.views.APIViewProxy.as_view()),
-        name='api-external-supplier'
-    ),
-    url(
-        r'^api(?P<path>/external/supplier-sso/)$',
-        require_get(proxy.views.APIViewProxy.as_view()),
-        name='api-external-supplier-sso'
-    ),
-    url(
-        r'^api/internal/companies-house-search/$',
-        enrolment.views.CompaniesHouseSearchApiView.as_view(),
-        name='api-internal-companies-house-search'
-    ),
-    url(
-        r'^directory-api(?P<path>)',
-        proxy.views.DirectoryAPIViewProxy.as_view(),
-        name='directory-api'
     ),
     url(
         r'^errors/image-too-large/$',

@@ -17,3 +17,4 @@ directory-components==2.28.0
 directory-sso-api-client==3.0.2
 directory-api-client==10.0.2
 directory-constants==7.0.0
+django-admin-ip-restrictor==1.0.0

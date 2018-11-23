@@ -63,13 +63,13 @@ def test_handles_http_error(mock_urlopen, rf, caplog):
 
 
 supplier_company_url = reverse(
-    'api-external-company', kwargs={'path': '/supplier/company/'}
+    'api:external-company', kwargs={'path': '/supplier/company/'}
 )
 supplier_url = reverse(
-    'api-external-supplier', kwargs={'path': '/external/supplier/'}
+    'api:external-supplier', kwargs={'path': '/external/supplier/'}
 )
 supplier_sso_url = reverse(
-    'api-external-supplier-sso', kwargs={'path': '/external/supplier-sso/'}
+    'api:external-supplier-sso', kwargs={'path': '/external/supplier-sso/'}
 )
 
 
@@ -131,7 +131,7 @@ def test_proxy_api_view_accepts_get(url, client):
         assert 'X-Forwarded-Host' not in mock_urlopen.call_args[1]['headers']
 
 
-DIRECTORY_API_URL = reverse('directory-api', kwargs={'path': '/anything/'})
+DIRECTORY_API_URL = reverse('api:directory-api', kwargs={'path': '/anything/'})
 
 
 def test_directory_api_view_bad_signature(client, settings):
