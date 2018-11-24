@@ -11,12 +11,12 @@ contextlib2==0.5.5        # via raven
 directory-api-client==10.0.2
 directory-ch-client==1.0.0
 directory-client-core==4.0.2  # via directory-api-client, directory-ch-client, directory-sso-api-client
-directory-components==2.28.0
+directory-components==2.33.0
 directory-constants==7.0.0
 directory-healthcheck==0.6.0
 directory-sso-api-client==3.0.2
 directory_validators==5.0.0
-django-admin-ip-restrictor==1.0.0
+django-admin-ip-restrictor==1.0.0  # via directory-components
 django-cors-headers==2.1.0
 django-environ==0.4.5
 django-formtools==2.0
