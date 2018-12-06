@@ -4,59 +4,47 @@ jobs:
     docker:
       - image: circleci/python:3.6.6
     steps:
-      - setup_remote_docker
-      - run:
-          name: Install Docker Compose
-          command: |
-            curl -L https://github.com/docker/compose/releases/download/1.21.2/docker-compose-`uname -s`-`uname -m` > ~/docker-compose
-            chmod +x ~/docker-compose
-            sudo mv ~/docker-compose /usr/local/bin/docker-compose
       - checkout
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - restore_cache:
+          key: v1-deps-{{ checksum "requirements_test.txt" }}
       - run:
-          command: make docker_test
-  deploy_to_dev:
+          name: Create virtualenv and install dependencies
+          command: |
+            python3 -m venv venv
+            . venv/bin/activate
+            pip install --upgrade pip
+            pip install -r requirements_test.txt
+      - save_cache:
+          key: v1-deps-{{ checksum "requirements_test.txt" }}
+          paths:
+            - "venv"
+      - run:
+          name: Run tests
+          command: |
+            . venv/bin/activate
+            make debug_test pytest_args="-n auto --dist=loadfile"
+            codecov
+
+  flake8:
     docker:
-      - image: circleci/python:3.6.6
+    - image: circleci/python:3.6.6
     steps:
-      - setup_remote_docker
-      - run:
-          name: Install Docker Compose
-          command: |
-            curl -L https://github.com/docker/compose/releases/download/1.21.2/docker-compose-`uname -s`-`uname -m` > ~/docker-compose
-            chmod +x ~/docker-compose
-            sudo mv ~/docker-compose /usr/local/bin/docker-compose
-      - checkout
-      - run:
-          command: make heroku_deploy_dev
-  integration_tests:
-    docker:
-      - image: circleci/python:3.6.6
-    steps:
-      - setup_remote_docker
-      - run:
-          name: Install Docker Compose
-          command: |
-            curl -L https://github.com/docker/compose/releases/download/1.21.2/docker-compose-`uname -s`-`uname -m` > ~/docker-compose
-            chmod +x ~/docker-compose
-            sudo mv ~/docker-compose /usr/local/bin/docker-compose
-      - checkout
-      - run:
-          command: make integration_tests
+    - checkout
+    - setup_remote_docker:
+        docker_layer_caching: true
+    - run:
+        name: Run flake8
+        command: |
+          python3 -m venv venv
+          . venv/bin/activate
+          pip install flake8
+          flake8 . --exclude=migrations,venv
 
 workflows:
   version: 2
-  test_and_deploy_to_dev_and_run_integration_tests:
+  test_and_flake8:
     jobs:
       - test
-      - deploy_to_dev:
-          requires:
-            - test
-          filters:
-            branches:
-              only: master
-      - integration_tests:
-          requires:
-            - deploy_to_dev
-          filters:
-            branches:
-              only: master
+      - flake8

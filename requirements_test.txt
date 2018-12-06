@@ -13,8 +13,8 @@ coverage==4.4.1           # via codecov, pytest-cov
 directory-api-client==10.0.2
 directory-ch-client==1.0.0
 directory-client-core==4.0.2  # via directory-api-client, directory-ch-client, directory-sso-api-client
-directory-components==2.33.0
-directory-constants==7.0.0
+directory-components==3.5.0
+directory-constants==11.1.0
 directory-healthcheck==0.6.0
 directory-sso-api-client==3.0.2
 directory_validators==5.0.0
@@ -34,7 +34,7 @@ freezegun==0.3.8
 gunicorn==19.5.0
 idna==2.6                 # via requests
 mccabe==0.5.3             # via flake8
-mohawk==0.3.4             # via sigauth
+mohawk==0.3.4             # via directory-components, sigauth
 monotonic==1.2            # via directory-ch-client, directory-client-core
 olefile==0.44             # via directory-validators, pillow
 phonenumberslite==7.7.4
@@ -48,7 +48,7 @@ pytest-django==3.1.2
 pytest-sugar==0.8.0
 pytest==3.0.2
 python-dateutil==2.6.0    # via freezegun
-pytz==2017.2              # via directory-constants, directory-healthcheck, directory-validators, django
+pytz==2017.2              # via directory-healthcheck, directory-validators, django
 raven==5.19.0
 requests==2.19.1          # via codecov, directory-api-client, directory-ch-client, directory-client-core, requests-mock
 requests_mock==1.1.0
