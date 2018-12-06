@@ -52,16 +52,17 @@ DEBUG_SET_ENV_VARS := \
 	export COMPANIES_HOUSE_CLIENT_SECRET=debug-client-secret; \
 	export SECURE_HSTS_SECONDS=0; \
 	export EXPOSE_DIRECTORY_API=true; \
-	export HEADER_FOOTER_URLS_GREAT_HOME=http://exred.trade.great:8007/; \
-	export HEADER_FOOTER_URLS_FAB=/; \
-	export HEADER_FOOTER_URLS_SOO=http://soo.trade.great:8008; \
-	export HEADER_FOOTER_URLS_CONTACT_US=http://contact.trade.great:8009/directory/; \
 	export SECURE_SSL_REDIRECT=false; \
 	export HEALTH_CHECK_TOKEN=debug; \
 	export DIRECTORY_CH_SEARCH_CLIENT_BASE_URL=http://test.com; \
 	export DIRECTORY_CH_SEARCH_CLIENT_API_KEY=debug; \
-	export PRIVACY_COOKIE_DOMAIN=.trade.great
-
+	export PRIVACY_COOKIE_DOMAIN=.trade.great; \
+	export DIRECTORY_CONSTANTS_URL_EXPORT_READINESS=http://exred.trade.great:8007; \
+	export DIRECTORY_CONSTANTS_URL_FIND_A_BUYER=http://buyer.trade.great:8001; \
+	export DIRECTORY_CONSTANTS_URL_SELLING_ONLINE_OVERSEAS=http://soo.trade.great:8008; \
+	export DIRECTORY_CONSTANTS_URL_FIND_A_SUPPLIER=http://supplier.trade.great:8005; \
+	export DIRECTORY_CONSTANTS_URL_INVEST=http://invest.trade.great:8012; \
+	export DIRECTORY_CONSTANTS_URL_SINGLE_SIGN_ON=http://sso.trade.great:8004
 
 debug_webserver:
 	$(DEBUG_SET_ENV_VARS) && $(DJANGO_WEBSERVER)

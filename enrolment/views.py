@@ -11,7 +11,7 @@ from django.shortcuts import render
 
 from formtools.wizard.views import NamedUrlSessionWizardView
 
-from api_client import api_client
+from directory_api_client.client import api_client
 from enrolment import forms, helpers
 from enrolment.helpers import (
     store_companies_house_profile_in_session_and_validate

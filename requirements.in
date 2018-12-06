@@ -15,5 +15,5 @@ directory_validators==5.0.0
 directory-healthcheck==0.6.0
 directory-components==3.5.0
 directory-sso-api-client==3.0.2
-directory-api-client==10.0.2
+directory-api-client==11.1.0
 directory-constants==11.1.0

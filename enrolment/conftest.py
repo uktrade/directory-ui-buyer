@@ -1,6 +1,7 @@
 import http
 from unittest.mock import patch
 
+from directory_api_client.client import api_client
 import requests
 import pytest
 
@@ -15,8 +16,8 @@ def api_response_200():
 
 @pytest.fixture(autouse=True)
 def company_unique_api_response(api_response_200):
-    stub = patch(
-        'api_client.api_client.company.validate_company_number',
+    stub = patch.object(
+        api_client.company, 'validate_company_number',
         return_value=api_response_200,
     )
     stub.start()

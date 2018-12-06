@@ -176,7 +176,7 @@ def test_companies_house_client_logs_unauth(caplog):
             status_code=http.client.UNAUTHORIZED,
         )
         helpers.CompaniesHouseClient.get('https://thing.com')
-    log = caplog.records()[0]
+    log = caplog.records[0]
     assert log.levelname == 'ERROR'
     assert log.msg == helpers.MESSAGE_AUTH_FAILED
 

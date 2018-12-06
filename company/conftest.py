@@ -2,6 +2,7 @@ from copy import deepcopy
 import http
 from unittest.mock import patch
 
+from directory_api_client.client import api_client
 import requests
 import pytest
 
@@ -170,7 +171,9 @@ def api_response_list_public_profile_200(
 
 
 @pytest.fixture
-def api_response_retrieve_supplier_case_study_200(supplier_case_study_data):
+def api_response_retrieve_supplier_case_study_200(
+    supplier_case_study_data
+):
     response = api_response_200()
     response.json = lambda: deepcopy(supplier_case_study_data)
     return response
@@ -178,8 +181,8 @@ def api_response_retrieve_supplier_case_study_200(supplier_case_study_data):
 
 @pytest.fixture(autouse=True)
 def retrieve_supplier_case_study_response(api_response_200):
-    stub = patch(
-        'api_client.api_client.company.retrieve_private_case_study',
+    stub = patch.object(
+        api_client.company, 'retrieve_private_case_study',
         return_value=api_response_200,
     )
     stub.start()
@@ -189,8 +192,8 @@ def retrieve_supplier_case_study_response(api_response_200):
 
 @pytest.fixture(autouse=True)
 def list_public_profiles(api_response_list_public_profile_200):
-    stub = patch(
-        'api_client.api_client.company.list_public_profiles',
+    stub = patch.object(
+        api_client.company, 'retrieve_private_case_study',
         return_value=api_response_list_public_profile_200,
     )
     stub.start()
@@ -202,8 +205,8 @@ def list_public_profiles(api_response_list_public_profile_200):
 def retrieve_supplier_case_study(
     api_response_retrieve_supplier_case_study_200
 ):
-    stub = patch(
-        'api_client.api_client.company.retrieve_private_case_study',
+    stub = patch.object(
+        api_client.company, 'retrieve_private_case_study',
         return_value=api_response_retrieve_supplier_case_study_200,
     )
     stub.start()
@@ -213,8 +216,8 @@ def retrieve_supplier_case_study(
 
 @pytest.fixture(autouse=True)
 def retrieve_profile(api_response_company_profile_200):
-    stub = patch(
-        'api_client.api_client.company.retrieve_private_profile',
+    stub = patch.object(
+        api_client.company, 'retrieve_private_profile',
         return_value=api_response_company_profile_200,
     )
     stub.start()
@@ -224,8 +227,8 @@ def retrieve_profile(api_response_company_profile_200):
 
 @pytest.fixture(autouse=True)
 def retrieve_supplier_profile(api_response_supplier_profile_200):
-    stub = patch(
-        'api_client.api_client.supplier.retrieve_profile',
+    stub = patch.object(
+        api_client.supplier, 'retrieve_profile',
         return_value=api_response_supplier_profile_200,
     )
     stub.start()
@@ -235,8 +238,8 @@ def retrieve_supplier_profile(api_response_supplier_profile_200):
 
 @pytest.fixture
 def retrieve_profile_unverified(api_response_company_profile_unverified_200):
-    stub = patch(
-        'api_client.api_client.company.retrieve_private_profile',
+    stub = patch.object(
+        api_client.company, 'retrieve_private_profile',
         return_value=api_response_company_profile_unverified_200,
     )
     stub.start()

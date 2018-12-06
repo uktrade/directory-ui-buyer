@@ -1,12 +1,13 @@
 import http
 from unittest.mock import call, patch, Mock
 
-from django.core.urlresolvers import reverse
-from django.forms import ValidationError
-
+from directory_api_client.client import api_client
 import requests
 from requests.exceptions import RequestException, HTTPError
 import pytest
+
+from django.core.urlresolvers import reverse
+from django.forms import ValidationError
 
 from enrolment import helpers
 from enrolment.validators import (
@@ -14,11 +15,7 @@ from enrolment.validators import (
     MESSAGE_COMPANY_NOT_FOUND,
     MESSAGE_COMPANY_ERROR
 )
-from enrolment.views import (
-    api_client,
-    EnrolmentView,
-    SubmitEnrolmentView
-)
+from enrolment.views import EnrolmentView, SubmitEnrolmentView
 from sso.utils import SSOUser
 
 
@@ -338,7 +335,7 @@ def test_landing_page_context_sso_user_without_company(client):
     assert response.context_data['user_has_company'] is False
 
 
-@patch('api_client.api_client.company.validate_company_number')
+@patch.object(api_client.company, 'validate_company_number')
 def test_landing_page_submit_invalid_form_shows_errors(
     mock_company_unique, settings, client,
     api_response_validate_company_number_400
@@ -600,7 +597,7 @@ def test_company_enrolment_step_handles_company_already_registered(client):
     Mock(return_value=MOCK_COMPANIES_HOUSE_API_COMPANY_PROFILE)
 )
 @patch('enrolment.helpers.has_company', Mock(return_value=False))
-@patch('api_client.api_client.enrolment.send_form', Mock())
+@patch.object(api_client.enrolment, 'send_form', Mock())
 @patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
 def test_submit_enrolment_caches_profile(client):
     client.get(
