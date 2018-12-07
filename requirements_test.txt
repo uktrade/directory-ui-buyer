@@ -56,7 +56,7 @@ python-dateutil==2.7.5    # via freezegun
 pytz==2017.2              # via directory-healthcheck, directory-validators, django
 raven==5.19.0
 requests-mock==1.5.2
-requests==2.20.1          # via codecov, directory-api-client, directory-ch-client, directory-client-core, requests-mock
+requests==2.20.0
 sigauth==4.0.1            # via directory-ch-client, directory-client-core
 six==1.11.0               # via django-extensions, freezegun, mohawk, more-itertools, packaging, pytest, python-dateutil, requests-mock, w3lib
 termcolor==1.1.0          # via pytest-sugar
