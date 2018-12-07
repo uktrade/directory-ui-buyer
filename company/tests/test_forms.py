@@ -632,7 +632,7 @@ def test_company_address_verification_valid_code(mock_verify_with_code):
 
 @patch('company.validators.api_client.company.verify_with_code')
 def test_company_address_verification_invalid_code(mock_verify_with_code):
-    mock_verify_with_code.return_value = Mock(ok=True)
+    mock_verify_with_code.return_value = Mock(status_code=200)
 
     form = forms.CompanyCodeVerificationForm(
         sso_session_id=1,
@@ -644,7 +644,7 @@ def test_company_address_verification_invalid_code(mock_verify_with_code):
 
 @patch('company.validators.api_client.company.verify_with_code')
 def test_company_address_verification_too_long(mock_verify_with_code):
-    mock_verify_with_code.return_value = Mock(ok=True)
+    mock_verify_with_code.return_value = Mock(status_code=200)
 
     form = forms.CompanyCodeVerificationForm(
         sso_session_id=1,
@@ -658,7 +658,7 @@ def test_company_address_verification_too_long(mock_verify_with_code):
 
 @patch('company.validators.api_client.company.verify_with_code')
 def test_company_address_verification_too_short(mock_verify_with_code):
-    mock_verify_with_code.return_value = Mock(ok=True)
+    mock_verify_with_code.return_value = Mock(status_code=200)
 
     form = forms.CompanyCodeVerificationForm(
         sso_session_id=1,
