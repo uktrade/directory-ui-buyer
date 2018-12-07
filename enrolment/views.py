@@ -196,7 +196,7 @@ class SubmitEnrolmentView(SSOSignUpRequiredMixin, View):
 
         data = self.get_enrolment_data()
         api_response = api_client.enrolment.send_form(data)
-        if not api_response.ok:
+        if api_response.status_code != 200:
             logger.error(
                 "Enrolment failed, API response: {}".format(
                     api_response.content

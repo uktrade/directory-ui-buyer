@@ -1440,6 +1440,7 @@ def test_verify_company_address_feature_flag_on(settings, has_company_client):
 def test_verify_company_address_end_to_end(
     mock_update_profile, settings, send_verification_letter_end_to_end
 ):
+    mock_update_profile.return_value = create_response(200)
     view = views.SendVerificationLetterView
 
     response = send_verification_letter_end_to_end()

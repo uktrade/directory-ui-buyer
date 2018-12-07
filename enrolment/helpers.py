@@ -61,7 +61,7 @@ def has_company(sso_session_id):
     response = api_client.supplier.retrieve_profile(
         sso_session_id=sso_session_id
     )
-    if response.ok:
+    if response.status_code == 200:
         profile = response.json()
         has_company = bool(profile['company'])
     else:

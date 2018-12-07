@@ -58,7 +58,7 @@ class UpdateCompanyProfileOnFormWizardDoneMixin:
             sso_session_id=self.request.sso_user.session_id,
             data=self.serialize_form_data()
         )
-        if api_response.ok:
+        if api_response.status_code == 200:
             response = self.handle_profile_update_success()
         else:
             self.send_update_error_to_sentry(
@@ -194,7 +194,7 @@ class SupplierCaseStudyWizardView(
                 sso_session_id=self.request.sso_user.session_id,
                 data=data,
             )
-        if response.ok:
+        if response.status_code == 200:
             return redirect('company-detail')
         else:
             return TemplateResponse(self.request, self.failure_template)
@@ -472,7 +472,7 @@ class EmailUnsubscribeView(
         response = api_client.supplier.unsubscribe(
             sso_session_id=self.request.sso_user.session_id
         )
-        if response.ok:
+        if response.status_code == 200:
             return TemplateResponse(self.request, self.success_template)
         return TemplateResponse(self.request, self.failure_template)
 
@@ -692,7 +692,7 @@ class BaseAcceptInviteView(
             sso_session_id=self.request.sso_user.session_id,
             invite_key=self.request.GET.get('invite_key'),
         )
-        if response.ok:
+        if response.status_code == 200:
             return response.json()
 
     def get_template_names(self):

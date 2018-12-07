@@ -12,7 +12,7 @@ def verify_with_code(sso_session_id):
         response = api_client.company.verify_with_code(
             sso_session_id=sso_session_id, code=value
         )
-        if not response.ok:
+        if response.status_code != 200:
             raise ValidationError(MESSAGE_INVALID_CODE)
     return inner
 
