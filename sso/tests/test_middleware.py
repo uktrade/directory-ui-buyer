@@ -79,6 +79,6 @@ def test_sso_middleware_timeout(
 
     assert response.status_code == 200
 
-    log = caplog.records()[-1]
+    log = caplog.records[-1]
     assert log.levelname == 'ERROR'
     assert log.msg == middleware.SSOUserMiddleware.MESSAGE_SSO_UNREACHABLE

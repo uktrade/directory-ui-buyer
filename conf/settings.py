@@ -105,22 +105,25 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'conf.wsgi.application'
 
-
-# # Database
-# hard to get rid of this
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+if env.str('REDIS_URL', ''):
+    cache = {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': env.str('REDIS_URL'),
+        'OPTIONS': {
+            'CLIENT_CLASS': "django_redis.client.DefaultClient",
+        }
     }
-}
+else:
+    cache = {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+    }
+
 
 CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-        # 'LOCATION': 'unique-snowflake',
-    }
+    'default': cache,
+    'api_fallback': cache,
 }
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.9/topics/i18n/
@@ -128,8 +131,6 @@ CACHES = {
 LANGUAGE_CODE = 'en-gb'
 
 TIME_ZONE = 'UTC'
-
-USE_I18N = True
 
 USE_L10N = True
 
@@ -232,6 +233,10 @@ DIRECTORY_API_CLIENT_DEFAULT_TIMEOUT = env.str(
     'DIRECTORY_API_CLIENT_DEFAULT_TIMEOUT', 15
 )
 
+# directory clients
+DIRECTORY_CLIENT_CORE_CACHE_EXPIRE_SECONDS = 60 * 60 * 24 * 30  # 30 days
+
+
 # Companies House
 COMPANIES_HOUSE_API_KEY = env.str('COMPANIES_HOUSE_API_KEY')
 COMPANIES_HOUSE_CLIENT_ID = env.str('COMPANIES_HOUSE_CLIENT_ID', '')
@@ -281,8 +286,6 @@ SUPPLIER_PROFILE_LIST_URL = env.str('SUPPLIER_PROFILE_LIST_URL')
 SUPPLIER_PROFILE_URL = env.str('SUPPLIER_PROFILE_URL')
 SUPPLIER_SEARCH_URL = env.str('SUPPLIER_SEARCH_URL')
 
-ANALYTICS_ID = env.str('ANALYTICS_ID', '')
-
 SECURE_SSL_REDIRECT = env.bool('SECURE_SSL_REDIRECT', True)
 USE_X_FORWARDED_HOST = True
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
@@ -290,12 +293,30 @@ SECURE_HSTS_SECONDS = env.int('SECURE_HSTS_SECONDS', '16070400')
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 
 # HEADER/FOOTER URLS
-HEADER_FOOTER_URLS_GREAT_HOME = env.str('HEADER_FOOTER_URLS_GREAT_HOME', '')
-HEADER_FOOTER_URLS_FAB = env.str('HEADER_FOOTER_URLS_FAB', '')
-HEADER_FOOTER_URLS_SOO = env.str('HEADER_FOOTER_URLS_SOO', '')
-HEADER_FOOTER_URLS_EVENTS = env.str('HEADER_FOOTER_URLS_EVENTS', '')
-HEADER_FOOTER_URLS_CONTACT_US = env.str('HEADER_FOOTER_URLS_CONTACT_US', '')
-HEADER_FOOTER_URLS_DIT = env.str('HEADER_FOOTER_URLS_DIT', '')
+DIRECTORY_CONSTANTS_URL_EXPORT_READINESS = env.str(
+    'DIRECTORY_CONSTANTS_URL_EXPORT_READINESS', ''
+)
+DIRECTORY_CONSTANTS_URL_EXPORT_OPPORTUNITIES = env.str(
+    'DIRECTORY_CONSTANTS_URL_EXPORT_OPPORTUNITIES', ''
+)
+DIRECTORY_CONSTANTS_URL_SELLING_ONLINE_OVERSEAS = env.str(
+    'DIRECTORY_CONSTANTS_URL_SELLING_ONLINE_OVERSEAS', ''
+)
+DIRECTORY_CONSTANTS_URL_EVENTS = env.str(
+    'DIRECTORY_CONSTANTS_URL_EVENTS', ''
+)
+DIRECTORY_CONSTANTS_URL_INVEST = env.str('DIRECTORY_CONSTANTS_URL_INVEST', '')
+DIRECTORY_CONSTANTS_URL_FIND_A_SUPPLIER = env.str(
+    'DIRECTORY_CONSTANTS_URL_FIND_A_SUPPLIER', ''
+)
+DIRECTORY_CONSTANTS_URL_SINGLE_SIGN_ON = env.str(
+    'DIRECTORY_CONSTANTS_URL_SINGLE_SIGN_ON', ''
+)
+DIRECTORY_CONSTANTS_URL_FIND_A_BUYER = env.str(
+    'DIRECTORY_CONSTANTS_URL_FIND_A_BUYER', ''
+)
+
+
 PRIVACY_COOKIE_DOMAIN = env.str('PRIVACY_COOKIE_DOMAIN')
 
 # Sentry
@@ -303,14 +324,9 @@ RAVEN_CONFIG = {
     'dsn': env.str('SENTRY_DSN', ''),
 }
 
-HEADER_FOOTER_CONTACT_US_URL = env.str(
-    'HEADER_FOOTER_CONTACT_US_URL',
-    'https://contact-us.export.great.gov.uk/directory',
-)
 SESSION_ENGINE = 'django.contrib.sessions.backends.signed_cookies'
 SESSION_COOKIE_SECURE = env.bool('SESSION_COOKIE_SECURE', True)
 SESSION_COOKIE_NAME = env.str('SESSION_COOKIE_NAME', 'buyer_sessionid')
-SESSION_COOKIE_HTTPONLY = True
 CSRF_COOKIE_SECURE = True
 
 # parity with nginx config for maximum request body
@@ -327,13 +343,6 @@ VALIDATOR_MAX_CASE_STUDY_VIDEO_SIZE_BYTES = env.int(
     'VALIDATOR_MAX_CASE_STUDY_VIDEO_SIZE_BYTES', 20 * 1024 * 1024
 )
 VALIDATOR_ALLOWED_IMAGE_FORMATS = ('PNG', 'JPG', 'JPEG')
-
-API_CLIENT_CLASSES = {
-    'default': 'directory_api_client.client.DirectoryAPIClient',
-    'unit-test': 'directory_api_client.dummy_client.DummyDirectoryAPIClient',
-}
-API_CLIENT_CLASS_NAME = env.str('API_CLIENT_CLASS_NAME', 'default')
-API_CLIENT_CLASS = API_CLIENT_CLASSES[API_CLIENT_CLASS_NAME]
 
 # Google tag manager
 GOOGLE_TAG_MANAGER_ID = env.str('GOOGLE_TAG_MANAGER_ID')
@@ -375,8 +384,22 @@ ALLOWED_ADMIN_IPS = env.list('IP_RESTRICTOR_ALLOWED_ADMIN_IPS', default=[])
 ALLOWED_ADMIN_IP_RANGES = env.list(
     'IP_RESTRICTOR_ALLOWED_ADMIN_IP_RANGES', default=[]
 )
-RESTRICTED_APP_NAMES = ['admin', '']
-REMOTE_IP_ADDRESS_RETRIEVER = env.str(
+IP_RESTRICTOR_SKIP_CHECK_ENABLED = env.bool(
+    'IP_RESTRICTOR_SKIP_CHECK_ENABLED', False
+)
+IP_RESTRICTOR_SKIP_CHECK_SENDER_ID = env.str(
+     'IP_RESTRICTOR_SKIP_CHECK_SENDER_ID', ''
+ )
+IP_RESTRICTOR_SKIP_CHECK_SECRET = env.str(
+    'IP_RESTRICTOR_SKIP_CHECK_SECRET', ''
+)
+IP_RESTRICTOR_REMOTE_IP_ADDRESS_RETRIEVER = env.str(
     'IP_RESTRICTOR_REMOTE_IP_ADDRESS_RETRIEVER',
     IP_RETRIEVER_NAME_GOV_UK
 )
+RESTRICTED_APP_NAMES = env.list(
+    'IP_RESTRICTOR_RESTRICTED_APP_NAMES', default=['admin']
+)
+if env.bool('IP_RESTRICTOR_RESTRICT_UI', False):
+    # restrict all pages that are not in apps API, healthcheck, admin, etc
+    RESTRICTED_APP_NAMES.append('')

@@ -13,7 +13,7 @@ from django.shortcuts import render
 import requests
 from requests.exceptions import RequestException
 
-from api_client import api_client
+from directory_api_client.client import api_client
 from enrolment import validators
 
 

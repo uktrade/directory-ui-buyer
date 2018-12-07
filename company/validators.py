@@ -1,6 +1,6 @@
 from django.forms import ValidationError
 
-from api_client import api_client
+from directory_api_client.client import api_client
 
 
 MESSAGE_INVALID_CODE = 'Invalid code.'

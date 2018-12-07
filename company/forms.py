@@ -11,7 +11,7 @@ from django.conf import settings
 from django.utils.functional import cached_property
 from django.utils.safestring import mark_safe
 
-from api_client import api_client
+from directory_api_client.client import api_client
 from company import validators
 from enrolment.forms import IndentedInvalidFieldsMixin, AutoFocusFieldMixin
 from enrolment.helpers import halt_validation_on_failure

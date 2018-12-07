@@ -5,7 +5,7 @@ from directory_validators.helpers import tokenize_keywords
 
 from django.conf import settings
 
-from api_client import api_client
+from directory_api_client.client import api_client
 
 
 EMPLOYEE_CHOICES = {key: value for key, value in choices.EMPLOYEES}

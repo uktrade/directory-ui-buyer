@@ -14,7 +14,7 @@ from django.urls import reverse, reverse_lazy
 from formtools.wizard.views import SessionWizardView
 from raven.contrib.django.raven_compat.models import client as sentry_client
 
-from api_client import api_client
+from directory_api_client.client import api_client
 from company import forms, helpers, state_requirements
 from enrolment.helpers import CompaniesHouseClient
 
