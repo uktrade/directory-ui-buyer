@@ -36,7 +36,7 @@ phonenumberslite==7.7.4
 pillow==4.2.1
 pytz==2017.2              # via directory-healthcheck, directory-validators, django
 raven==5.19.0
-requests==2.19.1          # via directory-api-client, directory-ch-client, directory-client-core
+requests==2.20.0
 sigauth==4.0.1            # via directory-ch-client, directory-client-core
 six==1.11.0               # via django-extensions, mohawk, w3lib
 urllib3==1.23             # via django-revproxy, requests
