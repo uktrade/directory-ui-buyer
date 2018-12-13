@@ -194,7 +194,7 @@ class SupplierCaseStudyWizardView(
                 sso_session_id=self.request.sso_user.session_id,
                 data=data,
             )
-        if response.status_code == 200:
+        if response.status_code == 201:
             return redirect('company-detail')
         else:
             return TemplateResponse(self.request, self.failure_template)

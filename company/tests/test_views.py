@@ -493,7 +493,7 @@ def test_case_study_edit_handles_api_error(
 
 
 @patch.object(
-    api_client.company, 'create_case_study', return_value=create_response(200)
+    api_client.company, 'create_case_study', return_value=create_response(201)
 )
 def test_case_study_create_api_success(
     mock_create_case_study, supplier_case_study_end_to_end, sso_user,
@@ -530,7 +530,7 @@ def test_case_study_create_api_failure(
 
 
 @patch.object(
-    api_client.company, 'update_case_study', return_value=create_response(200)
+    api_client.company, 'update_case_study', return_value=create_response(201)
 )
 def test_case_study_update_api_success(
     mock_update_case_study, supplier_case_study_end_to_end, sso_user,
