@@ -103,6 +103,13 @@ def api_response_200(*args, **kwargs):
 
 
 @pytest.fixture
+def api_response_201(*args, **kwargs):
+    response = requests.Response()
+    response.status_code = 201
+    return response
+
+
+@pytest.fixture
 def api_response_companies_house_search_200(api_response_200):
     payload = {
         'items': [{'name': 'Smashing corp'}]
@@ -166,7 +173,7 @@ def api_response_company_profile_no_date_of_creation_200(api_response_200):
 )
 @patch('enrolment.helpers.has_company', Mock(return_value=False))
 @patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
-@patch.object(api_client.enrolment, 'send_form', api_response_200)
+@patch.object(api_client.enrolment, 'send_form', api_response_201)
 def test_submit_enrolment_api_client_success(client):
     response = client.get(
         reverse('register-submit'),
