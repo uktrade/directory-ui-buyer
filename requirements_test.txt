@@ -61,7 +61,7 @@ pytest==3.8.0
 python-dateutil==2.7.5    # via freezegun
 pytz==2017.2              # via directory-healthcheck, directory-validators, django
 raven==5.19.0
-redis==3.0.1              # via django-redis
+redis==2.10.6             # via django-redis
 requests-mock==1.5.2
 requests[security]==2.21.0
 sigauth==4.0.1            # via directory-ch-client, directory-client-core
