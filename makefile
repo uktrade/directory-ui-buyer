@@ -62,7 +62,8 @@ DEBUG_SET_ENV_VARS := \
 	export DIRECTORY_CONSTANTS_URL_SELLING_ONLINE_OVERSEAS=http://soo.trade.great:8008; \
 	export DIRECTORY_CONSTANTS_URL_FIND_A_SUPPLIER=http://supplier.trade.great:8005; \
 	export DIRECTORY_CONSTANTS_URL_INVEST=http://invest.trade.great:8012; \
-	export DIRECTORY_CONSTANTS_URL_SINGLE_SIGN_ON=http://sso.trade.great:8004
+	export DIRECTORY_CONSTANTS_URL_SINGLE_SIGN_ON=http://sso.trade.great:8004,
+	export FEATURE_EXPORT_JOURNEY_ENABLED=false
 
 debug_webserver:
 	$(DEBUG_SET_ENV_VARS) && $(DJANGO_WEBSERVER)
