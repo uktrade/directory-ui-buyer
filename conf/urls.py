@@ -22,19 +22,9 @@ require_get = require_http_methods(['GET'])
 
 healthcheck_urls = [
     url(
-        r'^api/$',
-        directory_healthcheck.views.APIHealthcheckView.as_view(),
-        name='healthcheck-api'
-    ),
-    url(
-        r'^single-sign-on/$',
-        directory_healthcheck.views.SingleSignOnHealthcheckView.as_view(),
-        name='healthcheck-single-sign-on'
-    ),
-    url(
-        r'^sentry/$',
-        directory_healthcheck.views.SentryHealthcheckView.as_view(),
-        name='healthcheck-sentry'
+        r'^$',
+        directory_healthcheck.views.HealthcheckView.as_view(),
+        name='healthcheck'
     ),
 ]
 

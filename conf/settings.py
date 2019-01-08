@@ -13,8 +13,8 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 import os
 
 from directory_components.constants import IP_RETRIEVER_NAME_GOV_UK
+import directory_healthcheck.backends
 import environ
-
 
 env = environ.Env()
 
@@ -55,8 +55,6 @@ INSTALLED_APPS = [
     'core',
     'directory_constants',
     'directory_healthcheck',
-    'health_check',
-    'health_check.db',
     'directory_components',
     'export_elements',
 ]
@@ -373,7 +371,12 @@ FEATURE_FLAGS = {
 }
 
 # healthcheck
-HEALTH_CHECK_TOKEN = env.str('HEALTH_CHECK_TOKEN', '')
+DIRECTORY_HEALTHCHECK_TOKEN = env.str('HEALTH_CHECK_TOKEN')
+DIRECTORY_HEALTHCHECK_BACKENDS = [
+    directory_healthcheck.backends.SentryBackend,
+    directory_healthcheck.backends.APIBackend,
+    directory_healthcheck.backends.SingleSignOnBackend,
+]
 
 # Internal CH
 INTERNAL_CH_BASE_URL = env.str('INTERNAL_CH_BASE_URL', '')
