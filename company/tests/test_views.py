@@ -522,11 +522,8 @@ def test_case_study_create_api_failure(
 ):
     mock_create_case_study.return_value = create_response(400)
 
-    response = supplier_case_study_end_to_end()
-
-    view = views.SupplierCaseStudyWizardView
-    assert response.status_code == http.client.OK
-    assert response.template_name == view.failure_template
+    with pytest.raises(requests.exceptions.HTTPError):
+        supplier_case_study_end_to_end()
 
 
 @patch.object(
@@ -571,11 +568,8 @@ def test_case_study_update_api_failure(
 ):
     mock_update_case_study.return_value = create_response(400)
 
-    response = supplier_case_study_end_to_end(case_study_id='1')
-
-    view = views.SupplierCaseStudyWizardView
-    assert response.status_code == http.client.OK
-    assert response.template_name == view.failure_template
+    with pytest.raises(requests.exceptions.HTTPError):
+        supplier_case_study_end_to_end(case_study_id='1')
 
 
 @patch.object(helpers, 'get_company_profile')
@@ -669,12 +663,9 @@ def test_company_profile_description_api_client_failure(
 
     view = views.CompanyDescriptionEditView()
     view.request = company_request
-    response = view.done()
-    assert response.status_code == http.client.OK
-    expected_template_name = (
-        views.CompanyDescriptionEditView.failure_template
-    )
-    assert response.template_name == expected_template_name
+
+    with pytest.raises(requests.exceptions.HTTPError):
+        view.done()
 
 
 @patch.object(api_client.company, 'retrieve_private_profile')
@@ -776,11 +767,9 @@ def test_company_profile_edit_api_client_failure(
     view = views.CompanyProfileEditView()
     view.company_profile = retrieve_profile_data
     view.request = company_request
-    response = view.done()
-    assert response.status_code == http.client.OK
-    assert response.template_name == (
-        views.CompanyProfileEditView.failure_template
-    )
+
+    with pytest.raises(requests.exceptions.HTTPError):
+        view.done()
 
 
 @patch.object(api_client.company, 'retrieve_private_profile')
@@ -871,13 +860,10 @@ def test_company_profile_logo_api_client_failure(
     mock_update_profile.return_value = create_response(400)
 
     view = views.CompanyProfileLogoEditView()
+
     view.request = company_request
-    response = view.done()
-    assert response.status_code == http.client.OK
-    expected_template_name = (
-        views.CompanyProfileLogoEditView.failure_template
-    )
-    assert response.template_name == expected_template_name
+    with pytest.raises(requests.exceptions.HTTPError):
+        view.done()
 
 
 @patch.object(
@@ -916,11 +902,8 @@ def test_company_profile_edit_create_api_failure(
 ):
     mock_create_case_study.return_value = create_response(400)
 
-    response = company_profile_edit_end_to_end()
-
-    view = views.CompanyProfileEditView
-    assert response.status_code == http.client.OK
-    assert response.template_name == view.failure_template
+    with pytest.raises(requests.exceptions.HTTPError):
+        company_profile_edit_end_to_end()
 
 
 def test_company_profile_initial_data_basic(
@@ -1192,12 +1175,10 @@ def test_unsubscribe_api_failure(mock_unsubscribe, logged_in_client):
     )
     mock_unsubscribe.return_value = create_response(400)
 
-    response = logged_in_client.post(reverse('unsubscribe'))
+    with pytest.raises(requests.exceptions.HTTPError):
+        logged_in_client.post(reverse('unsubscribe'))
 
     mock_unsubscribe.assert_called_once_with(sso_session_id='213')
-    view = views.EmailUnsubscribeView
-    assert response.status_code == http.client.OK
-    assert response.template_name == view.failure_template
 
 
 @patch.object(

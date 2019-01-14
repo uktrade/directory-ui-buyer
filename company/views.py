@@ -13,6 +13,7 @@ from django.urls import reverse, reverse_lazy
 
 from formtools.wizard.views import SessionWizardView
 from raven.contrib.django.raven_compat.models import client as sentry_client
+from requests.exceptions import HTTPError
 
 from directory_api_client.client import api_client
 from company import forms, helpers, state_requirements
@@ -36,9 +37,6 @@ class UpdateCompanyProfileOnFormWizardDoneMixin:
     def handle_profile_update_success(self):
         return redirect('company-detail')
 
-    def handle_profile_update_failure(self):
-        return TemplateResponse(self.request, self.failure_template)
-
     @staticmethod
     def send_update_error_to_sentry(sso_user, api_response):
         # This is needed to not include POST data (e.g. binary image), which
@@ -54,19 +52,20 @@ class UpdateCompanyProfileOnFormWizardDoneMixin:
         )
 
     def done(self, *args, **kwargs):
-        api_response = api_client.company.update_profile(
+        response = api_client.company.update_profile(
             sso_session_id=self.request.sso_user.session_id,
             data=self.serialize_form_data()
         )
-        if api_response.status_code == 200:
-            response = self.handle_profile_update_success()
-        else:
+        try:
+            response.raise_for_status()
+        except HTTPError:
             self.send_update_error_to_sentry(
                 sso_user=self.request.sso_user,
-                api_response=api_response
+                api_response=response
             )
-            response = self.handle_profile_update_failure()
-        return response
+            raise
+        else:
+            return self.handle_profile_update_success()
 
 
 class CompanyProfileMixin:
@@ -139,8 +138,6 @@ class SupplierCaseStudyWizardView(
     BASIC = 'basic'
     RICH_MEDIA = 'rich-media'
 
-    failure_template = 'supplier-case-study-error.html'
-
     file_storage = FileSystemStorage(
         location=os.path.join(settings.MEDIA_ROOT, 'tmp-supplier-media')
     )
@@ -194,10 +191,8 @@ class SupplierCaseStudyWizardView(
                 sso_session_id=self.request.sso_user.session_id,
                 data=data,
             )
-        if response.status_code == 201:
-            return redirect('company-detail')
-        else:
-            return TemplateResponse(self.request, self.failure_template)
+        response.raise_for_status()
+        return redirect('company-detail')
 
 
 class CompanyProfileDetailView(
@@ -237,8 +232,6 @@ class CompanyProfileEditView(BaseMultiStepCompanyEditView):
         BASIC: 'company-profile-form.html',
         CLASSIFICATION: 'company-profile-form-classification.html',
     }
-
-    failure_template = 'company-profile-update-error.html'
 
     form_serializer = staticmethod(forms.serialize_company_profile_forms)
 
@@ -280,7 +273,6 @@ class SendVerificationLetterView(
         (ADDRESS, 'Address'),
     ]
     form_serializer = staticmethod(forms.serialize_company_address_form)
-    failure_template = 'company-profile-update-error.html'
 
     def get_context_data(self, form, **kwargs):
         company_address = helpers.build_company_address(self.company_profile)
@@ -305,7 +297,6 @@ class CompanyProfileLogoEditView(BaseMultiStepCompanyEditView):
     file_storage = FileSystemStorage(
         location=os.path.join(settings.MEDIA_ROOT, 'tmp-logos')
     )
-    failure_template = 'company-profile-update-error.html'
     templates = {
         'logo': 'company-profile-logo-form.html',
     }
@@ -378,7 +369,6 @@ class CompanyDescriptionEditView(BaseMultiStepCompanyEditView):
     form_list = (
         (DESCRIPTION, forms.CompanyDescriptionForm),
     )
-    failure_template = 'company-profile-update-error.html'
     templates = {
         DESCRIPTION: 'company-profile-description-form.html',
     }
@@ -390,7 +380,6 @@ class CompanySocialLinksEditView(BaseMultiStepCompanyEditView):
     form_list = (
         (SOCIAL, forms.SocialLinksForm),
     )
-    failure_template = 'company-profile-update-error.html'
     templates = {
         SOCIAL: 'company-profile-social-form.html',
     }
@@ -402,7 +391,6 @@ class SupplierBasicInfoEditView(BaseMultiStepCompanyEditView):
     form_list = (
         (BASIC, forms.CompanyBasicInfoForm),
     )
-    failure_template = 'company-profile-update-error.html'
     templates = {
         BASIC: 'company-profile-form.html',
     }
@@ -417,7 +405,6 @@ class SupplierClassificationEditView(BaseMultiStepCompanyEditView):
     templates = {
         CLASSIFICATION: 'company-profile-form-classification.html',
     }
-    failure_template = 'company-profile-update-error.html'
     form_serializer = staticmethod(forms.serialize_company_sectors_form)
 
 
@@ -426,7 +413,6 @@ class SupplierContactEditView(BaseMultiStepCompanyEditView):
     form_list = (
         (CONTACT, forms.CompanyContactDetailsForm),
     )
-    failure_template = 'company-profile-update-error.html'
     templates = {
         CONTACT: 'company-profile-form-contact.html',
     }
@@ -438,7 +424,6 @@ class SupplierAddressEditView(BaseMultiStepCompanyEditView):
     form_list = (
         (ADDRESS, forms.CompanyAddressVerificationForm),
     )
-    failure_template = 'company-profile-update-error.html'
     templates = {
         ADDRESS: 'company-profile-form-address.html',
     }
@@ -466,15 +451,13 @@ class EmailUnsubscribeView(
     form_class = forms.EmptyForm
     template_name = 'email-unsubscribe.html'
     success_template = 'email-unsubscribe-success.html'
-    failure_template = 'email-unsubscribe-error.html'
 
     def form_valid(self, form):
         response = api_client.supplier.unsubscribe(
             sso_session_id=self.request.sso_user.session_id
         )
-        if response.status_code == 200:
-            return TemplateResponse(self.request, self.success_template)
-        return TemplateResponse(self.request, self.failure_template)
+        response.raise_for_status()
+        return TemplateResponse(self.request, self.success_template)
 
 
 class RequestPaylodTooLargeErrorView(TemplateView):
@@ -636,7 +619,6 @@ class TransferAccountWizardView(
         (EMAIL, forms.TransferAccountEmailForm),
         (PASSWORD, forms.TransferAccountPasswordForm),
     )
-    failure_template = 'company-transfer-error.html'
     templates = {
         EMAIL: 'company-transfer-account-email.html',
         PASSWORD: 'company-transfer-account-password.html',
