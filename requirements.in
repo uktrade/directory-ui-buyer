@@ -1,4 +1,4 @@
-Django==1.11.15
+Django==1.11.18
 django-environ==0.4.5
 django_extensions==1.9.0
 django-formtools==2.0
@@ -13,7 +13,7 @@ phonenumberslite==7.7.4
 pillow==4.2.1
 directory-ch-client==1.0.0
 directory_validators==5.0.0
-directory-healthcheck==1.0.0
+directory-healthcheck==1.0.1
 directory-components==3.6.1
 directory-sso-api-client==3.0.2
 directory-api-client==11.1.0
