@@ -106,9 +106,7 @@ WSGI_APPLICATION = 'conf.wsgi.application'
 VCAP_SERVICES = env.json('VCAP_SERVICES', {})
 
 if 'redis' in VCAP_SERVICES:
-    REDIS_URL = VCAP_SERVICES['redis'][0]['credentials']['uri'].replace(
-        'rediss://', 'redis://'
-    )
+    REDIS_URL = VCAP_SERVICES['redis'][0]['credentials']['uri']
 else:
     REDIS_URL = env.str('REDIS_URL', '')
 
