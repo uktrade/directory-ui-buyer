@@ -558,6 +558,7 @@ class AddCollaboratorView(BaseMultiUserAccountManagementView, FormView):
         return {
             **super().get_form_kwargs(),
             'sso_email_address': self.request.sso_user.email,
+            'email_address': self.get_email()
         }
 
     def form_valid(self, form):
@@ -578,6 +579,9 @@ class AddCollaboratorView(BaseMultiUserAccountManagementView, FormView):
 
     def get_success_url(self):
         return settings.SSO_PROFILE_URL + '?user-added'
+
+    def get_email(self):
+        return self.request.GET.get('email')
 
 
 class RemoveCollaboratorView(BaseMultiUserAccountManagementView, FormView):
