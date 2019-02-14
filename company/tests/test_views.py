@@ -1498,6 +1498,27 @@ def test_add_collaborator_valid_form(
     )
 
 
+def test_add_collaborator_email(logged_in_client, client):
+
+    url = reverse('add-collaborator')
+    response = client.get(url+'?email=test@test1.com')
+
+    assert response.context['form'].initial == {
+        'email_address': 'test@test1.com'
+    }
+
+
+def test_add_collaborator_empty_email(logged_in_client, client):
+
+    url = reverse('add-collaborator')
+    response = client.get(url)
+
+    assert response.status_code == 200
+    assert response.context['form'].initial == {
+        'email_address': None
+    }
+
+
 @patch.object(api_client.company, 'create_collaboration_invite')
 def test_add_collaborator_valid_form_already_exists(
     mock_create_collaboration_invite, has_company_client, sso_user

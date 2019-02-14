@@ -517,6 +517,7 @@ class BaseMultiUserEmailForm(
 
 
 class AddCollaboratorForm(BaseMultiUserEmailForm):
+
     email_address = forms.EmailField(
         label=(
             'Enter the new user’s email address.'

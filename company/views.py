@@ -557,8 +557,13 @@ class AddCollaboratorView(BaseMultiUserAccountManagementView, FormView):
     def get_form_kwargs(self):
         return {
             **super().get_form_kwargs(),
-            'sso_email_address': self.request.sso_user.email,
+            'sso_email_address': self.request.sso_user.email
         }
+
+    def get_initial(self):
+        initial = super().get_initial()
+        initial["email_address"] = self.request.GET.get('email')
+        return initial
 
     def form_valid(self, form):
         self.add_collaborator(email_address=form.cleaned_data['email_address'])
