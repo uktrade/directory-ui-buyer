@@ -1502,8 +1502,10 @@ def test_add_collaborator_email(logged_in_client, client):
 
     url = reverse('add-collaborator')
     response = client.get(url+'?email=test@test1.com')
-    assert response.context[
-               'form'].fields['email_address'].initial == 'test@test1.com'
+
+    assert response.context['form'].initial == {
+        'email_address': 'test@test1.com'
+    }
 
 
 @patch.object(api_client.company, 'create_collaboration_invite')
