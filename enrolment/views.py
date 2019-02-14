@@ -38,6 +38,11 @@ class DomesticLandingView(FormView):
                 request, *args, **kwargs
             )
 
+    def get_template_names(self):
+        if settings.FEATURE_FLAGS['NEW_ACCOUNT_JOURNEY_ON']:
+            self.template_name = 'landing-page-new-reg.html'
+        return self.template_name
+
     def form_valid(self, form):
 
         url = '{path}?company_number={number}'.format(
