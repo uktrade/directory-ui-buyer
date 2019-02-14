@@ -1508,6 +1508,17 @@ def test_add_collaborator_email(logged_in_client, client):
     }
 
 
+def test_add_collaborator_empty_email(logged_in_client, client):
+
+    url = reverse('add-collaborator')
+    response = client.get(url)
+    reverse.status_code = 200
+
+    assert response.context['form'].initial == {
+        'email_address': None
+    }
+
+
 @patch.object(api_client.company, 'create_collaboration_invite')
 def test_add_collaborator_valid_form_already_exists(
     mock_create_collaboration_invite, has_company_client, sso_user
