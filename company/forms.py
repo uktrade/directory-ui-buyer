@@ -518,10 +518,6 @@ class BaseMultiUserEmailForm(
 
 class AddCollaboratorForm(BaseMultiUserEmailForm):
 
-    def __init__(self, email_address=None, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['email_address'].initial = email_address
-
     email_address = forms.EmailField(
         label=(
             'Enter the new user’s email address.'
