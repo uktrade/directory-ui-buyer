@@ -1512,8 +1512,8 @@ def test_add_collaborator_empty_email(logged_in_client, client):
 
     url = reverse('add-collaborator')
     response = client.get(url)
-    reverse.status_code = 200
 
+    assert response.status_code == 200
     assert response.context['form'].initial == {
         'email_address': None
     }
