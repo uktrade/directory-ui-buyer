@@ -68,7 +68,7 @@ class DomesticLandingView(FormView):
             'briggs': self.get_supplier_profile_url('06836628'),
         }
         context[
-            'new_reg_url'] = urls.SERVICES_SSO_PROFILE
+            'new_reg_url'] = urls.urljoin(urls.SERVICES_SSO_PROFILE, '/enrol')
 
         return context
 

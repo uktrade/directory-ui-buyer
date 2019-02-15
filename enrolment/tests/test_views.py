@@ -326,6 +326,7 @@ def test_landing_page_context_no_sso_user(client):
 
 
 def test_landing_page_default_template(client):
+    settings.FEATURE_FLAGS['NEW_ACCOUNT_JOURNEY_ON'] = False
     response = client.get(reverse('index'))
     assert response.template_name == 'landing-page.html'
 
