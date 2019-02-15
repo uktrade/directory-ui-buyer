@@ -17,6 +17,7 @@ from enrolment.helpers import (
     store_companies_house_profile_in_session_and_validate
 )
 from sso.utils import SSOSignUpRequiredMixin
+from directory_constants.constants import urls
 
 COMPANY_NUMBER_NOT_PROVIDED_ERROR = 'Company number not provided.'
 EXPORT_STATUS_NOT_PROVIDED_ERROR = 'Export status not provided.'
@@ -37,11 +38,6 @@ class DomesticLandingView(FormView):
             return super(DomesticLandingView, self).dispatch(
                 request, *args, **kwargs
             )
-
-    def get_template_names(self):
-        if settings.FEATURE_FLAGS['NEW_ACCOUNT_JOURNEY_ON']:
-            self.template_name = 'landing-page-new-reg.html'
-        return self.template_name
 
     def form_valid(self, form):
 
@@ -66,6 +62,11 @@ class DomesticLandingView(FormView):
             'blippar': self.get_supplier_profile_url('07446749'),
             'briggs': self.get_supplier_profile_url('06836628'),
         }
+        context['NEW_ACCOUNT_JOURNEY_ON'] = settings.FEATURE_FLAGS[
+            'NEW_ACCOUNT_JOURNEY_ON'
+        ]
+        context['new_reg_url'] =\
+            'http://profile.trade.great:8006/profile/enrol/'
 
         return context
 
