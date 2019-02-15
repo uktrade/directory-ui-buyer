@@ -11,6 +11,7 @@ from django.shortcuts import render
 
 from formtools.wizard.views import NamedUrlSessionWizardView
 
+from directory_constants.constants import urls
 from directory_api_client.client import api_client
 from enrolment import forms, helpers
 from enrolment.helpers import (
@@ -67,7 +68,7 @@ class DomesticLandingView(FormView):
             'briggs': self.get_supplier_profile_url('06836628'),
         }
         context[
-            'new_reg_url'] = 'http://profile.trade.great:8006/profile/enrol/'
+            'new_reg_url'] = urls.SERVICES_SSO_PROFILE
 
         return context
 
