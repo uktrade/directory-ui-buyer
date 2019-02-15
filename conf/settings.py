@@ -415,3 +415,8 @@ RESTRICTED_APP_NAMES = env.list(
 if env.bool('IP_RESTRICTOR_RESTRICT_UI', False):
     # restrict all pages that are not in apps API, healthcheck, admin, etc
     RESTRICTED_APP_NAMES.append('')
+
+# Profile service
+DIRECTORY_CONSTANTS_URL_SSO_PROFILE = env.str(
+    'DIRECTORY_CONSTANTS_URL_SSO_PROFILE', ''
+)
