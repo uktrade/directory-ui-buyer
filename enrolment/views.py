@@ -11,6 +11,7 @@ from django.shortcuts import render
 
 from formtools.wizard.views import NamedUrlSessionWizardView
 
+from directory_constants.constants import urls
 from directory_api_client.client import api_client
 from enrolment import forms, helpers
 from enrolment.helpers import (
@@ -38,6 +39,11 @@ class DomesticLandingView(FormView):
                 request, *args, **kwargs
             )
 
+    def get_template_names(self):
+        if not settings.FEATURE_FLAGS['NEW_ACCOUNT_JOURNEY_ON']:
+            self.template_name = 'landing-page-old.html'
+        return self.template_name
+
     def form_valid(self, form):
 
         url = '{path}?company_number={number}'.format(
@@ -61,6 +67,8 @@ class DomesticLandingView(FormView):
             'blippar': self.get_supplier_profile_url('07446749'),
             'briggs': self.get_supplier_profile_url('06836628'),
         }
+        enrolment_url = urls.urljoin(urls.SERVICES_SSO_PROFILE, '/enrol')
+        context['enrolment_url'] = enrolment_url
 
         return context
 

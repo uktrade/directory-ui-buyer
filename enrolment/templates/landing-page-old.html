@@ -22,11 +22,7 @@ Get seen by motivated overseas buyers
 			<span class="sub">{% trans "with a great.gov.uk business profile" %}</span>
 		</h1>
 		<div>
-			<div class="grid-row">
-					<div class="column-two-thirds">
-						<a class="link" href="{{ enrolment_url }}" title="click to register">Register a new account</a>
-					</div>
-				</div>
+			{% include 'register-company-number-form.html' %}
 		</div>
 
 		<p class="message">{% trans "Connect directly with international buyers" %}</p>

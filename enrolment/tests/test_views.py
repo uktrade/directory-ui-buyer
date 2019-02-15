@@ -8,6 +8,7 @@ import pytest
 
 from django.core.urlresolvers import reverse
 from django.forms import ValidationError
+from django.conf import settings
 
 from enrolment import helpers
 from enrolment.validators import (
@@ -322,6 +323,18 @@ def test_landing_page_context_no_sso_user(client):
     response = client.get(reverse('index'))
 
     assert response.context_data['user_has_company'] is None
+
+
+def test_landing_page_default_template(client):
+    settings.FEATURE_FLAGS['NEW_ACCOUNT_JOURNEY_ON'] = True
+    response = client.get(reverse('index'))
+    assert response.template_name == 'landing-page.html'
+
+
+def test_landing_page_old_ver_template(client):
+    settings.FEATURE_FLAGS['NEW_ACCOUNT_JOURNEY_ON'] = False
+    response = client.get(reverse('index'))
+    assert response.template_name == 'landing-page-old.html'
 
 
 @patch('enrolment.helpers.has_company', Mock(return_value=True))
