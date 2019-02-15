@@ -40,8 +40,8 @@ class DomesticLandingView(FormView):
             )
 
     def get_template_names(self):
-        if settings.FEATURE_FLAGS['NEW_ACCOUNT_JOURNEY_ON']:
-            self.template_name = 'landing-page-new-reg.html'
+        if not settings.FEATURE_FLAGS['NEW_ACCOUNT_JOURNEY_ON']:
+            self.template_name = 'landing-page-old.html'
         return self.template_name
 
     def form_valid(self, form):
@@ -67,8 +67,8 @@ class DomesticLandingView(FormView):
             'blippar': self.get_supplier_profile_url('07446749'),
             'briggs': self.get_supplier_profile_url('06836628'),
         }
-        context[
-            'new_reg_url'] = urls.urljoin(urls.SERVICES_SSO_PROFILE, '/enrol')
+        enrolment_url = urls.urljoin(urls.SERVICES_SSO_PROFILE, '/enrol')
+        context['enrolment_url'] = enrolment_url
 
         return context
 

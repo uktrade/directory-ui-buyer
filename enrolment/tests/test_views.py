@@ -326,15 +326,15 @@ def test_landing_page_context_no_sso_user(client):
 
 
 def test_landing_page_default_template(client):
-    settings.FEATURE_FLAGS['NEW_ACCOUNT_JOURNEY_ON'] = False
+    settings.FEATURE_FLAGS['NEW_ACCOUNT_JOURNEY_ON'] = True
     response = client.get(reverse('index'))
     assert response.template_name == 'landing-page.html'
 
 
-def test_landing_page_new_reg_template(client):
-    settings.FEATURE_FLAGS['NEW_ACCOUNT_JOURNEY_ON'] = True
+def test_landing_page_old_ver_template(client):
+    settings.FEATURE_FLAGS['NEW_ACCOUNT_JOURNEY_ON'] = False
     response = client.get(reverse('index'))
-    assert response.template_name == 'landing-page-new-reg.html'
+    assert response.template_name == 'landing-page-old.html'
 
 
 @patch('enrolment.helpers.has_company', Mock(return_value=True))
