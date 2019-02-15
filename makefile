@@ -63,6 +63,7 @@ DEBUG_SET_ENV_VARS := \
 	export DIRECTORY_CONSTANTS_URL_FIND_A_SUPPLIER=http://supplier.trade.great:8005; \
 	export DIRECTORY_CONSTANTS_URL_INVEST=http://invest.trade.great:8012; \
 	export DIRECTORY_CONSTANTS_URL_SINGLE_SIGN_ON=http://sso.trade.great:8004; \
+	export DIRECTORY_CONSTANTS_URL_SSO_PROFILE=http://profile.trade.great:8006; \
 	export FEATURE_EXPORT_JOURNEY_ENABLED=false \
 	export FEATURE_NEW_ACCOUNT_JOURNEY_ENABLED=false
 
