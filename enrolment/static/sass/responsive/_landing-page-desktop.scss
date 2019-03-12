@@ -317,6 +317,9 @@ button,
 
 .fabhome-bottom-container {
     background-color: #f5f2ed;
+    h2 {
+      margin-top: 80px;
+    }
 }
 
 #content.fabhome-new {
@@ -333,6 +336,12 @@ button,
     }
   }
   #fabhome-benefits {
+    &.with-flag:after {
+      bottom: -30px;
+    }
+    img {
+      width: 100%;
+    }
     padding-top: 60px;
     padding-bottom: 60px;
     h2 {
@@ -346,7 +355,7 @@ button,
         clear: both;
         counter-increment: li;
         &:before {
-          color: $grey-4;
+          color: $grey-5;
           content: counter(li) " ";
           float: left;
           font-size: 72px;
