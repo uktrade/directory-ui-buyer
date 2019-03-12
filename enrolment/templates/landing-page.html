@@ -12,65 +12,56 @@ Get seen by motivated overseas buyers
 
 {% block css_layout_class %}
 	{{ block.super }}
-	fabhome
+	fabhome fabhome-new
 {% endblock %}
 
 {% block content %}
-	<section id="fabhome-intro" class="outer-container">
-		<h1 class="element-within company-name-title">
-			<span>{% trans "Get promoted internationally" %}</span>
-			<span class="sub">{% trans "with a great.gov.uk business profile" %}</span>
-		</h1>
-		<div>
-			<div class="grid-row">
-					<div class="column-two-thirds">
-						<a class="link" href="{{ enrolment_url }}" title="click to register">Register a new account</a>
-					</div>
-				</div>
-		</div>
-
-		<p class="message">{% trans "Connect directly with international buyers" %}</p>
-	</section>
-
-	<section id="fabhome-benefits">
-		<div class="outer-container">
-			<h2 class="visuallyhidden">{% trans "Benefit of a business profile" %}</h2>
-			<p>{% trans "Your free great.gov.uk business profile will:" %}</p>
-			<ul>
-				<li>{% trans "let international buyers get in touch with your company's sales team" %}</li>
-				<li>{% trans "showcase your company's outstanding projects and experience to give buyers insight into what you do" %}</li>
-				<li>{% trans "give your company international credibility by displaying independent data from Companies House" %}</li>
-				<li>{% trans "give companies looking to buy from your industry an easy way to find you" %}</li>
-			</ul>
-			<img id="fabhome-screenshot" src="{% static 'images/960-FAS-preview-case-study-435px.png' %}" alt="" />
-		</div>
-	</section>
-
-	<section id="fabhome-howto">
-		<div class="outer-container">
-			<h2>{% trans "Get your profile in 3 simple steps" %}</h2>
-			<ol>
-				<li class="step1">
-					<strong aria-describedby="step1desc">{% trans "Sign up" %}</strong>
-					<span id="step1desc">{% trans "Enter your Companies House number to start building your business profile." %}</span>
-				</li>
-
-				<li class="step2">
-					<strong aria-describedby="step2desc">{% trans "Verify" %}</strong>
-					<span id="step2desc">{% trans "Prove your affiliation to your company." %}</span>
-				</li>
-
-				<li class="step3">
-					<strong aria-describedby="step3desc">{% trans "Promote" %}</strong>
-					<span id="step3desc">{% trans "Describe what your company does and include examples of your best work." %}</span>
-				</li>
-			</ol>
-		</div>
-
-		<div id="fabhome-howto-lookup-area" {% if user_has_company %}style="visibility: hidden;"{% endif %}>
-			<div class="outer-container">
-				{% include 'register-company-number-form.html' %}
+	<div class="container fabhome-intro-container">
+		<section id="fabhome-intro" class="grid-row">
+			<div class="column-one-half">
+				<h1 class="heading-xlarge">Connect directly with international buyers</h1>
+				<p>Create a business profile on great.gov.uk.</p>
+				<a class="button" href="{{ enrolment_url }}" title="click to register">Create an account</a>
+			</div>
+		</section>
+	</div>
+	<div id="fabhome-benefits" class="container">
+		<div class="grid-row">
+			<div class="column-one-half">
+				<h2 class="heading-large">Your business profile on great.gov.uk will</h2>
 			</div>
 		</div>
-	</section>
+		<section class="grid-row">
+			<div class="column-one-third">
+				<ol class="list list-number">
+					<li>
+						<h3 class="heading-medium">Let buyers find you</h3>
+						<div>Give companies looking to buy from your industry an easy way to find you.</div>
+					</li>
+					<li>
+						<h3 class="heading-medium">Showcase your company</h3>
+						<div>Highlight your company's projects and experience to give buyers insight into what you do.</div>
+					</li>
+					<li>
+						<h3 class="heading-medium">Pull in the right leads</h3>
+						<div>Attract more business by connecting with the right international buyers.</div>
+					</li>
+				</ol>
+			</div>
+		</section>
+	</div>
+	<div class="fabhome-bottom-container">
+		<div class="container">
+			<section id="fabhome-bottom" class="grid-row">
+				<div class="column-one-third">
+					<h2 class="heading-large">Connect directly with international buyers</h2>
+					<p>Create a business profile on great.gov.uk.</p>
+					<a class="button" href="{{ enrolment_url }}" title="click to register">Create an account</a>
+				</div>
+			</section>
+		</div>
+	</div>
+
+
+
 {% endblock content %}

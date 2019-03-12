@@ -51,7 +51,7 @@ button,
 /* Down arrow effect (CSS without images)
  *****************************************/
 #fabhome-howto-lookup-area:before,
-#fabhome-intro:after {
+#fabhome-intro.fabhome-old:after {
   border-color: $great-blue;
   border-style: solid;
   border-top-color: $white;
@@ -67,7 +67,7 @@ button,
 
 /* FAB Home
  ***********************/
-.fabhome {
+.fabhome-old {
   display: block;
 
   h1 {
@@ -107,7 +107,7 @@ button,
   background: linear-gradient(269deg, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.95));
 }
 
-#fabhome-benefits,
+.fabhome-old #fabhome-benefits,
 #fabhome-intro {
   color: $white;
   min-height: 400px;
@@ -115,7 +115,7 @@ button,
 }
 
 
-#fabhome-benefits {
+.fabhome-old #fabhome-benefits {
   background-color: $great-blue;
   overflow: hidden;
   padding: 40px 0 0 0;
@@ -162,7 +162,7 @@ button,
   }
 }
 
-#fabhome-howto {
+.fabhome-new #fabhome-howto {
   background-color: $white;
   padding: 40px 0 0 0;
 
@@ -314,3 +314,59 @@ button,
   position: absolute;
   right: 10%;
 }
+
+.fabhome-bottom-container {
+    background-color: #f5f2ed;
+}
+
+#content.fabhome-new {
+  background-size: auto 500px;
+  padding: 0;
+  #fabhome-intro {
+    height: 450px;
+    h1 {
+      margin-top: 120px;
+      margin-bottom: 20px;
+    }
+    .button {
+      margin-top: 40px;
+    }
+  }
+  #fabhome-benefits {
+    padding-top: 60px;
+    padding-bottom: 60px;
+    h2 {
+      margin-top: 0;
+      margin-bottom: 100px;
+    }
+
+    ol {
+      padding-left: 0;
+      li {
+        clear: both;
+        counter-increment: li;
+        &:before {
+          color: $grey-4;
+          content: counter(li) " ";
+          float: left;
+          font-size: 72px;
+          line-height: 72px;
+          margin-right: 48px;
+          height: 150px;
+        }
+        margin-bottom: 47px;
+        h3 {
+          margin-top: 0;
+        }
+      }
+    }
+  }
+}
+
+#fabhome-bottom {
+  .button {
+    margin-top: 20px;
+  }
+}
+
+

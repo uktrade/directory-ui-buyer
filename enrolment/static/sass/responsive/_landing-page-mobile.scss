@@ -7,7 +7,6 @@
 
   .fabhome {
     h1 {
-      border-bottom: $grey-4 solid 1px;
       color: inherit;
       font-size: 30px;
       font-weight: 500;
@@ -151,4 +150,37 @@
   #fabhome-screenshot {
     display: none;
   }
+
+  #content.fabhome-new {
+    & > .container {
+      margin: 0;
+    }
+    #fabhome-intro {
+      h1 {
+          margin-top: 60px;
+          padding: 0;
+      }
+    }
+  }
+  .fabhome-bottom-container {
+    padding-top: 20px;
+  }
+
+  .fabhome-intro-container {
+    height: 220px;
+  }
+  #content.fabhome-new #fabhome-benefits {
+    padding-bottom: 0;
+    h2 {
+      margin-bottom: 50px;
+    }
+    & > .grid-row {
+      padding-bottom: 0;
+    }
+  }
+
+  .fabhome-bottom-container > .container {
+    margin: 0;
+  }
 }
+
