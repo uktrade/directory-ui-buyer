@@ -3,7 +3,7 @@ from http.cookies import SimpleCookie
 from unittest.mock import call, patch, Mock, ANY
 import urllib
 
-from directory_constants.constants import choices
+from directory_constants.constants import choices, urls
 from directory_api_client.client import api_client
 import pytest
 import requests
@@ -2101,3 +2101,24 @@ def test_required_user_states(view_class, expected):
     assert issubclass(view_class, mixin_class)
     for rule in expected:
         assert rule in view_class.required_user_states
+
+
+@pytest.mark.parametrize('url', (
+    reverse('company-case-study-create'),
+    reverse('company-detail'),
+    reverse('company-edit'),
+    reverse('company-edit-logo'),
+    reverse('company-edit-description'),
+    reverse('company-edit-social-media'),
+    reverse('company-edit-key-facts'),
+    reverse('company-edit-sectors'),
+    reverse('company-edit-contact'),
+    reverse('company-edit-address'),
+))
+def test_new_new_edit_page_redirect(settings, url, has_company_client):
+    settings.FEATURE_FLAGS['NEW_ACCOUNT_EDIT_ON'] = True
+
+    response = has_company_client.get(url)
+
+    assert response.status_code == 302
+    assert response.url == urls.build_great_url('profile/enrol/')
