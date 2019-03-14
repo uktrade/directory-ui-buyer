@@ -67,9 +67,7 @@ class DomesticLandingView(FormView):
             'blippar': self.get_supplier_profile_url('07446749'),
             'briggs': self.get_supplier_profile_url('06836628'),
         }
-        enrolment_url = urls.urljoin(urls.SERVICES_SSO_PROFILE, '/enrol')
-        context['enrolment_url'] = enrolment_url
-
+        context['enrolment_url'] = urls.build_great_url('profile/enrol')
         return context
 
 
