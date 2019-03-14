@@ -1,6 +1,12 @@
 import os
 from urllib.parse import urljoin
 
+from directory_api_client.client import api_client
+from directory_constants.constants import urls
+from formtools.wizard.views import SessionWizardView
+from raven.contrib.django.raven_compat.models import client as sentry_client
+from requests.exceptions import HTTPError
+
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
 from django.http import HttpResponse, HttpResponseForbidden
@@ -11,13 +17,15 @@ from django.views.generic import RedirectView, TemplateView, View
 from django.views.generic.edit import FormView
 from django.urls import reverse, reverse_lazy
 
-from formtools.wizard.views import SessionWizardView
-from raven.contrib.django.raven_compat.models import client as sentry_client
-from requests.exceptions import HTTPError
-
-from directory_api_client.client import api_client
 from company import forms, helpers, state_requirements
 from enrolment.helpers import CompaniesHouseClient
+
+
+class RedirectNewEditFeatureFlagMixin:
+    def get(self, *args, **kwargs):
+        if settings.FEATURE_FLAGS['NEW_ACCOUNT_EDIT_ON']:
+            return redirect(urls.build_great_url('profile/enrol/'))
+        return super().get(*args, **kwargs)
 
 
 class SubmitFormOnGetMixin:
@@ -125,6 +133,7 @@ class BaseMultiStepCompanyEditView(
 
 
 class SupplierCaseStudyWizardView(
+    RedirectNewEditFeatureFlagMixin,
     state_requirements.UserStateRequirementHandlerMixin,
     CompanyProfileMixin,
     GetTemplateForCurrentStepMixin,
@@ -196,8 +205,8 @@ class SupplierCaseStudyWizardView(
 
 
 class CompanyProfileDetailView(
-    CompanyProfileMixin, state_requirements.UserStateRequirementHandlerMixin,
-    TemplateView
+    RedirectNewEditFeatureFlagMixin, CompanyProfileMixin,
+    state_requirements.UserStateRequirementHandlerMixin, TemplateView
 ):
     required_user_states = [
         state_requirements.IsLoggedIn,
@@ -215,7 +224,9 @@ class CompanyProfileDetailView(
         }
 
 
-class CompanyProfileEditView(BaseMultiStepCompanyEditView):
+class CompanyProfileEditView(
+    RedirectNewEditFeatureFlagMixin, BaseMultiStepCompanyEditView
+):
     BASIC = 'basic'
     CLASSIFICATION = 'classification'
     SENT = 'sent'
@@ -290,7 +301,9 @@ class SendVerificationLetterView(
         return TemplateResponse(self.request, self.templates[self.SENT])
 
 
-class CompanyProfileLogoEditView(BaseMultiStepCompanyEditView):
+class CompanyProfileLogoEditView(
+    RedirectNewEditFeatureFlagMixin, BaseMultiStepCompanyEditView
+):
     form_list = (
         ('logo', forms.CompanyLogoForm),
     )
@@ -364,7 +377,9 @@ class CompanyAddressVerificationHistoricView(RedirectView):
     pattern_name = 'verify-company-address'
 
 
-class CompanyDescriptionEditView(BaseMultiStepCompanyEditView):
+class CompanyDescriptionEditView(
+    RedirectNewEditFeatureFlagMixin, BaseMultiStepCompanyEditView
+):
     DESCRIPTION = 'description'
     form_list = (
         (DESCRIPTION, forms.CompanyDescriptionForm),
@@ -375,7 +390,9 @@ class CompanyDescriptionEditView(BaseMultiStepCompanyEditView):
     form_serializer = staticmethod(forms.serialize_company_description_form)
 
 
-class CompanySocialLinksEditView(BaseMultiStepCompanyEditView):
+class CompanySocialLinksEditView(
+    RedirectNewEditFeatureFlagMixin, BaseMultiStepCompanyEditView
+):
     SOCIAL = 'social'
     form_list = (
         (SOCIAL, forms.SocialLinksForm),
@@ -386,7 +403,9 @@ class CompanySocialLinksEditView(BaseMultiStepCompanyEditView):
     form_serializer = staticmethod(forms.serialize_social_links_form)
 
 
-class SupplierBasicInfoEditView(BaseMultiStepCompanyEditView):
+class SupplierBasicInfoEditView(
+    RedirectNewEditFeatureFlagMixin, BaseMultiStepCompanyEditView
+):
     BASIC = 'basic'
     form_list = (
         (BASIC, forms.CompanyBasicInfoForm),
@@ -397,7 +416,9 @@ class SupplierBasicInfoEditView(BaseMultiStepCompanyEditView):
     form_serializer = staticmethod(forms.serialize_company_basic_info_form)
 
 
-class SupplierClassificationEditView(BaseMultiStepCompanyEditView):
+class SupplierClassificationEditView(
+    RedirectNewEditFeatureFlagMixin, BaseMultiStepCompanyEditView
+):
     CLASSIFICATION = 'classification'
     form_list = (
         (CLASSIFICATION, forms.CompanyClassificationForm),
@@ -408,7 +429,9 @@ class SupplierClassificationEditView(BaseMultiStepCompanyEditView):
     form_serializer = staticmethod(forms.serialize_company_sectors_form)
 
 
-class SupplierContactEditView(BaseMultiStepCompanyEditView):
+class SupplierContactEditView(
+    RedirectNewEditFeatureFlagMixin, BaseMultiStepCompanyEditView
+):
     CONTACT = 'contact'
     form_list = (
         (CONTACT, forms.CompanyContactDetailsForm),
@@ -419,7 +442,9 @@ class SupplierContactEditView(BaseMultiStepCompanyEditView):
     form_serializer = staticmethod(forms.serialize_company_contact_form)
 
 
-class SupplierAddressEditView(BaseMultiStepCompanyEditView):
+class SupplierAddressEditView(
+    RedirectNewEditFeatureFlagMixin, BaseMultiStepCompanyEditView
+):
     ADDRESS = 'address'
     form_list = (
         (ADDRESS, forms.CompanyAddressVerificationForm),
