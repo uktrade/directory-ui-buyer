@@ -25,6 +25,13 @@ EXPORT_STATUS_NOT_PROVIDED_ERROR = 'Export status not provided.'
 logger = logging.getLogger(__name__)
 
 
+class RedirectNewEnrolFeatureFlagMixin:
+    def dispatch(self, *args, **kwargs):
+        if settings.FEATURE_FLAGS['NEW_ACCOUNT_JOURNEY_ON']:
+            return redirect(urls.build_great_url('profile/enrol/'))
+        return super().dispatch(*args, **kwargs)
+
+
 class DomesticLandingView(FormView):
     template_name = 'landing-page.html'
     form_class = forms.CompanyNumberForm
@@ -71,7 +78,9 @@ class DomesticLandingView(FormView):
         return context
 
 
-class EnrolmentView(NamedUrlSessionWizardView):
+class EnrolmentView(
+    RedirectNewEnrolFeatureFlagMixin, NamedUrlSessionWizardView
+):
 
     COMPANY = 'company'
 
@@ -153,7 +162,9 @@ class EnrolmentView(NamedUrlSessionWizardView):
         return context
 
 
-class SubmitEnrolmentView(SSOSignUpRequiredMixin, View):
+class SubmitEnrolmentView(
+    RedirectNewEnrolFeatureFlagMixin, SSOSignUpRequiredMixin, View
+):
     failure_template = 'enrolment-failed.html'
 
     def dispatch(self, request, *args, **kwargs):

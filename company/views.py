@@ -24,7 +24,7 @@ from enrolment.helpers import CompaniesHouseClient
 class RedirectNewEditFeatureFlagMixin:
     def get(self, *args, **kwargs):
         if settings.FEATURE_FLAGS['NEW_ACCOUNT_EDIT_ON']:
-            return redirect(urls.build_great_url('profile/enrol/'))
+            return redirect(urls.build_great_url('profile/find-a-buyer/'))
         return super().get(*args, **kwargs)
 
 
