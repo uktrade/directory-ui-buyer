@@ -378,7 +378,9 @@ FEATURE_FLAGS = {
     ),
     'DIRECTORY_API_ON': env.bool('EXPOSE_DIRECTORY_API', False),
     'NEW_ACCOUNT_JOURNEY_ON': env.bool(
-        'FEATURE_NEW_ACCOUNT_JOURNEY_ENABLED', False),
+        'FEATURE_NEW_ACCOUNT_JOURNEY_ENABLED', False
+    ),
+    'NEW_ACCOUNT_EDIT_ON': env.bool('FEATURE_NEW_ACCOUNT_EDIT_ENABLED', False),
 }
 
 # healthcheck
