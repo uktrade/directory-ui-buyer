@@ -2,6 +2,7 @@ import http
 from unittest.mock import call, patch, Mock
 
 from directory_api_client.client import api_client
+from directory_constants.constants import urls
 import requests
 from requests.exceptions import RequestException, HTTPError
 import pytest
@@ -175,7 +176,9 @@ def api_response_company_profile_no_date_of_creation_200(api_response_200):
 @patch('enrolment.helpers.has_company', Mock(return_value=False))
 @patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
 @patch.object(api_client.enrolment, 'send_form', api_response_201)
-def test_submit_enrolment_api_client_success(client):
+def test_submit_enrolment_api_client_success(client, settings):
+    settings.FEATURE_FLAGS['NEW_ACCOUNT_JOURNEY_ON'] = False
+
     response = client.get(
         reverse('register-submit'),
         {
@@ -192,7 +195,9 @@ def test_submit_enrolment_api_client_success(client):
 )
 @patch('enrolment.helpers.has_company', Mock(return_value=False))
 @patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
-def test_submit_enrolment_api_client_success_correct_data(client):
+def test_submit_enrolment_api_client_success_correct_data(client, settings):
+    settings.FEATURE_FLAGS['NEW_ACCOUNT_JOURNEY_ON'] = False
+
     with patch.object(api_client.enrolment, 'send_form') as send_form_mock:
         client.get(
             reverse('register-submit'),
@@ -225,7 +230,9 @@ def test_submit_enrolment_api_client_success_correct_data(client):
 @patch('enrolment.helpers.has_company', Mock(return_value=False))
 @patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
 @patch.object(api_client.enrolment, 'send_form', api_response_400)
-def test_submit_enrolment_api_client_fail(client):
+def test_submit_enrolment_api_client_fail(client, settings):
+    settings.FEATURE_FLAGS['NEW_ACCOUNT_JOURNEY_ON'] = False
+
     response = client.get(
         reverse('register-submit'),
         {
@@ -241,7 +248,8 @@ def test_submit_enrolment_api_client_fail(client):
 )
 @patch('enrolment.helpers.has_company', Mock(return_value=False))
 @patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
-def test_enrolment_views_use_correct_template(client):
+def test_enrolment_views_use_correct_template(client, settings):
+    settings.FEATURE_FLAGS['NEW_ACCOUNT_JOURNEY_ON'] = False
     for step_name, form in EnrolmentView.form_list:
 
         query_params = {}
@@ -456,7 +464,9 @@ def test_landing_page_submit_valid_form_redirects(client):
     'enrolment.helpers.get_company_from_companies_house',
     Mock(return_value=MOCK_COMPANIES_HOUSE_API_COMPANY_PROFILE)
 )
-def test_confirm_company_resets_storage(client):
+def test_confirm_company_resets_storage(client, settings):
+    settings.FEATURE_FLAGS['NEW_ACCOUNT_JOURNEY_ON'] = False
+
     company_number = '12345678'
 
     with patch(
@@ -482,7 +492,9 @@ def test_confirm_company_resets_storage(client):
 )
 @patch('enrolment.helpers.has_company', Mock(return_value=False))
 @patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
-def test_company_enrolment_step_caches_profile(client):
+def test_company_enrolment_step_caches_profile(client, settings):
+    settings.FEATURE_FLAGS['NEW_ACCOUNT_JOURNEY_ON'] = False
+
     client.get(
         reverse('register', kwargs={'step': 'company'}),
         {'company_number': 12345678}
@@ -495,7 +507,10 @@ def test_company_enrolment_step_caches_profile(client):
 
 @patch('enrolment.helpers.has_company', Mock(return_value=False))
 @patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
-def test_company_enrolment_step_handles_api_company_not_found(client):
+def test_company_enrolment_step_handles_api_company_not_found(
+    client, settings
+):
+    settings.FEATURE_FLAGS['NEW_ACCOUNT_JOURNEY_ON'] = False
 
     with patch('enrolment.helpers.get_company_from_companies_house') as mock:
         mock.side_effect = RequestException(
@@ -513,7 +528,8 @@ def test_company_enrolment_step_handles_api_company_not_found(client):
 
 @patch('enrolment.helpers.has_company', Mock(return_value=False))
 @patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
-def test_company_enrolment_step_handles_api_company_error(client):
+def test_company_enrolment_step_handles_api_company_error(client, settings):
+    settings.FEATURE_FLAGS['NEW_ACCOUNT_JOURNEY_ON'] = False
 
     with patch('enrolment.helpers.get_company_from_companies_house') as mock:
         mock.side_effect = RequestException(
@@ -531,7 +547,9 @@ def test_company_enrolment_step_handles_api_company_error(client):
 @patch('enrolment.helpers.has_company', Mock(return_value=False))
 @patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
 @patch('enrolment.helpers.store_companies_house_profile_in_session', Mock())
-def test_company_enrolment_step_company_number_not_provided(client):
+def test_company_enrolment_step_company_number_not_provided(client, settings):
+    settings.FEATURE_FLAGS['NEW_ACCOUNT_JOURNEY_ON'] = False
+
     url = reverse('register', kwargs={'step': EnrolmentView.COMPANY})
     response = client.get(url)
     assert 'Company number not provided.' in str(response.content)
@@ -546,8 +564,9 @@ def test_company_enrolment_step_company_number_not_provided(client):
        Mock(return_value=MOCK_COMPANIES_HOUSE_API_COMPANY_PROFILE))
 @patch('enrolment.helpers.get_company_number_from_session')
 def test_company_enrolment_step_company_number_in_session_cache(
-        mock_get_company_number_from_session,
-        client):
+        mock_get_company_number_from_session, client, settings
+):
+    settings.FEATURE_FLAGS['NEW_ACCOUNT_JOURNEY_ON'] = False
 
     mock_get_company_number_from_session.return_value = 12345678
     response = client.get(reverse('register', kwargs={'step': 'company'}))
@@ -565,8 +584,9 @@ def test_company_enrolment_step_company_number_in_session_cache(
        Mock(return_value=MOCK_COMPANIES_HOUSE_API_COMPANY_PROFILE))
 @patch('enrolment.helpers.get_company_number_from_session')
 def test_company_enrolment_step_company_number_queryparam_and_session_cache(
-        mock_get_company_number_from_session,
-        client):
+    mock_get_company_number_from_session, client, settings
+):
+    settings.FEATURE_FLAGS['NEW_ACCOUNT_JOURNEY_ON'] = False
 
     mock_get_company_number_from_session.return_value = 87654321
     response = client.get(reverse('register', kwargs={'step': 'company'}),
@@ -580,7 +600,8 @@ def test_company_enrolment_step_company_number_queryparam_and_session_cache(
 @patch('enrolment.helpers.store_companies_house_profile_in_session', Mock())
 @patch('enrolment.helpers.get_company_status_from_session',
        Mock(return_value='not active'))
-def test_company_enrolment_step_handles_company_not_active(client):
+def test_company_enrolment_step_handles_company_not_active(client, settings):
+    settings.FEATURE_FLAGS['NEW_ACCOUNT_JOURNEY_ON'] = False
 
     with patch('enrolment.validators.company_active') as mock:
         mock.side_effect = ValidationError(MESSAGE_COMPANY_NOT_ACTIVE)
@@ -599,7 +620,10 @@ def test_company_enrolment_step_handles_company_not_active(client):
        Mock())
 @patch('enrolment.helpers.get_company_status_from_session',
        Mock(return_value='active'))
-def test_company_enrolment_step_handles_company_already_registered(client):
+def test_company_enrolment_step_handles_company_already_registered(
+    client, settings
+):
+    settings.FEATURE_FLAGS['NEW_ACCOUNT_JOURNEY_ON'] = False
 
     with patch('enrolment.validators.company_unique') as mock:
         mock.side_effect = ValidationError('Company already exists')
@@ -619,7 +643,9 @@ def test_company_enrolment_step_handles_company_already_registered(client):
 @patch('enrolment.helpers.has_company', Mock(return_value=False))
 @patch.object(api_client.enrolment, 'send_form', Mock())
 @patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
-def test_submit_enrolment_caches_profile(client):
+def test_submit_enrolment_caches_profile(client, settings):
+    settings.FEATURE_FLAGS['NEW_ACCOUNT_JOURNEY_ON'] = False
+
     client.get(
         reverse('register-submit'),
         {
@@ -634,7 +660,8 @@ def test_submit_enrolment_caches_profile(client):
 
 @patch('enrolment.helpers.has_company', Mock(return_value=False))
 @patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
-def test_submit_enrolment_handles_api_company_not_found(client):
+def test_submit_enrolment_handles_api_company_not_found(client, settings):
+    settings.FEATURE_FLAGS['NEW_ACCOUNT_JOURNEY_ON'] = False
 
     with patch('enrolment.helpers.get_company_from_companies_house') as mock:
         mock.side_effect = RequestException(
@@ -654,7 +681,8 @@ def test_submit_enrolment_handles_api_company_not_found(client):
 
 @patch('enrolment.helpers.has_company', Mock(return_value=False))
 @patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
-def test_submit_enrolment_handles_api_company_error(client):
+def test_submit_enrolment_handles_api_company_error(client, settings):
+    settings.FEATURE_FLAGS['NEW_ACCOUNT_JOURNEY_ON'] = False
 
     with patch('enrolment.helpers.get_company_from_companies_house') as mock:
         mock.side_effect = RequestException(
@@ -674,7 +702,9 @@ def test_submit_enrolment_handles_api_company_error(client):
 @patch('enrolment.helpers.has_company', Mock(return_value=False))
 @patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
 @patch('enrolment.helpers.store_companies_house_profile_in_session', Mock())
-def test_submit_enrolment_company_number_not_provided(client):
+def test_submit_enrolment_company_number_not_provided(client, settings):
+    settings.FEATURE_FLAGS['NEW_ACCOUNT_JOURNEY_ON'] = False
+
     response = client.get(reverse('register-submit'), {})
     assert 'Company number not provided.' in str(response.content)
 
@@ -684,7 +714,8 @@ def test_submit_enrolment_company_number_not_provided(client):
 @patch('enrolment.helpers.store_companies_house_profile_in_session', Mock())
 @patch('enrolment.helpers.get_company_status_from_session',
        Mock(return_value='not active'))
-def test_submit_enrolment_handles_company_not_active(client):
+def test_submit_enrolment_handles_company_not_active(client, settings):
+    settings.FEATURE_FLAGS['NEW_ACCOUNT_JOURNEY_ON'] = False
 
     with patch('enrolment.validators.company_active') as mock:
         mock.side_effect = ValidationError(MESSAGE_COMPANY_NOT_ACTIVE)
@@ -702,7 +733,8 @@ def test_submit_enrolment_handles_company_not_active(client):
        Mock())
 @patch('enrolment.helpers.get_company_status_from_session',
        Mock(return_value='active'))
-def test_submit_enrolment_handles_company_already_registered(client):
+def test_submit_enrolment_handles_company_already_registered(client, settings):
+    settings.FEATURE_FLAGS['NEW_ACCOUNT_JOURNEY_ON'] = False
 
     with patch('enrolment.validators.company_unique') as mock:
         mock.side_effect = ValidationError('Company already exists')
@@ -714,16 +746,12 @@ def test_submit_enrolment_handles_company_already_registered(client):
     assert 'Company already exists' in str(response.content)
 
 
-@patch(
-    'enrolment.helpers.has_company', Mock(return_value=False)
-)
+@patch('enrolment.helpers.has_company', Mock(return_value=False))
 @patch(
     'enrolment.helpers.get_company_number_from_session',
     Mock(return_value='12345678')
 )
-@patch.object(
-    EnrolmentView, 'get_all_cleaned_data', return_value={}
-)
+@patch.object(EnrolmentView, 'get_all_cleaned_data', return_value={})
 def test_enrolment_form_complete_redirects_to_submit_enrolment(sso_request):
     view = EnrolmentView()
     view.request = sso_request
@@ -733,3 +761,18 @@ def test_enrolment_form_complete_redirects_to_submit_enrolment(sso_request):
     assert response.get('Location') == (
         '/register-submit/?company_number=12345678'
     )
+
+
+@patch('enrolment.helpers.has_company', Mock(return_value=False))
+@pytest.mark.parametrize('url', (
+    reverse('register', kwargs={'step': 'company'}),
+    reverse('register-submit'),
+))
+@patch('sso.middleware.SSOUserMiddleware.process_request', process_request)
+def test_enrolment_feature_flag_on(client, settings, url):
+    settings.FEATURE_FLAGS['NEW_ACCOUNT_JOURNEY_ON'] = True
+
+    response = client.get(url)
+
+    assert response.status_code == 302
+    assert response.url == urls.build_great_url('profile/enrol/')

@@ -2121,4 +2121,4 @@ def test_new_new_edit_page_redirect(settings, url, has_company_client):
     response = has_company_client.get(url)
 
     assert response.status_code == 302
-    assert response.url == urls.build_great_url('profile/enrol/')
+    assert response.url == urls.build_great_url('profile/find-a-buyer/')
