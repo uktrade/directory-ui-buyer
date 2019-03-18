@@ -27,7 +27,7 @@ django-health-check==3.8.0  # via directory-healthcheck
 django-ipware==2.1.0      # via django-admin-ip-restrictor
 django-redis==4.8.0
 django-revproxy==0.9.15
-django==1.11.18
+django==1.11.20
 django_extensions==1.9.0
 djangorestframework==3.4.7  # via sigauth
 export-elements==2.0.0    # via directory-components
