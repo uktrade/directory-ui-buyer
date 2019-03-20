@@ -11,13 +11,13 @@ cffi==1.11.5              # via cryptography
 chardet==3.0.4            # via requests
 contextlib2==0.5.5        # via raven
 cryptography==2.4.2       # via pyopenssl, requests
-directory-api-client==11.1.0
+directory-api-client==13.0.0
 directory-ch-client==1.0.0
 directory-client-core==4.3.0  # via directory-api-client, directory-ch-client, directory-sso-api-client
 directory-components==6.1.0
 directory-constants==13.2.0  # via directory-components
 directory-healthcheck==1.0.1
-directory-sso-api-client==3.0.2
+directory-sso-api-client==4.1.1
 directory_validators==5.0.0
 django-admin-ip-restrictor==1.0.0  # via directory-components
 django-cors-headers==2.1.0

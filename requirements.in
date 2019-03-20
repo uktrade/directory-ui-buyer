@@ -11,10 +11,10 @@ raven==5.19.0
 whitenoise==3.1
 phonenumberslite==7.7.4
 pillow==4.2.1
-directory-ch-client==1.0.0
 directory_validators==5.0.0
 directory-healthcheck==1.0.1
 directory-components==6.1.0
-directory-sso-api-client==3.0.2
-directory-api-client==11.1.0
+directory-ch-client==1.0.0
+directory-sso-api-client==4.1.1
+directory-api-client==13.0.0
 requests[security]==2.21.0
