@@ -3,9 +3,8 @@
 [![code-climate-image]][code-climate]
 [![circle-ci-image]][circle-ci]
 [![codecov-image]][codecov]
-[![snyk-image]][snyk]
 
-**[Export Directory UI](https://find-a-buyer.export.great.gov.uk/)**
+**[Find A Buyer](https://www.great.gov.uk/find-a-buyer/)**
 
 **Find A Buyer (FAB) - the Department for International Trade (DIT) service for exposing motivated British exporters to international buyers seeking British goods and service.**
 
@@ -42,42 +41,21 @@ Follow the **data loading** instructions on **[directory-sso](https://github.com
 
 
 ## Requirements
-[Python 3.5](https://www.python.org/downloads/release/python-352/)
 
-### Docker
-The production environment uses Docker containerization technology. To use this technology in your local development environment you will also need the following dependencies:
-
-[Docker >= 1.10](https://docs.docker.com/engine/installation/)
-
-[Docker Compose >= 1.8](https://docs.docker.com/compose/install/)
-
-### SASS
-We use SASS CSS pre-compiler. If you're doing front-end work your local machine will also need the following dependencies:
+[Python 3.6](https://www.python.org/downloads/release/python-366/)
 
 [node](https://nodejs.org/en/download/)
 
-## Running locally with Docker
-This requires all host environment variables to be set.
+[SASS](http://sass-lang.com/)
 
-    $ make docker_run
+[redis](https://redis.io/)
 
-### Run debug webserver in Docker
-
-    $ make docker_debug
-
-### Run tests in Docker
-
-    $ make docker_test
-
-### Host environment variables for docker-compose
-``.env`` files will be automatically created (with ``env_writer.py`` based on ``env.json``) by ``make docker_test``, based on host environment variables with ``DIRECTORY_UI_BUYER_`` prefix.
-
-## Running locally without Docker
+## Running locally
 
 ### Installing
     $ git clone https://github.com/uktrade/directory-ui-buyer
     $ cd directory-ui-buyer
-    $ virtualenv .venv -p python3.5
+    $ virtualenv .venv -p python3.6
     $ source .venv/bin/activate
     $ pip install -r requirements_text.txt
 
@@ -90,17 +68,23 @@ This requires all host environment variables to be set.
     $ make debug_test
 
 ### CSS development
-
 If you're doing front-end development work you will need to be able to compile the SASS to CSS. For this you need:
 
-```bash
-npm install
-gulp
-```
+    $ npm install  # to install yarn
+    $ yarn install # use yarn for installing all other javascript dependencies
 
 We add compiled CSS files to version control. This will sometimes result in conflicts if multiple developers are working on the same SASS files. However, by adding the compiled CSS to version control we avoid having to install node, npm, node-sass, etc to non-development machines.
 
 You should not edit CSS files directly, instead edit their SCSS counterparts.
+
+### Update CSS under version control
+
+    $ make compile_css
+
+### Rebuild the CSS files when the scss file changes
+
+    $ make watch_css
+
 
 ## Session
 
@@ -135,6 +119,3 @@ Therefore to make cookie sharing work in development we need the apps to be runn
 
 [codecov-image]: https://codecov.io/gh/uktrade/directory-ui-buyer/branch/master/graph/badge.svg
 [codecov]: https://codecov.io/gh/uktrade/directory-ui-buyer
-
-[snyk-image]: https://snyk.io/test/github/uktrade/directory-ui-buyer/badge.svg
-[snyk]: https://snyk.io/test/github/uktrade/directory-ui-buyer

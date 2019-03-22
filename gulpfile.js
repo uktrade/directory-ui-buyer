@@ -18,4 +18,4 @@ gulp.task('sass', function () {
     .pipe(gulp.dest(CSS_DIR));
 });
 
-gulp.task('default', ['sass']);
+gulp.task('default', gulp.series('sass'));
