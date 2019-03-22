@@ -89,4 +89,10 @@ compile_requirements:
 	python3 -m piptools compile requirements.in
 	python3 -m piptools compile requirements_test.in
 
+compile_css:
+	./node_modules/.bin/gulp sass
+
+watch_css:
+	./node_modules/.bin/gulp sass:watch
+
 .PHONY: build clean test_requirements debug_webserver debug_test debug heroku_deploy_dev heroku_deploy_demo
