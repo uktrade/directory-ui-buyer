@@ -57,7 +57,7 @@ DEBUG_SET_ENV_VARS := \
 	export DIRECTORY_CH_SEARCH_CLIENT_BASE_URL=http://test.com; \
 	export DIRECTORY_CH_SEARCH_CLIENT_API_KEY=debug; \
 	export PRIVACY_COOKIE_DOMAIN=.trade.great; \
-	export DIRECTORY_CONSTANTS_URL_EXPORT_READINESS=http://exred.trade.great:8007; \
+	export DIRECTORY_CONSTANTS_URL_GREAT_DOMESTIC=http://exred.trade.great:8007; \
 	export DIRECTORY_CONSTANTS_URL_FIND_A_BUYER=http://buyer.trade.great:8001; \
 	export DIRECTORY_CONSTANTS_URL_SELLING_ONLINE_OVERSEAS=http://soo.trade.great:8008; \
 	export DIRECTORY_CONSTANTS_URL_FIND_A_SUPPLIER=http://supplier.trade.great:8005; \
@@ -66,7 +66,9 @@ DEBUG_SET_ENV_VARS := \
 	export DIRECTORY_CONSTANTS_URL_SSO_PROFILE=http://profile.trade.great:8006/profile; \
 	export FEATURE_EXPORT_JOURNEY_ENABLED=false; \
 	export FEATURE_NEW_ACCOUNT_JOURNEY_ENABLED=true; \
-	export FEATURE_NEW_ACCOUNT_EDIT_ENABLED=false
+	export FEATURE_NEW_ACCOUNT_EDIT_ENABLED=false; \
+	export FEATURE_NEW_HEADER_FOOTER_ENABLED=true; \
+	export FEATURE_HEADER_SEARCH_ENABLED=false
 
 debug_webserver:
 	$(DEBUG_SET_ENV_VARS) && $(DJANGO_WEBSERVER)
