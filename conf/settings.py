@@ -381,6 +381,10 @@ FEATURE_FLAGS = {
         'FEATURE_NEW_ACCOUNT_JOURNEY_ENABLED', False
     ),
     'NEW_ACCOUNT_EDIT_ON': env.bool('FEATURE_NEW_ACCOUNT_EDIT_ENABLED', False),
+    'NEW_HEADER_FOOTER_ON': env.bool(
+        'FEATURE_NEW_HEADER_FOOTER_ENABLED', False
+    ),
+    'HEADER_SEARCH_ON': env.bool('FEATURE_HEADER_SEARCH_ENABLED', False)
 }
 
 # healthcheck

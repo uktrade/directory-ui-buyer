@@ -18,8 +18,8 @@ cryptography==2.4.2       # via pyopenssl, requests
 directory-api-client==13.0.0
 directory-ch-client==1.0.0
 directory-client-core==4.3.0  # via directory-api-client, directory-ch-client, directory-sso-api-client
-directory-components==6.1.0
-directory-constants==13.2.0  # via directory-components
+directory-components==7.1.2
+directory-constants==14.2.0  # via directory-components
 directory-healthcheck==1.0.1
 directory-sso-api-client==4.1.1
 directory_validators==5.0.0
@@ -34,7 +34,6 @@ django-revproxy==0.9.15
 django==1.11.20
 django_extensions==1.9.0
 djangorestframework==3.9.0  # via sigauth
-export-elements==2.0.0    # via directory-components
 flake8==3.6.0
 freezegun==0.3.11
 gunicorn==19.5.0
