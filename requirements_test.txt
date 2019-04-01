@@ -18,7 +18,7 @@ cryptography==2.4.2       # via pyopenssl, requests
 directory-api-client==13.0.0
 directory-ch-client==1.0.0
 directory-client-core==4.3.0  # via directory-api-client, directory-ch-client, directory-sso-api-client
-directory-components==8.2.0
+directory-components==8.3.0
 directory-constants==14.4.0  # via directory-components
 directory-healthcheck==1.0.1
 directory-sso-api-client==4.1.1
