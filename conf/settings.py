@@ -61,7 +61,6 @@ INSTALLED_APPS = [
 
 MIDDLEWARE_CLASSES = [
     'directory_components.middleware.MaintenanceModeMiddleware',
-    'directory_components.middleware.IPRestrictorMiddleware',
     'django.middleware.common.CommonMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
@@ -70,7 +69,6 @@ MIDDLEWARE_CLASSES = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'sso.middleware.SSOUserMiddleware',
     'directory_components.middleware.NoCacheMiddlware',
-    'directory_components.middleware.RobotsIndexControlHeaderMiddlware',
 ]
 
 FEATURE_URL_PREFIX_ENABLED = env.str('FEATURE_URL_PREFIX_ENABLED', False)
@@ -373,9 +371,6 @@ FEATURE_FLAGS = {
     # used by directory-components
     'MAINTENANCE_MODE_ON': env.bool('FEATURE_MAINTENANCE_MODE_ENABLED', False),
     # used by directory-components
-    'SEARCH_ENGINE_INDEXING_OFF': env.bool(
-        'FEATURE_SEARCH_ENGINE_INDEXING_DISABLED', False
-    ),
     'DIRECTORY_API_ON': env.bool('EXPOSE_DIRECTORY_API', False),
     'NEW_ACCOUNT_JOURNEY_ON': env.bool(
         'FEATURE_NEW_ACCOUNT_JOURNEY_ENABLED', False
@@ -397,29 +392,3 @@ DIRECTORY_HEALTHCHECK_BACKENDS = [
 # Internal CH
 INTERNAL_CH_BASE_URL = env.str('INTERNAL_CH_BASE_URL', '')
 INTERNAL_CH_API_KEY = env.str('INTERNAL_CH_API_KEY', '')
-
-# ip-restrictor
-RESTRICT_ADMIN = env.bool('IP_RESTRICTOR_RESTRICT_IPS', False)
-ALLOWED_ADMIN_IPS = env.list('IP_RESTRICTOR_ALLOWED_ADMIN_IPS', default=[])
-ALLOWED_ADMIN_IP_RANGES = env.list(
-    'IP_RESTRICTOR_ALLOWED_ADMIN_IP_RANGES', default=[]
-)
-IP_RESTRICTOR_SKIP_CHECK_ENABLED = env.bool(
-    'IP_RESTRICTOR_SKIP_CHECK_ENABLED', False
-)
-IP_RESTRICTOR_SKIP_CHECK_SENDER_ID = env.str(
-     'IP_RESTRICTOR_SKIP_CHECK_SENDER_ID', ''
- )
-IP_RESTRICTOR_SKIP_CHECK_SECRET = env.str(
-    'IP_RESTRICTOR_SKIP_CHECK_SECRET', ''
-)
-IP_RESTRICTOR_REMOTE_IP_ADDRESS_RETRIEVER = env.str(
-    'IP_RESTRICTOR_REMOTE_IP_ADDRESS_RETRIEVER',
-    IP_RETRIEVER_NAME_GOV_UK
-)
-RESTRICTED_APP_NAMES = env.list(
-    'IP_RESTRICTOR_RESTRICTED_APP_NAMES', default=['admin']
-)
-if env.bool('IP_RESTRICTOR_RESTRICT_UI', False):
-    # restrict all pages that are not in apps API, healthcheck, admin, etc
-    RESTRICTED_APP_NAMES.append('')
