@@ -56,7 +56,7 @@ def test_sso_middleware_api_response_ok(
 )
 def test_sso_middleware_bad_response(settings, client):
     settings.MIDDLEWARE_CLASSES = ['sso.middleware.SSOUserMiddleware']
-    response = client.get('/')
+    response = client.get(reverse('index'))
 
     assert response._request.sso_user is None
 

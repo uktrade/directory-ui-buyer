@@ -64,16 +64,24 @@ DEBUG_SET_ENV_VARS := \
 	export FEATURE_NEW_ACCOUNT_JOURNEY_ENABLED=true; \
 	export FEATURE_NEW_ACCOUNT_EDIT_ENABLED=false; \
 	export FEATURE_NEW_HEADER_FOOTER_ENABLED=true; \
-	export FEATURE_HEADER_SEARCH_ENABLED=false
+	export FEATURE_HEADER_SEARCH_ENABLED=false; \
+	export URL_PREFIX_DOMAIN=http://buyer.trade.great:8001
+
+TEST_SET_ENV_VARS := \
+	export COMPANIES_HOUSE_API_KEY=debug; \
+	export COMPANIES_HOUSE_CLIENT_ID=debug; \
+	export COMPANIES_HOUSE_CLIENT_SECRET=debug; \
+	export DIRECTORY_CH_SEARCH_CLIENT_API_KEY=debug; \
+	export URL_PREFIX_DOMAIN=http://testserver
 
 debug_webserver:
 	$(DEBUG_SET_ENV_VARS) && $(DJANGO_WEBSERVER)
 
 debug_pytest:
-	$(DEBUG_SET_ENV_VARS) && $(COLLECT_STATIC) && $(PYTEST)
+	$(DEBUG_SET_ENV_VARS) && $(TEST_SET_ENV_VARS) && $(COLLECT_STATIC) && $(PYTEST)
 
 debug_test:
-	$(DEBUG_SET_ENV_VARS) && $(COLLECT_STATIC) && $(FLAKE8) && $(PYTEST) --cov-report=html
+	$(DEBUG_SET_ENV_VARS) && $(TEST_SET_ENV_VARS) && $(COLLECT_STATIC) && $(FLAKE8) && $(PYTEST) --cov-report=html
 
 debug_manage:
 	$(DEBUG_SET_ENV_VARS) && ./manage.py $(cmd)

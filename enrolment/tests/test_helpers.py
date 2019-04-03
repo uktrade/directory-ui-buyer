@@ -249,8 +249,8 @@ def test_verify_oauth2_code():
         'https://account.companieshouse.gov.uk/oauth2/token'
         '?grant_type=authorization_code'
         '&code=123'
-        '&client_id=debug-client-id'
-        '&client_secret=debug-client-secret'
+        '&client_id=debug'
+        '&client_secret=debug'
         '&redirect_uri=http%3A%2F%2Fredirect.com'
     )
 

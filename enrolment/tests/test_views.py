@@ -289,7 +289,7 @@ def test_submit_enrolment_logged_out_has_company_redirects(
     assert response.status_code == http.client.FOUND
     assert response.get('Location') == (
          'http://sso.trade.great:8004/accounts/signup/'
-         '?next=http%3A//testserver/register-submit/'
+         '?next=http%3A//testserver/find-a-buyer/register-submit/'
     )
     mock_has_company.assert_not_called()
 
@@ -455,7 +455,7 @@ def test_landing_page_submit_valid_form_redirects(client):
     params = {'company_number': '12345678'}
     response = client.post(url, params)
 
-    expected_url = '/register/company/?company_number=12345678'
+    expected_url = '/find-a-buyer/register/company/?company_number=12345678'
     assert response.status_code == 302
     assert response.get('Location') == expected_url
 
@@ -475,11 +475,9 @@ def test_confirm_company_resets_storage(client, settings):
         params = {'company_number': company_number}
         response = client.post(reverse('index'), params)
 
-        expected_url = '/register/company/?company_number={}'.format(
-            company_number
-        )
+        expected_url = '/find-a-buyer/register/company/?company_number={}'
         assert response.status_code == 302
-        assert response.get('Location') == expected_url
+        assert response.get('Location') == expected_url.format(company_number)
 
         response = client.get(response.get('Location'))
 
@@ -759,7 +757,7 @@ def test_enrolment_form_complete_redirects_to_submit_enrolment(sso_request):
 
     assert response.status_code == 302
     assert response.get('Location') == (
-        '/register-submit/?company_number=12345678'
+        '/find-a-buyer/register-submit/?company_number=12345678'
     )
 
 

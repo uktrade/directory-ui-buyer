@@ -8,7 +8,7 @@ from raven.contrib.django.raven_compat.models import client as sentry_client
 from requests.exceptions import HTTPError
 
 from django.conf import settings
-from django.core.files.storage import DefaultStorage
+from django.core.files.storage import FileSystemStorage
 from django.http import HttpResponse, HttpResponseForbidden
 from django.shortcuts import redirect, Http404
 from django.template.response import TemplateResponse
@@ -147,7 +147,9 @@ class SupplierCaseStudyWizardView(
     BASIC = 'basic'
     RICH_MEDIA = 'rich-media'
 
-    file_storage = DefaultStorage()
+    file_storage = FileSystemStorage(
+        location=os.path.join(settings.MEDIA_ROOT, 'tmp-supplier-media')
+    )
 
     form_list = (
         (BASIC, forms.CaseStudyBasicInfoForm),
@@ -305,7 +307,9 @@ class CompanyProfileLogoEditView(
     form_list = (
         ('logo', forms.CompanyLogoForm),
     )
-    file_storage = DefaultStorage()
+    file_storage = FileSystemStorage(
+        location=os.path.join(settings.MEDIA_ROOT, 'tmp-logos')
+    )
     templates = {
         'logo': 'company-profile-logo-form.html',
     }
@@ -496,12 +500,10 @@ class Oauth2CallbackUrlMixin:
     @property
     def redirect_uri(self):
         callback_url = reverse('verify-companies-house-callback')
-        if settings.FEATURE_URL_PREFIX_ENABLED:
-            return urljoin(
-                settings.COMPANIES_HOUSE_CALLBACK_DOMAIN,
-                callback_url.replace('/find-a-buyer', '', 1)
-            )
-        return self.request.build_absolute_uri(callback_url)
+        return urljoin(
+            settings.COMPANIES_HOUSE_CALLBACK_DOMAIN,
+            callback_url.replace('/find-a-buyer', '', 1)
+        )
 
 
 class CompaniesHouseOauth2View(

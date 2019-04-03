@@ -83,7 +83,6 @@ urlpatterns = [
         r"^sitemap\.xml$", sitemap, {'sitemaps': sitemaps},
         name='sitemap'
     ),
-
     url(
         r'^$',
         enrolment.views.DomesticLandingView.as_view(),
@@ -244,5 +243,12 @@ urlpatterns = [
         r'^data-science/suppliers/$',
         company.views.SupplierCSVDumpView.as_view(),
         name='suppliers-csv-dump'
+    )
+]
+
+urlpatterns = [
+    url(
+        r'^find-a-buyer/',
+        include(urlpatterns)
     )
 ]

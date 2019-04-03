@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 
 import os
 
-from directory_components.constants import IP_RETRIEVER_NAME_GOV_UK
 import directory_healthcheck.backends
 import environ
 
@@ -71,12 +70,9 @@ MIDDLEWARE_CLASSES = [
     'directory_components.middleware.NoCacheMiddlware',
 ]
 
-FEATURE_URL_PREFIX_ENABLED = env.str('FEATURE_URL_PREFIX_ENABLED', False)
-URL_PREFIX_DOMAIN = env.str('URL_PREFIX_DOMAIN', '')
-if FEATURE_URL_PREFIX_ENABLED:
-    ROOT_URLCONF = 'conf.urls_prefixed'
-else:
-    ROOT_URLCONF = 'conf.urls'
+FEATURE_URL_PREFIX_ENABLED = True
+URL_PREFIX_DOMAIN = env.str('URL_PREFIX_DOMAIN')
+ROOT_URLCONF = 'conf.urls'
 
 TEMPLATES = [
     {

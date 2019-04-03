@@ -36,4 +36,4 @@ from django.urls import resolve
     ]
 )
 def test_urls_resolve(path, view_name):
-    assert resolve(path).view_name == view_name
+    assert resolve('/find-a-buyer' + path).view_name == view_name
