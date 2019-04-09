@@ -500,12 +500,10 @@ class Oauth2CallbackUrlMixin:
     @property
     def redirect_uri(self):
         callback_url = reverse('verify-companies-house-callback')
-        if settings.FEATURE_URL_PREFIX_ENABLED:
-            return urljoin(
-                settings.COMPANIES_HOUSE_CALLBACK_DOMAIN,
-                callback_url.replace('/find-a-buyer', '', 1)
-            )
-        return self.request.build_absolute_uri(callback_url)
+        return urljoin(
+            settings.COMPANIES_HOUSE_CALLBACK_DOMAIN,
+            callback_url.replace('/find-a-buyer', '', 1)
+        )
 
 
 class CompaniesHouseOauth2View(
