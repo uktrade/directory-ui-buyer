@@ -18,3 +18,4 @@ directory-ch-client==1.0.0
 directory-sso-api-client==4.1.1
 directory-api-client==13.0.0
 requests[security]==2.21.0
+urllib3>=1.24.2,<2.0.0
