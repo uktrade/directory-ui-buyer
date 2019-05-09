@@ -520,7 +520,7 @@ class AddCollaboratorForm(BaseMultiUserEmailForm):
 
     email_address = forms.EmailField(
         label=(
-            'Enter the new user’s email address.'
+            'Enter the new editor’s email address.'
         ),
         widget=forms.EmailInput(
             attrs={'placeholder': 'Email address'}
