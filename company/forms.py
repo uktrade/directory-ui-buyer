@@ -555,7 +555,7 @@ class TransferAccountEmailForm(BaseMultiUserEmailForm):
 
     email_address = forms.EmailField(
         label=(
-            'Enter the email address you want your profile transferred to.'
+            'Enter the email address of the new administrator.'
         ),
         widget=forms.EmailInput(
             attrs={'placeholder': 'Email address'}
