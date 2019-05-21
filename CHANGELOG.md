@@ -1,7 +1,5 @@
 # Changelog
 
-##
-
 ### Implemented enhancements 
 
 ### Fixed bugs
