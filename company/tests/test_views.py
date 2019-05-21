@@ -1322,7 +1322,7 @@ def test_companies_house_callback_has_company_calls_url_prefix(
     assert mock_verify_oauth2_code.call_args == call(
         code='123',
         redirect_uri=(
-            'https://find-a-buyer.export.great.gov.uk/'
+            'https://find-a-buyer.export.great.gov.uk/find-a-buyer/'
             'companies-house-oauth2-callback/'
         )
     )
