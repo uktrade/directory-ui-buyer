@@ -505,6 +505,7 @@ class Oauth2CallbackUrlMixin:
                 settings.COMPANIES_HOUSE_CALLBACK_DOMAIN,
                 callback_url
             )
+
         return self.request.build_absolute_uri(callback_url)
 
 
