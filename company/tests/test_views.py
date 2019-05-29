@@ -1331,7 +1331,6 @@ def test_companies_house_callback_has_company_calls_url_prefix(
     )
 
 
-
 @patch_check_company_unverified_redirect
 @patch.object(forms.CompaniesHouseClient, 'verify_oauth2_code')
 @patch.object(
