@@ -1197,7 +1197,9 @@ def test_robots(client):
     response = client.get(reverse('robots'))
 
     assert response.status_code == 200
-    assert b'Disallow: /errors/image-too-large/' in response.content
+    assert (
+        b'Disallow: /find-a-buyer/errors/image-too-large/' in response.content
+    )
 
 
 def test_request_payload_too_large(client):
@@ -1238,12 +1240,14 @@ def test_companies_house_oauth2_has_company_redirects(
     response = has_company_client.get(url)
 
     assert response.status_code == 302
+
     assert urllib.parse.unquote_plus(response.url) == (
         'https://account.companieshouse.gov.uk/oauth2/authorise'
-        '?client_id=debug-client-id'
-        '&redirect_uri=http://testserver/companies-house-oauth2-callback/'
-        '&response_type=code'
-        '&scope=https://api.companieshouse.gov.uk/company/123456'
+        '?client_id=debug'
+        '&redirect_uri=http://testserver/find-a-buyer/'
+        'companies-house-oauth2-callback/'
+        '&response_type=code&scope=https://api.companieshouse.gov.uk/'
+        'company/123456'
     )
 
 
@@ -1284,7 +1288,9 @@ def test_companies_house_callback_has_company_calls_companies_house(
     assert mock_verify_oauth2_code.call_count == 1
     assert mock_verify_oauth2_code.call_args == call(
         code='123',
-        redirect_uri='http://testserver/companies-house-oauth2-callback/'
+        redirect_uri=(
+            'http://testserver/find-a-buyer/companies-house-oauth2-callback/'
+        )
     )
 
     assert mock_verify_with_companies_house.call_count == 1
@@ -1304,8 +1310,6 @@ def test_companies_house_callback_has_company_calls_url_prefix(
     mock_verify_with_companies_house, mock_verify_oauth2_code, settings,
     has_company_client, sso_user
 ):
-    settings.ROOT_URLCONF = 'conf.urls_prefixed'
-    settings.FEATURE_URL_PREFIX_ENABLED = True
     mock_verify_oauth2_code.return_value = create_response(
         status_code=200, json_body={'access_token': 'abc'}
     )
@@ -1322,8 +1326,7 @@ def test_companies_house_callback_has_company_calls_url_prefix(
     assert mock_verify_oauth2_code.call_args == call(
         code='123',
         redirect_uri=(
-            'https://find-a-buyer.export.great.gov.uk/'
-            'companies-house-oauth2-callback/'
+            'http://testserver/find-a-buyer/companies-house-oauth2-callback/'
         )
     )
 

@@ -44,6 +44,7 @@ monotonic==1.5            # via directory-ch-client, directory-client-core
 more-itertools==4.3.0     # via pytest
 olefile==0.44             # via directory-validators, pillow
 packaging==18.0           # via pytest-sugar
+pathlib2==2.3.3           # via pytest
 phonenumberslite==7.7.4
 pillow==4.2.1
 pluggy==0.8.0             # via pytest
@@ -64,8 +65,8 @@ redis==2.10.6             # via django-redis
 requests-mock==1.5.2
 requests[security]==2.21.0
 sigauth==4.0.1            # via directory-ch-client, directory-client-core
-six==1.11.0               # via cryptography, django-extensions, freezegun, mohawk, more-itertools, packaging, pyopenssl, pytest, python-dateutil, requests-mock, w3lib
+six==1.11.0               # via cryptography, django-extensions, freezegun, mohawk, more-itertools, packaging, pathlib2, pyopenssl, pytest, python-dateutil, requests-mock, w3lib
 termcolor==1.1.0          # via pytest-sugar
-urllib3==1.24.1           # via django-revproxy, requests
+urllib3==1.24.2
 w3lib==1.19.0             # via directory-client-core
 whitenoise==3.1

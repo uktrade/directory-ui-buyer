@@ -1,5 +1,4 @@
 import os
-from urllib.parse import urljoin
 
 from directory_api_client.client import api_client
 from directory_constants.constants import urls
@@ -499,13 +498,9 @@ class RequestPaylodTooLargeErrorView(TemplateView):
 class Oauth2CallbackUrlMixin:
     @property
     def redirect_uri(self):
-        callback_url = reverse('verify-companies-house-callback')
-        if settings.FEATURE_URL_PREFIX_ENABLED:
-            return urljoin(
-                settings.COMPANIES_HOUSE_CALLBACK_DOMAIN,
-                callback_url.replace('/find-a-buyer', '', 1)
-            )
-        return self.request.build_absolute_uri(callback_url)
+        return self.request.build_absolute_uri(
+            reverse('verify-companies-house-callback')
+        )
 
 
 class CompaniesHouseOauth2View(

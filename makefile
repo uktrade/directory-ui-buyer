@@ -38,7 +38,6 @@ DEBUG_SET_ENV_VARS := \
 	export SSO_PROXY_REDIRECT_FIELD_NAME=next; \
 	export SSO_SESSION_COOKIE=debug_sso_session_cookie; \
 	export SESSION_COOKIE_SECURE=false; \
-	export COMPANIES_HOUSE_API_KEY=$$DIRECTORY_UI_BUYER_COMPANIES_HOUSE_API_KEY; \
 	export SUPPLIER_CASE_STUDY_URL=http://supplier.trade.great:8005/case-study/{id}; \
 	export SUPPLIER_PROFILE_LIST_URL=http://supplier.trade.great:8005/suppliers?sectors={sectors}; \
 	export SUPPLIER_PROFILE_URL=http://supplier.trade.great:8005/suppliers/{number}; \
@@ -48,14 +47,11 @@ DEBUG_SET_ENV_VARS := \
 	export DIRECTORY_EXTERNAL_API_SIGNATURE_SECRET=debug; \
 	export CORS_ORIGIN_ALLOW_ALL=true; \
 	export SUPPLIER_SEARCH_URL=http://supplier.trade.great:8005/search; \
-	export COMPANIES_HOUSE_CLIENT_ID=debug-client-id; \
-	export COMPANIES_HOUSE_CLIENT_SECRET=debug-client-secret; \
 	export SECURE_HSTS_SECONDS=0; \
 	export EXPOSE_DIRECTORY_API=true; \
 	export SECURE_SSL_REDIRECT=false; \
 	export HEALTH_CHECK_TOKEN=debug; \
 	export DIRECTORY_CH_SEARCH_CLIENT_BASE_URL=http://test.com; \
-	export DIRECTORY_CH_SEARCH_CLIENT_API_KEY=debug; \
 	export PRIVACY_COOKIE_DOMAIN=.trade.great; \
 	export DIRECTORY_CONSTANTS_URL_GREAT_DOMESTIC=http://exred.trade.great:8007; \
 	export DIRECTORY_CONSTANTS_URL_FIND_A_BUYER=http://buyer.trade.great:8001; \
@@ -68,16 +64,24 @@ DEBUG_SET_ENV_VARS := \
 	export FEATURE_NEW_ACCOUNT_JOURNEY_ENABLED=true; \
 	export FEATURE_NEW_ACCOUNT_EDIT_ENABLED=false; \
 	export FEATURE_NEW_HEADER_FOOTER_ENABLED=true; \
-	export FEATURE_HEADER_SEARCH_ENABLED=false
+	export FEATURE_HEADER_SEARCH_ENABLED=false; \
+	export URL_PREFIX_DOMAIN=http://buyer.trade.great:8001
+
+TEST_SET_ENV_VARS := \
+	export COMPANIES_HOUSE_API_KEY=debug; \
+	export COMPANIES_HOUSE_CLIENT_ID=debug; \
+	export COMPANIES_HOUSE_CLIENT_SECRET=debug; \
+	export DIRECTORY_CH_SEARCH_CLIENT_API_KEY=debug; \
+	export URL_PREFIX_DOMAIN=http://testserver
 
 debug_webserver:
 	$(DEBUG_SET_ENV_VARS) && $(DJANGO_WEBSERVER)
 
 debug_pytest:
-	$(DEBUG_SET_ENV_VARS) && $(COLLECT_STATIC) && $(PYTEST)
+	$(DEBUG_SET_ENV_VARS) && $(TEST_SET_ENV_VARS) && $(COLLECT_STATIC) && $(PYTEST)
 
 debug_test:
-	$(DEBUG_SET_ENV_VARS) && $(COLLECT_STATIC) && $(FLAKE8) && $(PYTEST) --cov-report=html
+	$(DEBUG_SET_ENV_VARS) && $(TEST_SET_ENV_VARS) && $(COLLECT_STATIC) && $(FLAKE8) && $(PYTEST) --cov-report=html
 
 debug_manage:
 	$(DEBUG_SET_ENV_VARS) && ./manage.py $(cmd)
