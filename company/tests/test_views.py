@@ -1240,11 +1240,12 @@ def test_companies_house_oauth2_has_company_redirects(
     response = has_company_client.get(url)
 
     assert response.status_code == 302
+
     assert urllib.parse.unquote_plus(response.url) == (
         'https://account.companieshouse.gov.uk/oauth2/authorise'
         '?client_id=debug'
         '&redirect_uri=https://find-a-buyer.export.great.gov.uk/'
-        'companies-house-oauth2-callback/'
+        'find-a-buyer/companies-house-oauth2-callback/'
         '&response_type=code'
         '&scope=https://api.companieshouse.gov.uk/company/123456'
     )
@@ -1289,7 +1290,7 @@ def test_companies_house_callback_has_company_calls_companies_house(
         code='123',
         redirect_uri=(
             'https://find-a-buyer.export.great.gov.uk/'
-            'companies-house-oauth2-callback/'
+            'find-a-buyer/companies-house-oauth2-callback/'
         )
     )
 
@@ -1327,7 +1328,7 @@ def test_companies_house_callback_has_company_calls_url_prefix(
         code='123',
         redirect_uri=(
             'https://find-a-buyer.export.great.gov.uk/'
-            'companies-house-oauth2-callback/'
+            'find-a-buyer/companies-house-oauth2-callback/'
         )
     )
 
