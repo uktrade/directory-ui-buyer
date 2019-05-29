@@ -1,5 +1,4 @@
 import os
-from urllib.parse import urljoin
 
 from directory_api_client.client import api_client
 from directory_constants.constants import urls
