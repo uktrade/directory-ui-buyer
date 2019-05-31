@@ -46,7 +46,6 @@ DEBUG_SET_ENV_VARS := \
 	export UTM_COOKIE_DOMAIN=.trade.great; \
 	export DIRECTORY_EXTERNAL_API_SIGNATURE_SECRET=debug; \
 	export CORS_ORIGIN_ALLOW_ALL=true; \
-	export SUPPLIER_SEARCH_URL=http://supplier.trade.great:8005/search; \
 	export SECURE_HSTS_SECONDS=0; \
 	export EXPOSE_DIRECTORY_API=true; \
 	export SECURE_SSL_REDIRECT=false; \
@@ -61,11 +60,9 @@ DEBUG_SET_ENV_VARS := \
 	export DIRECTORY_CONSTANTS_URL_SINGLE_SIGN_ON=http://sso.trade.great:8004; \
 	export DIRECTORY_CONSTANTS_URL_SSO_PROFILE=http://profile.trade.great:8006/profile; \
 	export FEATURE_EXPORT_JOURNEY_ENABLED=false; \
-	export FEATURE_NEW_ACCOUNT_JOURNEY_ENABLED=true; \
-	export FEATURE_NEW_ACCOUNT_EDIT_ENABLED=false; \
-	export FEATURE_NEW_HEADER_FOOTER_ENABLED=true; \
-	export FEATURE_HEADER_SEARCH_ENABLED=false; \
-	export URL_PREFIX_DOMAIN=http://buyer.trade.great:8001
+	export URL_PREFIX_DOMAIN=http://buyer.trade.great:8001; \
+	export REDIS_URL=redis://localhost:6379
+
 
 TEST_SET_ENV_VARS := \
 	export COMPANIES_HOUSE_API_KEY=debug; \

@@ -56,35 +56,6 @@ def retrieve_profile_data():
 
 
 @pytest.fixture
-def list_public_profiles_data(retrieve_profile_data):
-    return {
-        'results': [
-            retrieve_profile_data
-        ],
-        'count': 20
-    }
-
-
-@pytest.fixture
-def supplier_case_study_data(retrieve_profile_data):
-    return {
-        'description': 'Damn great',
-        'sector': 'SOFTWARE_AND_COMPUTER_SERVICES',
-        'image_three': 'https://image_three.jpg',
-        'website': 'http://www.google.com',
-        'video_one': 'https://video_one.wav',
-        'title': 'Two',
-        'company': retrieve_profile_data,
-        'image_one': 'https://image_one.jpg',
-        'testimonial': 'I found it most pleasing.',
-        'keywords': 'great',
-        'pk': 2,
-        'year': '2000',
-        'image_two': 'https://image_two.jpg'
-    }
-
-
-@pytest.fixture
 def company_profile_companies_house_data():
     return {
         'email_full_name': 'Jeremy Companies House',
@@ -144,16 +115,6 @@ def api_response_company_profile_letter_sent_200(retrieve_profile_data):
 
 
 @pytest.fixture
-def api_response_company_profile_no_contact_details(retrieve_profile_data):
-    data = retrieve_profile_data.copy()
-    data['has_valid_address'] = False
-    response = requests.Response()
-    response.status_code = http.client.OK
-    response.json = lambda: deepcopy(data)
-    return response
-
-
-@pytest.fixture
 def api_response_200():
     response = requests.Response()
     response.status_code = http.client.OK
@@ -161,75 +122,11 @@ def api_response_200():
     return response
 
 
-@pytest.fixture
-def api_response_list_public_profile_200(
-    api_response_200, list_public_profiles_data
-):
-    response = api_response_200
-    response.json = lambda: deepcopy(list_public_profiles_data)
-    return response
-
-
-@pytest.fixture
-def api_response_retrieve_supplier_case_study_200(
-    supplier_case_study_data
-):
-    response = api_response_200()
-    response.json = lambda: deepcopy(supplier_case_study_data)
-    return response
-
-
-@pytest.fixture(autouse=True)
-def retrieve_supplier_case_study_response(api_response_200):
-    stub = patch.object(
-        api_client.company, 'retrieve_private_case_study',
-        return_value=api_response_200,
-    )
-    stub.start()
-    yield
-    stub.stop()
-
-
-@pytest.fixture(autouse=True)
-def list_public_profiles(api_response_list_public_profile_200):
-    stub = patch.object(
-        api_client.company, 'retrieve_private_case_study',
-        return_value=api_response_list_public_profile_200,
-    )
-    stub.start()
-    yield
-    stub.stop()
-
-
-@pytest.fixture(autouse=True)
-def retrieve_supplier_case_study(
-    api_response_retrieve_supplier_case_study_200
-):
-    stub = patch.object(
-        api_client.company, 'retrieve_private_case_study',
-        return_value=api_response_retrieve_supplier_case_study_200,
-    )
-    stub.start()
-    yield
-    stub.stop()
-
-
 @pytest.fixture(autouse=True)
 def retrieve_profile(api_response_company_profile_200):
     stub = patch.object(
         api_client.company, 'retrieve_private_profile',
         return_value=api_response_company_profile_200,
-    )
-    stub.start()
-    yield
-    stub.stop()
-
-
-@pytest.fixture(autouse=True)
-def retrieve_supplier_profile(api_response_supplier_profile_200):
-    stub = patch.object(
-        api_client.supplier, 'retrieve_profile',
-        return_value=api_response_supplier_profile_200,
     )
     stub.start()
     yield
@@ -248,12 +145,10 @@ def retrieve_profile_unverified(api_response_company_profile_unverified_200):
 
 
 @pytest.fixture(autouse=True)
-def get_companies_house_office_address(
-    api_response_company_profile_companies_house_200
-):
-    stub = patch(
-        'enrolment.helpers.CompaniesHouseClient.retrieve_address',
-        return_value=api_response_company_profile_companies_house_200,
+def retrieve_supplier_profile(api_response_supplier_profile_200):
+    stub = patch.object(
+        api_client.supplier, 'retrieve_profile',
+        return_value=api_response_supplier_profile_200,
     )
     stub.start()
     yield

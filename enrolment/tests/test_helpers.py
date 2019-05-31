@@ -1,62 +1,17 @@
 import http
 from unittest.mock import patch
 
-import pytest
 from requests import Response
-from requests.exceptions import HTTPError, RequestException
 import requests_mock
 
-from django import forms
 
 from enrolment import helpers
-
-
-def mock_validator_one(value):
-    raise forms.ValidationError('error one')
-
-
-def mock_validator_two(value):
-    raise forms.ValidationError('error two')
-
-
-class MockForm(forms.Form):
-    field = forms.CharField(
-        validators=[mock_validator_one, mock_validator_two],
-    )
-
-
-class MockHaltingValidatorForm(forms.Form):
-    field = forms.CharField(
-        validators=helpers.halt_validation_on_failure(
-            mock_validator_one, mock_validator_two,
-        )
-    )
-
-
-def profile_api_400(*args, **kwargs):
-    response = Response()
-    response.status_code = http.client.BAD_REQUEST
-    return response
 
 
 def profile_api_404(*args, **kwargs):
     response = Response()
     response.status_code = http.client.NOT_FOUND
     return response
-
-
-def test_validator_raises_all():
-    form = MockForm({'field': 'value'})
-    assert form.is_valid() is False
-    assert 'error one' in form.errors['field']
-    assert 'error two' in form.errors['field']
-
-
-def test_halt_validation_on_failure_raises_first():
-    form = MockHaltingValidatorForm({'field': 'value'})
-    assert form.is_valid() is False
-    assert 'error one' in form.errors['field']
-    assert 'error two' not in form.errors['field']
 
 
 @patch.object(helpers.api_client.supplier, 'retrieve_profile')
@@ -76,90 +31,6 @@ def test_has_company_404():
     assert helpers.has_company(sso_session_id=134) is False
 
 
-@patch.object(helpers.CompaniesHouseClient, 'retrieve_profile')
-def test_store_companies_house_profile_in_session_saves_in_session(
-    mock_retrieve_profile, client
-):
-    data = {
-        'date_of_creation': '2000-10-10',
-        'company_name': 'Example corp',
-        'company_status': 'active',
-        'company_number': '01234567',
-        'registered_office_address': {'foo': 'bar'}
-    }
-    response = Response()
-    response.status_code = http.client.OK
-    response.json = lambda: data
-    session = client.session
-    mock_retrieve_profile.return_value = response
-
-    helpers.store_companies_house_profile_in_session(session, '01234567')
-
-    mock_retrieve_profile.assert_called_once_with(number='01234567')
-    assert session[helpers.COMPANIES_HOUSE_PROFILE_SESSION_KEY] == data
-    assert session.modified is True
-
-
-@patch.object(helpers.CompaniesHouseClient, 'retrieve_profile')
-def test_store_companies_house_profile_in_session_saves_in_session_no_date(
-    mock_retrieve_profile, client
-):
-    data = {
-        'company_name': 'Example corp',
-        'company_status': 'active',
-        'company_number': '01234567',
-        'registered_office_address': {'foo': 'bar'}
-    }
-    response = Response()
-    response.status_code = http.client.OK
-    response.json = lambda: data
-    session = client.session
-    mock_retrieve_profile.return_value = response
-
-    helpers.store_companies_house_profile_in_session(session, '01234567')
-
-    mock_retrieve_profile.assert_called_once_with(number='01234567')
-    expected_data = data = {
-        'company_name': 'Example corp',
-        'company_status': 'active',
-        'company_number': '01234567',
-        'registered_office_address': {'foo': 'bar'},
-        'date_of_creation': None
-    }
-    key = helpers.COMPANIES_HOUSE_PROFILE_SESSION_KEY
-    assert session[key] == expected_data
-    assert session.modified is True
-
-
-@patch.object(helpers.CompaniesHouseClient, 'retrieve_profile')
-def test_store_companies_house_profile_in_session_handles_bad_response(
-    mock_retrieve_profile, client
-):
-    response = Response()
-    response.status_code = http.client.BAD_REQUEST
-
-    session = client.session
-    mock_retrieve_profile.return_value = response
-
-    with pytest.raises(HTTPError):
-        helpers.store_companies_house_profile_in_session(session, '01234567')
-
-
-@patch('enrolment.helpers.store_companies_house_profile_in_session')
-def test_store_companies_house_profile_in_session_handles_response_none(
-    mock_store_in_session, client
-):
-
-    session = client.session
-    mock_store_in_session.side_effect = RequestException(response=None)
-
-    with pytest.raises(forms.ValidationError):
-        helpers.store_companies_house_profile_in_session_and_validate(
-            session,
-            '01234567'
-        )
-
-
 def test_companies_house_client_consumes_auth(settings):
     helpers.CompaniesHouseClient.api_key = 'ff'
     with requests_mock.mock() as mock:
@@ -167,69 +38,6 @@ def test_companies_house_client_consumes_auth(settings):
         response = helpers.CompaniesHouseClient.get('https://thing.com')
     expected = 'Basic ZmY6'  # base64 encoded ff
     assert response.request.headers['Authorization'] == expected
-
-
-def test_companies_house_client_logs_unauth(caplog):
-    with requests_mock.mock() as mock:
-        mock.get(
-            'https://thing.com',
-            status_code=http.client.UNAUTHORIZED,
-        )
-        helpers.CompaniesHouseClient.get('https://thing.com')
-    log = caplog.records[0]
-    assert log.levelname == 'ERROR'
-    assert log.msg == helpers.MESSAGE_AUTH_FAILED
-
-
-def test_get_companies_house_profile():
-    profile = {'company_status': 'active'}
-    with requests_mock.mock() as mock:
-        mock.get(
-            'https://api.companieshouse.gov.uk/company/01234567',
-            status_code=http.client.OK,
-            json=profile
-        )
-        response = helpers.CompaniesHouseClient.retrieve_profile('01234567')
-    assert response.json() == profile
-
-
-def test_get_companies_house_contact_details():
-    contact_details = {'address': '111!'}
-    with requests_mock.mock() as mock:
-        mock.get(
-            ('https://api.companieshouse.gov.uk/company/01234567/'
-             'registered-office-address'),
-            status_code=http.client.OK,
-            json=contact_details
-        )
-        response = helpers.CompaniesHouseClient.retrieve_address('01234567')
-    assert response.json() == contact_details
-
-
-def test_get_date_of_creation_from_session(client):
-    session = client.session
-    key = helpers.COMPANIES_HOUSE_PROFILE_SESSION_KEY
-    session[key] = {'date_of_creation': '2000-10-10'}
-
-    actual = helpers.get_date_of_creation_from_session(session)
-
-    assert actual == '2000-10-10'
-
-
-def test_get_company_name_from_session(client):
-    session = client.session
-    key = helpers.COMPANIES_HOUSE_PROFILE_SESSION_KEY
-    session[key] = {'company_name': 'Example corp'}
-
-    assert helpers.get_company_name_from_session(session) == 'Example corp'
-
-
-def test_get_company_status_from_session(client):
-    session = client.session
-    key = helpers.COMPANIES_HOUSE_PROFILE_SESSION_KEY
-    session[key] = {'company_status': 'active'}
-
-    assert helpers.get_company_status_from_session(session) == 'active'
 
 
 def test_verify_oauth2_code():
@@ -253,66 +61,3 @@ def test_verify_oauth2_code():
         '&client_secret=debug'
         '&redirect_uri=http%3A%2F%2Fredirect.com'
     )
-
-
-def test_search():
-    with requests_mock.mock() as mock:
-        mock.get(
-            'https://api.companieshouse.gov.uk/search/companies',
-            status_code=http.client.OK,
-        )
-        response = helpers.CompaniesHouseClient.search(
-            term='green',
-        )
-        assert response.status_code == 200
-
-    request = mock.request_history[0]
-
-    assert request.query == 'q=green'
-
-
-def test_search_internal_ch(settings):
-    settings.FEATURE_FLAGS['INTERNAL_CH_ON'] = True
-
-    with requests_mock.mock() as mock:
-        mock.get(
-            'http://test.com/api/search/companies/'
-        )
-        helpers.CompaniesHouseClient.search(
-            term='foo',
-        )
-        request = mock.request_history[0]
-
-        assert request.query == 'q=foo'
-
-
-def test_retrieve_company_profile_internal_ch(settings):
-    settings.FEATURE_FLAGS['INTERNAL_CH_ON'] = True
-
-    with requests_mock.mock() as mock:
-        mock.get(
-            'http://test.com/api/company/12345678/'
-        )
-        helpers.CompaniesHouseClient.retrieve_profile(
-            number='12345678'
-        )
-        request = mock.request_history[0]
-
-        assert request.url == 'http://test.com/api/company/12345678/'
-
-
-def test_retrieve_company_address_internal_ch(settings):
-    settings.FEATURE_FLAGS['INTERNAL_CH_ON'] = True
-
-    with requests_mock.mock() as mock:
-        mock.get(
-            'http://test.com/api/company/12345678/registered-office-address/'
-        )
-        helpers.CompaniesHouseClient.retrieve_address(
-            number='12345678'
-        )
-        request = mock.request_history[0]
-
-        expected_url = \
-            'http://test.com/api/company/12345678/registered-office-address/'
-        assert request.url == expected_url
