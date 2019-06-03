@@ -1,6 +1,8 @@
+import conf.sitemaps
+
 import directory_healthcheck.views
 import directory_components.views
-import conf.sitemaps
+from directory_constants.urls import build_great_url
 
 from django.conf.urls import include, url
 from django.contrib.sitemaps.views import sitemap
@@ -51,11 +53,6 @@ api_urls = [
         name='external-supplier-sso'
     ),
     url(
-        r'^api/internal/companies-house-search/$',
-        enrolment.views.CompaniesHouseSearchApiView.as_view(),
-        name='internal-companies-house-search'
-    ),
-    url(
         r'^directory-api(?P<path>)',
         proxy.views.DirectoryAPIViewProxy.as_view(),
         name='directory-api'
@@ -87,73 +84,6 @@ urlpatterns = [
         r'^$',
         enrolment.views.DomesticLandingView.as_view(),
         name='index'
-    ),
-    url(
-        r'^register/(?P<step>.+)/$',
-        enrolment.views.EnrolmentView.as_view(
-            url_name='register', done_step_name='finished'
-        ),
-        name='register'
-    ),
-    url(
-        r'^register-submit/$',
-        enrolment.views.SubmitEnrolmentView.as_view(),
-        name='register-submit'
-    ),
-    url(
-        r'^company-profile/$',
-        company.views.CompanyProfileDetailView.as_view(),
-        name='company-detail'
-    ),
-    url(
-        r'^company-profile/edit/$',
-        company.views.CompanyProfileEditView.as_view(),
-        name='company-edit'
-    ),
-    url(
-        r'^company-profile/edit/logo/$',
-        company.views.CompanyProfileLogoEditView.as_view(),
-        name='company-edit-logo'
-    ),
-    url(
-        r'^company-profile/edit/description/$',
-        company.views.CompanyDescriptionEditView.as_view(),
-        name='company-edit-description'
-    ),
-    url(
-        r'^company-profile/edit/key-facts/$',
-        company.views.SupplierBasicInfoEditView.as_view(),
-        name='company-edit-key-facts'
-    ),
-    url(
-        r'^company-profile/edit/sectors/$',
-        company.views.SupplierClassificationEditView.as_view(),
-        name='company-edit-sectors'
-    ),
-    url(
-        r'^company-profile/edit/contact/$',
-        company.views.SupplierContactEditView.as_view(),
-        name='company-edit-contact'
-    ),
-    url(
-        r'^company-profile/edit/address/$',
-        company.views.SupplierAddressEditView.as_view(),
-        name='company-edit-address'
-    ),
-    url(
-        r'^company-profile/edit/social-media/$',
-        company.views.CompanySocialLinksEditView.as_view(),
-        name='company-edit-social-media'
-    ),
-    url(
-        r'^company/case-study/create/$',
-        company.views.SupplierCaseStudyWizardView.as_view(),
-        name='company-case-study-create'
-    ),
-    url(
-        r'^company/case-study/edit/(?P<id>[0-9]+)/$',
-        company.views.SupplierCaseStudyWizardView.as_view(),
-        name='company-case-study-edit'
     ),
     url(
         r'^unsubscribe/',
@@ -211,29 +141,12 @@ urlpatterns = [
         company.views.AcceptTransferAccountView.as_view(),
         name='account-transfer-accept'
     ),
-
     url(
         r'^account/collaborate/accept/$',
         company.views.AcceptCollaborationView.as_view(),
         name='account-collaborate-accept'
     ),
-    url(
-        r'^errors/image-too-large/$',
-        company.views.RequestPaylodTooLargeErrorView.as_view(),
-        name='request-payload-too-large'
-    ),
-    # first step of enrolment was /register. It's moved to the landing page
-    url(
-        r'^register$',
-        RedirectView.as_view(pattern_name='index'),
-    ),
-
     # the url to create case studies was ../edit/. That was bad naming.
-    url(
-        r'^company/case-study/edit/$',
-        RedirectView.as_view(pattern_name='company-case-study-create'),
-        name='company-case-study-create-backwards-compatible'
-    ),
     url(
         r'^data-science/buyers/$',
         company.views.BuyerCSVDumpView.as_view(),
@@ -246,9 +159,76 @@ urlpatterns = [
     )
 ]
 
+urlpatterns += [
+    url(
+        r'^register/(?P<step>.+)/$',
+        RedirectView.as_view(url=build_great_url('profile/enrol/')),
+    ),
+    url(
+        r'^register-submit/$',
+        RedirectView.as_view(url=build_great_url('profile/enrol/')),
+    ),
+    url(
+        r'^company-profile/$',
+        RedirectView.as_view(url=build_great_url('profile/find-a-buyer/')),
+        name='company-detail',
+    ),
+    url(
+        r'^company-profile/edit/$',
+        RedirectView.as_view(url=build_great_url('profile/find-a-buyer/'))
+    ),
+    url(
+        r'^company-profile/edit/logo/$',
+        RedirectView.as_view(url=build_great_url('profile/find-a-buyer/')),
+    ),
+    url(
+        r'^company-profile/edit/description/$',
+        RedirectView.as_view(url=build_great_url('profile/find-a-buyer/')),
+    ),
+    url(
+        r'^company-profile/edit/key-facts/$',
+        RedirectView.as_view(url=build_great_url('profile/find-a-buyer/'))
+    ),
+    url(
+        r'^company-profile/edit/sectors/$',
+        RedirectView.as_view(url=build_great_url('profile/find-a-buyer/')),
+    ),
+    url(
+        r'^company-profile/edit/contact/$',
+        RedirectView.as_view(url=build_great_url('profile/find-a-buyer/')),
+    ),
+    url(
+        r'^company-profile/edit/address/$',
+        RedirectView.as_view(url=build_great_url('profile/find-a-buyer/')),
+    ),
+    url(
+        r'^company-profile/edit/social-media/$',
+        RedirectView.as_view(url=build_great_url('profile/find-a-buyer/'))
+    ),
+    url(
+        r'^company/case-study/create/$',
+        RedirectView.as_view(url=build_great_url('profile/find-a-buyer/')),
+        name='company-case-study-create',
+    ),
+    url(
+        r'^company/case-study/edit/(?P<id>[0-9]+)/$',
+        RedirectView.as_view(url=build_great_url('profile/find-a-buyer/')),
+    ),
+    url(
+        r'^company/case-study/edit/$',
+        RedirectView.as_view(url=build_great_url('profile/find-a-buyer/')),
+        name='company-case-study-create-backwards-compatible',
+    ),
+    url(
+        r'^register$',
+        RedirectView.as_view(url=build_great_url('profile/enrol/')),
+        name='register',
+    ),
+]
+
 urlpatterns = [
     url(
         r'^find-a-buyer/',
         include(urlpatterns)
-    )
+    ),
 ]
