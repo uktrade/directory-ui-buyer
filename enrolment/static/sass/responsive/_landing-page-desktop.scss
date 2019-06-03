@@ -355,15 +355,6 @@ button,
       li {
         clear: both;
         counter-increment: li;
-        &:before {
-          color: $grey-5;
-          content: counter(li) " ";
-          float: left;
-          font-size: 72px;
-          line-height: 72px;
-          margin-right: 48px;
-          height: 150px;
-        }
         margin-bottom: 47px;
         h3 {
           margin-top: 0;
