@@ -183,12 +183,10 @@
     & > .grid-row {
       padding-bottom: 0;
     }
-    ol li:before{
-      content: '';
-      margin: 10px;
+    ol {
+      padding-left: 20px;
     }
   }
-
   .fabhome-bottom-container > .container {
     margin: 0;
   }
