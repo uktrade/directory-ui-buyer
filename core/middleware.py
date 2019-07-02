@@ -8,7 +8,7 @@ class PrefixUrlMiddleware(AbstractPrefixUrlMiddleware):
     prefix = '/find-a-buyer/'
 
 
-class AddDefaultGAValuesMiddleware:
+class GA360Middleware:
 
     def process_template_response(self, request, response):
 

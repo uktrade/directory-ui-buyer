@@ -6,7 +6,7 @@ def test_ga360_middleware_keys(rf):
     request = rf.get('/')
     response = TemplateResponse(request, 'core/base.html')
     response.context_data = {}
-    instance = middleware.AddDefaultGAValuesMiddleware()
+    instance = middleware.GA360Middleware()
 
     instance.process_template_response(request, response)
 
@@ -28,7 +28,7 @@ def test_ga360_middleware_logged_in(sso_user, rf):
     request.sso_user = sso_user
     response = TemplateResponse(request, 'core/base.html')
     response.context_data = {}
-    instance = middleware.AddDefaultGAValuesMiddleware()
+    instance = middleware.GA360Middleware()
 
     instance.process_template_response(request, response)
 
@@ -40,7 +40,7 @@ def test_ga360_middleware_not_logged_in(rf):
     request = rf.get('/')
     response = TemplateResponse(request, 'core/base.html')
     response.context_data = {}
-    instance = middleware.AddDefaultGAValuesMiddleware()
+    instance = middleware.GA360Middleware()
 
     instance.process_template_response(request, response)
 

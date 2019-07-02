@@ -67,7 +67,7 @@ MIDDLEWARE_CLASSES = [
     'core.middleware.PrefixUrlMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'core.middleware.AddDefaultGAValuesMiddleware',
+    'core.middleware.GA360Middleware',
     'directory_components.middleware.CheckGATags',
     'sso.middleware.SSOUserMiddleware',
     'directory_components.middleware.NoCacheMiddlware',
