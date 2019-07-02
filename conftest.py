@@ -15,5 +15,6 @@ def sso_user():
     return SSOUser(
         id=1,
         email='jim@example.com',
-        session_id='213'
+        session_id='213',
+        hashed_uuid='987',
     )

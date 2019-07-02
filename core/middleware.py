@@ -21,7 +21,7 @@ class GA360Middleware:
         }
 
         try:
-            ga360_payload['user_id'] = str(request.sso_user.id)
+            ga360_payload['user_id'] = str(request.sso_user.hashed_uuid)
             ga360_payload['login_status'] = True
 
         except AttributeError:

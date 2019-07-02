@@ -14,6 +14,7 @@ def api_response_ok(*args, **kwargs):
         json=lambda: {
             'id': 1,
             'email': 'jim@example.com',
+            'hashed_uuid': '9385',
         }
     )
 
@@ -48,6 +49,7 @@ def test_sso_middleware_api_response_ok(
     assert response._request.sso_user.id == 1
     assert response._request.sso_user.session_id == '123'
     assert response._request.sso_user.email == 'jim@example.com'
+    assert response._request.sso_user.hashed_uuid == '9385'
 
 
 @patch(
