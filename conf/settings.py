@@ -67,6 +67,8 @@ MIDDLEWARE_CLASSES = [
     'core.middleware.PrefixUrlMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'core.middleware.GA360Middleware',
+    'directory_components.middleware.CheckGATags',
     'sso.middleware.SSOUserMiddleware',
     'directory_components.middleware.NoCacheMiddlware',
 ]
@@ -332,6 +334,8 @@ FILE_UPLOAD_MAX_MEMORY_SIZE = 6 * 1024 * 1024
 GOOGLE_TAG_MANAGER_ID = env.str('GOOGLE_TAG_MANAGER_ID')
 GOOGLE_TAG_MANAGER_ENV = env.str('GOOGLE_TAG_MANAGER_ENV', '')
 UTM_COOKIE_DOMAIN = env.str('UTM_COOKIE_DOMAIN')
+GA360_BUSINESS_UNIT = 'GreatDomestic'
+GA360_SITE_SECTION = 'BusinessProfile'
 
 DIRECTORY_EXTERNAL_API_SIGNATURE_SECRET = env.str(
     'DIRECTORY_EXTERNAL_API_SIGNATURE_SECRET'

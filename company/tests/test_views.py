@@ -12,7 +12,6 @@ from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.views.generic import TemplateView
 
-from sso.utils import SSOUser
 from company import forms, state_requirements, views, validators
 
 
@@ -86,15 +85,6 @@ def has_company_client(logged_in_client, retrieve_profile_data):
     stub.start()
     yield logged_in_client
     stub.stop()
-
-
-@pytest.fixture
-def sso_user():
-    return SSOUser(
-        id=1,
-        email='jim@example.com',
-        session_id='213'
-    )
 
 
 @pytest.fixture
