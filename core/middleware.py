@@ -28,5 +28,6 @@ class AddDefaultGAValuesMiddleware:
             ga360_payload['user_id'] = None
             ga360_payload['login_status'] = False
 
+        response.context_data = response.context_data or {}
         response.context_data['ga360'] = ga360_payload
         return response
