@@ -2,6 +2,7 @@ import conf.sitemaps
 
 import directory_healthcheck.views
 import directory_components.views
+from directory_components.decorators import skip_ga360
 from directory_constants.urls import build_great_url
 
 from django.conf.urls import include, url
@@ -25,7 +26,7 @@ require_get = require_http_methods(['GET'])
 healthcheck_urls = [
     url(
         r'^$',
-        directory_healthcheck.views.HealthcheckView.as_view(),
+        skip_ga360(directory_healthcheck.views.HealthcheckView.as_view()),
         name='healthcheck'
     ),
 ]
@@ -34,27 +35,27 @@ healthcheck_urls = [
 api_urls = [
     url(
         r'^api/external(?P<path>/supplier/company/)$',
-        require_get(proxy.views.APIViewProxy.as_view()),
+        skip_ga360(require_get(proxy.views.APIViewProxy.as_view())),
         name='external-company'
     ),
     url(
         r'^api/external(?P<path>/healthcheck/ping/)$',
-        require_get(proxy.views.APIViewProxy.as_view()),
+        skip_ga360(require_get(proxy.views.APIViewProxy.as_view())),
         name='external-ping'
     ),
     url(
         r'^api(?P<path>/external/supplier/)$',
-        require_get(proxy.views.APIViewProxy.as_view()),
+        skip_ga360(require_get(proxy.views.APIViewProxy.as_view())),
         name='external-supplier'
     ),
     url(
         r'^api(?P<path>/external/supplier-sso/)$',
-        require_get(proxy.views.APIViewProxy.as_view()),
+        skip_ga360(require_get(proxy.views.APIViewProxy.as_view())),
         name='external-supplier-sso'
     ),
     url(
         r'^directory-api(?P<path>)',
-        proxy.views.DirectoryAPIViewProxy.as_view(),
+        skip_ga360(proxy.views.DirectoryAPIViewProxy.as_view()),
         name='directory-api'
     ),
 ]
@@ -73,7 +74,7 @@ urlpatterns = [
     ),
     url(
         r"^robots\.txt$",
-        directory_components.views.RobotsView.as_view(),
+        skip_ga360(directory_components.views.RobotsView.as_view()),
         name='robots'
     ),
     url(
@@ -149,12 +150,12 @@ urlpatterns = [
     # the url to create case studies was ../edit/. That was bad naming.
     url(
         r'^data-science/buyers/$',
-        company.views.BuyerCSVDumpView.as_view(),
+        skip_ga360(company.views.BuyerCSVDumpView.as_view()),
         name='buyers-csv-dump'
     ),
     url(
         r'^data-science/suppliers/$',
-        company.views.SupplierCSVDumpView.as_view(),
+        skip_ga360(company.views.SupplierCSVDumpView.as_view()),
         name='suppliers-csv-dump'
     )
 ]
