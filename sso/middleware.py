@@ -32,4 +32,5 @@ class SSOUserMiddleware:
                         id=sso_user_data['id'],
                         email=sso_user_data['email'],
                         session_id=session_id,
+                        hashed_uuid=sso_user_data['hashed_uuid'],
                     )

@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'company',
     'core',
     'directory_constants',
+    'health_check.cache',
     'directory_healthcheck',
     'directory_components',
 ]
@@ -66,6 +67,8 @@ MIDDLEWARE_CLASSES = [
     'core.middleware.PrefixUrlMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'core.middleware.GA360Middleware',
+    'directory_components.middleware.CheckGATags',
     'sso.middleware.SSOUserMiddleware',
     'directory_components.middleware.NoCacheMiddlware',
 ]
@@ -102,21 +105,15 @@ VCAP_SERVICES = env.json('VCAP_SERVICES', {})
 if 'redis' in VCAP_SERVICES:
     REDIS_URL = VCAP_SERVICES['redis'][0]['credentials']['uri']
 else:
-    REDIS_URL = env.str('REDIS_URL', '')
+    REDIS_URL = env.str('REDIS_URL')
 
-if REDIS_URL:
-    cache = {
-        'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': REDIS_URL,
-        'OPTIONS': {
-            'CLIENT_CLASS': "django_redis.client.DefaultClient",
-        }
+cache = {
+    'BACKEND': 'django_redis.cache.RedisCache',
+    'LOCATION': REDIS_URL,
+    'OPTIONS': {
+        'CLIENT_CLASS': "django_redis.client.DefaultClient",
     }
-else:
-    cache = {
-        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-    }
-
+}
 
 CACHES = {
     'default': cache,
@@ -283,7 +280,6 @@ SSO_SESSION_COOKIE = env.str('SSO_SESSION_COOKIE')
 SUPPLIER_CASE_STUDY_URL = env.str('SUPPLIER_CASE_STUDY_URL')
 SUPPLIER_PROFILE_LIST_URL = env.str('SUPPLIER_PROFILE_LIST_URL')
 SUPPLIER_PROFILE_URL = env.str('SUPPLIER_PROFILE_URL')
-SUPPLIER_SEARCH_URL = env.str('SUPPLIER_SEARCH_URL')
 
 SECURE_SSL_REDIRECT = env.bool('SECURE_SSL_REDIRECT', True)
 USE_X_FORWARDED_HOST = True
@@ -334,27 +330,16 @@ CSRF_COOKIE_SECURE = True
 DATA_UPLOAD_MAX_MEMORY_SIZE = 6 * 1024 * 1024
 FILE_UPLOAD_MAX_MEMORY_SIZE = 6 * 1024 * 1024
 
-VALIDATOR_MAX_LOGO_SIZE_BYTES = env.int(
-    'VALIDATOR_MAX_LOGO_SIZE_BYTES', 2 * 1024 * 1024
-)
-VALIDATOR_MAX_CASE_STUDY_IMAGE_SIZE_BYTES = env.int(
-    'VALIDATOR_MAX_CASE_STUDY_IMAGE_SIZE_BYTES', 2 * 1024 * 1024
-)
-VALIDATOR_MAX_CASE_STUDY_VIDEO_SIZE_BYTES = env.int(
-    'VALIDATOR_MAX_CASE_STUDY_VIDEO_SIZE_BYTES', 20 * 1024 * 1024
-)
-VALIDATOR_ALLOWED_IMAGE_FORMATS = ('PNG', 'JPG', 'JPEG')
-
 # Google tag manager
 GOOGLE_TAG_MANAGER_ID = env.str('GOOGLE_TAG_MANAGER_ID')
 GOOGLE_TAG_MANAGER_ENV = env.str('GOOGLE_TAG_MANAGER_ENV', '')
 UTM_COOKIE_DOMAIN = env.str('UTM_COOKIE_DOMAIN')
+GA360_BUSINESS_UNIT = 'GreatDomestic'
+GA360_SITE_SECTION = 'BusinessProfile'
 
 DIRECTORY_EXTERNAL_API_SIGNATURE_SECRET = env.str(
     'DIRECTORY_EXTERNAL_API_SIGNATURE_SECRET'
 )
-
-HEADER_FOOTER_CSS_ACTIVE_CLASSES = {'fab': True}
 
 # CORS
 CORS_ORIGIN_ALLOW_ALL = env.bool('CORS_ORIGIN_ALLOW_ALL', False)
@@ -362,20 +347,9 @@ CORS_ORIGIN_WHITELIST = env.list('CORS_ORIGIN_WHITELIST', default=[])
 
 # Feature flags
 FEATURE_FLAGS = {
-    'EXPORT_JOURNEY_ON': env.bool('FEATURE_EXPORT_JOURNEY_ENABLED', True),
-    'INTERNAL_CH_ON': env.bool('FEATURE_USE_INTERNAL_CH_ENABLED', False),
     # used by directory-components
     'MAINTENANCE_MODE_ON': env.bool('FEATURE_MAINTENANCE_MODE_ENABLED', False),
-    # used by directory-components
     'DIRECTORY_API_ON': env.bool('EXPOSE_DIRECTORY_API', False),
-    'NEW_ACCOUNT_JOURNEY_ON': env.bool(
-        'FEATURE_NEW_ACCOUNT_JOURNEY_ENABLED', False
-    ),
-    'NEW_ACCOUNT_EDIT_ON': env.bool('FEATURE_NEW_ACCOUNT_EDIT_ENABLED', False),
-    'NEW_HEADER_FOOTER_ON': env.bool(
-        'FEATURE_NEW_HEADER_FOOTER_ENABLED', False
-    ),
-    'HEADER_SEARCH_ON': env.bool('FEATURE_HEADER_SEARCH_ENABLED', False)
 }
 
 # healthcheck
@@ -383,6 +357,8 @@ DIRECTORY_HEALTHCHECK_TOKEN = env.str('HEALTH_CHECK_TOKEN')
 DIRECTORY_HEALTHCHECK_BACKENDS = [
     directory_healthcheck.backends.APIBackend,
     directory_healthcheck.backends.SingleSignOnBackend,
+    # health_check.cache.CacheBackend is also registered in
+    # INSTALLED_APPS's health_check.cache
 ]
 
 # Internal CH

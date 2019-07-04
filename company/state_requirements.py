@@ -1,5 +1,7 @@
 import abc
 
+from directory_constants import urls
+
 from django.conf import settings
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
@@ -69,7 +71,7 @@ class HasCompany(RedirectUserStateRule):
 
 class NoCompany(RedirectUserStateRule):
 
-    redirect_url = reverse_lazy('company-detail')
+    redirect_url = urls.build_great_url('profile/find-a-buyer/')
 
     def is_user_in_required_state(self):
         return not self.context['view'].company_profile
@@ -77,7 +79,7 @@ class NoCompany(RedirectUserStateRule):
 
 class HasUnverifiedCompany(RedirectUserStateRule):
 
-    redirect_url = reverse_lazy('company-detail')
+    redirect_url = urls.build_great_url('profile/find-a-buyer/')
 
     def is_user_in_required_state(self):
         profile = self.context['view'].company_profile
@@ -95,7 +97,7 @@ class VerificationLetterNotSent(RedirectUserStateRule):
 
 class IsCompanyOwner(RedirectUserStateRule):
 
-    redirect_url = reverse_lazy('company-detail')
+    redirect_url = urls.build_great_url('profile/find-a-buyer/')
 
     def is_user_in_required_state(self):
         profile = self.context['view'].supplier_profile
@@ -104,7 +106,7 @@ class IsCompanyOwner(RedirectUserStateRule):
 
 class NotCompanyOwner(RedirectUserStateRule):
 
-    redirect_url = reverse_lazy('company-detail')
+    redirect_url = urls.build_great_url('profile/find-a-buyer/')
 
     def is_user_in_required_state(self):
         profile = self.context['view'].supplier_profile

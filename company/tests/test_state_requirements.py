@@ -1,5 +1,7 @@
 from unittest.mock import Mock
 
+from directory_constants import urls
+
 from django.urls import reverse
 from django.views.generic import TemplateView
 
@@ -119,25 +121,6 @@ def test_is_logged_in_rule_authed_user(rf):
     assert response.status_code == 200
 
 
-def test_company_required_rule_has_company(rf):
-    view = create_view_for_rule(
-        state_requirements.HasCompany, CompanyTestView
-    )
-    response = view(rf.get('/'))
-
-    assert response.status_code == 200
-
-
-def test_company_required_rule_no_company(rf):
-    view = create_view_for_rule(
-        state_requirements.HasCompany, NoCompanyTestView
-    )
-    response = view(rf.get('/'))
-
-    assert response.status_code == 302
-    assert response.url == reverse('index')
-
-
 def test_no_company_required_rule_has_company(rf):
     view = create_view_for_rule(
         state_requirements.NoCompany, CompanyTestView
@@ -145,7 +128,7 @@ def test_no_company_required_rule_has_company(rf):
     response = view(rf.get('/'))
 
     assert response.status_code == 302
-    assert response.url == reverse('company-detail')
+    assert response.url == urls.build_great_url('profile/find-a-buyer/')
 
 
 def test_no_company_required_rule_no_company(rf):
@@ -165,7 +148,7 @@ def test_unverified_company_required_is_verified(rf):
     response = view(rf.get('/'))
 
     assert response.status_code == 302
-    assert response.url == reverse('company-detail')
+    assert response.url == urls.build_great_url('profile/find-a-buyer/')
 
 
 def test_unverified_company_required_is_unverified(rf):
@@ -217,7 +200,7 @@ def test_company_owner_required_not_company_owner(rf):
     response = view(rf.get('/'))
 
     assert response.status_code == 302
-    assert response.url == reverse('company-detail')
+    assert response.url == urls.build_great_url('profile/find-a-buyer/')
 
 
 def test_not_company_owner_required_is_company_owner(rf):
@@ -228,7 +211,7 @@ def test_not_company_owner_required_is_company_owner(rf):
     response = view(rf.get('/'))
 
     assert response.status_code == 302
-    assert response.url == reverse('company-detail')
+    assert response.url == urls.build_great_url('profile/find-a-buyer/')
 
 
 def test_not_company_owner_required_not_company_owner(rf):
