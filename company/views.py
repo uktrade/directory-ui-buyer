@@ -1,16 +1,11 @@
-import os
-from urllib.parse import urljoin
-
 from directory_api_client.client import api_client
-from directory_constants.constants import urls
 from formtools.wizard.views import SessionWizardView
 from raven.contrib.django.raven_compat.models import client as sentry_client
 from requests.exceptions import HTTPError
 
 from django.conf import settings
-from django.core.files.storage import FileSystemStorage
 from django.http import HttpResponse, HttpResponseForbidden
-from django.shortcuts import redirect, Http404
+from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.utils.functional import cached_property
 from django.views.generic import RedirectView, TemplateView, View
@@ -19,13 +14,6 @@ from django.urls import reverse, reverse_lazy
 
 from company import forms, helpers, state_requirements
 from enrolment.helpers import CompaniesHouseClient
-
-
-class RedirectNewEditFeatureFlagMixin:
-    def get(self, *args, **kwargs):
-        if settings.FEATURE_FLAGS['NEW_ACCOUNT_EDIT_ON']:
-            return redirect(urls.build_great_url('profile/find-a-buyer/'))
-        return super().get(*args, **kwargs)
 
 
 class SubmitFormOnGetMixin:
@@ -116,147 +104,6 @@ class GetTemplateForCurrentStepMixin:
         return [self.templates[self.steps.current]]
 
 
-class BaseMultiStepCompanyEditView(
-    state_requirements.UserStateRequirementHandlerMixin,
-    CompanyProfileMixin,
-    GetTemplateForCurrentStepMixin,
-    UpdateCompanyProfileOnFormWizardDoneMixin,
-    SessionWizardView
-):
-    required_user_states = [
-        state_requirements.IsLoggedIn,
-        state_requirements.HasCompany,
-    ]
-
-    def get_form_initial(self, step):
-        return self.company_profile
-
-
-class SupplierCaseStudyWizardView(
-    RedirectNewEditFeatureFlagMixin,
-    state_requirements.UserStateRequirementHandlerMixin,
-    CompanyProfileMixin,
-    GetTemplateForCurrentStepMixin,
-    SessionWizardView
-):
-    required_user_states = [
-        state_requirements.IsLoggedIn,
-        state_requirements.HasCompany,
-    ]
-
-    BASIC = 'basic'
-    RICH_MEDIA = 'rich-media'
-
-    file_storage = FileSystemStorage(
-        location=os.path.join(settings.MEDIA_ROOT, 'tmp-supplier-media')
-    )
-
-    form_list = (
-        (BASIC, forms.CaseStudyBasicInfoForm),
-        (RICH_MEDIA, forms.CaseStudyRichMediaForm),
-    )
-    templates = {
-        BASIC: 'supplier-case-study-basic-form.html',
-        RICH_MEDIA: 'supplier-case-study-rich-media-form.html',
-    }
-
-    form_labels = (
-        (BASIC, 'Basic'),
-        (RICH_MEDIA, 'Images'),
-    )
-
-    form_serializer = staticmethod(forms.serialize_case_study_forms)
-
-    def get_form_initial(self, step):
-        if 'id' not in self.kwargs:
-            return {}
-        response = api_client.company.retrieve_private_case_study(
-            sso_session_id=self.request.sso_user.session_id,
-            case_study_id=self.kwargs['id'],
-        )
-        if response.status_code == 404:
-            raise Http404()
-        response.raise_for_status()
-        return response.json()
-
-    def get_context_data(self, *args, **kwargs):
-        return super().get_context_data(
-            form_labels=self.form_labels, *args, **kwargs
-        )
-
-    def serialize_form_data(self):
-        return self.form_serializer(self.get_all_cleaned_data())
-
-    def done(self, *args, **kwags):
-        data = self.serialize_form_data()
-        if 'id' in self.kwargs:
-            response = api_client.company.update_case_study(
-                data=data,
-                case_study_id=self.kwargs['id'],
-                sso_session_id=self.request.sso_user.session_id,
-            )
-        else:
-            response = api_client.company.create_case_study(
-                sso_session_id=self.request.sso_user.session_id,
-                data=data,
-            )
-        response.raise_for_status()
-        return redirect('company-detail')
-
-
-class CompanyProfileDetailView(
-    RedirectNewEditFeatureFlagMixin, CompanyProfileMixin,
-    state_requirements.UserStateRequirementHandlerMixin, TemplateView
-):
-    required_user_states = [
-        state_requirements.IsLoggedIn,
-        state_requirements.HasCompany,
-    ]
-    template_name = 'company-profile-detail.html'
-
-    def get_context_data(self, **kwargs):
-        profile = helpers.get_company_profile(self.request.sso_user.session_id)
-        show_wizard_links = not forms.is_optional_profile_values_set(profile)
-        return {
-            'company': helpers.format_company_details(profile),
-            'show_wizard_links': show_wizard_links,
-            'SUPPLIER_SEARCH_URL': settings.SUPPLIER_SEARCH_URL,
-        }
-
-
-class CompanyProfileEditView(
-    RedirectNewEditFeatureFlagMixin, BaseMultiStepCompanyEditView
-):
-    BASIC = 'basic'
-    CLASSIFICATION = 'classification'
-    SENT = 'sent'
-
-    form_list = (
-        (BASIC, forms.CompanyBasicInfoForm),
-        (CLASSIFICATION, forms.CompanyClassificationForm),
-    )
-    form_labels = [
-        (BASIC, 'About your company'),
-        (CLASSIFICATION, 'Industry and exporting'),
-    ]
-    templates = {
-        BASIC: 'company-profile-form.html',
-        CLASSIFICATION: 'company-profile-form-classification.html',
-    }
-
-    form_serializer = staticmethod(forms.serialize_company_profile_forms)
-
-    def get_context_data(self, form, **kwargs):
-        return super().get_context_data(
-            form=form, form_labels=self.form_labels, **kwargs,
-        )
-
-    def handle_profile_update_success(self):
-        if not self.company_profile['is_verified']:
-            return redirect('verify-company-hub')
-        return super().handle_profile_update_success()
-
-
 class SendVerificationLetterView(
     state_requirements.UserStateRequirementHandlerMixin,
     CompanyProfileMixin,
@@ -299,21 +146,6 @@ class SendVerificationLetterView(
 
     def handle_profile_update_success(self):
         return TemplateResponse(self.request, self.templates[self.SENT])
-
-
-class CompanyProfileLogoEditView(
-    RedirectNewEditFeatureFlagMixin, BaseMultiStepCompanyEditView
-):
-    form_list = (
-        ('logo', forms.CompanyLogoForm),
-    )
-    file_storage = FileSystemStorage(
-        location=os.path.join(settings.MEDIA_ROOT, 'tmp-logos')
-    )
-    templates = {
-        'logo': 'company-profile-logo-form.html',
-    }
-    form_serializer = staticmethod(forms.serialize_company_logo_form)
 
 
 class CompanyVerifyView(
@@ -377,94 +209,6 @@ class CompanyAddressVerificationHistoricView(RedirectView):
     pattern_name = 'verify-company-address'
 
 
-class CompanyDescriptionEditView(
-    RedirectNewEditFeatureFlagMixin, BaseMultiStepCompanyEditView
-):
-    DESCRIPTION = 'description'
-    form_list = (
-        (DESCRIPTION, forms.CompanyDescriptionForm),
-    )
-    templates = {
-        DESCRIPTION: 'company-profile-description-form.html',
-    }
-    form_serializer = staticmethod(forms.serialize_company_description_form)
-
-
-class CompanySocialLinksEditView(
-    RedirectNewEditFeatureFlagMixin, BaseMultiStepCompanyEditView
-):
-    SOCIAL = 'social'
-    form_list = (
-        (SOCIAL, forms.SocialLinksForm),
-    )
-    templates = {
-        SOCIAL: 'company-profile-social-form.html',
-    }
-    form_serializer = staticmethod(forms.serialize_social_links_form)
-
-
-class SupplierBasicInfoEditView(
-    RedirectNewEditFeatureFlagMixin, BaseMultiStepCompanyEditView
-):
-    BASIC = 'basic'
-    form_list = (
-        (BASIC, forms.CompanyBasicInfoForm),
-    )
-    templates = {
-        BASIC: 'company-profile-form.html',
-    }
-    form_serializer = staticmethod(forms.serialize_company_basic_info_form)
-
-
-class SupplierClassificationEditView(
-    RedirectNewEditFeatureFlagMixin, BaseMultiStepCompanyEditView
-):
-    CLASSIFICATION = 'classification'
-    form_list = (
-        (CLASSIFICATION, forms.CompanyClassificationForm),
-    )
-    templates = {
-        CLASSIFICATION: 'company-profile-form-classification.html',
-    }
-    form_serializer = staticmethod(forms.serialize_company_sectors_form)
-
-
-class SupplierContactEditView(
-    RedirectNewEditFeatureFlagMixin, BaseMultiStepCompanyEditView
-):
-    CONTACT = 'contact'
-    form_list = (
-        (CONTACT, forms.CompanyContactDetailsForm),
-    )
-    templates = {
-        CONTACT: 'company-profile-form-contact.html',
-    }
-    form_serializer = staticmethod(forms.serialize_company_contact_form)
-
-
-class SupplierAddressEditView(
-    RedirectNewEditFeatureFlagMixin, BaseMultiStepCompanyEditView
-):
-    ADDRESS = 'address'
-    form_list = (
-        (ADDRESS, forms.CompanyAddressVerificationForm),
-    )
-    templates = {
-        ADDRESS: 'company-profile-form-address.html',
-    }
-    form_serializer = staticmethod(forms.serialize_company_address_form)
-
-    def get_context_data(self, form, **kwargs):
-        company_address = helpers.build_company_address(self.company_profile)
-        return super().get_context_data(
-            form=form,
-            company_name=self.company_profile['name'],
-            company_number=self.company_profile['number'],
-            company_address=company_address,
-            **kwargs,
-        )
-
-
 class EmailUnsubscribeView(
     state_requirements.UserStateRequirementHandlerMixin, FormView
 ):
@@ -499,13 +243,9 @@ class RequestPaylodTooLargeErrorView(TemplateView):
 class Oauth2CallbackUrlMixin:
     @property
     def redirect_uri(self):
-        callback_url = reverse('verify-companies-house-callback')
-        if settings.FEATURE_URL_PREFIX_ENABLED:
-            return urljoin(
-                settings.COMPANIES_HOUSE_CALLBACK_DOMAIN,
-                callback_url.replace('/find-a-buyer', '', 1)
-            )
-        return self.request.build_absolute_uri(callback_url)
+        return self.request.build_absolute_uri(
+            reverse('verify-companies-house-callback')
+        )
 
 
 class CompaniesHouseOauth2View(

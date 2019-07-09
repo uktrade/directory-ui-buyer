@@ -3,9 +3,6 @@
 @import 'partials/forms.scss';
 @import 'partials/buttons.scss';
 
-@import url(https://fonts.googleapis.com/css?family=Roboto:400,700);
-@import url(https://fonts.googleapis.com/css?family=Overpass:400,800);
-
 blockquote, q {
   quotes: none;
 }
@@ -463,6 +460,15 @@ a.no-focus-highlight {
 @media (max-width: 480px) {
   .ed-form-back-button {
     margin: 0 0 40px 0;
+  }
+  #great-footer {
+    .great-footer-logo-container {
+      margin-left: 0;
+      padding: 46px 20px 30px;
+    }
+    .great-footer-links {
+      padding: 30px 0;
+    }
   }
 }
 

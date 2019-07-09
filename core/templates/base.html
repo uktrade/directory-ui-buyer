@@ -12,6 +12,11 @@
     <script type="text/javascript" src="{% static 'javascripts/index.js' %}"></script>
 {% endblock %}
 
+{% block header_js %}
+    {{ block.super }}
+    <script src="{% static 'directory_components/js/dit.components.greatDomesticHeader.js' %}"></script>
+{% endblock %}
+
 {% block head_title %}Business profile - great.gov.uk{% endblock %}
 
 {% block body_content_container %}
