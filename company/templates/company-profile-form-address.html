@@ -24,7 +24,11 @@
 		<input autofocus="autofocus" id="{{ form.postal_full_name.id_for_label }}" maxlength="{{ form.fields.postal_full_name.max_length }}" name="{{ form.prefix }}-{{ form.postal_full_name.name }}" type="text">
 	</li>
 	<li>	
-		{% include 'company-office-address.html' %}
+		<div id="ed-company-edit-address">
+    		<p class="ed-company-edit-address-name">{{ company_name }}</p>
+    		<p class="ed-company-edit-address-number">Company number <strong>{{ company_number }}</strong></p>
+    		<p>{{ company_address }}</p>
+		</div>
 	</li>
 </div>
 {% endblock %}
