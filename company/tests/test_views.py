@@ -1,5 +1,4 @@
 import http
-from http.cookies import SimpleCookie
 from unittest.mock import call, patch, Mock
 import urllib
 
@@ -8,83 +7,10 @@ from directory_api_client.client import api_client
 import pytest
 import requests
 
-from django.conf import settings
 from django.core.urlresolvers import reverse
-from django.views.generic import TemplateView
 
-from company import forms, state_requirements, views, validators
-
-
-patch_check_company_owner_redirect = patch(
-    'company.state_requirements.IsCompanyOwner.is_user_in_required_state',
-    Mock(return_value=True)
-)
-patch_check_company_unverified_redirect = patch(
-    (
-        'company.state_requirements.HasUnverifiedCompany.'
-        'is_user_in_required_state'
-    ),
-    Mock(return_value=True)
-)
-patch_check_not_company_owner_redirect = patch(
-    'company.state_requirements.NotCompanyOwner.is_user_in_required_state',
-    Mock(return_value=True)
-)
-patch_check_no_company_redirect = patch(
-    'company.state_requirements.NoCompany.is_user_in_required_state',
-    Mock(return_value=True)
-)
-
-
-def create_response(status_code, json_body={}):
-    response = requests.Response()
-    response.status_code = status_code
-    response.json = lambda: json_body
-    return response
-
-
-@pytest.fixture
-def api_response_get_invite_200():
-    return create_response(
-        status_code=http.client.OK, json_body={'company_name': 'A Company'}
-    )
-
-
-@pytest.fixture
-def api_response_collaborators_200():
-    return create_response(
-        status_code=http.client.OK, json_body=[
-            {'sso_id': 1, 'company_email': 'test@example.com'},
-        ]
-    )
-
-
-@pytest.fixture
-def logged_in_client(client, sso_user):
-    def process_request(self, request):
-        request.sso_user = sso_user
-
-    stub = patch(
-        'sso.middleware.SSOUserMiddleware.process_request', process_request
-    )
-    stub.start()
-    yield client
-    stub.stop()
-
-
-@pytest.fixture
-def has_company_client(logged_in_client, retrieve_profile_data):
-    response = create_response(
-        status_code=http.client.OK,
-        json_body={**retrieve_profile_data, 'is_verified': True}
-    )
-    stub = patch.object(
-        api_client.company, 'retrieve_private_profile',
-        Mock(return_value=response)
-    )
-    stub.start()
-    yield logged_in_client
-    stub.stop()
+from company import forms, views, validators
+from core.tests.helpers import create_response
 
 
 @pytest.fixture
@@ -109,16 +35,9 @@ def all_company_profile_data():
 
 
 @pytest.fixture
-def all_address_verification_data():
-    return {
-        'code': 'x'*12
-    }
-
-
-@pytest.fixture
-def address_verification_address_data(all_address_verification_data):
+def address_verification_address_data():
     view = views.CompanyAddressVerificationView
-    data = all_address_verification_data
+    data = {'code': 'xxxxxxxxxxxx'}
     step = view.ADDRESS
     return {
         'company_address_verification_view-current_step': step,
@@ -128,8 +47,11 @@ def address_verification_address_data(all_address_verification_data):
 
 @pytest.fixture
 def address_verification_end_to_end(
-    has_company_client, address_verification_address_data
+    client, user, address_verification_address_data, retrieve_profile_data
 ):
+    user.company = retrieve_profile_data
+    client.force_login(user)
+
     view = views.CompanyAddressVerificationView
     data_step_pairs = [
         [view.ADDRESS, address_verification_address_data],
@@ -138,15 +60,18 @@ def address_verification_end_to_end(
     def inner(case_study_id=''):
         url = reverse('verify-company-address-confirm')
         for key, data in data_step_pairs:
-            response = has_company_client.post(url, data)
+            response = client.post(url, data)
         return response
     return inner
 
 
 @pytest.fixture
 def send_verification_letter_end_to_end(
-    has_company_client, all_company_profile_data
+    all_company_profile_data, retrieve_profile_data, client, user
 ):
+    user.company = retrieve_profile_data
+    client.force_login(user)
+
     all_data = all_company_profile_data
     view = views.SendVerificationLetterView
     address_data = {
@@ -163,14 +88,19 @@ def send_verification_letter_end_to_end(
         url = reverse('verify-company-address')
         for key, data in data_step_pairs:
             data['send_verification_letter_view-current_step'] = key
-            response = has_company_client.post(url, data)
+            response = client.post(url, data)
         return response
     return inner
 
 
-@patch_check_company_unverified_redirect
-def test_send_verification_letter_address_context_data(has_company_client):
-    response = has_company_client.get(reverse('verify-company-address'))
+def test_send_verification_letter_address_context_data(
+    client, user, retrieve_profile_data
+):
+    retrieve_profile_data['is_verified'] = False
+    user.company = retrieve_profile_data
+    client.force_login(user)
+
+    response = client.get(reverse('verify-company-address'))
 
     assert response.context['company_name'] == 'Great company'
     assert response.context['company_number'] == 123456
@@ -179,15 +109,14 @@ def test_send_verification_letter_address_context_data(has_company_client):
     )
 
 
-@patch_check_company_unverified_redirect
 @patch.object(
-    api_client.company, 'verify_with_code',
-    return_value=create_response(200)
+    api_client.company, 'verify_with_code', return_value=create_response(200)
 )
 def test_company_address_validation_api_success(
-    mock_verify_with_code, address_verification_end_to_end, sso_user,
-    all_address_verification_data, settings
+    mock_verify_with_code, address_verification_end_to_end, user,
+    settings, retrieve_profile_data
 ):
+    retrieve_profile_data['is_verified'] = False
     view = views.CompanyAddressVerificationView
 
     response = address_verification_end_to_end()
@@ -195,16 +124,17 @@ def test_company_address_validation_api_success(
     assert response.status_code == http.client.OK
     assert response.template_name == view.templates[view.SUCCESS]
     mock_verify_with_code.assert_called_with(
-        code=all_address_verification_data['code'],
-        sso_session_id=sso_user.session_id,
+        code='xxxxxxxxxxxx',
+        sso_session_id=user.session_id,
     )
 
 
-@patch_check_company_unverified_redirect
 @patch.object(api_client.company, 'verify_with_code')
 def test_company_address_validation_api_failure(
-    mock_verify_with_code, address_verification_end_to_end
+    mock_verify_with_code, address_verification_end_to_end,
+    retrieve_profile_data
 ):
+    retrieve_profile_data['is_verified'] = False
     mock_verify_with_code.return_value = create_response(400)
 
     response = address_verification_end_to_end()
@@ -214,8 +144,10 @@ def test_company_address_validation_api_failure(
     assert response.context_data['form'].errors['code'] == expected
 
 
-def test_unsubscribe_logged_in_user(logged_in_client):
-    response = logged_in_client.get(reverse('unsubscribe'))
+def test_unsubscribe_logged_in_user(client, user):
+    client.force_login(user)
+
+    response = client.get(reverse('unsubscribe'))
 
     view = views.EmailUnsubscribeView
     assert response.status_code == http.client.OK
@@ -229,25 +161,30 @@ def test_unsubscribe_anon_user(client):
 
 
 @patch.object(api_client.supplier, 'unsubscribe')
-def test_unsubscribe_api_failure(mock_unsubscribe, logged_in_client):
-    logged_in_client.cookies = SimpleCookie(
-        {settings.SSO_SESSION_COOKIE: 1}
-    )
+def test_unsubscribe_api_failure(
+    mock_unsubscribe, client, user, retrieve_profile_data
+):
+    retrieve_profile_data.clear()
+    client.force_login(user)
     mock_unsubscribe.return_value = create_response(400)
 
     with pytest.raises(requests.exceptions.HTTPError):
-        logged_in_client.post(reverse('unsubscribe'))
+        client.post(reverse('unsubscribe'))
 
-    mock_unsubscribe.assert_called_once_with(sso_session_id='213')
+    mock_unsubscribe.assert_called_once_with(sso_session_id='123')
 
 
 @patch.object(
     api_client.supplier, 'unsubscribe', return_value=create_response(200)
 )
-def test_unsubscribe_api_success(mock_unsubscribe, logged_in_client):
-    response = logged_in_client.post(reverse('unsubscribe'))
+def test_unsubscribe_api_success(
+    mock_unsubscribe, client, user, retrieve_profile_data
+):
+    retrieve_profile_data.clear()
+    client.force_login(user)
+    response = client.post(reverse('unsubscribe'))
 
-    mock_unsubscribe.assert_called_once_with(sso_session_id='213')
+    mock_unsubscribe.assert_called_once_with(sso_session_id='123')
     view = views.EmailUnsubscribeView
     assert response.status_code == http.client.OK
     assert response.template_name == view.success_template
@@ -259,12 +196,16 @@ def test_robots(client):
     assert response.status_code == 200
 
 
-@patch_check_company_unverified_redirect
 def test_companies_house_oauth2_has_company_redirects(
-    settings, has_company_client
+    settings, client, user, retrieve_profile_data
 ):
+    retrieve_profile_data['is_verified'] = False
+
+    user.company = retrieve_profile_data
+    client.force_login(user)
+
     url = reverse('verify-companies-house')
-    response = has_company_client.get(url)
+    response = client.get(url)
 
     assert response.status_code == 302
 
@@ -278,19 +219,21 @@ def test_companies_house_oauth2_has_company_redirects(
     )
 
 
-@patch_check_company_unverified_redirect
 @patch.object(forms.CompaniesHouseClient, 'verify_oauth2_code')
 def test_companies_house_callback_missing_code(
-    mock_verify_oauth2_code, settings, has_company_client
+    mock_verify_oauth2_code, settings, client, user, retrieve_profile_data
 ):
+    retrieve_profile_data['is_verified'] = False
+    user.company = retrieve_profile_data
+    client.force_login(user)
+
     url = reverse('verify-companies-house-callback')  # missing code
-    response = has_company_client.get(url)
+    response = client.get(url)
 
     assert response.status_code == 200
     assert mock_verify_oauth2_code.call_count == 0
 
 
-@patch_check_company_unverified_redirect
 @patch.object(forms.CompaniesHouseClient, 'verify_oauth2_code')
 @patch.object(
     api_client.company, 'verify_with_companies_house',
@@ -298,14 +241,18 @@ def test_companies_house_callback_missing_code(
 )
 def test_companies_house_callback_has_company_calls_companies_house(
     mock_verify_with_companies_house, mock_verify_oauth2_code, settings,
-    has_company_client, sso_user
+    client, user, retrieve_profile_data
 ):
+    retrieve_profile_data['is_verified'] = False
+    user.company = retrieve_profile_data
+    client.force_login(user)
+
     mock_verify_oauth2_code.return_value = create_response(
         status_code=200, json_body={'access_token': 'abc'}
     )
 
     url = reverse('verify-companies-house-callback')
-    response = has_company_client.get(url, {'code': '123'})
+    response = client.get(url, {'code': '123'})
 
     assert response.status_code == 302
     assert response.url == str(
@@ -322,12 +269,11 @@ def test_companies_house_callback_has_company_calls_companies_house(
 
     assert mock_verify_with_companies_house.call_count == 1
     assert mock_verify_with_companies_house.call_args == call(
-        sso_session_id=sso_user.session_id,
+        sso_session_id=user.session_id,
         access_token='abc',
     )
 
 
-@patch_check_company_unverified_redirect
 @patch.object(forms.CompaniesHouseClient, 'verify_oauth2_code')
 @patch.object(
     api_client.company, 'verify_with_companies_house',
@@ -335,14 +281,17 @@ def test_companies_house_callback_has_company_calls_companies_house(
 )
 def test_companies_house_callback_has_company_calls_url_prefix(
     mock_verify_with_companies_house, mock_verify_oauth2_code, settings,
-    has_company_client, sso_user
+    client, user, retrieve_profile_data
 ):
+    retrieve_profile_data['is_verified'] = False
+    user.company = retrieve_profile_data
+    client.force_login(user)
     mock_verify_oauth2_code.return_value = create_response(
         status_code=200, json_body={'access_token': 'abc'}
     )
 
     url = reverse('verify-companies-house-callback')
-    response = has_company_client.get(url, {'code': '123'})
+    response = client.get(url, {'code': '123'})
 
     assert response.status_code == 302
     assert response.url == str(
@@ -358,7 +307,6 @@ def test_companies_house_callback_has_company_calls_url_prefix(
     )
 
 
-@patch_check_company_unverified_redirect
 @patch.object(forms.CompaniesHouseClient, 'verify_oauth2_code')
 @patch.object(
     api_client.company, 'verify_with_companies_house',
@@ -366,14 +314,18 @@ def test_companies_house_callback_has_company_calls_url_prefix(
 )
 def test_companies_house_callback_error(
     mock_verify_with_companies_house, mock_verify_oauth2_code, settings,
-    has_company_client, sso_user
+    client, user, retrieve_profile_data
 ):
+    retrieve_profile_data['is_verified'] = False
+    user.company = retrieve_profile_data
+    client.force_login(user)
+
     mock_verify_oauth2_code.return_value = create_response(
         status_code=200, json_body={'access_token': 'abc'}
     )
 
     url = reverse('verify-companies-house-callback')
-    response = has_company_client.get(url, {'code': '123'})
+    response = client.get(url, {'code': '123'})
 
     assert response.status_code == 200
     assert response.template_name == (
@@ -381,76 +333,72 @@ def test_companies_house_callback_error(
     )
 
 
-@patch_check_company_unverified_redirect
 @patch.object(forms.CompaniesHouseClient, 'verify_oauth2_code')
 def test_companies_house_callback_invalid_code(
-    mock_verify_oauth2_code, settings, has_company_client
+    mock_verify_oauth2_code, settings, client, user, retrieve_profile_data
 ):
+    retrieve_profile_data['is_verified'] = False
+    user.company = retrieve_profile_data
+    client.force_login(user)
+
     mock_verify_oauth2_code.return_value = create_response(400)
 
     url = reverse('verify-companies-house-callback')
-    response = has_company_client.get(url, {'code': '123'})
+    response = client.get(url, {'code': '123'})
 
     assert response.status_code == 200
     assert b'Invalid code.' in response.content
 
 
-@patch_check_company_unverified_redirect
 @patch.object(forms.CompaniesHouseClient, 'verify_oauth2_code')
 def test_companies_house_callback_unauthorized(
-    mock_verify_oauth2_code, settings, has_company_client,
+    mock_verify_oauth2_code, settings, client, user, retrieve_profile_data
 ):
+    retrieve_profile_data['is_verified'] = False
+    user.company = retrieve_profile_data
+    client.force_login(user)
+
     mock_verify_oauth2_code.return_value = create_response(401)
 
     url = reverse('verify-companies-house-callback')
-    response = has_company_client.get(url, {'code': '123'})
+    response = client.get(url, {'code': '123'})
 
     assert response.status_code == 200
     assert b'Invalid code.' in response.content
 
 
-@patch_check_company_unverified_redirect
-@patch.object(
-    state_requirements.VerificationLetterNotSent, 'is_user_in_required_state',
-    Mock(return_value=True)
-)
 def test_verify_company_has_company_user(
-    settings, has_company_client
+    settings, client, user, retrieve_profile_data
 ):
+    retrieve_profile_data['is_verified'] = False
+    user.company = retrieve_profile_data
+    client.force_login(user)
+
     url = reverse('verify-company-hub')
-    response = has_company_client.get(url)
+    response = client.get(url)
 
     assert response.status_code == 200
     assert response.template_name == [views.CompanyVerifyView.template_name]
 
 
-@patch_check_company_unverified_redirect
-@patch.object(
-    state_requirements.VerificationLetterNotSent, 'is_user_in_required_state',
-    Mock(return_value=False)
-)
-def test_send_letter_redirects_to_enter_code_when_letter_sent(
-    has_company_client
+def test_verify_company_address_feature_flag_on(
+    settings, client, user, retrieve_profile_data
 ):
-    url = reverse('verify-company-address')
-    response = has_company_client.get(url)
+    retrieve_profile_data['is_verified'] = False
+    user.company = retrieve_profile_data
+    client.force_login(user)
 
-    assert response.status_code == 302
-    assert response.url == reverse('verify-company-address-confirm')
-
-
-@patch_check_company_unverified_redirect
-def test_verify_company_address_feature_flag_on(settings, has_company_client):
-    response = has_company_client.get(reverse('verify-company-address'))
+    response = client.get(reverse('verify-company-address'))
 
     assert response.status_code == 200
 
 
-@patch_check_company_unverified_redirect
 @patch.object(api_client.company, 'update_profile')
 def test_verify_company_address_end_to_end(
-    mock_update_profile, settings, send_verification_letter_end_to_end
+    mock_update_profile, settings, send_verification_letter_end_to_end,
+    retrieve_profile_data
 ):
+    retrieve_profile_data['is_verified'] = False
     mock_update_profile.return_value = create_response(200)
     view = views.SendVerificationLetterView
 
@@ -463,7 +411,7 @@ def test_verify_company_address_end_to_end(
         data={
             'postal_full_name': 'Jeremy',
         },
-        sso_session_id='213'
+        sso_session_id='123'
     )
 
 
@@ -477,25 +425,30 @@ multi_user_urls = [
 @pytest.mark.parametrize('url', multi_user_urls)
 @patch.object(api_client.company, 'retrieve_collaborators')
 def test_multi_user_view_has_company(
-    mock_retrieve_collaborators, url, has_company_client,
-    api_response_collaborators_200
+    mock_retrieve_collaborators, url, client, user, retrieve_profile_data,
 ):
-    mock_retrieve_collaborators.return_value = api_response_collaborators_200
+    user.company = retrieve_profile_data
+    client.force_login(user)
+    mock_retrieve_collaborators.return_value = create_response(
+        json_body=[{'sso_id': 1, 'company_email': 'test@example.com'}]
+    )
 
-    response = has_company_client.get(url)
+    response = client.get(url)
 
     assert response.status_code == 200
 
 
-@patch_check_company_owner_redirect
 @patch.object(api_client.company, 'create_collaboration_invite')
 def test_add_collaborator_invalid_form(
-    mock_create_collaboration_invite, has_company_client
+    mock_create_collaboration_invite, client, user, retrieve_profile_data,
+    retrieve_supplier_profile_data
 ):
+    user.company = retrieve_profile_data
+    client.force_login(user)
 
     url = reverse('add-collaborator')
 
-    response = has_company_client.post(url, {})
+    response = client.post(url, {})
 
     assert response.status_code == 200
     assert response.context_data['form'].is_valid() is False
@@ -504,17 +457,20 @@ def test_add_collaborator_invalid_form(
     assert mock_create_collaboration_invite.call_count == 0
 
 
-@patch_check_company_owner_redirect
 @patch.object(
     api_client.company, 'create_collaboration_invite',
     return_value=create_response(200)
 )
 def test_add_collaborator_valid_form(
-    mock_create_collaboration_invite, has_company_client, sso_user
+    mock_create_collaboration_invite, client, user, retrieve_profile_data,
+    retrieve_supplier_profile_data
 ):
+    user.company = retrieve_profile_data
+    client.force_login(user)
+
     url = reverse('add-collaborator')
 
-    response = has_company_client.post(url, {'email_address': 'a@b.com'})
+    response = client.post(url, {'email_address': 'a@b.com'})
 
     assert response.status_code == 302
     assert response.url == (
@@ -523,12 +479,13 @@ def test_add_collaborator_valid_form(
 
     assert mock_create_collaboration_invite.call_count == 1
     assert mock_create_collaboration_invite.call_args == call(
-        sso_session_id=sso_user.session_id,
+        sso_session_id=user.session_id,
         collaborator_email='a@b.com'
     )
 
 
-def test_add_collaborator_email(logged_in_client, client):
+def test_add_collaborator_email(client, user):
+    client.force_login(user)
 
     url = reverse('add-collaborator')
     response = client.get(url+'?email=test@test1.com')
@@ -538,8 +495,8 @@ def test_add_collaborator_email(logged_in_client, client):
     }
 
 
-def test_add_collaborator_empty_email(logged_in_client, client):
-
+def test_add_collaborator_empty_email(client, user):
+    client.force_login(user)
     url = reverse('add-collaborator')
     response = client.get(url)
 
@@ -551,14 +508,17 @@ def test_add_collaborator_empty_email(logged_in_client, client):
 
 @patch.object(api_client.company, 'create_collaboration_invite')
 def test_add_collaborator_valid_form_already_exists(
-    mock_create_collaboration_invite, has_company_client, sso_user
+    mock_create_collaboration_invite, client, user,
+    retrieve_supplier_profile_data,
 ):
+    client.force_login(user)
+    retrieve_supplier_profile_data['is_company_owner'] = True
     mock_create_collaboration_invite.return_value = create_response(
         400, {'collaborator_email': ['Already exists']}
     )
     url = reverse('add-collaborator')
 
-    response = has_company_client.post(url, {'email_address': 'a@b.com'})
+    response = client.post(url, {'email_address': 'a@b.com'})
 
     assert response.status_code == 302
     assert response.get('Location') == (
@@ -579,30 +539,37 @@ def test_add_collaborator_valid_form_already_exists(
     )
 ))
 @patch.object(api_client.company, 'retrieve_collaborators')
-@patch_check_company_owner_redirect
 def test_add_collaborator_valid_form_api_error(
-    mock_retrieve_collaborators, url, data, mock_path, has_company_client,
-    api_response_collaborators_200
+    mock_retrieve_collaborators, url, data, mock_path, client, user,
+    retrieve_profile_data, retrieve_supplier_profile_data
 ):
-    mock_retrieve_collaborators.return_value = api_response_collaborators_200
+    user.company = retrieve_profile_data
+    client.force_login(user)
+    mock_retrieve_collaborators.return_value = create_response(
+        json_body=[{'sso_id': 1, 'company_email': 'test@example.com'}]
+    )
 
     with patch(mock_path, return_value=create_response(400)):
         with pytest.raises(requests.exceptions.HTTPError):
-            has_company_client.post(url, data)
+            client.post(url, data)
 
 
 @patch.object(api_client.company, 'retrieve_collaborators')
 @patch.object(api_client.company, 'remove_collaborators')
-@patch_check_company_owner_redirect
 def test_remove_collaborators_invalid_form(
     mock_remove_collaborators, mock_retrieve_collaborators,
-    has_company_client, api_response_collaborators_200
+    client, user, retrieve_profile_data,
+    retrieve_supplier_profile_data
 ):
-    mock_retrieve_collaborators.return_value = api_response_collaborators_200
+    user.company = retrieve_profile_data
+    client.force_login(user)
+    mock_retrieve_collaborators.return_value = create_response(
+        json_body=[{'sso_id': 1, 'company_email': 'test@example.com'}]
+    )
 
     url = reverse('remove-collaborator')
 
-    response = has_company_client.post(url, {})
+    response = client.post(url, {})
 
     assert response.status_code == 200
     assert response.context_data['form'].is_valid() is False
@@ -616,16 +583,19 @@ def test_remove_collaborators_invalid_form(
     api_client.company, 'remove_collaborators',
     return_value=create_response(200)
 )
-@patch_check_company_owner_redirect
 def test_remove_collaborators_valid_form(
     mock_remove_collaborators, mock_retrieve_collaborators,
-    has_company_client, api_response_collaborators_200, sso_user
+    client, user, retrieve_profile_data, retrieve_supplier_profile_data
 ):
-    mock_retrieve_collaborators.return_value = api_response_collaborators_200
+    user.company = retrieve_profile_data
+    client.force_login(user)
+    mock_retrieve_collaborators.return_value = create_response(
+        json_body=[{'sso_id': 1, 'company_email': 'test@example.com'}]
+    )
 
     url = reverse('remove-collaborator')
 
-    response = has_company_client.post(url, {'sso_ids': ['1']})
+    response = client.post(url, {'sso_ids': ['1']})
 
     assert response.status_code == 302
     assert response.url == (
@@ -634,18 +604,21 @@ def test_remove_collaborators_valid_form(
 
     assert mock_remove_collaborators.call_count == 1
     assert mock_remove_collaborators.call_args == call(
-        sso_session_id=sso_user.session_id,
+        sso_session_id=user.session_id,
         sso_ids=['1']
     )
 
 
 @patch.object(api_client.company, 'create_transfer_invite')
 def test_transfer_owner_invalid_form(
-    ock_create_transfer_invite, has_company_client
+    ock_create_transfer_invite, client, user, retrieve_profile_data
 ):
+    user.company = retrieve_profile_data
+    client.force_login(user)
+
     view = views.TransferAccountWizardView
 
-    response = has_company_client.post(
+    response = client.post(
         reverse('account-transfer'),
         {
             'transfer_account_wizard_view-current_step': view.EMAIL,
@@ -672,23 +645,26 @@ def test_company_address_verification_backwards_compatible_feature_flag_on(
 
 @patch.object(api_client.company, 'create_transfer_invite')
 @patch.object(forms.sso_api_client.user, 'check_password')
-@patch_check_company_owner_redirect
 def test_transfer_owner_invalid_password(
-    mock_check_password, mock_create_transfer_invite, has_company_client,
-    sso_user
+    mock_check_password, mock_create_transfer_invite, client, user,
+    retrieve_profile_data, retrieve_supplier_profile_data
 ):
+
+    user.company = retrieve_profile_data
+    client.force_login(user)
+
     mock_check_password.return_value = create_response(400)
 
     view = views.TransferAccountWizardView
 
-    has_company_client.post(
+    client.post(
         reverse('account-transfer'),
         {
             'transfer_account_wizard_view-current_step': view.EMAIL,
             view.EMAIL + '-email_address': 'a@b.com'
         }
     )
-    response = has_company_client.post(
+    response = client.post(
         reverse('account-transfer'),
         {
             'transfer_account_wizard_view-current_step': view.PASSWORD,
@@ -708,20 +684,23 @@ def test_transfer_owner_invalid_password(
     'company.forms.sso_api_client.user.check_password',
     Mock(return_value=create_response(200))
 )
-@patch_check_company_owner_redirect
 def test_transfer_owner_valid_form(
-    mock_create_transfer_invite, has_company_client, sso_user
+    mock_create_transfer_invite, client, user, retrieve_profile_data,
+    retrieve_supplier_profile_data
 ):
+    user.company = retrieve_profile_data
+    client.force_login(user)
+
     view = views.TransferAccountWizardView
 
-    has_company_client.post(
+    client.post(
         reverse('account-transfer'),
         {
             'transfer_account_wizard_view-current_step': view.EMAIL,
             view.EMAIL + '-email_address': 'a@b.com'
         }
     )
-    response = has_company_client.post(
+    response = client.post(
         reverse('account-transfer'),
         {
             'transfer_account_wizard_view-current_step': view.PASSWORD,
@@ -735,17 +714,19 @@ def test_transfer_owner_valid_form(
     )
     assert mock_create_transfer_invite.call_count == 1
     assert mock_create_transfer_invite.call_args == call(
-        sso_session_id=sso_user.session_id, new_owner_email='a@b.com'
+        sso_session_id=user.session_id, new_owner_email='a@b.com'
     )
 
 
 @patch.object(api_client.company, 'create_transfer_invite')
 @patch.object(forms.sso_api_client.user, 'check_password')
-@patch_check_company_owner_redirect
 def test_transfer_owner_valid_form_already_exists(
-    mock_check_password, mock_create_transfer_invite, has_company_client,
-    sso_user
+    mock_check_password, mock_create_transfer_invite, client, user,
+    retrieve_profile_data, retrieve_supplier_profile_data
 ):
+    user.company = retrieve_profile_data
+    client.force_login(user)
+
     mock_check_password.return_value = mock_create_transfer_invite
     mock_create_transfer_invite.return_value = create_response(
         http.client.BAD_REQUEST, {'new_owner_email': ['Already exists']}
@@ -753,14 +734,14 @@ def test_transfer_owner_valid_form_already_exists(
 
     view = views.TransferAccountWizardView
 
-    has_company_client.post(
+    client.post(
         reverse('account-transfer'),
         {
             'transfer_account_wizard_view-current_step': view.EMAIL,
             view.EMAIL + '-email_address': 'a@b.com'
         }
     )
-    response = has_company_client.post(
+    response = client.post(
         reverse('account-transfer'),
         {
             'transfer_account_wizard_view-current_step': view.PASSWORD,
@@ -779,16 +760,19 @@ def test_transfer_owner_valid_form_already_exists(
     'company.forms.sso_api_client.user.check_password',
     return_value=create_response(200)
 )
-@patch_check_company_owner_redirect
 def test_transfer_owner_valid_form_api_error(
-    mock_check_password, mock_create_transfer_invite, has_company_client
+    mock_check_password, mock_create_transfer_invite, client, user,
+    retrieve_profile_data, retrieve_supplier_profile_data
 ):
+    user.company = retrieve_profile_data
+    client.force_login(user)
+
     mock_create_transfer_invite.return_value = create_response(400)
 
     view = views.TransferAccountWizardView
     url = reverse('account-transfer')
 
-    has_company_client.post(
+    client.post(
         reverse('account-transfer'),
         {
             'transfer_account_wizard_view-current_step': view.EMAIL,
@@ -796,7 +780,7 @@ def test_transfer_owner_valid_form_api_error(
         }
     )
     with pytest.raises(requests.exceptions.HTTPError):
-        has_company_client.post(
+        client.post(
             url,
             {
                 'transfer_account_wizard_view-current_step': view.PASSWORD,
@@ -812,39 +796,52 @@ invite_urls = (
 
 
 @patch('company.views.AcceptTransferAccountView.retrieve_api_method')
-@patch_check_not_company_owner_redirect
 def test_accept_ownership_invite_get_invite(
-    mock_retrieve_api_method, logged_in_client, api_response_get_invite_200
+    mock_retrieve_api_method, client, user, retrieve_supplier_profile_data,
+    retrieve_profile_data
 ):
+    retrieve_supplier_profile_data['is_company_owner'] = False
+    client.force_login(user)
+    mock_retrieve_api_method.return_value = create_response(
+        json_body={'company_name': 'name'}
+    )
+
     url = reverse('account-transfer-accept')
-    mock_retrieve_api_method.return_value = api_response_get_invite_200
-    response = logged_in_client.get(url)
+    response = client.get(url)
 
     assert response.status_code == 200
-    assert response.context_data['invite'] == {'company_name': 'A Company'}
+    assert response.context_data['invite'] == {'company_name': 'name'}
 
 
 @patch('company.views.AcceptCollaborationView.retrieve_api_method')
-@patch_check_no_company_redirect
 def test_accept_collaborate_invite_get_invite(
-    mock_retrieve_api_method, logged_in_client, api_response_get_invite_200
+    mock_retrieve_api_method, client, user, retrieve_profile_data
 ):
+    retrieve_profile_data.clear()
+    client.force_login(user)
+    mock_retrieve_api_method.return_value = create_response(
+        json_body={'company_name': 'name'}
+    )
+
     url = reverse('account-collaborate-accept')
-    mock_retrieve_api_method.return_value = api_response_get_invite_200
-    response = logged_in_client.get(url)
+    response = client.get(url)
 
     assert response.status_code == 200
-    assert response.context_data['invite'] == {'company_name': 'A Company'}
+    assert response.context_data['invite'] == {'company_name': 'name'}
 
 
 @patch('company.views.AcceptTransferAccountView.retrieve_api_method')
-@patch_check_not_company_owner_redirect
 def test_accept_ownership_invite_no_invite_key(
-    mock_retrieve_api_method, logged_in_client, api_response_get_invite_200
+    mock_retrieve_api_method, client, user, retrieve_supplier_profile_data
 ):
+    retrieve_supplier_profile_data['is_company_owner'] = False
+    client.force_login(user)
+    mock_retrieve_api_method.return_value = create_response(
+        json_body={'company_name': 'name'}
+    )
+
     url = reverse('account-transfer-accept')
-    mock_retrieve_api_method.return_value = api_response_get_invite_200
-    response = logged_in_client.post(url, data={})
+    response = client.post(url, data={})
 
     assert response.status_code == 200
     assert response.context_data['form'].is_valid() is False
@@ -852,13 +849,17 @@ def test_accept_ownership_invite_no_invite_key(
 
 
 @patch('company.views.AcceptCollaborationView.retrieve_api_method')
-@patch_check_no_company_redirect
 def test_accept_collaborate_invite_no_invite_key(
-    mock_retrieve_api_method, logged_in_client, api_response_get_invite_200
+    mock_retrieve_api_method, client, user, retrieve_profile_data
 ):
+    retrieve_profile_data.clear()
+    mock_retrieve_api_method.return_value = create_response(
+        json_body={'company_name': 'name'}
+    )
+    client.force_login(user)
+
     url = reverse('account-collaborate-accept')
-    mock_retrieve_api_method.return_value = api_response_get_invite_200
-    response = logged_in_client.post(url, data={})
+    response = client.post(url, data={})
 
     assert response.status_code == 200
     assert response.context_data['form'].is_valid() is False
@@ -870,17 +871,20 @@ def test_accept_collaborate_invite_no_invite_key(
     'company.views.AcceptTransferAccountView.accept_api_method',
     Mock(return_value=create_response(200))
 )
-@patch_check_not_company_owner_redirect
 def test_accept_ownership_invite_valid_invite_key(
-    mock_retrieve_api_method, logged_in_client, api_response_get_invite_200
+    mock_retrieve_api_method, client, user, retrieve_supplier_profile_data
 ):
-    mock_retrieve_api_method.return_value = api_response_get_invite_200
+    retrieve_supplier_profile_data['is_company_owner'] = False
+    client.force_login(user)
+    mock_retrieve_api_method.return_value = create_response(
+        json_body={'company_name': 'name'}
+    )
     url = reverse('account-transfer-accept')
 
-    response = logged_in_client.post(url, data={'invite_key': '123'})
+    response = client.post(url, data={'invite_key': '123'})
 
     assert response.status_code == 302
-    assert response.url == reverse('company-detail')
+    assert response.url == urls.build_great_url('profile/find-a-buyer/')
 
 
 @patch('company.views.AcceptCollaborationView.retrieve_api_method')
@@ -888,42 +892,53 @@ def test_accept_ownership_invite_valid_invite_key(
     'company.views.AcceptCollaborationView.accept_api_method',
     Mock(return_value=create_response(200))
 )
-@patch_check_no_company_redirect
 def test_accept_collaborate_invite_valid_invite_key(
-    mock_retrieve_api_method, logged_in_client, api_response_get_invite_200
+    mock_retrieve_api_method, client, user,
+    retrieve_profile_data
 ):
-    mock_retrieve_api_method.return_value = api_response_get_invite_200
+    retrieve_profile_data.clear()
+    client.force_login(user)
+    mock_retrieve_api_method.return_value = create_response(
+        json_body={'company_name': 'name'}
+    )
+
     url = reverse('account-collaborate-accept')
 
-    response = logged_in_client.post(url, data={'invite_key': '123'})
+    response = client.post(url, data={'invite_key': '123'})
 
     assert response.status_code == 302
-    assert response.url == reverse('company-detail')
+    assert response.url == urls.build_great_url('profile/find-a-buyer/')
 
 
-@patch_check_not_company_owner_redirect
 @patch('company.views.AcceptTransferAccountView.retrieve_api_method')
 def test_accept_invite_transfer_invite_key_invalid(
-    mock_retrieve_api_method, has_company_client
+    mock_retrieve_api_method, client, user, retrieve_profile_data,
+    retrieve_supplier_profile_data
 ):
+    retrieve_supplier_profile_data['is_company_owner'] = False
+    user.company = retrieve_profile_data
+    client.force_login(user)
+
     mock_retrieve_api_method.return_value = create_response(400)
     url = reverse('account-transfer-accept')
 
-    response = has_company_client.get(url)
+    response = client.get(url)
 
     assert response.status_code == 200
     assert response.context_data['invite'] is None
 
 
-@patch_check_no_company_redirect
 @patch('company.views.AcceptCollaborationView.retrieve_api_method')
 def test_accept_invite_collaborate_invitekey_invalid(
-    mock_retrieve_api_method, logged_in_client
+    mock_retrieve_api_method, client, user, retrieve_profile_data
 ):
-    url = reverse('account-collaborate-accept')
+    retrieve_profile_data.clear()
+    client.force_login(user)
     mock_retrieve_api_method.return_value = create_response(400)
 
-    response = logged_in_client.get(url)
+    url = reverse('account-collaborate-accept')
+
+    response = client.get(url)
 
     assert response.status_code == 200
     assert response.context_data['invite'] is None
@@ -985,109 +1000,3 @@ def test_supplier_csv_dump(mocked_api_client, client):
     assert response._headers['content-disposition'] == (
         'Content-Disposition', 'bar'
     )
-
-
-@patch.object(api_client.company, 'retrieve_private_profile')
-def test_company_profile_mixin_404(mock_retrieve_profile, rf):
-    mock_retrieve_profile.return_value = create_response(404)
-
-    class TestView(views.CompanyProfileMixin, TemplateView):
-        template_name = 'company-profile-detail.html'
-
-        def get_context_data(self, *args, **kwargs):
-            return {'company_profile': self.company_profile}
-
-    request = rf.get('/')
-    request.sso_user = Mock()
-    view = TestView.as_view()
-
-    response = view(request)
-    assert response.context_data['company_profile'] == {}
-
-
-@patch.object(api_client.supplier, 'retrieve_profile')
-def test_supplier_profile_mixin_404(mock_retrieve_profile, rf):
-    mock_retrieve_profile.return_value = create_response(404)
-
-    class TestView(views.SupplierProfileMixin, TemplateView):
-        template_name = 'company-profile-detail.html'
-
-        def get_context_data(self, *args, **kwargs):
-            return {'supplier_profile': self.supplier_profile}
-
-    request = rf.get('/')
-    request.sso_user = Mock()
-    view = TestView.as_view()
-
-    response = view(request)
-    assert response.context_data['supplier_profile'] == {}
-
-
-@pytest.mark.parametrize('view_class,expected', [
-    (
-        views.SendVerificationLetterView,
-        [
-            state_requirements.IsLoggedIn,
-            state_requirements.HasUnverifiedCompany,
-            state_requirements.VerificationLetterNotSent
-        ]
-    ),
-    (
-        views.CompanyVerifyView,
-        [
-            state_requirements.IsLoggedIn,
-            state_requirements.HasUnverifiedCompany,
-            state_requirements.VerificationLetterNotSent,
-        ]
-    ),
-    (
-        views.CompanyAddressVerificationView,
-        [
-            state_requirements.IsLoggedIn,
-            state_requirements.HasUnverifiedCompany
-        ]
-    ),
-    (
-        views.EmailUnsubscribeView,
-        [state_requirements.IsLoggedIn]
-    ),
-    (
-        views.CompaniesHouseOauth2View,
-        [
-            state_requirements.IsLoggedIn,
-            state_requirements.HasUnverifiedCompany,
-        ]
-    ),
-    (
-        views.CompaniesHouseOauth2CallbackView,
-        [
-            state_requirements.IsLoggedIn,
-            state_requirements.HasUnverifiedCompany,
-        ]
-    ),
-    (
-        views.AddCollaboratorView,
-        [state_requirements.IsLoggedIn, state_requirements.IsCompanyOwner]
-    ),
-    (
-        views.RemoveCollaboratorView,
-        [state_requirements.IsLoggedIn, state_requirements.IsCompanyOwner]
-    ),
-    (
-        views.TransferAccountWizardView,
-        [state_requirements.IsLoggedIn, state_requirements.IsCompanyOwner]
-    ),
-    (
-        views.AcceptTransferAccountView,
-        [state_requirements.IsLoggedIn, state_requirements.NotCompanyOwner]
-    ),
-    (
-        views.AcceptCollaborationView,
-        [state_requirements.IsLoggedIn, state_requirements.NoCompany]
-    ),
-])
-def test_required_user_states(view_class, expected):
-    mixin_class = state_requirements.UserStateRequirementHandlerMixin
-    assert issubclass(view_class, mixin_class)
-    for rule in expected:
-        assert rule in view_class.required_user_states
