@@ -1,3 +1,4 @@
+from directory_constants import urls
 from directory_api_client.client import api_client
 from formtools.wizard.views import SessionWizardView
 from raven.contrib.django.raven_compat.models import client as sentry_client
@@ -10,9 +11,9 @@ from django.template.response import TemplateResponse
 from django.utils.functional import cached_property
 from django.views.generic import RedirectView, TemplateView, View
 from django.views.generic.edit import FormView
-from django.urls import reverse, reverse_lazy
+from django.urls import reverse
 
-from company import forms, helpers, state_requirements
+from company import forms, helpers
 from enrolment.helpers import CompaniesHouseClient
 
 
@@ -49,49 +50,19 @@ class UpdateCompanyProfileOnFormWizardDoneMixin:
 
     def done(self, *args, **kwargs):
         response = api_client.company.update_profile(
-            sso_session_id=self.request.sso_user.session_id,
+            sso_session_id=self.request.user.session_id,
             data=self.serialize_form_data()
         )
         try:
             response.raise_for_status()
         except HTTPError:
             self.send_update_error_to_sentry(
-                sso_user=self.request.sso_user,
+                sso_user=self.request.user,
                 api_response=response
             )
             raise
         else:
             return self.handle_profile_update_success()
-
-
-class CompanyProfileMixin:
-
-    @cached_property
-    def company_profile(self):
-        response = api_client.company.retrieve_private_profile(
-            sso_session_id=self.request.sso_user.session_id,
-        )
-        if response.status_code == 404:
-            return {}
-        response.raise_for_status()
-        profile = response.json()
-
-        if profile.get('sectors'):
-            profile['sectors'] = profile['sectors'][0]
-        return profile
-
-
-class SupplierProfileMixin:
-
-    @cached_property
-    def supplier_profile(self):
-        response = api_client.supplier.retrieve_profile(
-            sso_session_id=self.request.sso_user.session_id,
-        )
-        if response.status_code == 404:
-            return {}
-        response.raise_for_status()
-        return response.json()
 
 
 class GetTemplateForCurrentStepMixin:
@@ -105,17 +76,10 @@ class GetTemplateForCurrentStepMixin:
 
 
 class SendVerificationLetterView(
-    state_requirements.UserStateRequirementHandlerMixin,
-    CompanyProfileMixin,
     GetTemplateForCurrentStepMixin,
     UpdateCompanyProfileOnFormWizardDoneMixin,
     SessionWizardView
 ):
-    required_user_states = [
-        state_requirements.IsLoggedIn,
-        state_requirements.HasUnverifiedCompany,
-        state_requirements.VerificationLetterNotSent
-    ]
 
     ADDRESS = 'address'
     SENT = 'sent'
@@ -133,14 +97,14 @@ class SendVerificationLetterView(
     form_serializer = staticmethod(forms.serialize_company_address_form)
 
     def get_context_data(self, form, **kwargs):
-        company_address = helpers.build_company_address(self.company_profile)
+        address = helpers.build_company_address(self.request.user.company)
         return super().get_context_data(
             form=form,
             form_labels=self.form_labels,
             all_cleaned_data=self.get_all_cleaned_data(),
-            company_name=self.company_profile['name'],
-            company_number=self.company_profile['number'],
-            company_address=company_address,
+            company_name=self.request.user.company['name'],
+            company_number=self.request.user.company['number'],
+            company_address=address,
             **kwargs
         )
 
@@ -148,34 +112,21 @@ class SendVerificationLetterView(
         return TemplateResponse(self.request, self.templates[self.SENT])
 
 
-class CompanyVerifyView(
-    state_requirements.UserStateRequirementHandlerMixin,
-    CompanyProfileMixin,
-    TemplateView
-):
-    required_user_states = [
-        state_requirements.IsLoggedIn,
-        state_requirements.HasUnverifiedCompany,
-        state_requirements.VerificationLetterNotSent,
-    ]
+class CompanyVerifyView(TemplateView):
+
     template_name = 'company-verify-hub.html'
 
     def get_context_data(self, **kwargs):
         return {
-            'company': self.company_profile,
+            'company': self.request.user.company,
         }
 
 
 class CompanyAddressVerificationView(
-    state_requirements.UserStateRequirementHandlerMixin,
-    CompanyProfileMixin,
     GetTemplateForCurrentStepMixin,
     SessionWizardView
 ):
-    required_user_states = [
-        state_requirements.IsLoggedIn,
-        state_requirements.HasUnverifiedCompany,
-    ]
+
     ADDRESS = 'address'
     SUCCESS = 'success'
 
@@ -189,7 +140,7 @@ class CompanyAddressVerificationView(
 
     def get_form_kwargs(self, *args, **kwargs):
         kwargs = super().get_form_kwargs(*args, **kwargs)
-        kwargs['sso_session_id'] = self.request.sso_user.session_id
+        kwargs['sso_session_id'] = self.request.user.session_id
         return kwargs
 
     def done(self, *args, **kwargs):
@@ -200,7 +151,7 @@ class CompanyAddressVerificationView(
 
     def get_context_data(self, **kwargs):
         return super().get_context_data(
-            company=self.company_profile,
+            company=self.request.user.company,
             **kwargs
         )
 
@@ -209,13 +160,7 @@ class CompanyAddressVerificationHistoricView(RedirectView):
     pattern_name = 'verify-company-address'
 
 
-class EmailUnsubscribeView(
-    state_requirements.UserStateRequirementHandlerMixin, FormView
-):
-
-    required_user_states = [
-        state_requirements.IsLoggedIn
-    ]
+class EmailUnsubscribeView(FormView):
 
     form_class = forms.EmptyForm
     template_name = 'email-unsubscribe.html'
@@ -223,7 +168,7 @@ class EmailUnsubscribeView(
 
     def form_valid(self, form):
         response = api_client.supplier.unsubscribe(
-            sso_session_id=self.request.sso_user.session_id
+            sso_session_id=self.request.user.session_id
         )
         response.raise_for_status()
         return TemplateResponse(self.request, self.success_template)
@@ -248,19 +193,10 @@ class Oauth2CallbackUrlMixin:
         )
 
 
-class CompaniesHouseOauth2View(
-    state_requirements.UserStateRequirementHandlerMixin,
-    CompanyProfileMixin,
-    Oauth2CallbackUrlMixin,
-    RedirectView
-):
-    required_user_states = [
-        state_requirements.IsLoggedIn,
-        state_requirements.HasUnverifiedCompany,
-    ]
+class CompaniesHouseOauth2View(Oauth2CallbackUrlMixin, RedirectView):
 
     def get_redirect_url(self):
-        company = helpers.get_company_profile(self.request.sso_user.session_id)
+        company = helpers.get_company_profile(self.request.user.session_id)
         return CompaniesHouseClient.make_oauth2_url(
             company_number=company['number'],
             redirect_uri=self.redirect_uri,
@@ -268,21 +204,15 @@ class CompaniesHouseOauth2View(
 
 
 class CompaniesHouseOauth2CallbackView(
-    state_requirements.UserStateRequirementHandlerMixin,
-    CompanyProfileMixin,
     SubmitFormOnGetMixin,
     Oauth2CallbackUrlMixin,
     FormView
 ):
-    required_user_states = [
-        state_requirements.IsLoggedIn,
-        state_requirements.HasUnverifiedCompany,
-    ]
 
     form_class = forms.CompaniesHouseOauth2Form
     template_name = 'companies-house-oauth2-callback.html'
     error_template = 'companies-house-oauth2-error.html'
-    success_url = reverse_lazy('company-detail')
+    success_url = urls.build_great_url('profile/find-a-buyer/')
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -291,7 +221,7 @@ class CompaniesHouseOauth2CallbackView(
 
     def form_valid(self, form):
         response = api_client.company.verify_with_companies_house(
-            sso_session_id=self.request.sso_user.session_id,
+            sso_session_id=self.request.user.session_id,
             access_token=form.oauth2_response.json()['access_token']
         )
         if response.status_code == 500:
@@ -300,14 +230,7 @@ class CompaniesHouseOauth2CallbackView(
             return super().form_valid(form)
 
 
-class BaseMultiUserAccountManagementView(
-    CompanyProfileMixin, SupplierProfileMixin,
-    state_requirements.UserStateRequirementHandlerMixin,
-):
-    required_user_states = [
-        state_requirements.IsLoggedIn,
-        state_requirements.IsCompanyOwner,
-    ]
+class BaseMultiUserAccountManagementView:
 
     def get_context_data(self, **kwargs):
         return super().get_context_data(
@@ -322,7 +245,7 @@ class AddCollaboratorView(BaseMultiUserAccountManagementView, FormView):
     def get_form_kwargs(self):
         return {
             **super().get_form_kwargs(),
-            'sso_email_address': self.request.sso_user.email
+            'sso_email_address': self.request.user.email
         }
 
     def get_initial(self):
@@ -336,7 +259,7 @@ class AddCollaboratorView(BaseMultiUserAccountManagementView, FormView):
 
     def add_collaborator(self, email_address):
         response = api_client.company.create_collaboration_invite(
-            sso_session_id=self.request.sso_user.session_id,
+            sso_session_id=self.request.user.session_id,
             collaborator_email=email_address,
         )
         if response.status_code == 400:
@@ -357,7 +280,7 @@ class RemoveCollaboratorView(BaseMultiUserAccountManagementView, FormView):
     def get_form_kwargs(self, *args, **kwargs):
         form_kwargs = super().get_form_kwargs(*args, **kwargs)
         return {
-            'sso_session_id': self.request.sso_user.session_id,
+            'sso_session_id': self.request.user.session_id,
             **form_kwargs
         }
 
@@ -368,7 +291,7 @@ class RemoveCollaboratorView(BaseMultiUserAccountManagementView, FormView):
 
     def remove_collaborator(self, sso_ids):
         response = api_client.company.remove_collaborators(
-            sso_session_id=self.request.sso_user.session_id,
+            sso_session_id=self.request.user.session_id,
             sso_ids=sso_ids,
         )
         response.raise_for_status()
@@ -398,9 +321,9 @@ class TransferAccountWizardView(
     def get_form_kwargs(self, step):
         kwargs = super().get_form_kwargs(step)
         if step == self.PASSWORD:
-            kwargs['sso_session_id'] = self.request.sso_user.session_id
+            kwargs['sso_session_id'] = self.request.user.session_id
         elif step == self.EMAIL:
-            kwargs['sso_email_address'] = self.request.sso_user.email
+            kwargs['sso_email_address'] = self.request.user.email
         return kwargs
 
     def done(self, *args, **kwargs):
@@ -410,7 +333,7 @@ class TransferAccountWizardView(
 
     def transfer_owner(self, email_address):
         response = api_client.company.create_transfer_invite(
-            sso_session_id=self.request.sso_user.session_id,
+            sso_session_id=self.request.user.session_id,
             new_owner_email=email_address,
         )
 
@@ -425,12 +348,9 @@ class TransferAccountWizardView(
         return settings.SSO_PROFILE_URL + '?owner-transferred'
 
 
-class BaseAcceptInviteView(
-    CompanyProfileMixin, state_requirements.UserStateRequirementHandlerMixin,
-    FormView
-):
+class BaseAcceptInviteView(FormView):
     form_class = forms.AcceptInviteForm
-    success_url = reverse_lazy('company-detail')
+    success_url = urls.build_great_url('profile/find-a-buyer/')
     invalid_template_name = 'company-invite-invalid-token.html'
 
     def get_initial(self):
@@ -441,7 +361,7 @@ class BaseAcceptInviteView(
     @cached_property
     def invite(self):
         response = self.retrieve_api_method(
-            sso_session_id=self.request.sso_user.session_id,
+            sso_session_id=self.request.user.session_id,
             invite_key=self.request.GET.get('invite_key'),
         )
         if response.status_code == 200:
@@ -461,32 +381,23 @@ class BaseAcceptInviteView(
 
     def accept_invite(self, invite_key):
         response = self.accept_api_method(
-            sso_session_id=self.request.sso_user.session_id,
+            sso_session_id=self.request.user.session_id,
             invite_key=invite_key,
         )
         response.raise_for_status()
 
 
-class AcceptTransferAccountView(SupplierProfileMixin, BaseAcceptInviteView):
+class AcceptTransferAccountView(BaseAcceptInviteView):
 
     template_name = 'company-accept-transfer-account.html'
     retrieve_api_method = api_client.company.retrieve_transfer_invite
     accept_api_method = api_client.company.accept_transfer_invite
-    required_user_states = [
-        state_requirements.IsLoggedIn,
-        state_requirements.NotCompanyOwner,
-    ]
 
 
 class AcceptCollaborationView(BaseAcceptInviteView):
-
     template_name = 'company-accept-collaboration.html'
     retrieve_api_method = api_client.company.retrieve_collaboration_invite
     accept_api_method = api_client.company.accept_collaboration_invite
-    required_user_states = [
-        state_requirements.IsLoggedIn,
-        state_requirements.NoCompany,
-    ]
 
 
 class CSVDumpGenericView(View):

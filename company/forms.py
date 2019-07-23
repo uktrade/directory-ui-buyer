@@ -1,6 +1,7 @@
 from directory_validators import company as shared_validators
-from directory_components.fields import BooleanField
-from directory_components.widgets import CheckboxSelectInlineLabelMultiple
+from directory_components.forms import (
+    BooleanField, CheckboxSelectInlineLabelMultiple
+)
 
 from django import forms
 from django.utils.functional import cached_property

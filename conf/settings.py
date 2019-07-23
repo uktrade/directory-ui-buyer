@@ -46,13 +46,17 @@ INSTALLED_APPS = [
     'django.contrib.sitemaps',
     'django_extensions',
     'raven.contrib.django.raven_compat',
+    'django.contrib.auth',
     'django.contrib.sessions',
+    'django.contrib.contenttypes',  # required by auth, not using DB
+    'directory_sso_api_client',
     'revproxy',
     'formtools',
     'corsheaders',
     'enrolment',
     'company',
     'core',
+    'sso',
     'directory_constants',
     'health_check.cache',
     'directory_healthcheck',
@@ -69,7 +73,8 @@ MIDDLEWARE_CLASSES = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'core.middleware.GA360Middleware',
     'directory_components.middleware.CheckGATags',
-    'sso.middleware.SSOUserMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'directory_sso_api_client.middleware.AuthenticationMiddleware',
     'directory_components.middleware.NoCacheMiddlware',
 ]
 
@@ -270,6 +275,7 @@ DIRECTORY_SSO_API_CLIENT_DEFAULT_TIMEOUT = env.int(
     'DIRECTORY_SSO_API_CLIENT_DEFAULT_TIMEOUT', 5
 )
 SSO_PROXY_LOGIN_URL = env.str('SSO_PROXY_LOGIN_URL')
+LOGIN_URL = SSO_PROXY_LOGIN_URL
 SSO_PROXY_LOGOUT_URL = env.str('SSO_PROXY_LOGOUT_URL')
 SSO_PROXY_SIGNUP_URL = env.str('SSO_PROXY_SIGNUP_URL')
 SSO_PROFILE_URL = env.str('SSO_PROFILE_URL')
@@ -364,3 +370,9 @@ DIRECTORY_HEALTHCHECK_BACKENDS = [
 # Internal CH
 INTERNAL_CH_BASE_URL = env.str('INTERNAL_CH_BASE_URL', '')
 INTERNAL_CH_API_KEY = env.str('INTERNAL_CH_API_KEY', '')
+
+
+# Authentication
+AUTHENTICATION_BACKENDS = ['directory_sso_api_client.backends.SSOUserBackend']
+
+AUTH_USER_MODEL = 'sso.SSOUser'

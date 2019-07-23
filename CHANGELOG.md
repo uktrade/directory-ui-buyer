@@ -2,6 +2,9 @@
 
 ## Pre-release
 
+## Implemented enhancements
+- No ticket - Implement new sso authentication backend
+
 ## [2019.07.09] (https://github.com/uktrade/directory-ui-buyer/releases/tag/2019.07.09)
 [Full Changelog](https://github.com/uktrade/directory-ui-buyer/compare/2019.04.11...2019.07.09)
 
