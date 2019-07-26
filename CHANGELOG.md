@@ -2,6 +2,9 @@
 
 ## Pre-release
 
+### Fixed bugs:
+- No ticket - Replace hero image to remove black triangle bug
+
 ## Implemented enhancements
 - No ticket - Implement new sso authentication backend
 
