@@ -1,8 +1,11 @@
+from urllib.parse import quote, urljoin
+
+from directory_constants import urls
+from directory_components.helpers import add_next
+
 from django.conf import settings
 from django.shortcuts import redirect
 from django.views.generic import TemplateView
-
-from directory_constants import urls
 
 
 class DomesticLandingView(TemplateView):
@@ -15,10 +18,15 @@ class DomesticLandingView(TemplateView):
             return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
-        if self.request.user.is_authenticated:
-            enrolment_url = urls.build_great_url('profile/enrol')
-        else:
-            enrolment_url = settings.SSO_PROXY_LOGIN_URL
+        enrolment_url = (
+            f'{urljoin(urls.SERVICES_SSO_PROFILE, "enrol/")}?'
+            'business-profile-intent=true'
+        )
+        if self.request.user.is_anonymous:
+            enrolment_url = add_next(
+                destination_url=settings.SSO_PROXY_LOGIN_URL,
+                current_url=quote(enrolment_url)
+            )
         return super().get_context_data(
             **kwargs,
             enrolment_url=enrolment_url

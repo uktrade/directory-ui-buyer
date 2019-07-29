@@ -1,7 +1,6 @@
 from unittest import mock
 
 from directory_api_client import api_client
-from directory_constants import urls
 
 from django.core.urlresolvers import reverse
 
@@ -19,7 +18,8 @@ def test_landing_page_logged_in(client, user):
 
     assert response.status_code == 200
     assert response.context_data['enrolment_url'] == (
-        urls.build_great_url('profile/enrol')
+        'http://profile.trade.great:8006/profile/enrol/'
+        '?business-profile-intent=true'
     )
 
 
@@ -28,5 +28,7 @@ def test_landing_page_not_logged_in(client, settings):
 
     assert response.status_code == 200
     assert response.context_data['enrolment_url'] == (
-        settings.SSO_PROXY_LOGIN_URL
+        'http://sso.trade.great:8004/accounts/login/'
+        '?next=http%3A//profile.trade.great%3A8006/profile/enrol/'
+        '%3Fbusiness-profile-intent%3Dtrue'
     )
