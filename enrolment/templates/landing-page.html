@@ -2,11 +2,6 @@
 {% load staticfiles %}
 {% load directory_components %}
 
-{% block header_js %}
-    {{ block.super }}
-    <script src="{% static 'directory_components/js/dit.components.header.js' %}"></script>
-{% endblock %}
-
 {% block head_title %}Business profile - great.gov.uk{% endblock %}
 
 {% block sub_header %}{# prevent the subheader from showing on form pages #}{% endblock %}

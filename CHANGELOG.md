@@ -4,6 +4,7 @@
 
 ### Fixed bugs:
 - No ticket - Replace hero image to remove black triangle bug
+- TT-1646 - Fix mobile header menu
 
 ## Implemented enhancements
 - No ticket - Implement new sso authentication backend
