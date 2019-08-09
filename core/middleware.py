@@ -20,11 +20,10 @@ class GA360Middleware:
             'site_subsection': '',
         }
 
-        try:
-            ga360_payload['user_id'] = str(request.sso_user.hashed_uuid)
+        if request.user.is_authenticated:
+            ga360_payload['user_id'] = str(request.user.hashed_uuid)
             ga360_payload['login_status'] = True
-
-        except AttributeError:
+        else:
             ga360_payload['user_id'] = None
             ga360_payload['login_status'] = False
 
