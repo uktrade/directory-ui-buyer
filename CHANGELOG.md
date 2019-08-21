@@ -5,6 +5,7 @@
 ### Fixed bugs:
 - No ticket - Replace hero image to remove black triangle bug
 - TT-1646 - Fix mobile header menu
+- No ticket - Upgrade django to 1.11.23 to fix vulnerability
 
 ## Implemented enhancements
 - No ticket - Implement new sso authentication backend
