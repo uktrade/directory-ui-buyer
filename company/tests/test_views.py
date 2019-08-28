@@ -796,6 +796,33 @@ invite_urls = (
 
 
 @patch('company.views.AcceptTransferAccountView.retrieve_api_method')
+def test_accept_ownership_invite_get_invite_no_supplier(
+    mock_retrieve_api_method, client, user, retrieve_supplier_profile_data, retrieve_profile_data
+):
+    mock_retrieve_api_method.return_value = create_response(json_body={'company_name': 'name'})
+    retrieve_supplier_profile_data.clear()
+    client.force_login(user)
+
+    url = reverse('account-transfer-accept')
+    response = client.get(url)
+
+    assert response.status_code == 200
+
+
+def test_add_collaborator_invite_get_invite_no_supplier(
+    client, user, retrieve_supplier_profile_data, retrieve_profile_data
+):
+    retrieve_supplier_profile_data.clear()
+    client.force_login(user)
+
+    url = reverse('add-collaborator')
+    response = client.get(url)
+
+    assert response.status_code == 302
+    assert response.url.startswith(urls.build_great_url('profile/find-a-buyer/'))
+
+
+@patch('company.views.AcceptTransferAccountView.retrieve_api_method')
 def test_accept_ownership_invite_get_invite(
     mock_retrieve_api_method, client, user, retrieve_supplier_profile_data,
     retrieve_profile_data

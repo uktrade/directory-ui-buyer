@@ -46,7 +46,7 @@ def no_company_required(function):
 
 def owner_required(function):
     inner = user_passes_test(
-        lambda user: user.supplier['is_company_owner'],
+        lambda user: user.supplier.get('is_company_owner', False),
         build_great_url('profile/find-a-buyer/'),
         None
     )
@@ -55,7 +55,7 @@ def owner_required(function):
 
 def not_owner_required(function):
     inner = user_passes_test(
-        lambda user: not user.supplier['is_company_owner'],
+        lambda user: not user.supplier.get('is_company_owner', False),
         build_great_url('profile/find-a-buyer/'),
         None,
     )
