@@ -5,8 +5,6 @@ jobs:
       - image: circleci/python:3.6.6
     steps:
       - checkout
-      - setup_remote_docker:
-          docker_layer_caching: true
       - restore_cache:
           key: v1-deps-{{ checksum "requirements_test.txt" }}
       - run:
@@ -15,7 +13,7 @@ jobs:
             python3 -m venv venv
             . venv/bin/activate
             pip install --upgrade pip
-            pip install -r requirements_test.txt
+            make install_requirements
       - save_cache:
           key: v1-deps-{{ checksum "requirements_test.txt" }}
           paths:
@@ -24,23 +22,25 @@ jobs:
           name: Run tests
           command: |
             . venv/bin/activate
-            make debug_pytest
+            make pytest -- --cov=. --cov-config=.coveragerc --cov-report=html --junitxml=test-reports/junit.xml
             codecov
+      - store_test_results:
+          path: test-reports
+      - store_artifacts:
+          path: test-reports
 
   flake8:
     docker:
     - image: circleci/python:3.6.6
     steps:
     - checkout
-    - setup_remote_docker:
-        docker_layer_caching: true
     - run:
         name: Run flake8
         command: |
           python3 -m venv venv
           . venv/bin/activate
           pip install flake8
-          flake8 . --exclude=migrations,venv  --max-line-length=120
+          make flake8
 
 workflows:
   version: 2

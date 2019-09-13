@@ -2,9 +2,7 @@ from directory_api_client.client import api_client
 
 
 def get_company_profile(sso_session_id):
-    response = api_client.company.retrieve_private_profile(
-        sso_session_id=sso_session_id
-    )
+    response = api_client.company.profile_retrieve(sso_session_id)
     response.raise_for_status()
     return response.json()
 

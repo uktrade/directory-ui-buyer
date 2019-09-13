@@ -10,7 +10,7 @@ class SSOUser(directory_sso_api_client.models.SSOUser):
 
     @cached_property
     def company(self):
-        response = api_client.company.retrieve_private_profile(self.session_id)
+        response = api_client.company.profile_retrieve(self.session_id)
         if response.status_code == 404:
             return {}
         response.raise_for_status()

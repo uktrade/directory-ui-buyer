@@ -125,7 +125,7 @@ def api_response_200():
 @pytest.fixture(autouse=True)
 def retrieve_profile(api_response_company_profile_200):
     stub = patch.object(
-        api_client.company, 'retrieve_private_profile',
+        api_client.company, 'profile_retrieve',
         return_value=api_response_company_profile_200,
     )
     stub.start()
@@ -136,7 +136,7 @@ def retrieve_profile(api_response_company_profile_200):
 @pytest.fixture
 def retrieve_profile_unverified(api_response_company_profile_unverified_200):
     stub = patch.object(
-        api_client.company, 'retrieve_private_profile',
+        api_client.company, 'profile_retrieve',
         return_value=api_response_company_profile_unverified_200,
     )
     stub.start()

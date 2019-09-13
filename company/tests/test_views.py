@@ -2,7 +2,7 @@ import http
 from unittest.mock import call, patch, Mock
 import urllib
 
-from directory_constants import choices, urls
+from directory_constants import choices, urls, user_roles
 from directory_api_client.client import api_client
 import pytest
 import requests
@@ -393,21 +393,21 @@ def test_verify_company_address_feature_flag_on(
     assert response.status_code == 200
 
 
-@patch.object(api_client.company, 'update_profile')
+@patch.object(api_client.company, 'profile_update')
 def test_verify_company_address_end_to_end(
-    mock_update_profile, settings, send_verification_letter_end_to_end,
+    mock_profile_update, settings, send_verification_letter_end_to_end,
     retrieve_profile_data
 ):
     retrieve_profile_data['is_verified'] = False
-    mock_update_profile.return_value = create_response(200)
+    mock_profile_update.return_value = create_response(200)
     view = views.SendVerificationLetterView
 
     response = send_verification_letter_end_to_end()
 
     assert response.status_code == 200
     assert response.template_name == view.templates[view.SENT]
-    assert mock_update_profile.call_count == 1
-    assert mock_update_profile.call_args == call(
+    assert mock_profile_update.call_count == 1
+    assert mock_profile_update.call_args == call(
         data={
             'postal_full_name': 'Jeremy',
         },
@@ -423,13 +423,13 @@ multi_user_urls = [
 
 
 @pytest.mark.parametrize('url', multi_user_urls)
-@patch.object(api_client.company, 'retrieve_collaborators')
+@patch.object(api_client.company, 'collaborator_list')
 def test_multi_user_view_has_company(
-    mock_retrieve_collaborators, url, client, user, retrieve_profile_data,
+    mock_collaborator_list, url, client, user, retrieve_profile_data,
 ):
     user.company = retrieve_profile_data
     client.force_login(user)
-    mock_retrieve_collaborators.return_value = create_response(
+    mock_collaborator_list.return_value = create_response(
         json_body=[{'sso_id': 1, 'company_email': 'test@example.com'}]
     )
 
@@ -438,10 +438,9 @@ def test_multi_user_view_has_company(
     assert response.status_code == 200
 
 
-@patch.object(api_client.company, 'create_collaboration_invite')
+@patch.object(api_client.company, 'collaborator_invite_create')
 def test_add_collaborator_invalid_form(
-    mock_create_collaboration_invite, client, user, retrieve_profile_data,
-    retrieve_supplier_profile_data
+    mock_collaborator_invite_create, client, user, retrieve_profile_data, retrieve_supplier_profile_data
 ):
     user.company = retrieve_profile_data
     client.force_login(user)
@@ -454,16 +453,12 @@ def test_add_collaborator_invalid_form(
     assert response.context_data['form'].is_valid() is False
     assert 'email_address' in response.context_data['form'].errors
 
-    assert mock_create_collaboration_invite.call_count == 0
+    assert mock_collaborator_invite_create.call_count == 0
 
 
-@patch.object(
-    api_client.company, 'create_collaboration_invite',
-    return_value=create_response(200)
-)
+@patch.object(api_client.company, 'collaborator_invite_create', return_value=create_response(200))
 def test_add_collaborator_valid_form(
-    mock_create_collaboration_invite, client, user, retrieve_profile_data,
-    retrieve_supplier_profile_data
+    mock_collaborator_invite_create, client, user, retrieve_profile_data, retrieve_supplier_profile_data
 ):
     user.company = retrieve_profile_data
     client.force_login(user)
@@ -477,10 +472,11 @@ def test_add_collaborator_valid_form(
         'http://profile.trade.great:8006/find-a-buyer/?user-added'
     )
 
-    assert mock_create_collaboration_invite.call_count == 1
-    assert mock_create_collaboration_invite.call_args == call(
+    assert mock_collaborator_invite_create.call_count == 1
+    assert mock_collaborator_invite_create.call_args == call(
         sso_session_id=user.session_id,
-        collaborator_email='a@b.com'
+        collaborator_email='a@b.com',
+        role=user_roles.EDITOR,
     )
 
 
@@ -506,46 +502,42 @@ def test_add_collaborator_empty_email(client, user):
     }
 
 
-@patch.object(api_client.company, 'create_collaboration_invite')
+@patch.object(api_client.company, 'collaborator_invite_create')
 def test_add_collaborator_valid_form_already_exists(
-    mock_create_collaboration_invite, client, user,
+    mock_collaborator_invite_create, client, user,
     retrieve_supplier_profile_data,
 ):
     client.force_login(user)
     retrieve_supplier_profile_data['is_company_owner'] = True
-    mock_create_collaboration_invite.return_value = create_response(
-        400, {'collaborator_email': ['Already exists']}
-    )
+    mock_collaborator_invite_create.return_value = create_response(400, {'collaborator_email': ['Already exists']})
     url = reverse('add-collaborator')
 
     response = client.post(url, {'email_address': 'a@b.com'})
 
     assert response.status_code == 302
-    assert response.get('Location') == (
-        'http://profile.trade.great:8006/find-a-buyer/?user-added'
-    )
+    assert response.get('Location') == 'http://profile.trade.great:8006/find-a-buyer/?user-added'
 
 
 @pytest.mark.parametrize('url,data,mock_path', (
     (
         reverse('add-collaborator'),
         {'email_address': 'a@b.com'},
-        'company.views.api_client.company.create_collaboration_invite',
+        'company.views.api_client.company.collaborator_invite_create',
     ),
     (
         reverse('remove-collaborator'),
         {'sso_ids': ['1']},
-        'company.views.api_client.company.remove_collaborators',
+        'company.views.api_client.company.collaborator_disconnect',
     )
 ))
-@patch.object(api_client.company, 'retrieve_collaborators')
+@patch.object(api_client.company, 'collaborator_list')
 def test_add_collaborator_valid_form_api_error(
-    mock_retrieve_collaborators, url, data, mock_path, client, user,
+    mock_collaborator_list, url, data, mock_path, client, user,
     retrieve_profile_data, retrieve_supplier_profile_data
 ):
     user.company = retrieve_profile_data
     client.force_login(user)
-    mock_retrieve_collaborators.return_value = create_response(
+    mock_collaborator_list.return_value = create_response(
         json_body=[{'sso_id': 1, 'company_email': 'test@example.com'}]
     )
 
@@ -554,16 +546,16 @@ def test_add_collaborator_valid_form_api_error(
             client.post(url, data)
 
 
-@patch.object(api_client.company, 'retrieve_collaborators')
-@patch.object(api_client.company, 'remove_collaborators')
-def test_remove_collaborators_invalid_form(
-    mock_remove_collaborators, mock_retrieve_collaborators,
+@patch.object(api_client.company, 'collaborator_list')
+@patch.object(api_client.company, 'collaborator_disconnect')
+def test_collaborator_disconnect_invalid_form(
+    mock_collaborator_disconnect, mock_collaborator_list,
     client, user, retrieve_profile_data,
     retrieve_supplier_profile_data
 ):
     user.company = retrieve_profile_data
     client.force_login(user)
-    mock_retrieve_collaborators.return_value = create_response(
+    mock_collaborator_list.return_value = create_response(
         json_body=[{'sso_id': 1, 'company_email': 'test@example.com'}]
     )
 
@@ -575,21 +567,18 @@ def test_remove_collaborators_invalid_form(
     assert response.context_data['form'].is_valid() is False
     assert 'sso_ids' in response.context_data['form'].errors
 
-    assert mock_remove_collaborators.call_count == 0
+    assert mock_collaborator_disconnect.call_count == 0
 
 
-@patch.object(api_client.company, 'retrieve_collaborators')
-@patch.object(
-    api_client.company, 'remove_collaborators',
-    return_value=create_response(200)
-)
-def test_remove_collaborators_valid_form(
-    mock_remove_collaborators, mock_retrieve_collaborators,
+@patch.object(api_client.company, 'collaborator_list')
+@patch.object(api_client.company, 'collaborator_disconnect', return_value=create_response(200))
+def test_collaborator_disconnect_valid_form(
+    mock_collaborator_disconnect, mock_collaborator_list,
     client, user, retrieve_profile_data, retrieve_supplier_profile_data
 ):
     user.company = retrieve_profile_data
     client.force_login(user)
-    mock_retrieve_collaborators.return_value = create_response(
+    mock_collaborator_list.return_value = create_response(
         json_body=[{'sso_id': 1, 'company_email': 'test@example.com'}]
     )
 
@@ -602,16 +591,13 @@ def test_remove_collaborators_valid_form(
         'http://profile.trade.great:8006/find-a-buyer/?user-removed'
     )
 
-    assert mock_remove_collaborators.call_count == 1
-    assert mock_remove_collaborators.call_args == call(
-        sso_session_id=user.session_id,
-        sso_ids=['1']
-    )
+    assert mock_collaborator_disconnect.call_count == 1
+    assert mock_collaborator_disconnect.call_args == call(sso_session_id=user.session_id, sso_id='1')
 
 
-@patch.object(api_client.company, 'create_transfer_invite')
+@patch.object(api_client.company, 'collaborator_invite_create')
 def test_transfer_owner_invalid_form(
-    ock_create_transfer_invite, client, user, retrieve_profile_data
+    ock_collaborator_invite_create, client, user, retrieve_profile_data
 ):
     user.company = retrieve_profile_data
     client.force_login(user)
@@ -630,7 +616,7 @@ def test_transfer_owner_invalid_form(
     assert response.context_data['form'].is_valid() is False
     assert 'email_address' in response.context_data['form'].errors
 
-    assert ock_create_transfer_invite.call_count == 0
+    assert ock_collaborator_invite_create.call_count == 0
 
 
 def test_company_address_verification_backwards_compatible_feature_flag_on(
@@ -643,10 +629,10 @@ def test_company_address_verification_backwards_compatible_feature_flag_on(
     assert response.get('Location') == reverse('verify-company-address')
 
 
-@patch.object(api_client.company, 'create_transfer_invite')
+@patch.object(api_client.company, 'collaborator_invite_create')
 @patch.object(forms.sso_api_client.user, 'check_password')
 def test_transfer_owner_invalid_password(
-    mock_check_password, mock_create_transfer_invite, client, user,
+    mock_check_password, mock_collaborator_invite_create, client, user,
     retrieve_profile_data, retrieve_supplier_profile_data
 ):
 
@@ -676,16 +662,16 @@ def test_transfer_owner_invalid_password(
     assert response.status_code == 200
     assert response.context_data['form'].errors['password'] == [expected_error]
 
-    assert mock_create_transfer_invite.call_count == 0
+    assert mock_collaborator_invite_create.call_count == 0
 
 
-@patch.object(api_client.company, 'create_transfer_invite')
+@patch.object(api_client.company, 'collaborator_invite_create')
 @patch(
     'company.forms.sso_api_client.user.check_password',
     Mock(return_value=create_response(200))
 )
 def test_transfer_owner_valid_form(
-    mock_create_transfer_invite, client, user, retrieve_profile_data,
+    mock_collaborator_invite_create, client, user, retrieve_profile_data,
     retrieve_supplier_profile_data
 ):
     user.company = retrieve_profile_data
@@ -712,24 +698,26 @@ def test_transfer_owner_valid_form(
     assert response.url == (
         'http://profile.trade.great:8006/find-a-buyer/?owner-transferred'
     )
-    assert mock_create_transfer_invite.call_count == 1
-    assert mock_create_transfer_invite.call_args == call(
-        sso_session_id=user.session_id, new_owner_email='a@b.com'
+    assert mock_collaborator_invite_create.call_count == 1
+    assert mock_collaborator_invite_create.call_args == call(
+        sso_session_id=user.session_id,
+        collaborator_email='a@b.com',
+        role=user_roles.ADMIN,
     )
 
 
-@patch.object(api_client.company, 'create_transfer_invite')
+@patch.object(api_client.company, 'collaborator_invite_create')
 @patch.object(forms.sso_api_client.user, 'check_password')
 def test_transfer_owner_valid_form_already_exists(
-    mock_check_password, mock_create_transfer_invite, client, user,
+    mock_check_password, mock_collaborator_invite_create, client, user,
     retrieve_profile_data, retrieve_supplier_profile_data
 ):
     user.company = retrieve_profile_data
     client.force_login(user)
 
-    mock_check_password.return_value = mock_create_transfer_invite
-    mock_create_transfer_invite.return_value = create_response(
-        http.client.BAD_REQUEST, {'new_owner_email': ['Already exists']}
+    mock_check_password.return_value = mock_collaborator_invite_create
+    mock_collaborator_invite_create.return_value = create_response(
+        http.client.BAD_REQUEST, {'collaborator_email': ['Already exists']}
     )
 
     view = views.TransferAccountWizardView
@@ -750,24 +738,22 @@ def test_transfer_owner_valid_form_already_exists(
     )
 
     assert response.status_code == 302
-    assert response.url == (
-        'http://profile.trade.great:8006/find-a-buyer/?owner-transferred'
-    )
+    assert response.url == 'http://profile.trade.great:8006/find-a-buyer/?owner-transferred'
 
 
-@patch.object(api_client.company, 'create_transfer_invite')
+@patch.object(api_client.company, 'collaborator_invite_create')
 @patch(
     'company.forms.sso_api_client.user.check_password',
     return_value=create_response(200)
 )
 def test_transfer_owner_valid_form_api_error(
-    mock_check_password, mock_create_transfer_invite, client, user,
+    mock_check_password, mock_collaborator_invite_create, client, user,
     retrieve_profile_data, retrieve_supplier_profile_data
 ):
     user.company = retrieve_profile_data
     client.force_login(user)
 
-    mock_create_transfer_invite.return_value = create_response(400)
+    mock_collaborator_invite_create.return_value = create_response(400)
 
     view = views.TransferAccountWizardView
     url = reverse('account-transfer')
@@ -795,7 +781,7 @@ invite_urls = (
 )
 
 
-@patch('company.views.AcceptTransferAccountView.retrieve_api_method')
+@patch('directory_api_client.api_client.company.collaborator_invite_retrieve')
 def test_accept_ownership_invite_get_invite_no_supplier(
     mock_retrieve_api_method, client, user, retrieve_supplier_profile_data, retrieve_profile_data
 ):
@@ -819,10 +805,10 @@ def test_add_collaborator_invite_get_invite_no_supplier(
     response = client.get(url)
 
     assert response.status_code == 302
-    assert response.url.startswith(urls.build_great_url('profile/find-a-buyer/'))
+    assert response.url.startswith(urls.domestic.FIND_A_BUYER)
 
 
-@patch('company.views.AcceptTransferAccountView.retrieve_api_method')
+@patch('directory_api_client.api_client.company.collaborator_invite_retrieve')
 def test_accept_ownership_invite_get_invite(
     mock_retrieve_api_method, client, user, retrieve_supplier_profile_data,
     retrieve_profile_data
@@ -840,7 +826,7 @@ def test_accept_ownership_invite_get_invite(
     assert response.context_data['invite'] == {'company_name': 'name'}
 
 
-@patch('company.views.AcceptCollaborationView.retrieve_api_method')
+@patch('directory_api_client.api_client.company.collaborator_invite_retrieve')
 def test_accept_collaborate_invite_get_invite(
     mock_retrieve_api_method, client, user, retrieve_profile_data
 ):
@@ -857,7 +843,7 @@ def test_accept_collaborate_invite_get_invite(
     assert response.context_data['invite'] == {'company_name': 'name'}
 
 
-@patch('company.views.AcceptTransferAccountView.retrieve_api_method')
+@patch('directory_api_client.api_client.company.collaborator_invite_retrieve')
 def test_accept_ownership_invite_no_invite_key(
     mock_retrieve_api_method, client, user, retrieve_supplier_profile_data
 ):
@@ -875,7 +861,7 @@ def test_accept_ownership_invite_no_invite_key(
     assert 'invite_key' in response.context_data['form'].errors
 
 
-@patch('company.views.AcceptCollaborationView.retrieve_api_method')
+@patch('directory_api_client.api_client.company.collaborator_invite_retrieve')
 def test_accept_collaborate_invite_no_invite_key(
     mock_retrieve_api_method, client, user, retrieve_profile_data
 ):
@@ -893,10 +879,9 @@ def test_accept_collaborate_invite_no_invite_key(
     assert 'invite_key' in response.context_data['form'].errors
 
 
-@patch('company.views.AcceptTransferAccountView.retrieve_api_method')
+@patch('directory_api_client.api_client.company.collaborator_invite_retrieve')
 @patch(
-    'company.views.AcceptTransferAccountView.accept_api_method',
-    Mock(return_value=create_response(200))
+    'directory_api_client.api_client.company.collaborator_invite_accept', Mock(return_value=create_response(200))
 )
 def test_accept_ownership_invite_valid_invite_key(
     mock_retrieve_api_method, client, user, retrieve_supplier_profile_data
@@ -911,13 +896,12 @@ def test_accept_ownership_invite_valid_invite_key(
     response = client.post(url, data={'invite_key': '123'})
 
     assert response.status_code == 302
-    assert response.url == urls.build_great_url('profile/find-a-buyer/')
+    assert response.url == urls.domestic.FIND_A_BUYER
 
 
-@patch('company.views.AcceptCollaborationView.retrieve_api_method')
+@patch('directory_api_client.api_client.company.collaborator_invite_retrieve')
 @patch(
-    'company.views.AcceptCollaborationView.accept_api_method',
-    Mock(return_value=create_response(200))
+    'directory_api_client.api_client.company.collaborator_invite_accept', Mock(return_value=create_response(200))
 )
 def test_accept_collaborate_invite_valid_invite_key(
     mock_retrieve_api_method, client, user,
@@ -934,10 +918,10 @@ def test_accept_collaborate_invite_valid_invite_key(
     response = client.post(url, data={'invite_key': '123'})
 
     assert response.status_code == 302
-    assert response.url == urls.build_great_url('profile/find-a-buyer/')
+    assert response.url == urls.domestic.FIND_A_BUYER
 
 
-@patch('company.views.AcceptTransferAccountView.retrieve_api_method')
+@patch('directory_api_client.api_client.company.collaborator_invite_retrieve')
 def test_accept_invite_transfer_invite_key_invalid(
     mock_retrieve_api_method, client, user, retrieve_profile_data,
     retrieve_supplier_profile_data
@@ -955,7 +939,7 @@ def test_accept_invite_transfer_invite_key_invalid(
     assert response.context_data['invite'] is None
 
 
-@patch('company.views.AcceptCollaborationView.retrieve_api_method')
+@patch('directory_api_client.api_client.company.collaborator_invite_retrieve')
 def test_accept_invite_collaborate_invitekey_invalid(
     mock_retrieve_api_method, client, user, retrieve_profile_data
 ):
@@ -976,7 +960,7 @@ def test_case_study_create_backwards_compatible_url(client):
     response = client.get(url)
 
     assert response.status_code == 302
-    assert response.url == urls.build_great_url('profile/find-a-buyer/')
+    assert response.url == urls.domestic.FIND_A_BUYER
 
 
 def test_buyer_csv_dump_no_token(client):

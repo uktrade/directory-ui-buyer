@@ -11,6 +11,7 @@
 ## Implemented enhancements
 - No ticket - Implement new sso authentication backend
 - TT-1560 - Expose user intent to SSO on click "start now"
+- TT-1808 - Update directory components to add "no-validate" no cache middleware
 
 ## [2019.07.09] (https://github.com/uktrade/directory-ui-buyer/releases/tag/2019.07.09)
 [Full Changelog](https://github.com/uktrade/directory-ui-buyer/compare/2019.04.11...2019.07.09)
