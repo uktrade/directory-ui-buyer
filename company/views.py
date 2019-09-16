@@ -1,4 +1,4 @@
-from directory_constants import urls
+from directory_constants import urls, user_roles
 from directory_api_client.client import api_client
 from formtools.wizard.views import SessionWizardView
 from raven.contrib.django.raven_compat.models import client as sentry_client
@@ -49,7 +49,7 @@ class UpdateCompanyProfileOnFormWizardDoneMixin:
         )
 
     def done(self, *args, **kwargs):
-        response = api_client.company.update_profile(
+        response = api_client.company.profile_update(
             sso_session_id=self.request.user.session_id,
             data=self.serialize_form_data()
         )
@@ -212,7 +212,7 @@ class CompaniesHouseOauth2CallbackView(
     form_class = forms.CompaniesHouseOauth2Form
     template_name = 'companies-house-oauth2-callback.html'
     error_template = 'companies-house-oauth2-error.html'
-    success_url = urls.build_great_url('profile/find-a-buyer/')
+    success_url = urls.domestic.FIND_A_BUYER
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -258,9 +258,10 @@ class AddCollaboratorView(BaseMultiUserAccountManagementView, FormView):
         return super().form_valid(form)
 
     def add_collaborator(self, email_address):
-        response = api_client.company.create_collaboration_invite(
+        response = api_client.company.collaborator_invite_create(
             sso_session_id=self.request.user.session_id,
             collaborator_email=email_address,
+            role=user_roles.EDITOR,
         )
         if response.status_code == 400:
             if 'collaborator_email' in response.json():
@@ -290,11 +291,12 @@ class RemoveCollaboratorView(BaseMultiUserAccountManagementView, FormView):
         return super().form_valid(form)
 
     def remove_collaborator(self, sso_ids):
-        response = api_client.company.remove_collaborators(
-            sso_session_id=self.request.user.session_id,
-            sso_ids=sso_ids,
-        )
-        response.raise_for_status()
+        for sso_id in sso_ids:
+            response = api_client.company.collaborator_disconnect(
+                sso_session_id=self.request.user.session_id,
+                sso_id=sso_id,
+            )
+            response.raise_for_status()
 
     def get_success_url(self):
         return settings.SSO_PROFILE_URL + '?user-removed'
@@ -332,13 +334,14 @@ class TransferAccountWizardView(
         return redirect(self.get_success_url())
 
     def transfer_owner(self, email_address):
-        response = api_client.company.create_transfer_invite(
+        response = api_client.company.collaborator_invite_create(
             sso_session_id=self.request.user.session_id,
-            new_owner_email=email_address,
+            collaborator_email=email_address,
+            role=user_roles.ADMIN,
         )
 
         if response.status_code == 400:
-            if 'new_owner_email' in response.json():
+            if 'collaborator_email' in response.json():
                 # email already has a collaboration invite, but do not tell
                 # the user to avoid leaking information to bad actors.
                 return
@@ -350,7 +353,7 @@ class TransferAccountWizardView(
 
 class BaseAcceptInviteView(FormView):
     form_class = forms.AcceptInviteForm
-    success_url = urls.build_great_url('profile/find-a-buyer/')
+    success_url = urls.domestic.FIND_A_BUYER
     invalid_template_name = 'company-invite-invalid-token.html'
 
     def get_initial(self):
@@ -360,10 +363,7 @@ class BaseAcceptInviteView(FormView):
 
     @cached_property
     def invite(self):
-        response = self.retrieve_api_method(
-            sso_session_id=self.request.user.session_id,
-            invite_key=self.request.GET.get('invite_key'),
-        )
+        response = api_client.company.collaborator_invite_retrieve(self.request.GET.get('invite_key'))
         if response.status_code == 200:
             return response.json()
 
@@ -380,7 +380,7 @@ class BaseAcceptInviteView(FormView):
         return super().form_valid(form)
 
     def accept_invite(self, invite_key):
-        response = self.accept_api_method(
+        response = api_client.company.collaborator_invite_accept(
             sso_session_id=self.request.user.session_id,
             invite_key=invite_key,
         )
@@ -388,16 +388,11 @@ class BaseAcceptInviteView(FormView):
 
 
 class AcceptTransferAccountView(BaseAcceptInviteView):
-
     template_name = 'company-accept-transfer-account.html'
-    retrieve_api_method = api_client.company.retrieve_transfer_invite
-    accept_api_method = api_client.company.accept_transfer_invite
 
 
 class AcceptCollaborationView(BaseAcceptInviteView):
     template_name = 'company-accept-collaboration.html'
-    retrieve_api_method = api_client.company.retrieve_collaboration_invite
-    accept_api_method = api_client.company.accept_collaboration_invite
 
 
 class CSVDumpGenericView(View):
