@@ -7,6 +7,7 @@
 - TT-1646 - Fix mobile header menu
 - No ticket - Upgrade django to 1.11.23 to fix vulnerability
 - TT-1764 - Fix accept invitation
+- TT-1838 Office Company Address Missing Template
 
 ## Implemented enhancements
 - No ticket - Implement new sso authentication backend
