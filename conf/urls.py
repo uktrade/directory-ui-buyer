@@ -191,53 +191,53 @@ urlpatterns += [
     ),
     url(
         r'^company-profile/$',
-        RedirectView.as_view(url=domestic.FIND_A_BUYER),
+        RedirectView.as_view(url=domestic.SINGLE_SIGN_ON_PROFILE),
         name='company-detail',
     ),
     url(
         r'^company-profile/edit/$',
-        RedirectView.as_view(url=domestic.FIND_A_BUYER)
+        RedirectView.as_view(url=domestic.SINGLE_SIGN_ON_PROFILE)
     ),
     url(
         r'^company-profile/edit/logo/$',
-        RedirectView.as_view(url=domestic.FIND_A_BUYER),
+        RedirectView.as_view(url=domestic.SINGLE_SIGN_ON_PROFILE),
     ),
     url(
         r'^company-profile/edit/description/$',
-        RedirectView.as_view(url=domestic.FIND_A_BUYER),
+        RedirectView.as_view(url=domestic.SINGLE_SIGN_ON_PROFILE),
     ),
     url(
         r'^company-profile/edit/key-facts/$',
-        RedirectView.as_view(url=domestic.FIND_A_BUYER)
+        RedirectView.as_view(url=domestic.SINGLE_SIGN_ON_PROFILE)
     ),
     url(
         r'^company-profile/edit/sectors/$',
-        RedirectView.as_view(url=domestic.FIND_A_BUYER),
+        RedirectView.as_view(url=domestic.SINGLE_SIGN_ON_PROFILE),
     ),
     url(
         r'^company-profile/edit/contact/$',
-        RedirectView.as_view(url=domestic.FIND_A_BUYER),
+        RedirectView.as_view(url=domestic.SINGLE_SIGN_ON_PROFILE),
     ),
     url(
         r'^company-profile/edit/address/$',
-        RedirectView.as_view(url=domestic.FIND_A_BUYER),
+        RedirectView.as_view(url=domestic.SINGLE_SIGN_ON_PROFILE),
     ),
     url(
         r'^company-profile/edit/social-media/$',
-        RedirectView.as_view(url=domestic.FIND_A_BUYER)
+        RedirectView.as_view(url=domestic.SINGLE_SIGN_ON_PROFILE)
     ),
     url(
         r'^company/case-study/create/$',
-        RedirectView.as_view(url=domestic.FIND_A_BUYER),
+        RedirectView.as_view(url=domestic.SINGLE_SIGN_ON_PROFILE),
         name='company-case-study-create',
     ),
     url(
         r'^company/case-study/edit/(?P<id>[0-9]+)/$',
-        RedirectView.as_view(url=domestic.FIND_A_BUYER),
+        RedirectView.as_view(url=domestic.SINGLE_SIGN_ON_PROFILE),
     ),
     url(
         r'^company/case-study/edit/$',
-        RedirectView.as_view(url=domestic.FIND_A_BUYER),
+        RedirectView.as_view(url=domestic.SINGLE_SIGN_ON_PROFILE),
         name='company-case-study-create-backwards-compatible',
     ),
     url(

@@ -960,7 +960,7 @@ def test_case_study_create_backwards_compatible_url(client):
     response = client.get(url)
 
     assert response.status_code == 302
-    assert response.url == urls.domestic.FIND_A_BUYER
+    assert response.url == urls.domestic.SINGLE_SIGN_ON_PROFILE
 
 
 def test_buyer_csv_dump_no_token(client):
