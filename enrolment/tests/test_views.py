@@ -7,10 +7,7 @@ from django.core.urlresolvers import reverse
 from core.tests.helpers import create_response
 
 
-@mock.patch.object(
-    api_client.company, 'retrieve_private_profile',
-    mock.Mock(return_value=create_response(404)),
-)
+@mock.patch.object(api_client.company, 'profile_retrieve', mock.Mock(return_value=create_response(404)))
 def test_landing_page_logged_in(client, user):
     client.force_login(user)
 
