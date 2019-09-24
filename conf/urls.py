@@ -3,16 +3,18 @@ import conf.sitemaps
 import directory_healthcheck.views
 import directory_components.views
 from directory_components.decorators import skip_ga360
-from directory_constants.urls import build_great_url
+from directory_constants.urls import domestic
 
+from django.urls import reverse_lazy
 from django.conf.urls import include, url
+from django.contrib.auth.decorators import user_passes_test
+from django.contrib.auth.decorators import login_required
 from django.contrib.sitemaps.views import sitemap
 from django.views.decorators.http import require_http_methods
 from django.views.generic import RedirectView
 
 import company.views
 import enrolment.views
-import proxy.views
 
 
 sitemaps = {
@@ -21,6 +23,60 @@ sitemaps = {
 
 
 require_get = require_http_methods(['GET'])
+
+
+def company_required(function):
+    inner = user_passes_test(
+        lambda user: bool(user.company),
+        reverse_lazy('index'),
+        None
+    )
+    return login_required(inner(function))
+
+
+def no_company_required(function):
+    inner = user_passes_test(
+        lambda user: not bool(user.company),
+        domestic.FIND_A_BUYER,
+        None
+    )
+    return login_required(inner(function))
+
+
+def owner_required(function):
+    inner = user_passes_test(
+        lambda user: user.supplier.get('is_company_owner', False),
+        domestic.FIND_A_BUYER,
+        None
+    )
+    return company_required(inner(function))
+
+
+def not_owner_required(function):
+    inner = user_passes_test(
+        lambda user: not user.supplier.get('is_company_owner', False),
+        domestic.FIND_A_BUYER,
+        None,
+    )
+    return login_required(inner(function))
+
+
+def unverified_required(function):
+    inner = user_passes_test(
+        lambda user: not user.company['is_verified'],
+        domestic.FIND_A_BUYER,
+        None
+    )
+    return company_required(inner(function))
+
+
+def no_letter_required(function):
+    inner = user_passes_test(
+        lambda user: not user.company['is_verification_letter_sent'],
+        reverse_lazy('verify-company-address-confirm'),
+        None
+    )
+    return unverified_required(inner(function))
 
 
 healthcheck_urls = [
@@ -32,45 +88,10 @@ healthcheck_urls = [
 ]
 
 
-api_urls = [
-    url(
-        r'^api/external(?P<path>/supplier/company/)$',
-        skip_ga360(require_get(proxy.views.APIViewProxy.as_view())),
-        name='external-company'
-    ),
-    url(
-        r'^api/external(?P<path>/healthcheck/ping/)$',
-        skip_ga360(require_get(proxy.views.APIViewProxy.as_view())),
-        name='external-ping'
-    ),
-    url(
-        r'^api(?P<path>/external/supplier/)$',
-        skip_ga360(require_get(proxy.views.APIViewProxy.as_view())),
-        name='external-supplier'
-    ),
-    url(
-        r'^api(?P<path>/external/supplier-sso/)$',
-        skip_ga360(require_get(proxy.views.APIViewProxy.as_view())),
-        name='external-supplier-sso'
-    ),
-    url(
-        r'^directory-api(?P<path>)',
-        skip_ga360(proxy.views.DirectoryAPIViewProxy.as_view()),
-        name='directory-api'
-    ),
-]
-
-
 urlpatterns = [
     url(
         r'^healthcheck/',
-        include(
-            healthcheck_urls, namespace='healthcheck', app_name='healthcheck'
-        )
-    ),
-    url(
-        r'^',
-        include(api_urls, namespace='api', app_name='api')
+        include(healthcheck_urls, namespace='healthcheck', app_name='healthcheck')
     ),
     url(
         r"^robots\.txt$",
@@ -88,33 +109,32 @@ urlpatterns = [
     ),
     url(
         r'^unsubscribe/',
-        company.views.EmailUnsubscribeView.as_view(),
+        login_required(company.views.EmailUnsubscribeView.as_view()),
         name='unsubscribe'
     ),
-
     url(
         r'^verify/$',
-        company.views.CompanyVerifyView.as_view(),
+        no_letter_required(company.views.CompanyVerifyView.as_view()),
         name='verify-company-hub'
     ),
     url(
         r'^verify/letter-send/$',
-        company.views.SendVerificationLetterView.as_view(),
+        no_letter_required(company.views.SendVerificationLetterView.as_view()),
         name='verify-company-address'
     ),
     url(
         r'^verify/letter-confirm/$',
-        company.views.CompanyAddressVerificationView.as_view(),
+        unverified_required(company.views.CompanyAddressVerificationView.as_view()),
         name='verify-company-address-confirm'
     ),
     url(
         r'^verify/companies-house/$',
-        company.views.CompaniesHouseOauth2View.as_view(),
+        unverified_required(company.views.CompaniesHouseOauth2View.as_view()),
         name='verify-companies-house'
     ),
     url(
         r'^companies-house-oauth2-callback/$',
-        company.views.CompaniesHouseOauth2CallbackView.as_view(),
+        unverified_required(company.views.CompaniesHouseOauth2CallbackView.as_view()),
         name='verify-companies-house-callback'
     ),
     url(
@@ -124,27 +144,27 @@ urlpatterns = [
     ),
     url(
         r'^account/add-collaborator/$',
-        company.views.AddCollaboratorView.as_view(),
+        owner_required(company.views.AddCollaboratorView.as_view()),
         name='add-collaborator'
     ),
     url(
         r'^account/remove-collaborator/$',
-        company.views.RemoveCollaboratorView.as_view(),
+        owner_required(company.views.RemoveCollaboratorView.as_view()),
         name='remove-collaborator'
     ),
     url(
         r'^account/transfer/$',
-        company.views.TransferAccountWizardView.as_view(),
+        owner_required(company.views.TransferAccountWizardView.as_view()),
         name='account-transfer'
     ),
     url(
         r'^account/transfer/accept/$',
-        company.views.AcceptTransferAccountView.as_view(),
+        not_owner_required(company.views.AcceptTransferAccountView.as_view()),
         name='account-transfer-accept'
     ),
     url(
         r'^account/collaborate/accept/$',
-        company.views.AcceptCollaborationView.as_view(),
+        no_company_required(company.views.AcceptCollaborationView.as_view()),
         name='account-collaborate-accept'
     ),
     # the url to create case studies was ../edit/. That was bad naming.
@@ -163,73 +183,70 @@ urlpatterns = [
 urlpatterns += [
     url(
         r'^register/(?P<step>.+)/$',
-        RedirectView.as_view(url=build_great_url('profile/enrol/')),
+        RedirectView.as_view(url=domestic.SINGLE_SIGN_ON_PROFILE / 'enrol/'),
     ),
     url(
         r'^register-submit/$',
-        RedirectView.as_view(url=build_great_url('profile/enrol/')),
+        RedirectView.as_view(url=domestic.SINGLE_SIGN_ON_PROFILE / 'enrol/'),
     ),
     url(
         r'^company-profile/$',
-        RedirectView.as_view(url=build_great_url('profile/find-a-buyer/')),
+        RedirectView.as_view(url=domestic.SINGLE_SIGN_ON_PROFILE),
         name='company-detail',
     ),
     url(
         r'^company-profile/edit/$',
-        RedirectView.as_view(url=build_great_url('profile/find-a-buyer/'))
+        RedirectView.as_view(url=domestic.SINGLE_SIGN_ON_PROFILE)
     ),
     url(
         r'^company-profile/edit/logo/$',
-        RedirectView.as_view(url=build_great_url('profile/find-a-buyer/')),
+        RedirectView.as_view(url=domestic.SINGLE_SIGN_ON_PROFILE),
     ),
     url(
         r'^company-profile/edit/description/$',
-        RedirectView.as_view(url=build_great_url('profile/find-a-buyer/')),
+        RedirectView.as_view(url=domestic.SINGLE_SIGN_ON_PROFILE),
     ),
     url(
         r'^company-profile/edit/key-facts/$',
-        RedirectView.as_view(url=build_great_url('profile/find-a-buyer/'))
+        RedirectView.as_view(url=domestic.SINGLE_SIGN_ON_PROFILE)
     ),
     url(
         r'^company-profile/edit/sectors/$',
-        RedirectView.as_view(url=build_great_url('profile/find-a-buyer/')),
+        RedirectView.as_view(url=domestic.SINGLE_SIGN_ON_PROFILE),
     ),
     url(
         r'^company-profile/edit/contact/$',
-        RedirectView.as_view(url=build_great_url('profile/find-a-buyer/')),
+        RedirectView.as_view(url=domestic.SINGLE_SIGN_ON_PROFILE),
     ),
     url(
         r'^company-profile/edit/address/$',
-        RedirectView.as_view(url=build_great_url('profile/find-a-buyer/')),
+        RedirectView.as_view(url=domestic.SINGLE_SIGN_ON_PROFILE),
     ),
     url(
         r'^company-profile/edit/social-media/$',
-        RedirectView.as_view(url=build_great_url('profile/find-a-buyer/'))
+        RedirectView.as_view(url=domestic.SINGLE_SIGN_ON_PROFILE)
     ),
     url(
         r'^company/case-study/create/$',
-        RedirectView.as_view(url=build_great_url('profile/find-a-buyer/')),
+        RedirectView.as_view(url=domestic.SINGLE_SIGN_ON_PROFILE),
         name='company-case-study-create',
     ),
     url(
         r'^company/case-study/edit/(?P<id>[0-9]+)/$',
-        RedirectView.as_view(url=build_great_url('profile/find-a-buyer/')),
+        RedirectView.as_view(url=domestic.SINGLE_SIGN_ON_PROFILE),
     ),
     url(
         r'^company/case-study/edit/$',
-        RedirectView.as_view(url=build_great_url('profile/find-a-buyer/')),
+        RedirectView.as_view(url=domestic.SINGLE_SIGN_ON_PROFILE),
         name='company-case-study-create-backwards-compatible',
     ),
     url(
         r'^register$',
-        RedirectView.as_view(url=build_great_url('profile/enrol/')),
+        RedirectView.as_view(url=domestic.SINGLE_SIGN_ON_PROFILE / 'enrol/'),
         name='register',
     ),
 ]
 
 urlpatterns = [
-    url(
-        r'^find-a-buyer/',
-        include(urlpatterns)
-    ),
+    url(r'^find-a-buyer/', include(urlpatterns)),
 ]

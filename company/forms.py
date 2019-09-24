@@ -1,6 +1,7 @@
 from directory_validators import company as shared_validators
-from directory_components.fields import BooleanField
-from directory_components.widgets import CheckboxSelectInlineLabelMultiple
+from directory_components.forms import (
+    BooleanField, CheckboxSelectInlineLabelMultiple
+)
 
 from django import forms
 from django.utils.functional import cached_property
@@ -134,7 +135,7 @@ class RemoveCollaboratorForm(AutoFocusFieldMixin, forms.Form):
         )
 
     def get_supplier_ids_choices(self, sso_session_id):
-        response = api_client.company.retrieve_collaborators(
+        response = api_client.company.collaborator_list(
             sso_session_id=sso_session_id
         )
         response.raise_for_status()
