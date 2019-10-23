@@ -8,11 +8,10 @@ from django.utils.functional import cached_property
 from django.utils.safestring import mark_safe
 
 from directory_api_client.client import api_client
-from company import helpers, validators
-
-from enrolment.helpers import CompaniesHouseClient
-
 from directory_sso_api_client.client import sso_api_client
+
+from company import fields, helpers, validators
+from enrolment.helpers import CompaniesHouseClient
 
 
 class IndentedInvalidFieldsMixin:
@@ -62,10 +61,10 @@ class CompanyCodeVerificationForm(AutoFocusFieldMixin,
         'different': 'Incorrect code.'
     }
 
-    code = forms.CharField(
+    code = fields.DecimalField(
         label='',
-        max_length=12,
-        min_length=12,
+        max_digits=12,
+        decimal_places=0,
     )
 
     def __init__(self, *args, **kwargs):
@@ -75,6 +74,9 @@ class CompanyCodeVerificationForm(AutoFocusFieldMixin,
             validators.verify_with_code(sso_session_id=sso_session_id),
             *self.fields['code'].validators
         )
+
+    def clean_code(self):
+        return str(self.cleaned_data['code'])
 
 
 class CompaniesHouseOauth2Form(forms.Form):

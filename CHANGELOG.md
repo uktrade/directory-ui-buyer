@@ -10,6 +10,7 @@
 - TT-1621 restore deleted file confirm address
 - TT-1833 - FAB infinite redirects
 - TT-1839 - CTA hero overlapping cookie notice
+- TT-1817 - Use correct input types for number fields
 
 ## Implemented enhancements
 - No ticket - Implement new sso authentication backend
