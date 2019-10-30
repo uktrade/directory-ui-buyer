@@ -406,11 +406,10 @@ def test_verify_company_address_end_to_end(
 
     assert response.status_code == 200
     assert response.template_name == view.templates[view.SENT]
+    assert response.context_data['profile_url'] == 'http://profile.trade.great:8006/profile/business-profile/'
     assert mock_profile_update.call_count == 1
     assert mock_profile_update.call_args == call(
-        data={
-            'postal_full_name': 'Jeremy',
-        },
+        data={'postal_full_name': 'Jeremy'},
         sso_session_id='123'
     )
 

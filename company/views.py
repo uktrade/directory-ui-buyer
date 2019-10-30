@@ -98,7 +98,7 @@ class SendVerificationLetterView(
 
     def get_context_data(self, form, **kwargs):
         address = helpers.build_company_address(self.request.user.company)
-        return super().get_context_data(
+        context = super().get_context_data(
             form=form,
             form_labels=self.form_labels,
             all_cleaned_data=self.get_all_cleaned_data(),
@@ -107,9 +107,11 @@ class SendVerificationLetterView(
             company_address=address,
             **kwargs
         )
+        return context
 
     def handle_profile_update_success(self):
-        return TemplateResponse(self.request, self.templates[self.SENT])
+        context = {'profile_url': urls.domestic.SINGLE_SIGN_ON_PROFILE / 'business-profile'}
+        return TemplateResponse(self.request, self.templates[self.SENT], context)
 
 
 class CompanyVerifyView(TemplateView):
