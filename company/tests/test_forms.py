@@ -65,7 +65,20 @@ def test_company_address_verification_too_long(mock_verify_with_code):
     )
 
     assert form.is_valid() is False
-    assert form.errors['code'] == ['Ensure that there are no more than 12 digits in total.']
+    assert form.errors['code'] == ['Ensure this value has at most 12 characters (it has 13).']
+
+
+@patch('company.validators.api_client.company.verify_with_code')
+def test_company_address_verification_with_leading_zeros(mock_verify_with_code):
+    mock_verify_with_code.return_value = Mock(status_code=200)
+
+    form = forms.CompanyCodeVerificationForm(
+        sso_session_id=1,
+        data={'code': '0' + '1'*11}
+    )
+
+    assert form.is_valid() is True
+    assert form.cleaned_data['code'] == '011111111111'
 
 
 @pytest.mark.parametrize('form_class', [

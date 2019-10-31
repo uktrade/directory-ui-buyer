@@ -67,6 +67,13 @@ class CompanyCodeVerificationForm(AutoFocusFieldMixin,
         decimal_places=0,
     )
 
+    code = forms.CharField(
+        label='Verification Code',
+        max_length=12,
+        min_length=12,
+        widget=forms.TextInput(attrs={'type': 'number'}),
+    )
+
     def __init__(self, *args, **kwargs):
         sso_session_id = kwargs.pop('sso_session_id')
         super().__init__(*args, **kwargs)
