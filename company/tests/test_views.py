@@ -37,7 +37,7 @@ def all_company_profile_data():
 @pytest.fixture
 def address_verification_address_data():
     view = views.CompanyAddressVerificationView
-    data = {'code': 'xxxxxxxxxxxx'}
+    data = {'code': '111111111111'}
     step = view.ADDRESS
     return {
         'company_address_verification_view-current_step': step,
@@ -124,7 +124,7 @@ def test_company_address_validation_api_success(
     assert response.status_code == http.client.OK
     assert response.template_name == view.templates[view.SUCCESS]
     mock_verify_with_code.assert_called_with(
-        code='xxxxxxxxxxxx',
+        code='1'*12,
         sso_session_id=user.session_id,
     )
 
@@ -252,7 +252,7 @@ def test_companies_house_callback_has_company_calls_companies_house(
     )
 
     url = reverse('verify-companies-house-callback')
-    response = client.get(url, {'code': '123'})
+    response = client.get(url, {'code': '111111111111'})
 
     assert response.status_code == 302
     assert response.url == str(
@@ -261,7 +261,7 @@ def test_companies_house_callback_has_company_calls_companies_house(
 
     assert mock_verify_oauth2_code.call_count == 1
     assert mock_verify_oauth2_code.call_args == call(
-        code='123',
+        code='111111111111',
         redirect_uri=(
             'http://testserver/find-a-buyer/companies-house-oauth2-callback/'
         )
@@ -291,7 +291,7 @@ def test_companies_house_callback_has_company_calls_url_prefix(
     )
 
     url = reverse('verify-companies-house-callback')
-    response = client.get(url, {'code': '123'})
+    response = client.get(url, {'code': '111111111111'})
 
     assert response.status_code == 302
     assert response.url == str(
@@ -300,7 +300,7 @@ def test_companies_house_callback_has_company_calls_url_prefix(
 
     assert mock_verify_oauth2_code.call_count == 1
     assert mock_verify_oauth2_code.call_args == call(
-        code='123',
+        code='111111111111',
         redirect_uri=(
             'http://testserver/find-a-buyer/companies-house-oauth2-callback/'
         )
@@ -325,7 +325,7 @@ def test_companies_house_callback_error(
     )
 
     url = reverse('verify-companies-house-callback')
-    response = client.get(url, {'code': '123'})
+    response = client.get(url, {'code': '111111111111'})
 
     assert response.status_code == 200
     assert response.template_name == (
@@ -344,7 +344,7 @@ def test_companies_house_callback_invalid_code(
     mock_verify_oauth2_code.return_value = create_response(400)
 
     url = reverse('verify-companies-house-callback')
-    response = client.get(url, {'code': '123'})
+    response = client.get(url, {'code': '111111111111'})
 
     assert response.status_code == 200
     assert b'Invalid code.' in response.content
@@ -361,7 +361,7 @@ def test_companies_house_callback_unauthorized(
     mock_verify_oauth2_code.return_value = create_response(401)
 
     url = reverse('verify-companies-house-callback')
-    response = client.get(url, {'code': '123'})
+    response = client.get(url, {'code': '111111111111'})
 
     assert response.status_code == 200
     assert b'Invalid code.' in response.content
@@ -406,11 +406,10 @@ def test_verify_company_address_end_to_end(
 
     assert response.status_code == 200
     assert response.template_name == view.templates[view.SENT]
+    assert response.context_data['profile_url'] == 'http://profile.trade.great:8006/profile/business-profile/'
     assert mock_profile_update.call_count == 1
     assert mock_profile_update.call_args == call(
-        data={
-            'postal_full_name': 'Jeremy',
-        },
+        data={'postal_full_name': 'Jeremy'},
         sso_session_id='123'
     )
 
