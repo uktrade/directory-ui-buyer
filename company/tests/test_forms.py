@@ -76,7 +76,7 @@ def test_company_address_verification_with_leading_zeros(mock_verify_with_code):
         sso_session_id=1,
         data={'code': '0' + '1'*11}
     )
-    
+
     assert form.is_valid() is True
     assert form.cleaned_data['code'] == '011111111111'
 
