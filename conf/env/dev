@@ -36,3 +36,4 @@ FEATURE_EXPORT_JOURNEY_ENABLED=false
 URL_PREFIX_DOMAIN=http://buyer.trade.great:8001
 REDIS_URL=redis://localhost:6379
 STATICFILES_STORAGE=django.contrib.staticfiles.storage.StaticFilesStorage
+LANGUAGE_COOKIE_SECURE=false

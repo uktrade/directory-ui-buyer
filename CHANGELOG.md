@@ -2,6 +2,12 @@
 
 ## Pre-release
 
+
+## [2019.11.05] (https://github.com/uktrade/directory-ui-buyer/releases/tag/2019.11.05)
+[Full Changelog](https://github.com/uktrade/directory-ui-buyer/compare/2019.07.09...2019.11.05)
+### Hotfix
+- TT-2117 - Fix hero image on landing page
+
 ### Fixed bugs:
 - TT-1839 - CTA hero overlapping cookie notice
 - TT-1817 - Use correct input types for number fields
