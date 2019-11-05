@@ -40,7 +40,6 @@ Secrets such as API keys and environment specific configurations are placed in `
 | make pytest -- --last-failed` | Run the last tests to fail |
 | make pytest -- -k foo         | Run the test called foo |
 | make pytest -- <foo>          | Run arbitrary pytest command |
-| make flake8                   | Run linting |
 | make manage <foo>             | Run arbitrary management command |
 | make webserver                | Run the development web server |
 | make requirements             | Compile the requirements file |

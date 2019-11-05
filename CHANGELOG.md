@@ -9,6 +9,15 @@
 - TT-2117 - Fix hero image on landing page
 
 ### Fixed bugs:
+- TT-1839 - CTA hero overlapping cookie notice
+- TT-1817 - Use correct input types for number fields
+- TT-1921 - Replace old contact-us url with current one
+- TT-2089-fix-leading-0-verification-company-code
+
+## [2019.07.09] (https://github.com/uktrade/directory-ui-buyer/releases/tag/2019.07.09)
+[Full Changelog](https://github.com/uktrade/directory-ui-buyer/compare/2019.04.11...2019.07.09)
+
+### Fixed bugs:
 - No ticket - Replace hero image to remove black triangle bug
 - TT-1646 - Fix mobile header menu
 - No ticket - Upgrade django to 1.11.23 to fix vulnerability
