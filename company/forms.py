@@ -1,4 +1,4 @@
-from directory_validators import company as shared_validators
+from directory_validators.string import no_html
 from directory_components.forms import (
     BooleanField, CheckboxSelectInlineLabelMultiple
 )
@@ -35,7 +35,7 @@ class CompanyAddressVerificationForm(AutoFocusFieldMixin,
         label='Add your name',
         max_length=255,
         help_text='This is the full name that letters will be addressed to.',
-        validators=[shared_validators.no_html],
+        validators=[no_html],
     )
     address_confirmed = BooleanField(
         label=mark_safe(

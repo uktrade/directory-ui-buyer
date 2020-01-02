@@ -2,6 +2,8 @@
 
 ## Pre-release
 
+### Fixed bugs:
+- No ticket - Upgrade pillow to fix vulnerability
 
 ## [2019.11.05] (https://github.com/uktrade/directory-ui-buyer/releases/tag/2019.11.05)
 [Full Changelog](https://github.com/uktrade/directory-ui-buyer/compare/2019.07.09...2019.11.05)
