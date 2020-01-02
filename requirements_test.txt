@@ -23,7 +23,7 @@ directory-components==35.3.1
 directory-constants==20.9.0  # via directory-components
 directory-healthcheck==1.0.1
 directory-sso-api-client==6.0.1
-directory_validators==5.0.0
+directory_validators==6.0.0
 django-cors-headers==2.1.0
 django-environ==0.4.5
 django-formtools==2.0
@@ -44,10 +44,9 @@ mccabe==0.6.1             # via flake8
 mohawk==0.3.4             # via sigauth
 monotonic==1.5            # via directory-client-core
 more-itertools==4.3.0     # via pytest, zipp
-olefile==0.44             # via directory-validators, pillow
+olefile==0.44             # via directory-validators
 packaging==18.0           # via pytest, pytest-sugar
-phonenumberslite==7.7.4   # via directory-validators
-pillow==4.2.1             # via directory-validators
+pillow==6.2.1             # via directory-validators
 pip-tools==3.8.0
 pluggy==0.13.0            # via pytest
 py==1.7.0                 # via pytest
@@ -79,4 +78,4 @@ whitenoise==3.1
 zipp==0.6.0               # via importlib-metadata
 
 # The following packages are considered to be unsafe in a requirements file:
-# setuptools==41.6.0        # via flake8, jsonschema
+# setuptools
