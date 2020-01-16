@@ -2,7 +2,7 @@ from unittest import mock
 
 from directory_api_client import api_client
 
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 
 from core.tests.helpers import create_response
 

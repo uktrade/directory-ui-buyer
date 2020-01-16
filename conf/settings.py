@@ -14,6 +14,9 @@ import os
 
 import directory_healthcheck.backends
 import environ
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
+
 
 env = environ.Env()
 for env_file in env.list('ENV_FILES', default=[]):
@@ -45,15 +48,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.humanize',
     'django.contrib.sitemaps',
-    'django_extensions',
-    'raven.contrib.django.raven_compat',
     'django.contrib.auth',
     'django.contrib.sessions',
     'django.contrib.contenttypes',  # required by auth, not using DB
     'directory_sso_api_client',
-    'revproxy',
     'formtools',
-    'corsheaders',
     'enrolment',
     'company',
     'core',
@@ -64,10 +63,9 @@ INSTALLED_APPS = [
     'directory_components',
 ]
 
-MIDDLEWARE_CLASSES = [
+MIDDLEWARE = [
     'directory_components.middleware.MaintenanceModeMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'core.middleware.PrefixUrlMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
@@ -179,62 +177,21 @@ if DEBUG:
             },
         }
     }
-else:
-    # Sentry logging
-    LOGGING = {
-        'version': 1,
-        'disable_existing_loggers': False,
-        'root': {
-            'level': 'WARNING',
-            'handlers': ['sentry'],
-        },
-        'formatters': {
-            'verbose': {
-                'format': '%(levelname)s %(asctime)s %(module)s '
-                          '%(process)d %(thread)d %(message)s'
-            },
-        },
-        'handlers': {
-            'sentry': {
-                'level': 'ERROR',
-                'class': (
-                    'raven.contrib.django.raven_compat.handlers.SentryHandler'
-                ),
-                'tags': {'custom-tag': 'x'},
-            },
-            'console': {
-                'level': 'DEBUG',
-                'class': 'logging.StreamHandler',
-                'formatter': 'verbose'
-            }
-        },
-        'loggers': {
-            'raven': {
-                'level': 'DEBUG',
-                'handlers': ['console'],
-                'propagate': False,
-            },
-            'sentry.errors': {
-                'level': 'DEBUG',
-                'handlers': ['console'],
-                'propagate': False,
-            },
-        },
-    }
+
+# Sentry
+if env.str('SENTRY_DSN', ''):
+    sentry_sdk.init(
+        dsn=env.str('SENTRY_DSN'),
+        environment=env.str('SENTRY_ENVIRONMENT'),
+        integrations=[DjangoIntegration()]
+    )
+
 
 # directory-api
-DIRECTORY_API_CLIENT_BASE_URL = env.str(
-    'DIRECTORY_API_CLIENT_BASE_URL'
-)
-DIRECTORY_API_CLIENT_API_KEY = env.str(
-    'DIRECTORY_API_CLIENT_API_KEY'
-)
-DIRECTORY_API_CLIENT_SENDER_ID = env.str(
-    'DIRECTORY_API_CLIENT_SENDER_ID', 'directory'
-)
-DIRECTORY_API_CLIENT_DEFAULT_TIMEOUT = env.str(
-    'DIRECTORY_API_CLIENT_DEFAULT_TIMEOUT', 15
-)
+DIRECTORY_API_CLIENT_BASE_URL = env.str('DIRECTORY_API_CLIENT_BASE_URL')
+DIRECTORY_API_CLIENT_API_KEY = env.str('DIRECTORY_API_CLIENT_API_KEY')
+DIRECTORY_API_CLIENT_SENDER_ID = env.str('DIRECTORY_API_CLIENT_SENDER_ID', 'directory')
+DIRECTORY_API_CLIENT_DEFAULT_TIMEOUT = env.str('DIRECTORY_API_CLIENT_DEFAULT_TIMEOUT', 15)
 
 # directory clients
 DIRECTORY_CLIENT_CORE_CACHE_EXPIRE_SECONDS = 60 * 60 * 24 * 30  # 30 days
@@ -250,32 +207,16 @@ COMPANIES_HOUSE_CALLBACK_DOMAIN = env.str(
 )
 
 # directory-companies-house-search
-DIRECTORY_CH_SEARCH_CLIENT_BASE_URL = env.str(
-    'DIRECTORY_CH_SEARCH_CLIENT_BASE_URL'
-)
-DIRECTORY_CH_SEARCH_CLIENT_API_KEY = env.str(
-    'DIRECTORY_CH_SEARCH_CLIENT_API_KEY'
-)
-DIRECTORY_CH_SEARCH_CLIENT_SENDER_ID = env.str(
-    'DIRECTORY_CH_SEARCH_CLIENT_SENDER_ID', 'directory'
-)
-DIRECTORY_CH_SEARCH_CLIENT_DEFAULT_TIMEOUT = env.int(
-    'DIRECTORY_CH_SEARCH_CLIENT_DEFAULT_TIMEOUT', 5
-)
+DIRECTORY_CH_SEARCH_CLIENT_BASE_URL = env.str('DIRECTORY_CH_SEARCH_CLIENT_BASE_URL')
+DIRECTORY_CH_SEARCH_CLIENT_API_KEY = env.str('DIRECTORY_CH_SEARCH_CLIENT_API_KEY')
+DIRECTORY_CH_SEARCH_CLIENT_SENDER_ID = env.str('DIRECTORY_CH_SEARCH_CLIENT_SENDER_ID', 'directory')
+DIRECTORY_CH_SEARCH_CLIENT_DEFAULT_TIMEOUT = env.int('DIRECTORY_CH_SEARCH_CLIENT_DEFAULT_TIMEOUT', 5)
 
 # directory-sso-proxy
-DIRECTORY_SSO_API_CLIENT_BASE_URL = env.str(
-    'DIRECTORY_SSO_API_CLIENT_BASE_URL'
-)
-DIRECTORY_SSO_API_CLIENT_API_KEY = env.str(
-    'DIRECTORY_SSO_API_CLIENT_API_KEY'
-)
-DIRECTORY_SSO_API_CLIENT_SENDER_ID = env.str(
-    'DIRECTORY_SSO_API_CLIENT_SENDER_ID', 'directory'
-)
-DIRECTORY_SSO_API_CLIENT_DEFAULT_TIMEOUT = env.int(
-    'DIRECTORY_SSO_API_CLIENT_DEFAULT_TIMEOUT', 5
-)
+DIRECTORY_SSO_API_CLIENT_BASE_URL = env.str('DIRECTORY_SSO_API_CLIENT_BASE_URL')
+DIRECTORY_SSO_API_CLIENT_API_KEY = env.str('DIRECTORY_SSO_API_CLIENT_API_KEY')
+DIRECTORY_SSO_API_CLIENT_SENDER_ID = env.str('DIRECTORY_SSO_API_CLIENT_SENDER_ID', 'directory')
+DIRECTORY_SSO_API_CLIENT_DEFAULT_TIMEOUT = env.int('DIRECTORY_SSO_API_CLIENT_DEFAULT_TIMEOUT', 5)
 SSO_PROXY_LOGIN_URL = env.str('SSO_PROXY_LOGIN_URL')
 LOGIN_URL = SSO_PROXY_LOGIN_URL
 SSO_PROXY_LOGOUT_URL = env.str('SSO_PROXY_LOGOUT_URL')
@@ -284,11 +225,6 @@ SSO_PROFILE_URL = env.str('SSO_PROFILE_URL')
 SSO_PROXY_REDIRECT_FIELD_NAME = env.str('SSO_PROXY_REDIRECT_FIELD_NAME')
 SSO_SESSION_COOKIE = env.str('SSO_SESSION_COOKIE')
 
-# directory-ui-supplier
-SUPPLIER_CASE_STUDY_URL = env.str('SUPPLIER_CASE_STUDY_URL')
-SUPPLIER_PROFILE_LIST_URL = env.str('SUPPLIER_PROFILE_LIST_URL')
-SUPPLIER_PROFILE_URL = env.str('SUPPLIER_PROFILE_URL')
-
 SECURE_SSL_REDIRECT = env.bool('SECURE_SSL_REDIRECT', True)
 USE_X_FORWARDED_HOST = True
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
@@ -296,41 +232,18 @@ SECURE_HSTS_SECONDS = env.int('SECURE_HSTS_SECONDS', '16070400')
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 
 # HEADER/FOOTER URLS
-DIRECTORY_CONSTANTS_URL_INTERNATIONAL = env.str(
-    'DIRECTORY_CONSTANTS_URL_INTERNATIONAL', ''
-)
-DIRECTORY_CONSTANTS_URL_GREAT_DOMESTIC = env.str(
-    'DIRECTORY_CONSTANTS_URL_GREAT_DOMESTIC', ''
-)
-DIRECTORY_CONSTANTS_URL_EXPORT_OPPORTUNITIES = env.str(
-    'DIRECTORY_CONSTANTS_URL_EXPORT_OPPORTUNITIES', ''
-)
-DIRECTORY_CONSTANTS_URL_SELLING_ONLINE_OVERSEAS = env.str(
-    'DIRECTORY_CONSTANTS_URL_SELLING_ONLINE_OVERSEAS', ''
-)
-DIRECTORY_CONSTANTS_URL_EVENTS = env.str(
-    'DIRECTORY_CONSTANTS_URL_EVENTS', ''
-)
+DIRECTORY_CONSTANTS_URL_INTERNATIONAL = env.str('DIRECTORY_CONSTANTS_URL_INTERNATIONAL', '')
+DIRECTORY_CONSTANTS_URL_GREAT_DOMESTIC = env.str('DIRECTORY_CONSTANTS_URL_GREAT_DOMESTIC', '')
+DIRECTORY_CONSTANTS_URL_EXPORT_OPPORTUNITIES = env.str('DIRECTORY_CONSTANTS_URL_EXPORT_OPPORTUNITIES', '')
+DIRECTORY_CONSTANTS_URL_SELLING_ONLINE_OVERSEAS = env.str('DIRECTORY_CONSTANTS_URL_SELLING_ONLINE_OVERSEAS', '')
+DIRECTORY_CONSTANTS_URL_EVENTS = env.str('DIRECTORY_CONSTANTS_URL_EVENTS', '')
 DIRECTORY_CONSTANTS_URL_INVEST = env.str('DIRECTORY_CONSTANTS_URL_INVEST', '')
-DIRECTORY_CONSTANTS_URL_FIND_A_SUPPLIER = env.str(
-    'DIRECTORY_CONSTANTS_URL_FIND_A_SUPPLIER', ''
-)
-DIRECTORY_CONSTANTS_URL_SINGLE_SIGN_ON = env.str(
-    'DIRECTORY_CONSTANTS_URL_SINGLE_SIGN_ON', ''
-)
-DIRECTORY_CONSTANTS_URL_FIND_A_BUYER = env.str(
-    'DIRECTORY_CONSTANTS_URL_FIND_A_BUYER', ''
-)
-DIRECTORY_CONSTANTS_URL_SSO_PROFILE = env.str(
-    'DIRECTORY_CONSTANTS_URL_SSO_PROFILE', ''
-)
+DIRECTORY_CONSTANTS_URL_FIND_A_SUPPLIER = env.str('DIRECTORY_CONSTANTS_URL_FIND_A_SUPPLIER', '')
+DIRECTORY_CONSTANTS_URL_SINGLE_SIGN_ON = env.str('DIRECTORY_CONSTANTS_URL_SINGLE_SIGN_ON', '')
+DIRECTORY_CONSTANTS_URL_FIND_A_BUYER = env.str('DIRECTORY_CONSTANTS_URL_FIND_A_BUYER', '')
+DIRECTORY_CONSTANTS_URL_SSO_PROFILE = env.str('DIRECTORY_CONSTANTS_URL_SSO_PROFILE', '')
 
 PRIVACY_COOKIE_DOMAIN = env.str('PRIVACY_COOKIE_DOMAIN')
-
-# Sentry
-RAVEN_CONFIG = {
-    'dsn': env.str('SENTRY_DSN', ''),
-}
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.signed_cookies'
 SESSION_COOKIE_SECURE = env.bool('SESSION_COOKIE_SECURE', True)
@@ -350,19 +263,10 @@ UTM_COOKIE_DOMAIN = env.str('UTM_COOKIE_DOMAIN')
 GA360_BUSINESS_UNIT = 'GreatDomestic'
 GA360_SITE_SECTION = 'BusinessProfile'
 
-DIRECTORY_EXTERNAL_API_SIGNATURE_SECRET = env.str(
-    'DIRECTORY_EXTERNAL_API_SIGNATURE_SECRET'
-)
-
-# CORS
-CORS_ORIGIN_ALLOW_ALL = env.bool('CORS_ORIGIN_ALLOW_ALL', False)
-CORS_ORIGIN_WHITELIST = env.list('CORS_ORIGIN_WHITELIST', default=[])
-
 # Feature flags
 FEATURE_FLAGS = {
     # used by directory-components
     'MAINTENANCE_MODE_ON': env.bool('FEATURE_MAINTENANCE_MODE_ENABLED', False),
-    'DIRECTORY_API_ON': env.bool('EXPOSE_DIRECTORY_API', False),
 }
 
 # healthcheck
@@ -377,7 +281,6 @@ DIRECTORY_HEALTHCHECK_BACKENDS = [
 # Internal CH
 INTERNAL_CH_BASE_URL = env.str('INTERNAL_CH_BASE_URL', '')
 INTERNAL_CH_API_KEY = env.str('INTERNAL_CH_API_KEY', '')
-
 
 # Authentication
 AUTHENTICATION_BACKENDS = ['directory_sso_api_client.backends.SSOUserBackend']

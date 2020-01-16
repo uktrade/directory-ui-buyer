@@ -89,10 +89,7 @@ healthcheck_urls = [
 
 
 urlpatterns = [
-    url(
-        r'^healthcheck/',
-        include(healthcheck_urls, namespace='healthcheck', app_name='healthcheck')
-    ),
+    url(r'^healthcheck/', include((healthcheck_urls, 'healthcheck'), namespace='healthcheck')),
     url(
         r"^robots\.txt$",
         skip_ga360(directory_components.views.RobotsView.as_view()),
@@ -141,31 +138,6 @@ urlpatterns = [
         r'^confirm-company-address/$',
         company.views.CompanyAddressVerificationHistoricView.as_view(),
         name='verify-company-address-historic-url'
-    ),
-    url(
-        r'^account/add-collaborator/$',
-        owner_required(company.views.AddCollaboratorView.as_view()),
-        name='add-collaborator'
-    ),
-    url(
-        r'^account/remove-collaborator/$',
-        owner_required(company.views.RemoveCollaboratorView.as_view()),
-        name='remove-collaborator'
-    ),
-    url(
-        r'^account/transfer/$',
-        owner_required(company.views.TransferAccountWizardView.as_view()),
-        name='account-transfer'
-    ),
-    url(
-        r'^account/transfer/accept/$',
-        not_owner_required(company.views.AcceptTransferAccountView.as_view()),
-        name='account-transfer-accept'
-    ),
-    url(
-        r'^account/collaborate/accept/$',
-        no_company_required(company.views.AcceptCollaborationView.as_view()),
-        name='account-collaborate-accept'
     ),
     # the url to create case studies was ../edit/. That was bad naming.
     url(

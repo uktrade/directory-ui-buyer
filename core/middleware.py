@@ -1,5 +1,6 @@
 from django.utils import translation
 from django.conf import settings
+from django.utils.deprecation import MiddlewareMixin
 
 from directory_components.middleware import AbstractPrefixUrlMiddleware
 
@@ -8,7 +9,7 @@ class PrefixUrlMiddleware(AbstractPrefixUrlMiddleware):
     prefix = '/find-a-buyer/'
 
 
-class GA360Middleware:
+class GA360Middleware(MiddlewareMixin):
 
     def process_template_response(self, request, response):
 
