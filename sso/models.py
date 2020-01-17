@@ -1,12 +1,10 @@
 from directory_api_client import api_client
 import directory_sso_api_client.models
 
-from django.db import models
 from django.utils.functional import cached_property
 
 
 class SSOUser(directory_sso_api_client.models.SSOUser):
-    has_user_profile = models.BooleanField()
 
     @cached_property
     def company(self):

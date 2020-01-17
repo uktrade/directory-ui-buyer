@@ -4,49 +4,49 @@
 #
 #    pip-compile requirements.in
 #
-asn1crypto==0.24.0        # via cryptography
-attrs==19.1.0             # via jsonschema
-beautifulsoup4==4.6.3     # via directory-components
-certifi==2018.4.16        # via requests
-cffi==1.11.5              # via cryptography
+attrs==19.3.0             # via jsonschema
+beautifulsoup4==4.8.2     # via directory-components
+certifi==2019.11.28       # via requests, sentry-sdk
+cffi==1.13.2              # via cryptography
 chardet==3.0.4            # via requests
-contextlib2==0.5.5        # via raven
-cryptography==2.4.2       # via pyopenssl, requests
-directory-api-client==19.0.0
+cryptography==2.8         # via pyopenssl, requests
+directory-api-client==21.0.0
 directory-client-core==6.1.0  # via directory-api-client, directory-sso-api-client
 directory-components==35.3.1
-directory-constants==20.9.0  # via directory-components
-directory-healthcheck==1.0.1
-directory-sso-api-client==6.0.1
+directory-constants==20.10.0  # via directory-components
+directory-healthcheck==2.0.0
+directory-sso-api-client==6.2.0
 directory_validators==6.0.0
-django-cors-headers==2.1.0
 django-environ==0.4.5
-django-formtools==2.0
+django-formtools==2.1
 django-health-check==3.8.0  # via directory-healthcheck
-django-redis==4.8.0
-django-revproxy==0.9.15
-django==1.11.23
-django_extensions==1.9.0
-djangorestframework==3.9.1
-gunicorn==19.5.0
-idna==2.6                 # via cryptography, requests
-jsonschema==3.0.1         # via directory-components
+django-redis==4.11.0
+django==2.2.8
+djangorestframework==3.10.3
+gunicorn==20.0.4
+idna==2.8                 # via requests
+importlib-metadata==1.4.0  # via jsonschema
+jsonschema==3.2.0         # via directory-components
 mohawk==0.3.4             # via sigauth
-monotonic==1.2            # via directory-client-core
+monotonic==1.5            # via directory-client-core
+more-itertools==8.1.0     # via zipp
 olefile==0.44             # via directory-validators
 pillow==6.2.1             # via directory-validators
 pycparser==2.19           # via cffi
-pyopenssl==18.0.0         # via requests
-pyrsistent==0.15.2        # via jsonschema
+pyopenssl==19.1.0         # via requests
+pyrsistent==0.15.7        # via jsonschema
 pytz==2017.2              # via directory-validators, django
-raven==5.19.0
-redis==2.10.6             # via django-redis
-requests[security]==2.21.0
-sigauth==4.0.1            # via directory-client-core
-six==1.11.0               # via cryptography, django-extensions, jsonschema, mohawk, pyopenssl, pyrsistent, w3lib
-urllib3==1.24.2
-w3lib==1.19.0             # via directory-client-core
-whitenoise==3.1
+redis==3.3.11             # via django-redis
+requests[security]==2.22.0
+sentry-sdk==0.13.4
+sigauth==4.1.1            # via directory-client-core
+six==1.14.0               # via cryptography, jsonschema, mohawk, pyopenssl, pyrsistent, w3lib
+soupsieve==1.9.5          # via beautifulsoup4
+sqlparse==0.3.0           # via django
+urllib3==1.25.7
+w3lib==1.21.0             # via directory-client-core
+whitenoise==4.1.4
+zipp==1.0.0               # via importlib-metadata
 
 # The following packages are considered to be unsafe in a requirements file:
 # setuptools
