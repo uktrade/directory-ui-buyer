@@ -10,7 +10,7 @@ certifi==2019.11.28       # via requests, sentry-sdk
 cffi==1.13.2              # via cryptography
 chardet==3.0.4            # via requests
 cryptography==2.8         # via pyopenssl, requests
-directory-api-client==21.0.0
+directory-api-client==21.0.1
 directory-client-core==6.1.0  # via directory-api-client, directory-sso-api-client
 directory-components==35.3.1
 directory-constants==20.10.0  # via directory-components
