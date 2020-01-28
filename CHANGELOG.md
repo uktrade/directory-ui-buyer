@@ -2,6 +2,11 @@
 
 ## Pre-release
 
+## [2020.01.28] (https://github.com/uktrade/directory-ui-buyer/releases/tag/2020.01.28)
+[Full Changelog](https://github.com/uktrade/directory-ui-buyer/compare/2019.11.05...2020.01.28)
+### Hotfix
+- Fix CSV data dump
+
 
 ## [2019.11.05] (https://github.com/uktrade/directory-ui-buyer/releases/tag/2019.11.05)
 [Full Changelog](https://github.com/uktrade/directory-ui-buyer/compare/2019.07.09...2019.11.05)
