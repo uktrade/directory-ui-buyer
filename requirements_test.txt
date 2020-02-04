@@ -25,7 +25,7 @@ django-environ==0.4.5
 django-formtools==2.1
 django-health-check==3.8.0  # via directory-healthcheck
 django-redis==4.11.0
-django==2.2.8
+django==2.2.10
 djangorestframework==3.10.3
 entrypoints==0.3          # via flake8
 execnet==1.7.1            # via pytest-xdist
