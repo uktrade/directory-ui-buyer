@@ -2,13 +2,20 @@
 
 ## Pre-release
 
-## [2020.01.28] (https://github.com/uktrade/directory-ui-buyer/releases/tag/2020.01.28)
+## [2020.02.04](https://github.com/uktrade/directory-cms/releases/tag/2020.02.04)
+[Full Changelog](https://github.com/uktrade/directory-cms/compare/2020.01.28...2020.02.04)
+
+### Hotfix
+
+- No ticket - Upgrade Django to fix security vulnerability
+
+## [2020.01.28](https://github.com/uktrade/directory-ui-buyer/releases/tag/2020.01.28)
 [Full Changelog](https://github.com/uktrade/directory-ui-buyer/compare/2019.11.05...2020.01.28)
+
 ### Hotfix
 - Fix CSV data dump
 
-
-## [2019.11.05] (https://github.com/uktrade/directory-ui-buyer/releases/tag/2019.11.05)
+## [2019.11.05](https://github.com/uktrade/directory-ui-buyer/releases/tag/2019.11.05)
 [Full Changelog](https://github.com/uktrade/directory-ui-buyer/compare/2019.07.09...2019.11.05)
 ### Hotfix
 - TT-2117 - Fix hero image on landing page
