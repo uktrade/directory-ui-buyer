@@ -2,6 +2,9 @@
 
 ## Pre-release
 
+### Hotfix
+- XOT-1296 - replace cookie banner with cookie modal
+
 ## [2020.02.04](https://github.com/uktrade/directory-cms/releases/tag/2020.02.04)
 [Full Changelog](https://github.com/uktrade/directory-cms/compare/2020.01.28...2020.02.04)
 
