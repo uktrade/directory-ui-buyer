@@ -6,7 +6,7 @@
 - No ticket - v3-cipipeline manifest.yml file fix
 
 ### Fixed bugs:
-- No ticket - Upgrade pillow to fix vulnerability
+- No ticket - Upgrade pillow and django to fix vulnerability
 - TT-2254 - Cleaned up obsolete settings
 - no ticket - upgrade django
 - no ticket - upgrade sentry

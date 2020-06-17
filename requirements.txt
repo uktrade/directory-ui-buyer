@@ -16,12 +16,12 @@ directory-components==35.3.1
 directory-constants==20.10.0  # via directory-components
 directory-healthcheck==2.0.0
 directory-sso-api-client==6.2.0
-directory_validators==6.0.0
+directory_validators==6.0.2
 django-environ==0.4.5
 django-formtools==2.1
 django-health-check==3.8.0  # via directory-healthcheck
 django-redis==4.11.0
-django==2.2.10
+django==2.2.13
 djangorestframework==3.10.3
 gunicorn==20.0.4
 idna==2.8                 # via requests
@@ -31,7 +31,7 @@ mohawk==0.3.4             # via sigauth
 monotonic==1.5            # via directory-client-core
 more-itertools==8.1.0     # via zipp
 olefile==0.44             # via directory-validators
-pillow==6.2.1             # via directory-validators
+pillow==6.2.2             # via directory-validators
 pycparser==2.19           # via cffi
 pyopenssl==19.1.0         # via requests
 pyrsistent==0.15.7        # via jsonschema
