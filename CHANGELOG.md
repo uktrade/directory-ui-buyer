@@ -3,6 +3,9 @@
 ## Pre-release
 
 ## Hotfix
+- No ticket - Upgrade directory-validators to remove vunerability
+
+## Hotfix
 - No ticket - v3-cipipeline manifest.yml file fix
 
 ### Fixed bugs:
