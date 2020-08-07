@@ -3,6 +3,9 @@
 ## Pre-release
 
 ### Hotfix
+- No ticket - Upgrade to directory_validators to remove vunerability
+
+### Hotfix
 - XOT-1296 - replace cookie banner with cookie modal
 
 ## [2020.02.04](https://github.com/uktrade/directory-cms/releases/tag/2020.02.04)
