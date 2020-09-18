@@ -10,6 +10,7 @@
 - TT-2254 - Cleaned up obsolete settings
 - no ticket - upgrade django
 - no ticket - upgrade sentry
+- TT-2379 - CH new redirect - allow url to be configured
 
 ## [2020.02.04](https://github.com/uktrade/directory-cms/releases/tag/2020.02.04)
 [Full Changelog](https://github.com/uktrade/directory-cms/compare/2020.01.28...2020.02.04)

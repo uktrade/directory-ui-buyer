@@ -34,8 +34,8 @@ class CompaniesHouseClient:
     api_key = settings.COMPANIES_HOUSE_API_KEY
     client_id = settings.COMPANIES_HOUSE_CLIENT_ID
     client_secret = settings.COMPANIES_HOUSE_CLIENT_SECRET
-    make_api_url = partial(urljoin, 'https://api.companieshouse.gov.uk')
-    make_oauth2_url = partial(urljoin, 'https://account.companieshouse.gov.uk')
+    make_api_url = partial(urljoin, settings.COMPANIES_HOUSE_API_URL)
+    make_oauth2_url = partial(urljoin, settings.COMPANIES_HOUSE_URL)
     endpoints = {
         'profile': make_api_url('company/{number}'),
         'address': make_api_url('company/{number}/registered-office-address'),
