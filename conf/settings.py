@@ -205,6 +205,8 @@ COMPANIES_HOUSE_CALLBACK_DOMAIN = env.str(
     'COMPANIES_HOUSE_CALLBACK_DOMAIN',
     'https://find-a-buyer.export.great.gov.uk'
 )
+COMPANIES_HOUSE_URL = env.str('COMPANIES_HOUSE_URL', 'https://account.companieshouse.gov.uk')
+COMPANIES_HOUSE_API_URL = env.str('COMPANIES_HOUSE_API_URL', 'https://api.companieshouse.gov.uk')
 
 # directory-companies-house-search
 DIRECTORY_CH_SEARCH_CLIENT_BASE_URL = env.str('DIRECTORY_CH_SEARCH_CLIENT_BASE_URL')
