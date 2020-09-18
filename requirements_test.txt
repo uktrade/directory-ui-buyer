@@ -20,7 +20,7 @@ directory-components==35.3.1
 directory-constants==20.10.0  # via directory-components
 directory-healthcheck==2.0.0
 directory-sso-api-client==6.2.0
-directory_validators==6.0.2
+directory_validators==6.0.3
 django-environ==0.4.5
 django-formtools==2.1
 django-health-check==3.8.0  # via directory-healthcheck
@@ -41,7 +41,7 @@ monotonic==1.5            # via directory-client-core
 more-itertools==8.1.0     # via pytest, zipp
 olefile==0.44             # via directory-validators
 packaging==20.0           # via pytest, pytest-sugar
-pillow==6.2.2             # via directory-validators
+pillow==7.2.0             # via directory-validators
 pip-tools==4.3.0
 pluggy==0.13.1            # via pytest
 py==1.8.1                 # via pytest
