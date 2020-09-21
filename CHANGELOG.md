@@ -2,6 +2,7 @@
 
 ## Pre-release
 
+
 ## Hotfix
 - No ticket - v3-cipipeline manifest.yml file fix
 
@@ -21,6 +22,10 @@
 [Full Changelog](https://github.com/uktrade/directory-ui-buyer/compare/2019.11.05...2020.01.28)
 ### Hotfix
 - Fix CSV data dump
+
+### Hotfix
+- XOT-1296 - replace cookie banner with cookie modal
+- No ticket - Upgrade Django to fix security vulnerability
 
 ## [2019.11.05](https://github.com/uktrade/directory-ui-buyer/releases/tag/2019.11.05)
 [Full Changelog](https://github.com/uktrade/directory-ui-buyer/compare/2019.07.09...2019.11.05)
