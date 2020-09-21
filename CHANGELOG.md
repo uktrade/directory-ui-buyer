@@ -2,21 +2,30 @@
 
 ## Pre-release
 
-### Hotfix
-- XOT-1296 - replace cookie banner with cookie modal
+
+## Hotfix
+- No ticket - v3-cipipeline manifest.yml file fix
+
+### Fixed bugs:
+- No ticket - Upgrade pillow and django to fix vulnerability
+- TT-2254 - Cleaned up obsolete settings
+- no ticket - upgrade django
+- no ticket - upgrade sentry
+- TT-2379 - CH new redirect - allow url to be configured
+- no ticket - upgrade pillow
 
 ## [2020.02.04](https://github.com/uktrade/directory-cms/releases/tag/2020.02.04)
 [Full Changelog](https://github.com/uktrade/directory-cms/compare/2020.01.28...2020.02.04)
-
-### Hotfix
-
-- No ticket - Upgrade Django to fix security vulnerability
+ - No ticket - Upgrade Django to fix security vulnerability
 
 ## [2020.01.28](https://github.com/uktrade/directory-ui-buyer/releases/tag/2020.01.28)
 [Full Changelog](https://github.com/uktrade/directory-ui-buyer/compare/2019.11.05...2020.01.28)
-
 ### Hotfix
 - Fix CSV data dump
+
+### Hotfix
+- XOT-1296 - replace cookie banner with cookie modal
+- No ticket - Upgrade Django to fix security vulnerability
 
 ## [2019.11.05](https://github.com/uktrade/directory-ui-buyer/releases/tag/2019.11.05)
 [Full Changelog](https://github.com/uktrade/directory-ui-buyer/compare/2019.07.09...2019.11.05)
@@ -29,7 +38,7 @@
 - TT-1921 - Replace old contact-us url with current one
 - TT-2089-fix-leading-0-verification-company-code
 
-## [2019.07.09] (https://github.com/uktrade/directory-ui-buyer/releases/tag/2019.07.09)
+## [2019.07.09](https://github.com/uktrade/directory-ui-buyer/releases/tag/2019.07.09)
 [Full Changelog](https://github.com/uktrade/directory-ui-buyer/compare/2019.04.11...2019.07.09)
 
 ### Fixed bugs:

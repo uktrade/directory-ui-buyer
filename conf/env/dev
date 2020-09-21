@@ -11,9 +11,6 @@ SSO_PROFILE_URL=http://profile.trade.great:8006/find-a-buyer/
 SSO_PROXY_REDIRECT_FIELD_NAME=next
 SSO_SESSION_COOKIE=debug_sso_session_cookie
 SESSION_COOKIE_SECURE=false
-SUPPLIER_CASE_STUDY_URL=http://supplier.trade.great:8005/case-study/{id}
-SUPPLIER_PROFILE_LIST_URL=http://supplier.trade.great:8005/suppliers?sectors={sectors}
-SUPPLIER_PROFILE_URL=http://supplier.trade.great:8005/suppliers/{number}
 GOOGLE_TAG_MANAGER_ID=GTM-TC46J8K
 GOOGLE_TAG_MANAGER_ENV=&gtm_auth=kH9XolShYWhOJg8TA9bW_A&gtm_preview=env-32&gtm_cookies_win=x
 UTM_COOKIE_DOMAIN=.trade.great

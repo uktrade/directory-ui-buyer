@@ -1,7 +1,5 @@
 from unittest.mock import Mock, patch
 
-import pytest
-
 from django.forms.fields import Field
 from django.core.validators import URLValidator
 
@@ -79,30 +77,3 @@ def test_company_address_verification_with_leading_zeros(mock_verify_with_code):
 
     assert form.is_valid() is True
     assert form.cleaned_data['code'] == '011111111111'
-
-
-@pytest.mark.parametrize('form_class', [
-    forms.AddCollaboratorForm,
-    forms.TransferAccountEmailForm,
-])
-def test_add_collaborator_prevents_sending_to_self(form_class):
-    form = form_class(
-        sso_email_address='dev@example.com',
-        data={'email_address': 'dev@example.com'}
-    )
-
-    assert form.is_valid() is False
-    assert form.errors['email_address'] == [form.MESSAGE_CANNOT_SEND_TO_SELF]
-
-
-@pytest.mark.parametrize('form_class', [
-    forms.AddCollaboratorForm,
-    forms.TransferAccountEmailForm,
-])
-def test_add_collaborator_allows_sending_to_other(form_class):
-    form = form_class(
-        sso_email_address='dev@example.com',
-        data={'email_address': 'dev+1@example.com'}
-    )
-
-    assert form.is_valid() is True

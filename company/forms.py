@@ -1,14 +1,9 @@
-from directory_validators import company as shared_validators
-from directory_components.forms import (
-    BooleanField, CheckboxSelectInlineLabelMultiple
-)
+from directory_validators.string import no_html
+from directory_components.forms import BooleanField
 
 from django import forms
 from django.utils.functional import cached_property
 from django.utils.safestring import mark_safe
-
-from directory_api_client.client import api_client
-from directory_sso_api_client.client import sso_api_client
 
 from company import fields, helpers, validators
 from enrolment.helpers import CompaniesHouseClient
@@ -35,7 +30,7 @@ class CompanyAddressVerificationForm(AutoFocusFieldMixin,
         label='Add your name',
         max_length=255,
         help_text='This is the full name that letters will be addressed to.',
-        validators=[shared_validators.no_html],
+        validators=[no_html],
     )
     address_confirmed = BooleanField(
         label=mark_safe(
@@ -121,85 +116,6 @@ class BaseMultiUserEmailForm(
         if self.cleaned_data['email_address'] == self.sso_email_address:
             raise forms.ValidationError(self.MESSAGE_CANNOT_SEND_TO_SELF)
         return self.cleaned_data['email_address']
-
-
-class AddCollaboratorForm(BaseMultiUserEmailForm):
-
-    email_address = forms.EmailField(
-        label=(
-            'Enter the new editor’s email address.'
-        ),
-        widget=forms.EmailInput(
-            attrs={'placeholder': 'Email address'}
-        )
-    )
-
-
-class RemoveCollaboratorForm(AutoFocusFieldMixin, forms.Form):
-
-    def __init__(self, sso_session_id, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['sso_ids'].choices = self.get_supplier_ids_choices(
-            sso_session_id=sso_session_id
-        )
-
-    def get_supplier_ids_choices(self, sso_session_id):
-        response = api_client.company.collaborator_list(
-            sso_session_id=sso_session_id
-        )
-        response.raise_for_status()
-        parsed = response.json()
-        return [(i['sso_id'], i['company_email']) for i in parsed]
-
-    sso_ids = forms.MultipleChoiceField(
-        label='',
-        choices=[],  # updated on __init__
-        widget=CheckboxSelectInlineLabelMultiple,
-    )
-
-
-class TransferAccountEmailForm(BaseMultiUserEmailForm):
-
-    email_address = forms.EmailField(
-        label=(
-            'Enter the email address of the new administrator.'
-        ),
-        widget=forms.EmailInput(
-            attrs={'placeholder': 'Email address'}
-        )
-    )
-
-
-class TransferAccountPasswordForm(
-    IndentedInvalidFieldsMixin, AutoFocusFieldMixin, forms.Form
-):
-    MESSAGE_INVALID_PASSWORD = 'Invalid password'
-    use_required_attribute = False
-
-    password = forms.CharField(
-        label='Your password',
-        help_text='For your security, please enter your current password',
-        widget=forms.PasswordInput,
-    )
-
-    def __init__(self, sso_session_id, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.sso_session_id = sso_session_id
-
-    def clean_password(self):
-        response = sso_api_client.user.check_password(
-            session_id=self.sso_session_id,
-            password=self.cleaned_data['password'],
-        )
-        if not response.ok:
-            raise forms.ValidationError(self.MESSAGE_INVALID_PASSWORD)
-        return self.cleaned_data['password']
-
-
-class AcceptInviteForm(forms.Form):
-    invite_key = forms.CharField(
-        widget=forms.HiddenInput
-    )
 
 
 class EmptyForm(forms.Form):
