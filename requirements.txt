@@ -9,21 +9,21 @@ beautifulsoup4==4.8.2     # via directory-components
 certifi==2019.11.28       # via requests, sentry-sdk
 cffi==1.13.2              # via cryptography
 chardet==3.0.4            # via requests
-cryptography==2.8         # via pyopenssl, requests
-directory-api-client==21.0.1
+cryptography==3.2         # via pyopenssl, requests
+directory-api-client==21.0.1  # via -r requirements.in
 directory-client-core==6.1.0  # via directory-api-client, directory-sso-api-client
-directory-components==35.3.1
+directory-components==35.3.1  # via -r requirements.in
 directory-constants==20.10.0  # via directory-components
-directory-healthcheck==2.0.0
-directory-sso-api-client==6.2.0
-directory_validators==6.0.3
-django-environ==0.4.5
-django-formtools==2.1
+directory-healthcheck==2.0.0  # via -r requirements.in
+directory-sso-api-client==6.2.0  # via -r requirements.in
+directory_validators==6.0.3  # via -r requirements.in
+django-environ==0.4.5     # via -r requirements.in
+django-formtools==2.1     # via -r requirements.in
 django-health-check==3.8.0  # via directory-healthcheck
-django-redis==4.11.0
-django==2.2.13
-djangorestframework==3.10.3
-gunicorn==20.0.4
+django-redis==4.11.0      # via -r requirements.in
+django==2.2.13            # via -r requirements.in, directory-api-client, directory-client-core, directory-components, directory-constants, directory-healthcheck, directory-validators, django-formtools, django-redis, sigauth
+djangorestframework==3.10.3  # via -r requirements.in, sigauth
+gunicorn==20.0.4          # via -r requirements.in
 idna==2.8                 # via requests
 importlib-metadata==1.4.0  # via jsonschema
 jsonschema==3.2.0         # via directory-components
@@ -37,15 +37,15 @@ pyopenssl==19.1.0         # via requests
 pyrsistent==0.15.7        # via jsonschema
 pytz==2017.2              # via directory-validators, django
 redis==3.3.11             # via django-redis
-requests[security]==2.22.0
-sentry-sdk==0.13.4
+requests[security]==2.22.0  # via -r requirements.in, directory-api-client, directory-client-core
+sentry-sdk==0.13.4        # via -r requirements.in
 sigauth==4.1.1            # via directory-client-core
 six==1.14.0               # via cryptography, jsonschema, mohawk, pyopenssl, pyrsistent, w3lib
 soupsieve==1.9.5          # via beautifulsoup4
 sqlparse==0.3.0           # via django
-urllib3==1.25.7
+urllib3==1.25.7           # via -r requirements.in, directory-validators, requests, sentry-sdk
 w3lib==1.21.0             # via directory-client-core
-whitenoise==4.1.4
+whitenoise==4.1.4         # via -r requirements.in
 zipp==1.0.0               # via importlib-metadata
 
 # The following packages are considered to be unsafe in a requirements file:
