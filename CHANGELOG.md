@@ -2,6 +2,7 @@
 
 ## Pre-release
 ## Hotfix
+- NOTICKET - fix-vulnerabilities
 ### Fixed bugs:
 
 ## [2020.09.21](https://github.com/uktrade/directory-ui-buyer/releases/tag/2020.09.21)
