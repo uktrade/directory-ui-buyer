@@ -67,8 +67,9 @@ django==2.2.19
     #   directory-validators
     #   django-formtools
     #   django-redis
+    #   djangorestframework
     #   sigauth
-djangorestframework==3.10.3
+djangorestframework==3.11.2
     # via
     #   -r requirements.in
     #   sigauth
