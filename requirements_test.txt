@@ -46,7 +46,7 @@ directory-healthcheck==2.0.0
     # via -r requirements.in
 directory-sso-api-client==6.2.0
     # via -r requirements.in
-directory-validators==6.0.3
+directory_validators==6.0.5
     # via -r requirements.in
 django-environ==0.4.5
     # via -r requirements.in
@@ -107,7 +107,7 @@ packaging==20.0
     # via
     #   pytest
     #   pytest-sugar
-pillow==7.2.0
+pillow==8.1.2
     # via directory-validators
 pip-tools==4.3.0
     # via -r requirements_test.in
