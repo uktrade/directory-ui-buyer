@@ -2,9 +2,10 @@
 
 ## Pre-release
 
-
 ## Hotfix
+- no ticket - upgrade pillow
 - No ticket - v3-cipipeline manifest.yml file fix
+- NOTICKET - fix-vulnerabilities
 
 ### Fixed bugs:
 - No ticket - Upgrade pillow and django to fix vulnerability
@@ -12,7 +13,6 @@
 - no ticket - upgrade django
 - no ticket - upgrade sentry
 - TT-2379 - CH new redirect - allow url to be configured
-- no ticket - upgrade pillow
 
 ## [2020.02.04](https://github.com/uktrade/directory-cms/releases/tag/2020.02.04)
 [Full Changelog](https://github.com/uktrade/directory-cms/compare/2020.01.28...2020.02.04)
