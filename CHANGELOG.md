@@ -8,9 +8,10 @@
 ## [2020.09.21](https://github.com/uktrade/directory-ui-buyer/releases/tag/2020.09.21)
 [Full Changelog](https://github.com/uktrade/directory-ui-buyer/compare/2020.02.07_2...2020.09.2)
 
-
 ## Hotfix
+- no ticket - upgrade pillow
 - No ticket - v3-cipipeline manifest.yml file fix
+- NOTICKET - fix-vulnerabilities
 
 ### Fixed bugs:
 - No ticket - Upgrade pillow and django to fix vulnerability
@@ -20,6 +21,7 @@
 - TT-2379 - CH new redirect - allow url to be configured
 - no ticket - upgrade pillow
 - TT-2379 - Make Companies house URLs configurable 
+
 
 ## [2020.02.04](https://github.com/uktrade/directory-cms/releases/tag/2020.02.04)
 [Full Changelog](https://github.com/uktrade/directory-cms/compare/2020.01.28...2020.02.04)

@@ -29,6 +29,7 @@ coverage==5.0.3
     #   codecov
     #   pytest-cov
 cryptography==3.3.2
+
     # via
     #   pyopenssl
     #   requests
@@ -47,6 +48,7 @@ directory-healthcheck==2.0.0
 directory-sso-api-client==6.2.0
     # via -r requirements.in
 directory_validators==6.0.5
+
     # via -r requirements.in
 django-environ==0.4.5
     # via -r requirements.in

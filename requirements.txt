@@ -58,6 +58,7 @@ django==2.2.19
     #   djangorestframework
     #   sigauth
 djangorestframework==3.11.2
+
     # via
     #   -r requirements.in
     #   sigauth
