@@ -28,7 +28,8 @@ coverage==5.0.3
     # via
     #   codecov
     #   pytest-cov
-cryptography==2.8
+cryptography==3.3.2
+
     # via
     #   pyopenssl
     #   requests
@@ -46,7 +47,8 @@ directory-healthcheck==2.0.0
     # via -r requirements.in
 directory-sso-api-client==6.2.0
     # via -r requirements.in
-directory-validators==6.0.3
+directory_validators==6.0.5
+
     # via -r requirements.in
 django-environ==0.4.5
     # via -r requirements.in
@@ -67,8 +69,9 @@ django==2.2.19
     #   directory-validators
     #   django-formtools
     #   django-redis
+    #   djangorestframework
     #   sigauth
-djangorestframework==3.10.3
+djangorestframework==3.11.2
     # via
     #   -r requirements.in
     #   sigauth
@@ -107,7 +110,7 @@ packaging==20.0
     # via
     #   pytest
     #   pytest-sugar
-pillow==7.2.0
+pillow==8.1.2
     # via directory-validators
 pip-tools==4.3.0
     # via -r requirements_test.in
