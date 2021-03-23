@@ -12,4 +12,4 @@ directory-sso-api-client==6.2.0
 directory-api-client==21.0.1
 requests[security]==2.22.0
 urllib3>=1.24.2,<2.0.0
-djangorestframework==3.10.3
+djangorestframework==3.11.*
