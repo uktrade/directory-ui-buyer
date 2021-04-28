@@ -23,6 +23,9 @@ django-health-check==3.8.0  # via directory-healthcheck
 django-redis==4.11.0
 django==2.2.19
 djangorestframework==3.11.2
+    # via
+    #   -r requirements.in
+    #   sigauth
 gunicorn==20.0.4
 idna==2.8                 # via requests
 importlib-metadata==1.4.0  # via jsonschema

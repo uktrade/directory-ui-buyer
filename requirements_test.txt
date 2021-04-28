@@ -12,8 +12,16 @@ cffi==1.13.2              # via cryptography
 chardet==3.0.4            # via requests
 click==7.0                # via pip-tools
 codecov==2.0.15
-coverage==5.0.3           # via codecov, pytest-cov
-cryptography==3.3.2       # via pyopenssl, requests
+    # via -r requirements_test.in
+coverage==5.0.3
+    # via
+    #   codecov
+    #   pytest-cov
+cryptography==3.3.2
+
+    # via
+    #   pyopenssl
+    #   requests
 directory-api-client==21.0.1
 directory-client-core==6.1.0  # via directory-api-client, directory-sso-api-client
 directory-components==36.1.0
@@ -21,6 +29,7 @@ directory-constants==20.27.0  # via directory-components
 directory-healthcheck==2.0.0
 directory-sso-api-client==6.2.0
 directory_validators==6.0.5
+    # via -r requirements.in
 django-environ==0.4.5
 django-formtools==2.1
 django-health-check==3.8.0  # via directory-healthcheck
