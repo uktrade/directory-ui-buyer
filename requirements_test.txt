@@ -4,202 +4,75 @@
 #
 #    pip-compile requirements_test.in
 #
-apipkg==1.5
-    # via execnet
-attrs==19.3.0
-    # via
-    #   jsonschema
-    #   pytest
-beautifulsoup4==4.8.2
-    # via directory-components
-certifi==2019.11.28
-    # via
-    #   requests
-    #   sentry-sdk
-cffi==1.13.2
-    # via cryptography
-chardet==3.0.4
-    # via requests
-click==7.0
-    # via pip-tools
+apipkg==1.5               # via execnet
+attrs==19.3.0             # via jsonschema, pytest
+beautifulsoup4==4.8.2     # via directory-components
+certifi==2019.11.28       # via requests, sentry-sdk
+cffi==1.13.2              # via cryptography
+chardet==3.0.4            # via requests
+click==7.0                # via pip-tools
 codecov==2.0.15
-    # via -r requirements_test.in
-coverage==5.0.3
-    # via
-    #   codecov
-    #   pytest-cov
-cryptography==3.3.2
-    # via
-    #   pyopenssl
-    #   requests
+coverage==5.0.3           # via codecov, pytest-cov
+cryptography==3.3.2       # via pyopenssl, requests
 directory-api-client==21.0.1
-    # via -r requirements.in
-directory-client-core==6.1.0
-    # via
-    #   directory-api-client
-    #   directory-sso-api-client
-directory-components==35.3.1
-    # via -r requirements.in
-directory-constants==20.10.0
-    # via directory-components
+directory-client-core==6.1.0  # via directory-api-client, directory-sso-api-client
+directory-components==36.1.0
+directory-constants==20.27.0  # via directory-components
 directory-healthcheck==2.0.0
-    # via -r requirements.in
 directory-sso-api-client==6.2.0
-    # via -r requirements.in
 directory_validators==6.0.5
-    # via -r requirements.in
 django-environ==0.4.5
-    # via -r requirements.in
 django-formtools==2.1
-    # via -r requirements.in
-django-health-check==3.8.0
-    # via directory-healthcheck
+django-health-check==3.8.0  # via directory-healthcheck
 django-redis==4.11.0
-    # via -r requirements.in
 django==2.2.19
-    # via
-    #   -r requirements.in
-    #   directory-api-client
-    #   directory-client-core
-    #   directory-components
-    #   directory-constants
-    #   directory-healthcheck
-    #   directory-validators
-    #   django-formtools
-    #   django-redis
-    #   djangorestframework
-    #   sigauth
 djangorestframework==3.11.2
-    # via
-    #   -r requirements.in
-    #   sigauth
-entrypoints==0.3
-    # via flake8
-execnet==1.7.1
-    # via pytest-xdist
+entrypoints==0.3          # via flake8
+execnet==1.7.1            # via pytest-xdist
 flake8==3.7.9
-    # via -r requirements_test.in
 freezegun==0.3.13
-    # via -r requirements_test.in
 gunicorn==20.0.4
-    # via -r requirements.in
-idna==2.8
-    # via requests
-importlib-metadata==1.4.0
-    # via
-    #   jsonschema
-    #   pluggy
-    #   pytest
-jsonschema==3.2.0
-    # via directory-components
-mccabe==0.6.1
-    # via flake8
-mohawk==0.3.4
-    # via sigauth
-monotonic==1.5
-    # via directory-client-core
-more-itertools==8.1.0
-    # via
-    #   pytest
-    #   zipp
-olefile==0.44
-    # via directory-validators
-packaging==20.0
-    # via
-    #   pytest
-    #   pytest-sugar
-pillow==8.1.2
-    # via directory-validators
+idna==2.8                 # via requests
+importlib-metadata==1.4.0  # via jsonschema, pluggy, pytest
+jsonschema==3.2.0         # via directory-components
+mccabe==0.6.1             # via flake8
+mohawk==0.3.4             # via sigauth
+monotonic==1.5            # via directory-client-core
+more-itertools==8.1.0     # via pytest, zipp
+olefile==0.44             # via directory-validators
+packaging==20.0           # via pytest, pytest-sugar
+pillow==8.1.2             # via directory-validators
 pip-tools==4.3.0
-    # via -r requirements_test.in
-pluggy==0.13.1
-    # via pytest
-py==1.8.1
-    # via pytest
-pycodestyle==2.5.0
-    # via flake8
-pycparser==2.19
-    # via cffi
-pyflakes==2.1.1
-    # via flake8
-pyopenssl==19.1.0
-    # via requests
-pyparsing==2.4.6
-    # via packaging
-pyrsistent==0.15.7
-    # via jsonschema
+pluggy==0.13.1            # via pytest
+py==1.8.1                 # via pytest
+pycodestyle==2.5.0        # via flake8
+pycparser==2.19           # via cffi
+pyflakes==2.1.1           # via flake8
+pyopenssl==19.1.0         # via requests
+pyparsing==2.4.6          # via packaging
+pyrsistent==0.15.7        # via jsonschema
 pytest-cov==2.7.1
-    # via -r requirements_test.in
 pytest-django==3.8.0
-    # via -r requirements_test.in
-pytest-forked==1.1.3
-    # via pytest-xdist
+pytest-forked==1.1.3      # via pytest-xdist
 pytest-sugar==0.9.2
-    # via -r requirements_test.in
 pytest-xdist==1.29.0
-    # via -r requirements_test.in
 pytest==5.3.2
-    # via
-    #   -r requirements_test.in
-    #   pytest-cov
-    #   pytest-django
-    #   pytest-forked
-    #   pytest-sugar
-    #   pytest-xdist
-python-dateutil==2.8.1
-    # via freezegun
-pytz==2017.2
-    # via
-    #   directory-validators
-    #   django
-redis==3.3.11
-    # via django-redis
+python-dateutil==2.8.1    # via freezegun
+pytz==2017.2              # via directory-validators, django
+redis==3.3.11             # via django-redis
 requests-mock==1.7.0
-    # via -r requirements_test.in
 requests[security]==2.22.0
-    # via
-    #   -r requirements.in
-    #   codecov
-    #   directory-api-client
-    #   directory-client-core
-    #   requests-mock
 sentry-sdk==0.13.4
-    # via -r requirements.in
-sigauth==4.1.1
-    # via directory-client-core
-six==1.14.0
-    # via
-    #   cryptography
-    #   freezegun
-    #   jsonschema
-    #   packaging
-    #   pip-tools
-    #   pyopenssl
-    #   pyrsistent
-    #   pytest-xdist
-    #   python-dateutil
-    #   requests-mock
-    #   w3lib
-soupsieve==1.9.5
-    # via beautifulsoup4
-sqlparse==0.3.0
-    # via django
-termcolor==1.1.0
-    # via pytest-sugar
+sigauth==4.1.1            # via directory-client-core
+six==1.14.0               # via cryptography, freezegun, jsonschema, mohawk, packaging, pip-tools, pyopenssl, pyrsistent, pytest-xdist, python-dateutil, requests-mock, w3lib
+soupsieve==1.9.5          # via beautifulsoup4
+sqlparse==0.3.0           # via django
+termcolor==1.1.0          # via pytest-sugar
 urllib3==1.25.7
-    # via
-    #   -r requirements.in
-    #   directory-validators
-    #   requests
-    #   sentry-sdk
-w3lib==1.21.0
-    # via directory-client-core
-wcwidth==0.1.8
-    # via pytest
+w3lib==1.21.0             # via directory-client-core
+wcwidth==0.1.8            # via pytest
 whitenoise==4.1.4
-    # via -r requirements.in
-zipp==1.0.0
-    # via importlib-metadata
+zipp==1.0.0               # via importlib-metadata
 
 # The following packages are considered to be unsafe in a requirements file:
 # setuptools
