@@ -1,6 +1,7 @@
 # Changelog
 
 ## Pre-release
+- GP2-2381 - corrected footer link for contact 
 ## Hotfix
 - NOTICKET - fix-vulnerabilities
 - GP2-2332 - added magna header

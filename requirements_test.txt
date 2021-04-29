@@ -16,8 +16,8 @@ coverage==5.0.3           # via codecov, pytest-cov
 cryptography==3.3.2       # via pyopenssl, requests
 directory-api-client==21.0.1
 directory-client-core==6.1.0  # via directory-api-client, directory-sso-api-client
-directory-components==36.1.0
-directory-constants==20.27.0  # via directory-components
+directory-components==36.2.0
+directory-constants==20.28.0  # via directory-components
 directory-healthcheck==2.0.0
 directory-sso-api-client==6.2.0
 directory_validators==6.0.5
@@ -25,7 +25,7 @@ django-environ==0.4.5
 django-formtools==2.1
 django-health-check==3.8.0  # via directory-healthcheck
 django-redis==4.11.0
-django==2.2.19
+django==2.2.20
 djangorestframework==3.11.2
 entrypoints==0.3          # via flake8
 execnet==1.7.1            # via pytest-xdist
@@ -44,7 +44,7 @@ packaging==20.0           # via pytest, pytest-sugar
 pillow==8.1.2             # via directory-validators
 pip-tools==4.3.0
 pluggy==0.13.1            # via pytest
-py==1.8.1                 # via pytest
+py==1.10.0
 pycodestyle==2.5.0        # via flake8
 pycparser==2.19           # via cffi
 pyflakes==2.1.1           # via flake8
