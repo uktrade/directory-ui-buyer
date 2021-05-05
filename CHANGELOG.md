@@ -1,6 +1,7 @@
 # Changelog
 
 ## Pre-release
+- GP2-2437 - fix failing tests due to change in d-components 35.5.0
 - GP2-2381 - corrected footer link for contact 
 ## Hotfix
 - NOTICKET - fix-vulnerabilities
