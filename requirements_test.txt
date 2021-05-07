@@ -56,7 +56,7 @@ django-health-check==3.8.0
     # via directory-healthcheck
 django-redis==4.11.0
     # via -r requirements.in
-django==2.2.20
+django==2.2.22
     # via
     #   -r requirements.in
     #   directory-api-client
