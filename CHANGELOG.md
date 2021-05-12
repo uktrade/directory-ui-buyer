@@ -1,9 +1,14 @@
 # Changelog
 
 ## Pre-release
+- NOTICKET - Django version bump to 2.2.22 (security fix)
+- GP2-2437 - fix failing tests due to change in d-components 35.5.0
+- GP2-2381 - corrected footer link for contact 
 ## Hotfix
 - NOTICKET - fix-vulnerabilities
+- NOTICKET - bump django 2.2.22, python 3.9.2
 - GP2-2332 - added magna header
+
 ### Fixed bugs:
 
 ## [2020.09.21](https://github.com/uktrade/directory-ui-buyer/releases/tag/2020.09.21)
