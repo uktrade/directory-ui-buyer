@@ -288,3 +288,6 @@ INTERNAL_CH_API_KEY = env.str('INTERNAL_CH_API_KEY', '')
 AUTHENTICATION_BACKENDS = ['directory_sso_api_client.backends.SSOUserBackend']
 
 AUTH_USER_MODEL = 'sso.SSOUser'
+
+# Flag for loading magna header
+MAGNA_HEADER = env.bool('MAGNA_HEADER', False)
