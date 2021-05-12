@@ -26,9 +26,9 @@ directory-client-core==6.1.0
     # via
     #   directory-api-client
     #   directory-sso-api-client
-directory-components==35.3.1
+directory-components==36.2.0
     # via -r requirements.in
-directory-constants==20.10.0
+directory-constants==20.28.0
     # via directory-components
 directory-healthcheck==2.0.0
     # via -r requirements.in
@@ -44,7 +44,7 @@ django-health-check==3.8.0
     # via directory-healthcheck
 django-redis==4.11.0
     # via -r requirements.in
-django==2.2.19
+django==2.2.22
     # via
     #   -r requirements.in
     #   directory-api-client
@@ -58,7 +58,6 @@ django==2.2.19
     #   djangorestframework
     #   sigauth
 djangorestframework==3.11.2
-
     # via
     #   -r requirements.in
     #   sigauth
@@ -66,20 +65,18 @@ gunicorn==20.0.4
     # via -r requirements.in
 idna==2.8
     # via requests
-importlib-metadata==1.4.0
-    # via jsonschema
 jsonschema==3.2.0
     # via directory-components
 mohawk==0.3.4
     # via sigauth
 monotonic==1.5
     # via directory-client-core
-more-itertools==8.1.0
-    # via zipp
 olefile==0.44
     # via directory-validators
 pillow==8.1.2
     # via directory-validators
+py==1.10.0
+    # via -r requirements.in
 pycparser==2.19
     # via cffi
 pyopenssl==19.1.0
@@ -105,7 +102,6 @@ six==1.14.0
     # via
     #   cryptography
     #   jsonschema
-    #   mohawk
     #   pyopenssl
     #   pyrsistent
     #   w3lib
@@ -113,7 +109,7 @@ soupsieve==1.9.5
     # via beautifulsoup4
 sqlparse==0.3.0
     # via django
-urllib3==1.25.7
+urllib3==1.25.8
     # via
     #   -r requirements.in
     #   directory-validators
@@ -123,8 +119,6 @@ w3lib==1.21.0
     # via directory-client-core
 whitenoise==4.1.4
     # via -r requirements.in
-zipp==1.0.0
-    # via importlib-metadata
 
 # The following packages are considered to be unsafe in a requirements file:
 # setuptools
