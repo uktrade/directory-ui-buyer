@@ -38,9 +38,9 @@ directory-client-core==6.1.0
     # via
     #   directory-api-client
     #   directory-sso-api-client
-directory-components==35.3.1
+directory-components==36.2.0
     # via -r requirements.in
-directory-constants==20.10.0
+directory-constants==20.28.0
     # via directory-components
 directory-healthcheck==2.0.0
     # via -r requirements.in
@@ -56,7 +56,7 @@ django-health-check==3.8.0
     # via directory-healthcheck
 django-redis==4.11.0
     # via -r requirements.in
-django==2.2.19
+django==2.2.22
     # via
     #   -r requirements.in
     #   directory-api-client
@@ -85,11 +85,6 @@ gunicorn==20.0.4
     # via -r requirements.in
 idna==2.8
     # via requests
-importlib-metadata==1.4.0
-    # via
-    #   jsonschema
-    #   pluggy
-    #   pytest
 jsonschema==3.2.0
     # via directory-components
 mccabe==0.6.1
@@ -99,9 +94,7 @@ mohawk==0.3.4
 monotonic==1.5
     # via directory-client-core
 more-itertools==8.1.0
-    # via
-    #   pytest
-    #   zipp
+    # via pytest
 olefile==0.44
     # via directory-validators
 packaging==20.0
@@ -198,8 +191,6 @@ wcwidth==0.1.8
     # via pytest
 whitenoise==4.1.4
     # via -r requirements.in
-zipp==1.0.0
-    # via importlib-metadata
 
 # The following packages are considered to be unsafe in a requirements file:
 # setuptools

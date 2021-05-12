@@ -3,6 +3,8 @@
 ## Pre-release
 ## Hotfix
 - NOTICKET - fix-vulnerabilities
+- NOTICKET - bump django 2.2.22, python 3.9.2
+
 ### Fixed bugs:
 
 ## [2020.09.21](https://github.com/uktrade/directory-ui-buyer/releases/tag/2020.09.21)
