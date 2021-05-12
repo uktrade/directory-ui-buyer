@@ -1,9 +1,11 @@
 # Changelog
 
 ## Pre-release
+- GP2-2375 - Redirect 'next' in enrolment to business profile
 - NOTICKET - Django version bump to 2.2.22 (security fix)
 - GP2-2437 - fix failing tests due to change in d-components 35.5.0
-- GP2-2381 - corrected footer link for contact 
+- GP2-2381 - corrected footer link for contact
+
 ## Hotfix
 - NOTICKET - fix-vulnerabilities
 - GP2-2332 - added magna header
