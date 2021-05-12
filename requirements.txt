@@ -75,6 +75,8 @@ olefile==0.44
     # via directory-validators
 pillow==8.1.2
     # via directory-validators
+py==1.10.0
+    # via -r requirements.in
 pycparser==2.19
     # via cffi
 pyopenssl==19.1.0
@@ -107,7 +109,7 @@ soupsieve==1.9.5
     # via beautifulsoup4
 sqlparse==0.3.0
     # via django
-urllib3==1.25.7
+urllib3==1.25.8
     # via
     #   -r requirements.in
     #   directory-validators
