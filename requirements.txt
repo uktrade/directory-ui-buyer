@@ -26,7 +26,7 @@ directory-client-core==6.1.0
     # via
     #   directory-api-client
     #   directory-sso-api-client
-directory-components==36.2.0
+directory-components==37.2.0
     # via -r requirements.in
 directory-constants==20.28.0
     # via directory-components

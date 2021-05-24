@@ -1,7 +1,7 @@
 # Changelog
 
 ## Pre-release
-
+- GP2-2784 - Bump directory-components
 ## Hotfix
 
 ### Fixed bugs:
