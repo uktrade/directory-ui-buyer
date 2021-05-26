@@ -1,6 +1,15 @@
 # Changelog
 
 ## Pre-release
+- GP2-2784 - Bump directory-components
+## Hotfix
+
+### Fixed bugs:
+
+## [1.1.0](https://github.com/uktrade/directory-ui-buyer/releases/tag/1.1.0)
+[Full Changelog](https://github.com/uktrade/directory-ui-buyer/compare/1.0.0...1.1.0)
+## Pre-release
+
 - NOTICKET - Django version bump to 2.2.22 (security fix)
 - GP2-2437 - fix failing tests due to change in d-components 35.5.0
 - GP2-2381 - corrected footer link for contact 
