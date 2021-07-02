@@ -150,7 +150,7 @@ pytz==2017.2
     #   django
 redis==3.3.11
     # via django-redis
-requests[security]==2.22.0
+requests[security]==2.25.1
     # via
     #   -r requirements.in
     #   codecov
@@ -182,7 +182,7 @@ sqlparse==0.3.0
     # via django
 termcolor==1.1.0
     # via pytest-sugar
-urllib3==1.25.8
+urllib3==1.26.6
     # via
     #   -r requirements.in
     #   directory-validators
