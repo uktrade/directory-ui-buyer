@@ -182,7 +182,7 @@ sqlparse==0.3.0
     # via django
 termcolor==1.1.0
     # via pytest-sugar
-urllib3==1.25.6
+urllib3==1.25.8
     # via
     #   -r requirements.in
     #   directory-validators
