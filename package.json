@@ -5,14 +5,17 @@
   "main": "index.js",
   "private": true,
   "scripts": {
-    "test": "mocha enrolment/tests/javascript"
+    "test": "mocha enrolment/tests/javascript",
+    "preinstall": "npx npm-force-resolutions"
   },
   "author": "Graham Veal",
   "license": "ISC",
   "devDependencies": {
-    "gulp": "^4.0.0",
-    "gulp-sass": "^4.0.2",
-    "gulp-sourcemaps": "^2.6.5"
+    "gulp": "^4.0.2",
+    "gulp-sass": "^5.1.0",
+    "node-sass": "^7.0.1"
   },
-  "dependencies": {}
+  "resolutions": {
+    "glob-parent": "5.1.2"
+  }
 }
