@@ -46,9 +46,9 @@ directory-healthcheck==2.0.0
     # via -r requirements.in
 directory-sso-api-client==6.2.0
     # via -r requirements.in
-directory_validators==8.0.0
+directory-validators==8.0.0
     # via -r requirements.in
-django==2.2.26
+django==2.2.27
     # via
     #   -r requirements.in
     #   directory-api-client
