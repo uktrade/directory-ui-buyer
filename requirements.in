@@ -14,3 +14,4 @@ requests[security]==2.25.1
 urllib3>=1.26.*
 djangorestframework==3.11.*
 py>=1.10.0
+pillow==9.3.0

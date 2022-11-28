@@ -4,34 +4,36 @@
 #
 #    pip-compile requirements_test.in
 #
-attrs==21.4.0
+async-timeout==4.0.2
+    # via redis
+attrs==22.1.0
     # via
     #   jsonschema
     #   pytest
-beautifulsoup4==4.10.0
+beautifulsoup4==4.11.1
     # via directory-components
-certifi==2021.10.8
+build==0.9.0
+    # via pip-tools
+certifi==2022.9.24
     # via
     #   requests
     #   sentry-sdk
-cffi==1.15.0
+cffi==1.15.1
     # via cryptography
 chardet==4.0.0
     # via requests
-click==8.0.3
+click==8.1.3
     # via pip-tools
 codecov==2.1.12
     # via -r requirements_test.in
-coverage==6.3.1
+coverage==6.5.0
     # via
     #   codecov
     #   pytest-cov
-cryptography==36.0.1
+cryptography==38.0.4
     # via
     #   pyopenssl
     #   requests
-deprecated==1.2.13
-    # via redis
 directory-api-client==21.0.1
     # via -r requirements.in
 directory-client-core==6.3.0
@@ -73,11 +75,13 @@ djangorestframework==3.11.2
     # via
     #   -r requirements.in
     #   sigauth
+exceptiongroup==1.0.4
+    # via pytest
 execnet==1.9.0
     # via pytest-xdist
-flake8==4.0.1
+flake8==6.0.0
     # via -r requirements_test.in
-freezegun==1.1.0
+freezegun==1.2.2
     # via -r requirements_test.in
 gunicorn==20.0.4
     # via -r requirements.in
@@ -87,7 +91,7 @@ iniconfig==1.1.1
     # via pytest
 jsonschema==3.2.0
     # via directory-components
-mccabe==0.6.1
+mccabe==0.7.0
     # via flake8
 mohawk==1.1.0
     # via sigauth
@@ -97,14 +101,17 @@ olefile==0.46
     # via directory-validators
 packaging==21.3
     # via
+    #   build
     #   pytest
     #   pytest-sugar
     #   redis
-pep517==0.12.0
-    # via pip-tools
-pillow==9.0.1
-    # via directory-validators
-pip-tools==6.5.1
+pep517==0.13.0
+    # via build
+pillow==9.3.0
+    # via
+    #   -r requirements.in
+    #   directory-validators
+pip-tools==6.10.0
     # via -r requirements_test.in
 pluggy==1.0.0
     # via pytest
@@ -112,21 +119,20 @@ py==1.11.0
     # via
     #   -r requirements.in
     #   -r requirements_test.in
-    #   pytest
     #   pytest-forked
-pycodestyle==2.8.0
+pycodestyle==2.10.0
     # via flake8
 pycparser==2.21
     # via cffi
-pyflakes==2.4.0
+pyflakes==3.0.1
     # via flake8
-pyopenssl==22.0.0
+pyopenssl==22.1.0
     # via requests
-pyparsing==3.0.7
+pyparsing==3.0.9
     # via packaging
-pyrsistent==0.18.1
+pyrsistent==0.19.2
     # via jsonschema
-pytest==7.0.0
+pytest==7.2.0
     # via
     #   -r requirements_test.in
     #   pytest-cov
@@ -140,7 +146,7 @@ pytest-django==4.5.2
     # via -r requirements_test.in
 pytest-forked==1.4.0
     # via pytest-xdist
-pytest-sugar==0.9.4
+pytest-sugar==0.9.6
     # via -r requirements_test.in
 pytest-xdist==1.29.0
     # via -r requirements_test.in
@@ -150,7 +156,7 @@ pytz==2021.3
     # via
     #   directory-validators
     #   django
-redis==4.1.3
+redis==4.3.5
     # via django-redis
 requests[security]==2.25.1
     # via
@@ -159,7 +165,7 @@ requests[security]==2.25.1
     #   directory-api-client
     #   directory-client-core
     #   requests-mock
-requests-mock==1.9.3
+requests-mock==1.10.0
     # via -r requirements_test.in
 sentry-sdk==0.13.4
     # via -r requirements.in
@@ -171,31 +177,29 @@ six==1.16.0
     #   pytest-xdist
     #   python-dateutil
     #   requests-mock
-    #   w3lib
-soupsieve==2.3.1
+soupsieve==2.3.2.post1
     # via beautifulsoup4
-sqlparse==0.4.2
+sqlparse==0.4.3
     # via django
-termcolor==1.1.0
+termcolor==2.1.1
     # via pytest-sugar
 tomli==2.0.1
     # via
+    #   build
     #   pep517
     #   pytest
-urllib3==1.26.8
+urllib3==1.26.13
     # via
     #   -r requirements.in
     #   directory-validators
     #   requests
     #   sentry-sdk
-w3lib==1.22.0
+w3lib==2.1.0
     # via directory-client-core
-wheel==0.37.1
+wheel==0.38.4
     # via pip-tools
 whitenoise==4.1.4
     # via -r requirements.in
-wrapt==1.13.3
-    # via deprecated
 
 # The following packages are considered to be unsafe in a requirements file:
 # pip
