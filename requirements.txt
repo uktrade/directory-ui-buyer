@@ -4,39 +4,41 @@
 #
 #    pip-compile requirements.in
 #
-attrs==19.3.0
+async-timeout==4.0.2
+    # via redis
+attrs==22.1.0
     # via jsonschema
-beautifulsoup4==4.8.2
+beautifulsoup4==4.11.1
     # via directory-components
-certifi==2019.11.28
+certifi==2022.9.24
     # via
     #   requests
     #   sentry-sdk
-cffi==1.13.2
+cffi==1.15.1
     # via cryptography
-chardet==3.0.4
+chardet==4.0.0
     # via requests
-cryptography==3.3.2
+cryptography==38.0.4
     # via
     #   pyopenssl
     #   requests
 directory-api-client==21.0.1
     # via -r requirements.in
-directory-client-core==6.1.0
+directory-client-core==6.3.0
     # via
     #   directory-api-client
     #   directory-sso-api-client
 directory-components==37.2.0
     # via -r requirements.in
-directory-constants==20.28.0
+directory-constants==20.28.1
     # via directory-components
 directory-healthcheck==2.0.0
     # via -r requirements.in
 directory-sso-api-client==6.2.0
     # via -r requirements.in
-directory_validators==6.0.6
+directory-validators==8.0.0
     # via -r requirements.in
-django==2.2.24
+django==2.2.28
     # via
     #   -r requirements.in
     #   directory-api-client
@@ -63,31 +65,37 @@ djangorestframework==3.11.2
     #   sigauth
 gunicorn==20.0.4
     # via -r requirements.in
-idna==2.8
+idna==2.10
     # via requests
 jsonschema==3.2.0
     # via directory-components
-mohawk==0.3.4
+mohawk==1.1.0
     # via sigauth
-monotonic==1.5
+monotonic==1.6
     # via directory-client-core
-olefile==0.44
+olefile==0.46
     # via directory-validators
-pillow==8.2.0
-    # via directory-validators
-py==1.10.0
+packaging==21.3
+    # via redis
+pillow==9.3.0
+    # via
+    #   -r requirements.in
+    #   directory-validators
+py==1.11.0
     # via -r requirements.in
-pycparser==2.19
+pycparser==2.21
     # via cffi
-pyopenssl==19.1.0
+pyopenssl==22.1.0
     # via requests
-pyrsistent==0.15.7
+pyparsing==3.0.9
+    # via packaging
+pyrsistent==0.19.2
     # via jsonschema
-pytz==2017.2
+pytz==2021.3
     # via
     #   directory-validators
     #   django
-redis==3.3.11
+redis==4.3.5
     # via django-redis
 requests[security]==2.25.1
     # via
@@ -96,26 +104,21 @@ requests[security]==2.25.1
     #   directory-client-core
 sentry-sdk==0.13.4
     # via -r requirements.in
-sigauth==4.1.1
+sigauth==4.3.0
     # via directory-client-core
-six==1.14.0
-    # via
-    #   cryptography
-    #   jsonschema
-    #   pyopenssl
-    #   pyrsistent
-    #   w3lib
-soupsieve==1.9.5
+six==1.16.0
+    # via jsonschema
+soupsieve==2.3.2.post1
     # via beautifulsoup4
-sqlparse==0.3.0
+sqlparse==0.4.3
     # via django
-urllib3==1.26.6
+urllib3==1.26.13
     # via
     #   -r requirements.in
     #   directory-validators
     #   requests
     #   sentry-sdk
-w3lib==1.21.0
+w3lib==2.1.0
     # via directory-client-core
 whitenoise==4.1.4
     # via -r requirements.in

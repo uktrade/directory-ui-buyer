@@ -1,5 +1,8 @@
 # Changelog
 
+### Enhancements
+* KLS-233 - Patch pillow to v9.3.0
+
 ## Pre-release
 ## [1.3.0](https://github.com/uktrade/directory-ui-buyer/releases/tag/1.3.0)
 [Full Changelog](https://github.com/uktrade/directory-ui-buyer/compare/1.2.0...1.3.0)
