@@ -10,7 +10,7 @@ attrs==22.1.0
     # via jsonschema
 beautifulsoup4==4.11.1
     # via directory-components
-certifi==2022.9.24
+certifi==2022.12.7
     # via
     #   requests
     #   sentry-sdk
