@@ -2,6 +2,7 @@
 
 ### Enhancements
 * KLS-233 - Patch pillow to v9.3.0
+* KLS-409 - Update Cryptography to 39.0.1
 
 ## Pre-release
 ## [1.3.0](https://github.com/uktrade/directory-ui-buyer/releases/tag/1.3.0)
