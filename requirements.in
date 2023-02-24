@@ -11,6 +11,7 @@ directory-components==37.2.0
 directory-sso-api-client==6.2.0
 directory-api-client==21.0.1
 requests[security]==2.25.1
+cryptography==39.0.1
 urllib3>=1.26.*
 djangorestframework==3.11.*
 py>=1.10.0
