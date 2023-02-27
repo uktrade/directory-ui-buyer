@@ -1,10 +1,29 @@
 # Changelog
 
 ### Enhancements
-* KLS-233 - Patch pillow to v9.3.0
-* KLS-409 - Update Cryptography to 39.0.1
 
 ## Pre-release
+## [1.3.4](https://github.com/uktrade/directory-ui-buyer/releases/tag/1.3.4)
+[Full Changelog](https://github.com/uktrade/directory-ui-buyer/compare/1.3.3...1.3.4)
+* KLS-409 - Update Cryptography to 39.0.1
+
+## [1.3.3](https://github.com/uktrade/directory-ui-buyer/releases/tag/1.3.3)
+[Full Changelog](https://github.com/uktrade/directory-ui-buyer/compare/1.3.2...1.3.3)
+- Bump certifi from 2022.9.24 to 2022.12.7
+
+## [1.3.2](https://github.com/uktrade/directory-ui-buyer/releases/tag/1.3.2)
+[Full Changelog](https://github.com/uktrade/directory-ui-buyer/compare/1.3.1...1.3.2)
+- Bump pillow from 8.2.0 to 8.3.2
+- Upgrade directory-validators and Django
+- Chore update fe dependencies
+- django upgrade
+- Bump django from 2.2.27 to 2.2.28
+- KLS-233 patch pillow v9.3.0
+
+## [1.3.1](https://github.com/uktrade/directory-ui-buyer/releases/tag/1.3.1)
+[Full Changelog](https://github.com/uktrade/directory-ui-buyer/compare/1.3.0...1.3.1)
+- Fix python build pack
+
 ## [1.3.0](https://github.com/uktrade/directory-ui-buyer/releases/tag/1.3.0)
 [Full Changelog](https://github.com/uktrade/directory-ui-buyer/compare/1.2.0...1.3.0)
 - fix-vulnerabilities-01-jul-2021
