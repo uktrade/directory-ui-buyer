@@ -99,7 +99,7 @@ requests[security]==2.25.1
     #   -r requirements.in
     #   directory-api-client
     #   directory-client-core
-sentry-sdk==0.13.4
+sentry-sdk==1.14.0
     # via -r requirements.in
 sigauth==4.3.0
     # via directory-client-core
