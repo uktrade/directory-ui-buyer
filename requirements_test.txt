@@ -154,7 +154,7 @@ pytz==2021.3
     # via
     #   directory-validators
     #   django
-redis==4.5.1
+redis==4.5.3
     # via django-redis
 requests[security]==2.25.1
     # via
