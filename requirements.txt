@@ -58,7 +58,7 @@ django==3.2.18
     #   sigauth
 django-environ==0.4.5
     # via -r requirements.in
-django-formtools==2.1
+django-formtools==2.3
     # via -r requirements.in
 django-health-check==3.16.5
     # via directory-healthcheck
