@@ -31,4 +31,3 @@ secrets:
 	fi
 
 .PHONY: clean pytest manage webserver requirements install_requirements css secrets
-
