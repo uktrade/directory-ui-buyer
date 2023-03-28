@@ -454,10 +454,8 @@ def test_buyer_csv_dump(mocked_api_client, client):
     assert mocked_api_client.buyer.get_csv_dump.called is True
     assert mocked_api_client.buyer.get_csv_dump.called_once_with(token='debug')
     assert response.content == b'abc'
-    assert response._headers['content-type'] == ('Content-Type', 'foo')
-    assert response._headers['content-disposition'] == (
-        'Content-Disposition', 'bar'
-    )
+    assert response.headers['Content-Type'] == ('foo')
+    assert response.headers['Content-Disposition'] == ('bar')
 
 
 @patch('company.views.api_client')
@@ -476,7 +474,5 @@ def test_supplier_csv_dump(mocked_api_client, client):
         token='debug'
     )
     assert response.content == b'abc'
-    assert response._headers['content-type'] == ('Content-Type', 'foo')
-    assert response._headers['content-disposition'] == (
-        'Content-Disposition', 'bar'
-    )
+    assert response.headers['Content-Type'] == ('foo')
+    assert response.headers['Content-Disposition'] == ('bar')
