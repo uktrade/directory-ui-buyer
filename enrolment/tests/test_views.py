@@ -19,6 +19,7 @@ def test_landing_page_logged_in(client, user):
         '?business-profile-intent=true'
     )
 
+
 def test_landing_page_not_logged_in(client, settings):
     response = client.get(reverse('index'))
 
