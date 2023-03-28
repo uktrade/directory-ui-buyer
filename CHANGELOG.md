@@ -3,7 +3,7 @@
 ### Enhancements
 
 ## Pre-release
-* KLS-509 - Update sentry-sdk, django, directory-validators, directory-healthcheck, directory-sso-api-client, directory-api-client, directory-client-core 
+* KLS-509 - Update sentry-sdk, django, directory-validators, directory-healthcheck, directory-sso-api-client, directory-api-client, directory-client-core, django-formtools 
 
 ## [1.3.4](https://github.com/uktrade/directory-ui-buyer/releases/tag/1.3.4)
 [Full Changelog](https://github.com/uktrade/directory-ui-buyer/compare/1.3.3...1.3.4)
