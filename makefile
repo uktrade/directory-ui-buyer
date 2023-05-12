@@ -7,6 +7,17 @@ clean:
 pytest:
 	ENV_FILES='test,dev' pytest $(ARGUMENTS)
 
+pytest_codecov:
+	ENV_FILES='test,dev' \
+	pytest \
+		tests/unit \
+		--junit-xml=./results/pytest_unit_report.xml \
+		--cov-config=.coveragerc \
+		--cov-report=html \
+		--cov=. \
+		--codecov \
+		$(ARGUMENTS)
+
 manage:
 	ENV_FILES='secrets-do-not-commit,dev' ./manage.py $(ARGUMENTS)
 
