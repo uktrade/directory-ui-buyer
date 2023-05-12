@@ -23,8 +23,7 @@ jobs:
           command: |
             . venv/bin/activate
             mkdir test-reports
-            make pytest -- --cov=. --cov-config=.coveragerc --cov-report=html --junitxml=test-reports/junit.xml
-            codecov
+            make pytest_codecov -- --codecov-token=${CODECOV_TOKEN}
       - store_test_results:
           path: test-reports
       - store_artifacts:
