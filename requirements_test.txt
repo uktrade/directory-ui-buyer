@@ -42,7 +42,7 @@ directory-client-core==7.1.1
     #   directory-sso-api-client
 directory-components==39.0.2
     # via -r requirements.in
-directory-constants==23.0.2
+directory-constants==23.1.0
     # via directory-components
 directory-healthcheck==3.0.3
     # via -r requirements.in
@@ -50,7 +50,7 @@ directory-sso-api-client==7.1.1
     # via -r requirements.in
 directory-validators==9.2.2
     # via -r requirements.in
-django==3.2.18
+django==3.2.19
     # via
     #   -r requirements.in
     #   directory-api-client
