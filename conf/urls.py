@@ -5,8 +5,8 @@ import directory_components.views
 from directory_components.decorators import skip_ga360
 from directory_constants.urls import domestic
 
-from django.urls import reverse_lazy
-from django.conf.urls import include, url
+from django.urls import reverse_lazy, re_path
+from django.conf.urls import include
 from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth.decorators import login_required
 from django.contrib.sitemaps.views import sitemap
@@ -80,7 +80,7 @@ def no_letter_required(function):
 
 
 healthcheck_urls = [
-    url(
+    re_path(
         r'^$',
         skip_ga360(directory_healthcheck.views.HealthcheckView.as_view()),
         name='healthcheck'
@@ -89,63 +89,63 @@ healthcheck_urls = [
 
 
 urlpatterns = [
-    url(r'^healthcheck/', include((healthcheck_urls, 'healthcheck'), namespace='healthcheck')),
-    url(
+    re_path(r'^healthcheck/', include((healthcheck_urls, 'healthcheck'), namespace='healthcheck')),
+    re_path(
         r"^robots\.txt$",
         skip_ga360(directory_components.views.RobotsView.as_view()),
         name='robots'
     ),
-    url(
+    re_path(
         r"^sitemap\.xml$", sitemap, {'sitemaps': sitemaps},
         name='sitemap'
     ),
-    url(
+    re_path(
         r'^$',
         enrolment.views.DomesticLandingView.as_view(),
         name='index'
     ),
-    url(
+    re_path(
         r'^unsubscribe/',
         login_required(company.views.EmailUnsubscribeView.as_view()),
         name='unsubscribe'
     ),
-    url(
+    re_path(
         r'^verify/$',
         no_letter_required(company.views.CompanyVerifyView.as_view()),
         name='verify-company-hub'
     ),
-    url(
+    re_path(
         r'^verify/letter-send/$',
         no_letter_required(company.views.SendVerificationLetterView.as_view()),
         name='verify-company-address'
     ),
-    url(
+    re_path(
         r'^verify/letter-confirm/$',
         unverified_required(company.views.CompanyAddressVerificationView.as_view()),
         name='verify-company-address-confirm'
     ),
-    url(
+    re_path(
         r'^verify/companies-house/$',
         unverified_required(company.views.CompaniesHouseOauth2View.as_view()),
         name='verify-companies-house'
     ),
-    url(
+    re_path(
         r'^companies-house-oauth2-callback/$',
         unverified_required(company.views.CompaniesHouseOauth2CallbackView.as_view()),
         name='verify-companies-house-callback'
     ),
-    url(
+    re_path(
         r'^confirm-company-address/$',
         company.views.CompanyAddressVerificationHistoricView.as_view(),
         name='verify-company-address-historic-url'
     ),
     # the url to create case studies was ../edit/. That was bad naming.
-    url(
+    re_path(
         r'^data-science/buyers/$',
         skip_ga360(company.views.BuyerCSVDumpView.as_view()),
         name='buyers-csv-dump'
     ),
-    url(
+    re_path(
         r'^data-science/suppliers/$',
         skip_ga360(company.views.SupplierCSVDumpView.as_view()),
         name='suppliers-csv-dump'
@@ -153,66 +153,66 @@ urlpatterns = [
 ]
 
 urlpatterns += [
-    url(
+    re_path(
         r'^register/(?P<step>.+)/$',
         RedirectView.as_view(url=domestic.SINGLE_SIGN_ON_PROFILE / 'enrol/'),
     ),
-    url(
+    re_path(
         r'^register-submit/$',
         RedirectView.as_view(url=domestic.SINGLE_SIGN_ON_PROFILE / 'enrol/'),
     ),
-    url(
+    re_path(
         r'^company-profile/$',
         RedirectView.as_view(url=domestic.SINGLE_SIGN_ON_PROFILE),
         name='company-detail',
     ),
-    url(
+    re_path(
         r'^company-profile/edit/$',
         RedirectView.as_view(url=domestic.SINGLE_SIGN_ON_PROFILE)
     ),
-    url(
+    re_path(
         r'^company-profile/edit/logo/$',
         RedirectView.as_view(url=domestic.SINGLE_SIGN_ON_PROFILE),
     ),
-    url(
+    re_path(
         r'^company-profile/edit/description/$',
         RedirectView.as_view(url=domestic.SINGLE_SIGN_ON_PROFILE),
     ),
-    url(
+    re_path(
         r'^company-profile/edit/key-facts/$',
         RedirectView.as_view(url=domestic.SINGLE_SIGN_ON_PROFILE)
     ),
-    url(
+    re_path(
         r'^company-profile/edit/sectors/$',
         RedirectView.as_view(url=domestic.SINGLE_SIGN_ON_PROFILE),
     ),
-    url(
+    re_path(
         r'^company-profile/edit/contact/$',
         RedirectView.as_view(url=domestic.SINGLE_SIGN_ON_PROFILE),
     ),
-    url(
+    re_path(
         r'^company-profile/edit/address/$',
         RedirectView.as_view(url=domestic.SINGLE_SIGN_ON_PROFILE),
     ),
-    url(
+    re_path(
         r'^company-profile/edit/social-media/$',
         RedirectView.as_view(url=domestic.SINGLE_SIGN_ON_PROFILE)
     ),
-    url(
+    re_path(
         r'^company/case-study/create/$',
         RedirectView.as_view(url=domestic.SINGLE_SIGN_ON_PROFILE),
         name='company-case-study-create',
     ),
-    url(
+    re_path(
         r'^company/case-study/edit/(?P<id>[0-9]+)/$',
         RedirectView.as_view(url=domestic.SINGLE_SIGN_ON_PROFILE),
     ),
-    url(
+    re_path(
         r'^company/case-study/edit/$',
         RedirectView.as_view(url=domestic.SINGLE_SIGN_ON_PROFILE),
         name='company-case-study-create-backwards-compatible',
     ),
-    url(
+    re_path(
         r'^register$',
         RedirectView.as_view(url=domestic.SINGLE_SIGN_ON_PROFILE / 'enrol/'),
         name='register',
@@ -220,5 +220,5 @@ urlpatterns += [
 ]
 
 urlpatterns = [
-    url(r'^find-a-buyer/', include(urlpatterns)),
+    re_path(r'^find-a-buyer/', include(urlpatterns)),
 ]
