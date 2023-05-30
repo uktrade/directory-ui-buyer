@@ -123,7 +123,7 @@ urllib3==1.26.15
     #   sentry-sdk
 w3lib==1.22.0
     # via directory-client-core
-whitenoise==4.1.4
+whitenoise==6.4.0
     # via -r requirements.in
 
 # The following packages are considered to be unsafe in a requirements file:
