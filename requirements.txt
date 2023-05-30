@@ -25,24 +25,24 @@ cryptography==39.0.1
     #   -r requirements.in
     #   pyopenssl
     #   requests
-directory-api-client==26.2.1
+directory-api-client==26.3.0
     # via -r requirements.in
-directory-client-core==7.1.1
+directory-client-core==7.2.2
     # via
     #   -r requirements.in
     #   directory-api-client
     #   directory-sso-api-client
-directory-components==39.0.2
+directory-components==39.1.0
     # via -r requirements.in
 directory-constants==23.1.0
     # via directory-components
-directory-healthcheck==3.0.3
+directory-healthcheck==3.1.1
     # via -r requirements.in
-directory-sso-api-client==7.1.1
+directory-sso-api-client==7.2.1
     # via -r requirements.in
-directory-validators==9.2.2
+directory-validators==9.3.0
     # via -r requirements.in
-django==3.2.19
+django==4.1.9
     # via
     #   -r requirements.in
     #   directory-api-client
@@ -60,9 +60,9 @@ django-environ==0.4.5
     # via -r requirements.in
 django-formtools==2.3
     # via -r requirements.in
-django-health-check==3.16.5
+django-health-check==3.17.0
     # via directory-healthcheck
-django-redis==4.11.0
+django-redis==5.2.0
     # via -r requirements.in
 djangorestframework==3.11.2
     # via
@@ -105,7 +105,7 @@ requests[security]==2.25.1
     #   directory-client-core
 sentry-sdk==1.14.0
     # via -r requirements.in
-sigauth==5.1.1
+sigauth==5.2.0
     # via directory-client-core
 six==1.16.0
     # via
