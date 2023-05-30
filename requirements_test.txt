@@ -206,7 +206,7 @@ w3lib==1.22.0
     # via directory-client-core
 wheel==0.40.0
     # via pip-tools
-whitenoise==4.1.4
+whitenoise==6.4.0
     # via -r requirements.in
 
 # The following packages are considered to be unsafe in a requirements file:
