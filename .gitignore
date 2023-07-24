@@ -106,3 +106,4 @@ package-lock.json
 
 conf/.env
 conf/env/secrets-do-not-commit
+.pii-secret-hook/*
