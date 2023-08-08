@@ -28,7 +28,7 @@ coverage[toml]==7.2.7
     # via
     #   pytest-codecov
     #   pytest-cov
-cryptography==41.0.2
+cryptography==41.0.3
     # via -r requirements.in
 directory-api-client==26.4.2
     # via -r requirements.in
@@ -172,6 +172,7 @@ sigauth==5.2.2
 six==1.16.0
     # via
     #   jsonschema
+    #   mohawk
     #   pytest-xdist
     #   python-dateutil
     #   requests-mock
@@ -189,6 +190,7 @@ tomli==2.0.1
     #   build
     #   coverage
     #   pip-tools
+    #   pyproject-hooks
     #   pytest
 typing-extensions==4.7.1
     # via asgiref
