@@ -13,7 +13,7 @@ directory-api-client==26.4.2
 directory-client-core==7.2.5
 requests[security]==2.31.0
 cryptography==41.0.3
-urllib3>=1.26.*
+urllib3==1.26.18
 djangorestframework==3.11.*
 py>=1.10.0
 pillow==9.3.0
