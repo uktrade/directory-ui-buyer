@@ -16,4 +16,4 @@ cryptography==41.0.4
 urllib3==1.26.18
 djangorestframework==3.11.*
 py>=1.10.0
-pillow==9.3.0
+pillow==10.1.0
