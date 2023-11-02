@@ -39,7 +39,7 @@ directory-sso-api-client==7.2.3
     # via -r requirements.in
 directory-validators==9.3.0
     # via -r requirements.in
-django==4.1.10
+django==4.1.13
     # via
     #   -r requirements.in
     #   directory-api-client
@@ -96,6 +96,7 @@ requests[security]==2.31.0
     #   -r requirements.in
     #   directory-api-client
     #   directory-client-core
+    #   requests
 sentry-sdk==1.14.0
     # via -r requirements.in
 sigauth==5.2.2
