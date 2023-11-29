@@ -1,4 +1,4 @@
-django==4.1.10
+django==4.1.13
 django-environ==0.4.5
 django-formtools==2.3
 django-redis==5.2.0
