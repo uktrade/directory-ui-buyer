@@ -22,24 +22,24 @@ charset-normalizer==3.3.2
     # via requests
 cryptography==41.0.7
     # via -r requirements.in
-directory-api-client==26.4.2
+directory-api-client==26.4.3
     # via -r requirements.in
-directory-client-core==7.2.5
+directory-client-core==7.2.6
     # via
     #   -r requirements.in
     #   directory-api-client
     #   directory-sso-api-client
-directory-components==39.1.2
+directory-components==40.0.0
     # via -r requirements.in
-directory-constants==23.1.2
+directory-constants==24.0.0
     # via directory-components
-directory-healthcheck==3.1.2
+directory-healthcheck==3.2
     # via -r requirements.in
 directory-sso-api-client==7.2.3
     # via -r requirements.in
-directory-validators==9.3.0
+directory-validators==9.3.2
     # via -r requirements.in
-django==4.1.13
+django==4.2.3
     # via
     #   -r requirements.in
     #   directory-api-client
