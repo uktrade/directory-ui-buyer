@@ -49,11 +49,13 @@ Get seen by motivated overseas buyers
 <div>
   Is Authenticated: {{ request.user.is_authenticated }}
 </div>
-{% with cookies=request.COOKIES %}
 <div>
-  COOKIES: {{ cookies }}
+  Session Id: {{ session_id }}
 </div>
-{% endwith %}
+<div>
+  User: {{ user }}
+</div>
+
 
 <section class="background-stone-30 padding-vertical-45">
   <div class="container">
