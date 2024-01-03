@@ -35,7 +35,7 @@ directory-constants==24.0.0
     # via directory-components
 directory-healthcheck==3.2
     # via -r requirements.in
-directory-sso-api-client==7.2.4
+directory-sso-api-client==7.2.3
     # via -r requirements.in
 directory-validators==9.3.2
     # via -r requirements.in

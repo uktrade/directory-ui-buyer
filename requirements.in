@@ -8,7 +8,7 @@ whitenoise==6.4.*
 directory_validators==9.3.*
 directory-healthcheck==3.2
 directory-components==40.0.*
-directory-sso-api-client==7.2.4
+directory-sso-api-client==7.2.3
 directory-api-client==26.4.*
 directory-client-core==7.2.*
 requests[security]==2.31.*
