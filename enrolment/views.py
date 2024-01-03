@@ -19,7 +19,7 @@ class DomesticLandingView(TemplateView):
 
     def get_context_data(self, **kwargs):
         enrolment_url = (urls.domestic.SINGLE_SIGN_ON_PROFILE / 'enrol/') + '?business-profile-intent=true'
-        if not self.request.user.is_authenticated:
+        if self.request.user.is_anonymous:
             enrolment_url = add_next(
                 destination_url=settings.SSO_PROXY_LOGIN_URL,
                 current_url=quote(enrolment_url)
