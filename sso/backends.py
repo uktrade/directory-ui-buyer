@@ -18,7 +18,6 @@ class SSOUserBackend:
     MESSAGE_NOT_SUCCESSFUL = 'SSO did not return a 200 response'
 
     def authenticate(self, request):
-        breakpoint()
         logger.info("IN AUTHENTICATE")
         logger.info(f'SSO_SESSION_COOKIE: {settings.SSO_SESSION_COOKIE}')
         session_id = request.COOKIES.get(settings.SSO_SESSION_COOKIE)
