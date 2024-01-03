@@ -286,7 +286,7 @@ INTERNAL_CH_BASE_URL = env.str('INTERNAL_CH_BASE_URL', '')
 INTERNAL_CH_API_KEY = env.str('INTERNAL_CH_API_KEY', '')
 
 # Authentication
-AUTHENTICATION_BACKENDS = ['sso.backends.SSOUserBackend']
+AUTHENTICATION_BACKENDS = ['directory_sso_api_client.backends.SSOUserBackend']
 
 AUTH_USER_MODEL = 'sso.SSOUser'
 
