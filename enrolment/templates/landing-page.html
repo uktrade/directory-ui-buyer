@@ -43,6 +43,18 @@ Get seen by motivated overseas buyers
   </div>
 </section>
 
+<div>
+  Is Anonomous: {{ request.user.is_anonymous }}
+</div>
+<div>
+  Is Authenticated: {{ request.user.is_authenticated }}
+</div>
+{% with cookies=request.COOKIES %}
+<div>
+  COOKIES: {{ cookies }}
+</div>
+{% endwith %}
+
 <section class="background-stone-30 padding-vertical-45">
   <div class="container">
     <div id="fabhome-bottom" class="width-half">
