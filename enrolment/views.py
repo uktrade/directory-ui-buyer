@@ -26,7 +26,11 @@ class DomesticLandingView(TemplateView):
                 current_url=quote(enrolment_url)
             )
         backend = SSOUserBackend()
-        user = backend.authenticate(self.request)
+        try:
+            user = backend.get_user(self.request.COOKIES.get(settings.SSO_SESSION_COOKIE))
+        except Exception as e:
+            user = str(e)
+
         return super().get_context_data(
             **kwargs,
             enrolment_url=enrolment_url,
