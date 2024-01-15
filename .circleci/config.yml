@@ -7,6 +7,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
+          name: Restore Cache
           key: v2-deps-{{ checksum "requirements_test.txt" }}
       - run:
           name: Create virtualenv and install dependencies
@@ -16,6 +17,7 @@ jobs:
             pip install --upgrade pip
             pip install -r requirements_test.txt
       - save_cache:
+          name: Save Cache
           key: v2-deps-{{ checksum "requirements_test.txt" }}
           paths:
             - "venv"
