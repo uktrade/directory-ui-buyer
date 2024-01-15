@@ -8,7 +8,7 @@ asgiref==3.7.2
     # via django
 async-timeout==4.0.3
     # via redis
-attrs==23.1.0
+attrs==23.2.0
     # via jsonschema
 beautifulsoup4==4.12.2
     # via directory-components
@@ -24,7 +24,7 @@ charset-normalizer==3.3.2
     # via requests
 click==8.1.7
     # via pip-tools
-coverage[toml]==7.3.4
+coverage[toml]==7.4.0
     # via
     #   coverage
     #   pytest-codecov
@@ -33,7 +33,7 @@ cryptography==41.0.7
     # via -r requirements.in
 directory-api-client==26.4.3
     # via -r requirements.in
-directory-client-core==7.2.6
+directory-client-core==7.2.8
     # via
     #   -r requirements.in
     #   directory-api-client
@@ -48,7 +48,7 @@ directory-sso-api-client==7.2.3
     # via -r requirements.in
 directory-validators==9.3.2
     # via -r requirements.in
-django==4.2.3
+django==4.2
     # via
     #   -r requirements.in
     #   directory-api-client
@@ -62,15 +62,15 @@ django==4.2.3
     #   django-redis
     #   djangorestframework
     #   sigauth
-django-environ==0.4.5
+django-environ==0.11.2
     # via -r requirements.in
-django-formtools==2.3
+django-formtools==2.5.1
     # via -r requirements.in
 django-health-check==3.17.0
     # via directory-healthcheck
-django-redis==5.2.0
+django-redis==5.4.0
     # via -r requirements.in
-djangorestframework==3.11.2
+djangorestframework==3.14.0
     # via
     #   -r requirements.in
     #   sigauth
@@ -78,19 +78,19 @@ exceptiongroup==1.2.0
     # via pytest
 execnet==2.0.2
     # via pytest-xdist
-flake8==6.1.0
+flake8==7.0.0
     # via -r requirements_test.in
 freezegun==1.4.0
     # via -r requirements_test.in
 gitdb==4.0.11
     # via gitpython
-gitpython==3.1.40
+gitpython==3.1.41
     # via -r requirements_test.in
 gunicorn==20.0.4
     # via -r requirements.in
 idna==3.6
     # via requests
-importlib-metadata==7.0.0
+importlib-metadata==7.0.1
     # via build
 iniconfig==2.0.0
     # via pytest
@@ -126,13 +126,13 @@ pycodestyle==2.11.1
     # via flake8
 pycparser==2.21
     # via cffi
-pyflakes==3.1.0
+pyflakes==3.2.0
     # via flake8
 pyproject-hooks==1.0.0
     # via build
 pyrsistent==0.20.0
     # via jsonschema
-pytest==7.4.3
+pytest==7.4.4
     # via
     #   -r requirements_test.in
     #   pytest-codecov
@@ -156,7 +156,9 @@ pytest-xdist==1.29.0
 python-dateutil==2.8.2
     # via freezegun
 pytz==2023.3
-    # via directory-validators
+    # via
+    #   directory-validators
+    #   djangorestframework
 redis==5.0.1
     # via django-redis
 requests[security]==2.31.0

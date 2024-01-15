@@ -8,7 +8,7 @@ asgiref==3.7.2
     # via django
 async-timeout==4.0.3
     # via redis
-attrs==23.1.0
+attrs==23.2.0
     # via jsonschema
 beautifulsoup4==4.12.2
     # via directory-components
@@ -24,7 +24,7 @@ cryptography==41.0.7
     # via -r requirements.in
 directory-api-client==26.4.3
     # via -r requirements.in
-directory-client-core==7.2.6
+directory-client-core==7.2.8
     # via
     #   -r requirements.in
     #   directory-api-client
@@ -39,7 +39,7 @@ directory-sso-api-client==7.2.3
     # via -r requirements.in
 directory-validators==9.3.2
     # via -r requirements.in
-django==4.2.3
+django==4.2
     # via
     #   -r requirements.in
     #   directory-api-client
@@ -53,15 +53,15 @@ django==4.2.3
     #   django-redis
     #   djangorestframework
     #   sigauth
-django-environ==0.4.5
+django-environ==0.11.2
     # via -r requirements.in
-django-formtools==2.3
+django-formtools==2.5.1
     # via -r requirements.in
 django-health-check==3.17.0
     # via directory-healthcheck
-django-redis==5.2.0
+django-redis==5.4.0
     # via -r requirements.in
-djangorestframework==3.11.2
+djangorestframework==3.14.0
     # via
     #   -r requirements.in
     #   sigauth
@@ -88,7 +88,9 @@ pycparser==2.21
 pyrsistent==0.20.0
     # via jsonschema
 pytz==2023.3
-    # via directory-validators
+    # via
+    #   directory-validators
+    #   djangorestframework
 redis==5.0.1
     # via django-redis
 requests[security]==2.31.0
