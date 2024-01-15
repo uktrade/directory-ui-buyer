@@ -5,9 +5,9 @@ jobs:
       - image: cimg/python:3.9.13
     steps:
       - checkout
-      - restore_cache:
-          name: Restore Cache
-          key: v1-deps-{{ checksum "requirements_test.txt" }}
+      # - restore_cache:
+      #     name: Restore Cache
+      #     key: v1-deps-{{ checksum "requirements_test.txt" }}
       - run:
           name: Create virtualenv and install dependencies
           command: |
