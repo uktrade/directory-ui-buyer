@@ -8,7 +8,7 @@ asgiref==3.7.2
     # via django
 async-timeout==4.0.3
     # via redis
-attrs==23.1.0
+attrs==23.2.0
     # via jsonschema
 beautifulsoup4==4.12.2
     # via directory-components
