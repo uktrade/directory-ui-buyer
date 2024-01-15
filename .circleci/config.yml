@@ -20,6 +20,7 @@ jobs:
       - run:
           name: Run tests
           command: |
+            python3 -m venv venv
             . venv/bin/activate
             mkdir test-reports
             make pytest_codecov -- --codecov-token=${CODECOV_TOKEN}
