@@ -1,50 +1,46 @@
 version: 2
 jobs:
   test:
+    working_directory: ~/directory-ui-buyer
     docker:
       - image: cimg/python:3.9.13
+    
     steps:
       - checkout
+      - restore_cache:
+          key: v2-deps-{{ checksum "requirements_test.txt" }}
       - run:
           name: Create virtualenv and install dependencies
           command: |
             python3 -m venv venv
             . venv/bin/activate
             pip install --upgrade pip
-            make install_requirements
+            pip install -r requirements_test.txt
       - save_cache:
-          name: Save Cache
-          key: v1-deps-{{ checksum "requirements_test.txt" }}
+          key: v2-deps-{{ checksum "requirements_test.txt" }}
           paths:
             - "venv"
       - run:
           name: Run tests
           command: |
-            python3 -m venv venv
             . venv/bin/activate
-            mkdir test-reports
             make pytest_codecov -- --codecov-token=${CODECOV_TOKEN}
-      - store_test_results:
-          path: test-reports
-      - store_artifacts:
-          path: test-reports
-
   flake8:
     docker:
-    - image: cimg/python:3.9.13
+      - image: cimg/python:3.9.13
     steps:
-    - checkout
-    - run:
-        name: Run flake8
-        command: |
-          python3 -m venv venv
-          . venv/bin/activate
-          pip install flake8
-          flake8
+      - checkout
+      - run:
+          name: Run flake8
+          command: |
+            python3 -m venv venv
+            . venv/bin/activate
+            pip install flake8
+            flake8
 
 workflows:
   version: 2
-  test_and_flake8:
+  test_and_code_checks:
     jobs:
       - test
       - flake8
