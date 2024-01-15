@@ -1,7 +1,6 @@
 version: 2
 jobs:
   test:
-    working_directory: ~/directory-ui-buyer
     docker:
       - image: cimg/python:3.9.13
     
