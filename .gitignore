@@ -3,6 +3,7 @@ __pycache__/
 *.py[cod]
 *$py.class
 .sass-cache/
+venv
 .venv/
 */staticfiles/
 BrowserStackLocal
