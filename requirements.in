@@ -1,4 +1,4 @@
-django==4.2
+django==4.2.3
 django-environ==0.4.5
 django-formtools==2.3
 django-redis==5.2.0
@@ -8,9 +8,9 @@ whitenoise==6.4.0
 directory_validators==9.3.2
 directory-healthcheck==3.2
 directory-components==40.*
-directory-sso-api-client==7.2.3
-directory-api-client==26.4.3
-directory-client-core==7.2.6
+directory-sso-api-client==7.2.6
+directory-api-client==26.4.5
+directory-client-core==7.2.8
 requests[security]==2.31.0
 cryptography==41.0.7
 urllib3==1.26.18
