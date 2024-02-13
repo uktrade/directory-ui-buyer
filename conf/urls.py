@@ -100,11 +100,6 @@ urlpatterns = [
         name='sitemap'
     ),
     re_path(
-        r'^$',
-        enrolment.views.DomesticLandingView.as_view(),
-        name='index'
-    ),
-    re_path(
         r'^unsubscribe/',
         login_required(company.views.EmailUnsubscribeView.as_view()),
         name='unsubscribe'
