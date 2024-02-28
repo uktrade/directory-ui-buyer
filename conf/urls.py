@@ -14,7 +14,6 @@ from django.views.decorators.http import require_http_methods
 from django.views.generic import RedirectView
 
 import company.views
-import enrolment.views
 
 
 sitemaps = {
@@ -98,11 +97,6 @@ urlpatterns = [
     re_path(
         r"^sitemap\.xml$", sitemap, {'sitemaps': sitemaps},
         name='sitemap'
-    ),
-    re_path(
-        r'^$',
-        enrolment.views.DomesticLandingView.as_view(),
-        name='index'
     ),
     re_path(
         r'^unsubscribe/',
