@@ -4,7 +4,7 @@
 #
 #    pip-compile requirements.in
 #
-asgiref==3.7.2
+asgiref==3.8.1
     # via django
 async-timeout==4.0.3
     # via redis
@@ -22,26 +22,26 @@ charset-normalizer==3.3.2
     # via requests
 cryptography==42.0.4
     # via -r requirements.in
-directory-api-client==26.4.5
+directory-api-client==26.4.7
     # via -r requirements.in
-directory-client-core==7.2.8
+directory-client-core==7.2.13
     # via
     #   -r requirements.in
     #   directory-api-client
     #   directory-sso-api-client
-directory-components==40.1.1
+directory-components==40.2.3
     # via -r requirements.in
-directory-constants==24.1.0
+directory-constants==24.1.2
     # via
     #   -r requirements.in
     #   directory-components
-directory-healthcheck==3.3
+directory-healthcheck==3.5
     # via -r requirements.in
-directory-sso-api-client==7.2.6
+directory-sso-api-client==7.2.7
     # via -r requirements.in
-directory-validators==9.3.2
+directory-validators==9.3.3
     # via -r requirements.in
-django==4.2.7
+django==4.2.11
     # via
     #   -r requirements.in
     #   directory-api-client
@@ -59,7 +59,7 @@ django-environ==0.11.2
     # via -r requirements.in
 django-formtools==2.5.1
     # via -r requirements.in
-django-health-check==3.17.0
+django-health-check==3.18.1
     # via
     #   -r requirements.in
     #   directory-healthcheck
@@ -95,7 +95,7 @@ pytz==2023.3
     # via
     #   directory-validators
     #   djangorestframework
-redis==5.0.1
+redis==5.0.3
     # via django-redis
 requests[security]==2.31.0
     # via
@@ -105,7 +105,7 @@ requests[security]==2.31.0
     #   requests
 sentry-sdk==1.14.0
     # via -r requirements.in
-sigauth==5.2.3
+sigauth==5.2.7
     # via directory-client-core
 six==1.16.0
     # via
@@ -116,7 +116,7 @@ soupsieve==2.5
     # via beautifulsoup4
 sqlparse==0.4.4
     # via django
-typing-extensions==4.9.0
+typing-extensions==4.10.0
     # via asgiref
 urllib3==1.26.18
     # via
