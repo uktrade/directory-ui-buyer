@@ -81,7 +81,7 @@ monotonic==1.6
     # via directory-client-core
 olefile==0.47
     # via directory-validators
-pillow==10.2.0
+pillow==10.3.0
     # via
     #   -r requirements.in
     #   directory-validators
@@ -102,7 +102,6 @@ requests[security]==2.31.0
     #   -r requirements.in
     #   directory-api-client
     #   directory-client-core
-    #   requests
 sentry-sdk==1.14.0
     # via -r requirements.in
 sigauth==5.2.7
