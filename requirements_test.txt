@@ -26,7 +26,6 @@ click==8.1.7
     # via pip-tools
 coverage[toml]==7.4.4
     # via
-    #   coverage
     #   pytest-codecov
     #   pytest-cov
 cryptography==42.0.4
@@ -113,7 +112,7 @@ packaging==24.0
     #   build
     #   pytest
     #   pytest-sugar
-pillow==10.2.0
+pillow==10.3.0
     # via
     #   -r requirements.in
     #   directory-validators
@@ -173,7 +172,6 @@ requests[security]==2.31.0
     #   directory-api-client
     #   directory-client-core
     #   pytest-codecov
-    #   requests
     #   requests-mock
 requests-mock==1.11.0
     # via -r requirements_test.in
