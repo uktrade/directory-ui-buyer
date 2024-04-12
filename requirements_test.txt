@@ -91,7 +91,7 @@ gitpython==3.1.42
     # via -r requirements_test.in
 gunicorn==20.0.4
     # via -r requirements.in
-idna==3.6
+idna==3.7
     # via requests
 importlib-metadata==7.1.0
     # via build

@@ -71,7 +71,7 @@ djangorestframework==3.14.0
     #   sigauth
 gunicorn==20.0.4
     # via -r requirements.in
-idna==3.6
+idna==3.7
     # via requests
 jsonschema==3.2.0
     # via directory-components
