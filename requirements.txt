@@ -69,7 +69,7 @@ djangorestframework==3.14.0
     # via
     #   -r requirements.in
     #   sigauth
-gunicorn==20.0.4
+gunicorn==22.0.0
     # via -r requirements.in
 idna==3.6
     # via requests
@@ -81,6 +81,8 @@ monotonic==1.6
     # via directory-client-core
 olefile==0.47
     # via directory-validators
+packaging==24.0
+    # via gunicorn
 pillow==10.3.0
     # via
     #   -r requirements.in
