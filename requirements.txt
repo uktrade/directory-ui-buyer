@@ -72,7 +72,9 @@ djangorestframework==3.14.0
 gunicorn==22.0.0
     # via -r requirements.in
 idna==3.7
-    # via requests
+    # via
+    #   -r requirements.in
+    #   requests
 jsonschema==3.2.0
     # via directory-components
 mohawk==1.1.0
@@ -89,7 +91,7 @@ pillow==10.3.0
     #   directory-validators
 py==1.11.0
     # via -r requirements.in
-pycparser==2.21
+pycparser==2.22
     # via cffi
 pyrsistent==0.20.0
     # via jsonschema
@@ -117,7 +119,7 @@ soupsieve==2.5
     # via beautifulsoup4
 sqlparse==0.5.0
     # via django
-typing-extensions==4.10.0
+typing-extensions==4.11.0
     # via asgiref
 urllib3==1.26.18
     # via
