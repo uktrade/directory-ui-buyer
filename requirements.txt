@@ -69,9 +69,9 @@ djangorestframework==3.14.0
     # via
     #   -r requirements.in
     #   sigauth
-gunicorn==20.0.4
+gunicorn==22.0.0
     # via -r requirements.in
-idna==3.6
+idna==3.7
     # via requests
 jsonschema==3.2.0
     # via directory-components
@@ -81,6 +81,8 @@ monotonic==1.6
     # via directory-client-core
 olefile==0.47
     # via directory-validators
+packaging==24.0
+    # via gunicorn
 pillow==10.3.0
     # via
     #   -r requirements.in
@@ -113,7 +115,7 @@ six==1.16.0
     #   w3lib
 soupsieve==2.5
     # via beautifulsoup4
-sqlparse==0.4.4
+sqlparse==0.5.0
     # via django
 typing-extensions==4.10.0
     # via asgiref

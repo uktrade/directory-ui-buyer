@@ -89,9 +89,9 @@ gitdb==4.0.11
     # via gitpython
 gitpython==3.1.42
     # via -r requirements_test.in
-gunicorn==20.0.4
+gunicorn==22.0.0
     # via -r requirements.in
-idna==3.6
+idna==3.7
     # via requests
 importlib-metadata==7.1.0
     # via build
@@ -110,6 +110,7 @@ olefile==0.47
 packaging==24.0
     # via
     #   build
+    #   gunicorn
     #   pytest
     #   pytest-sugar
 pillow==10.3.0
@@ -191,7 +192,7 @@ smmap==5.0.1
     # via gitdb
 soupsieve==2.5
     # via beautifulsoup4
-sqlparse==0.4.4
+sqlparse==0.5.0
     # via django
 termcolor==2.4.0
     # via pytest-sugar
