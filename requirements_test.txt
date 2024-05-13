@@ -12,7 +12,7 @@ attrs==23.2.0
     # via jsonschema
 beautifulsoup4==4.12.3
     # via directory-components
-build==1.1.1
+build==1.2.1
     # via pip-tools
 certifi==2024.2.2
     # via
@@ -20,11 +20,13 @@ certifi==2024.2.2
     #   sentry-sdk
 cffi==1.16.0
     # via cryptography
+cfgv==3.4.0
+    # via pre-commit
 charset-normalizer==3.3.2
     # via requests
 click==8.1.7
     # via pip-tools
-coverage[toml]==7.4.4
+coverage[toml]==7.5.1
     # via
     #   pytest-codecov
     #   pytest-cov
@@ -47,8 +49,10 @@ directory-healthcheck==3.5
     # via -r requirements.in
 directory-sso-api-client==7.2.7
     # via -r requirements.in
-directory-validators==9.3.3
+directory-validators==9.3.4
     # via -r requirements.in
+distlib==0.3.8
+    # via virtualenv
 django==4.2.11
     # via
     #   -r requirements.in
@@ -60,6 +64,7 @@ django==4.2.11
     #   directory-validators
     #   django-formtools
     #   django-health-check
+    #   django-log-formatter-asim
     #   django-redis
     #   djangorestframework
     #   sigauth
@@ -71,26 +76,32 @@ django-health-check==3.18.1
     # via
     #   -r requirements.in
     #   directory-healthcheck
+django-log-formatter-asim==0.0.4
+    # via -r requirements.in
 django-redis==5.4.0
     # via -r requirements.in
 djangorestframework==3.14.0
     # via
     #   -r requirements.in
     #   sigauth
-exceptiongroup==1.2.0
+exceptiongroup==1.2.1
     # via pytest
-execnet==2.0.2
+execnet==2.1.1
     # via pytest-xdist
+filelock==3.14.0
+    # via virtualenv
 flake8==7.0.0
     # via -r requirements_test.in
-freezegun==1.4.0
+freezegun==1.5.1
     # via -r requirements_test.in
 gitdb==4.0.11
     # via gitpython
-gitpython==3.1.42
+gitpython==3.1.43
     # via -r requirements_test.in
 gunicorn==22.0.0
     # via -r requirements.in
+identify==2.5.36
+    # via pre-commit
 idna==3.7
     # via requests
 importlib-metadata==7.1.0
@@ -105,6 +116,8 @@ mohawk==1.1.0
     # via sigauth
 monotonic==1.6
     # via directory-client-core
+nodeenv==1.8.0
+    # via pre-commit
 olefile==0.47
     # via directory-validators
 packaging==24.0
@@ -119,8 +132,12 @@ pillow==10.3.0
     #   directory-validators
 pip-tools==7.4.1
     # via -r requirements_test.in
-pluggy==1.4.0
+platformdirs==4.2.1
+    # via virtualenv
+pluggy==1.5.0
     # via pytest
+pre-commit==3.7.1
+    # via django-log-formatter-asim
 py==1.11.0
     # via
     #   -r requirements.in
@@ -128,17 +145,17 @@ py==1.11.0
     #   pytest-forked
 pycodestyle==2.11.1
     # via flake8
-pycparser==2.21
+pycparser==2.22
     # via cffi
 pyflakes==3.2.0
     # via flake8
-pyproject-hooks==1.0.0
+pyproject-hooks==1.1.0
     # via
     #   build
     #   pip-tools
 pyrsistent==0.20.0
     # via jsonschema
-pytest==8.1.1
+pytest==8.2.0
     # via
     #   -r requirements_test.in
     #   pytest-codecov
@@ -165,7 +182,9 @@ pytz==2023.3
     # via
     #   directory-validators
     #   djangorestframework
-redis==5.0.3
+pyyaml==6.0.1
+    # via pre-commit
+redis==5.0.4
     # via django-redis
 requests[security]==2.31.0
     # via
@@ -174,7 +193,7 @@ requests[security]==2.31.0
     #   directory-client-core
     #   pytest-codecov
     #   requests-mock
-requests-mock==1.11.0
+requests-mock==1.12.1
     # via -r requirements_test.in
 sentry-sdk==1.14.0
     # via -r requirements.in
@@ -186,7 +205,6 @@ six==1.16.0
     #   mohawk
     #   pytest-xdist
     #   python-dateutil
-    #   requests-mock
     #   w3lib
 smmap==5.0.1
     # via gitdb
@@ -201,9 +219,8 @@ tomli==2.0.1
     #   build
     #   coverage
     #   pip-tools
-    #   pyproject-hooks
     #   pytest
-typing-extensions==4.10.0
+typing-extensions==4.11.0
     # via asgiref
 urllib3==1.26.18
     # via
@@ -211,6 +228,8 @@ urllib3==1.26.18
     #   directory-validators
     #   requests
     #   sentry-sdk
+virtualenv==20.26.1
+    # via pre-commit
 w3lib==1.22.0
     # via directory-client-core
 wheel==0.43.0
