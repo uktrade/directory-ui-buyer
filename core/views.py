@@ -6,23 +6,22 @@ from django.views.generic import TemplateView
 
 from core.pingdom.services import health_check_services
 
-
 HEALTH_CHECK_STATUS = 0
 HEALTH_CHECK_EXCEPTION = 1
 
 
 class PingDomView(TemplateView):
     template_name = 'directory_healthcheck/pingdom.xml'
-    
+
     status = 'OK'
-        
+
     @method_decorator(never_cache)
     def get(self, *args, **kwargs):
-    
+
         checked = {}
         for service in health_check_services:
             checked[service.name] = service().check()
-        
+
         if all(item[HEALTH_CHECK_STATUS] for item in checked.values()):
             return HttpResponse(
                 render_to_string(self.template_name, {'status': self.status, 'errors': []}),
