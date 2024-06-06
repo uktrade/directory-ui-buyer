@@ -148,10 +148,11 @@ MEDIA_ROOT = os.path.join(PROJECT_ROOT, 'media')
 STATIC_ROOT = os.path.join(PROJECT_ROOT, 'staticfiles')
 STATIC_HOST = env.str('STATIC_HOST', '')
 STATIC_URL = STATIC_HOST + '/static/'
-STATICFILES_STORAGE = env.str(
-    'STATICFILES_STORAGE',
-    'whitenoise.storage.CompressedStaticFilesStorage'
-)
+STORAGES = {
+    "staticfiles": {
+        "BACKEND": env.str('STATICFILES_STORAGE', 'whitenoise.storage.CompressedStaticFilesStorage')
+    },
+}
 
 # Logging for development
 if DEBUG:
