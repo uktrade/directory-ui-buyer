@@ -1,7 +1,7 @@
 from urllib.parse import urlparse
 
-from redis import Redis
 from django.conf import settings
+from redis import Redis
 from redis.exceptions import ConnectionError
 
 
