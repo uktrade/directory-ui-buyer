@@ -15,7 +15,7 @@ def test_pingdom_redis_healthcheck_ok(client):
 def test_pingdom_redis_healthcheck_false(mock_redis_check, client):
     mock_redis_check.return_value = (
         False,
-        'Database Error',
+        'Redis Error',
     )
     response = client.get(reverse('pingdom'))
     assert response.status_code == 500
