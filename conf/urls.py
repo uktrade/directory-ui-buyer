@@ -5,7 +5,7 @@ import directory_components.views
 from directory_components.decorators import skip_ga360
 from directory_constants.urls import domestic
 
-from django.urls import reverse_lazy, re_path
+from django.urls import reverse_lazy, path, re_path
 from django.conf.urls import include
 from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth.decorators import login_required
@@ -14,6 +14,7 @@ from django.views.decorators.http import require_http_methods
 from django.views.generic import RedirectView
 
 import company.views
+from core.views import PingDomView
 
 
 sitemaps = {
@@ -215,4 +216,9 @@ urlpatterns += [
 
 urlpatterns = [
     re_path(r'^find-a-buyer/', include(urlpatterns)),
+    path(
+        'pingdom/ping.xml',
+        skip_ga360(PingDomView.as_view()),
+        name='pingdom',
+    ),
 ]
