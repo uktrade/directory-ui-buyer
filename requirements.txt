@@ -148,7 +148,7 @@ virtualenv==20.26.2
     # via pre-commit
 w3lib==1.22.0
     # via directory-client-core
-whitenoise==6.4.0
+whitenoise==6.6.0
     # via -r requirements.in
 
 # The following packages are considered to be unsafe in a requirements file:

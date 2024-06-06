@@ -234,7 +234,7 @@ w3lib==1.22.0
     # via directory-client-core
 wheel==0.43.0
     # via pip-tools
-whitenoise==6.4.0
+whitenoise==6.6.0
     # via -r requirements.in
 zipp==3.19.2
     # via importlib-metadata
