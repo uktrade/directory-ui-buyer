@@ -1,6 +1,6 @@
 from urllib.parse import urlparse
 
-import redis
+from redis import Redis
 from django.conf import settings
 from redis.exceptions import ConnectionError
 
@@ -10,7 +10,7 @@ class RedisHealthCheck:
 
     def check(self):
         o = urlparse(settings.REDIS_URL)
-        rs = redis.Redis(host=o.hostname, port=o.port, db=0)
+        rs = Redis(host=o.hostname, port=o.port, db=0)
         try:
             rs.ping()
         except (ConnectionError, ConnectionRefusedError) as e:
