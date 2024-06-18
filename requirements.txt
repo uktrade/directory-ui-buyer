@@ -138,7 +138,7 @@ sqlparse==0.5.0
     # via django
 typing-extensions==4.12.1
     # via asgiref
-urllib3==1.26.18
+urllib3==1.26.19
     # via
     #   -r requirements.in
     #   directory-validators

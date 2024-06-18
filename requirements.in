@@ -17,6 +17,6 @@ sentry-sdk==1.14.0
 whitenoise==6.6.0
 requests[security]==2.31.0
 cryptography==42.0.4
-urllib3==1.26.18
+urllib3==1.26.19
 py>=1.10.0
 pillow==10.3.0
