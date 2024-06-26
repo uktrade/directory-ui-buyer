@@ -80,7 +80,7 @@ django-log-formatter-asim==0.0.4
     # via -r requirements.in
 django-redis==5.4.0
     # via -r requirements.in
-djangorestframework==3.14.0
+djangorestframework==3.15.2
     # via
     #   -r requirements.in
     #   sigauth
@@ -179,9 +179,7 @@ pytest-xdist==1.29.0
 python-dateutil==2.9.0.post0
     # via freezegun
 pytz==2023.3
-    # via
-    #   directory-validators
-    #   djangorestframework
+    # via directory-validators
 pyyaml==6.0.1
     # via pre-commit
 redis==5.0.5
