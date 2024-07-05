@@ -12,7 +12,7 @@ attrs==23.2.0
     # via jsonschema
 beautifulsoup4==4.12.3
     # via directory-components
-certifi==2024.6.2
+certifi==2024.7.4
     # via
     #   requests
     #   sentry-sdk
@@ -72,11 +72,11 @@ django-log-formatter-asim==0.0.4
     # via -r requirements.in
 django-redis==5.4.0
     # via -r requirements.in
-djangorestframework==3.14.0
+djangorestframework==3.15.2
     # via
     #   -r requirements.in
     #   sigauth
-filelock==3.14.0
+filelock==3.15.4
     # via virtualenv
 gunicorn==22.0.0
     # via -r requirements.in
@@ -94,7 +94,7 @@ nodeenv==1.9.1
     # via pre-commit
 olefile==0.47
     # via directory-validators
-packaging==24.0
+packaging==24.1
     # via gunicorn
 pillow==10.3.0
     # via
@@ -111,14 +111,12 @@ pycparser==2.22
 pyrsistent==0.20.0
     # via jsonschema
 pytz==2023.3
-    # via
-    #   directory-validators
-    #   djangorestframework
+    # via directory-validators
 pyyaml==6.0.1
     # via pre-commit
-redis==5.0.5
+redis==5.0.7
     # via django-redis
-requests[security]==2.31.0
+requests[security]==2.32.3
     # via
     #   -r requirements.in
     #   directory-api-client
@@ -136,15 +134,15 @@ soupsieve==2.5
     # via beautifulsoup4
 sqlparse==0.5.0
     # via django
-typing-extensions==4.12.1
+typing-extensions==4.12.2
     # via asgiref
-urllib3==1.26.18
+urllib3==1.26.19
     # via
     #   -r requirements.in
     #   directory-validators
     #   requests
     #   sentry-sdk
-virtualenv==20.26.2
+virtualenv==20.26.3
     # via pre-commit
 w3lib==1.22.0
     # via directory-client-core
