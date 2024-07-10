@@ -45,7 +45,7 @@ directory-validators==9.3.4
     # via -r requirements.in
 distlib==0.3.8
     # via virtualenv
-django==4.2.11
+django==4.2.14
     # via
     #   -r requirements.in
     #   directory-api-client
