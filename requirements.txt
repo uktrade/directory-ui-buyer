@@ -45,7 +45,7 @@ directory-validators==9.3.4
     # via -r requirements.in
 distlib==0.3.8
     # via virtualenv
-django==4.2.11
+django==4.2.14
     # via
     #   -r requirements.in
     #   directory-api-client
@@ -80,7 +80,7 @@ filelock==3.15.4
     # via virtualenv
 gunicorn==22.0.0
     # via -r requirements.in
-identify==2.5.36
+identify==2.6.0
     # via pre-commit
 idna==3.7
     # via requests
@@ -132,7 +132,7 @@ six==1.16.0
     #   w3lib
 soupsieve==2.5
     # via beautifulsoup4
-sqlparse==0.5.0
+sqlparse==0.5.1
     # via django
 typing-extensions==4.12.2
     # via asgiref
