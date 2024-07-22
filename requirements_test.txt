@@ -26,7 +26,7 @@ charset-normalizer==3.3.2
     # via requests
 click==8.1.7
     # via pip-tools
-coverage[toml]==7.5.4
+coverage[toml]==7.6.0
     # via
     #   pytest-codecov
     #   pytest-cov
@@ -53,7 +53,7 @@ directory-validators==9.3.4
     # via -r requirements.in
 distlib==0.3.8
     # via virtualenv
-django==4.2.11
+django==4.2.14
     # via
     #   -r requirements.in
     #   directory-api-client
@@ -84,7 +84,7 @@ djangorestframework==3.15.2
     # via
     #   -r requirements.in
     #   sigauth
-exceptiongroup==1.2.1
+exceptiongroup==1.2.2
     # via pytest
 execnet==2.1.1
     # via pytest-xdist
@@ -100,7 +100,7 @@ gitpython==3.1.43
     # via -r requirements_test.in
 gunicorn==22.0.0
     # via -r requirements.in
-identify==2.5.36
+identify==2.6.0
     # via pre-commit
 idna==3.7
     # via requests
@@ -155,7 +155,7 @@ pyproject-hooks==1.1.0
     #   pip-tools
 pyrsistent==0.20.0
     # via jsonschema
-pytest==8.2.2
+pytest==8.3.1
     # via
     #   -r requirements_test.in
     #   pytest-codecov
@@ -208,7 +208,7 @@ smmap==5.0.1
     # via gitdb
 soupsieve==2.5
     # via beautifulsoup4
-sqlparse==0.5.0
+sqlparse==0.5.1
     # via django
 termcolor==2.4.0
     # via pytest-sugar
